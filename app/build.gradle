@@ -5,8 +5,8 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "cs.fau.mad.quickshop_android"
-        minSdkVersion 14
+        applicationId "de.cs.fau.mad.quickshop_android"
+        minSdkVersion 16
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"

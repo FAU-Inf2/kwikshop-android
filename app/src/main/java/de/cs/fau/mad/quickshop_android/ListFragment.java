@@ -36,14 +36,16 @@ public  class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        /*
         listView = (ListView) rootView.findViewById(android.R.id.list);
         ArrayList<String> items = new ArrayList<String>();
         for (int i = 0; i < 10; i++){
-            items.add("Dummy Object " + i);
+            items.add("List " + i);
         }
 
         mListRowAdapter = new ListRowAdapter(getActivity(), R.layout.fragment_listview_row, items);
         listView.setAdapter(mListRowAdapter);
+        */
 
         return rootView;
     }

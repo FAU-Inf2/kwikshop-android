@@ -5,19 +5,23 @@ package de.cs.fau.mad.quickshop_android;
  */
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -47,8 +51,29 @@ public  class AddListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_list, container, false);
+
+
         etNewListName = (EditText) rootView.findViewById(R.id.et_add_list_name);
-        setHasOptionsMenu(true); // Report that this fragment would like to participate in populating the options menu
+        etNewListName.setFocusableInTouchMode(true);
+        etNewListName.requestFocus();
+
+        // listener for enter
+        etNewListName.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    if(etNewListName.length() != 0){
+                        saveNewShoppingList();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Report that this fragment would like to participate in populating the options menu
+        setHasOptionsMenu(true);
+
 
         return rootView;
     }
@@ -68,12 +93,12 @@ public  class AddListFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-
         switch (item.getItemId()){
             case R.id.action_add_list_save:
-                saveNewShoppingList();
+                if(etNewListName.length() != 0){
+                    saveNewShoppingList();
+                }
                 return true;
-
             default:
                 return true;
         }
@@ -81,21 +106,31 @@ public  class AddListFragment extends Fragment {
 
     private void saveNewShoppingList() {
 
+        // hide keyboard after pressing enter or save
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etNewListName.getWindowToken(), 0);
+
+        // save shopping list name
         SharedPreferences data = getActivity().getSharedPreferences(DATA, 0);
         SharedPreferences.Editor editor = data.edit();
         Set<String> shoppingList = data.getStringSet(SHOPPING_LIST, null);
 
+        // create new shopping list
         if(shoppingList == null){
             shoppingList = new TreeSet<String>();
-            Log.d("AddListFragment", "shoppingList is null");
+            Toast.makeText(getActivity(), "shoppingList is null",Toast.LENGTH_LONG).show();
         }
 
+        // save shopping list name
         Set<String> copyShoppinsList = new TreeSet<String>(shoppingList);
         copyShoppinsList.add(etNewListName.getText().toString());
         editor.putStringSet(SHOPPING_LIST,copyShoppinsList);
         editor.apply();
 
-        // TODO
+        // change current fragment to listFragment
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, ListFragment.newInstance(0)).commit();
 
     }
+
+
 }

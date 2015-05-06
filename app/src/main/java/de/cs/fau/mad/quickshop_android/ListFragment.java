@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -35,17 +34,16 @@ public  class ListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        /*
+        View rootView = inflater.inflate(R.layout.fragment_list_overview, container, false);
+
         listView = (ListView) rootView.findViewById(android.R.id.list);
         ArrayList<String> items = new ArrayList<String>();
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < 1; i++){
             items.add("List " + i);
         }
 
-        mListRowAdapter = new ListRowAdapter(getActivity(), R.layout.fragment_listview_row, items);
+        mListRowAdapter = new ListRowAdapter(getActivity(), R.layout.fragment_list_row, items);
         listView.setAdapter(mListRowAdapter);
-        */
 
         return rootView;
     }

@@ -9,6 +9,9 @@
           app:showAsAction="ifRoom" />
     -->
 
-
+    <item android:id="@+id/action_add_list_save"
+          android:title="@string/action_add_list_save"
+          android:orderInCategory="100"
+          app:showAsAction="ifRoom" />
 
 </menu>

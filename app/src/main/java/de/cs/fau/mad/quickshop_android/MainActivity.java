@@ -102,8 +102,8 @@ public class MainActivity extends ActionBarActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+         /*
         FragmentManager fragmentManager = getSupportFragmentManager();
-
         switch(id){
             case R.id.action_add_list:
                 setTitle(R.string.title_add_list); // did not work? IDK why?
@@ -111,7 +111,7 @@ public class MainActivity extends ActionBarActivity
 
                 break;
         }
-
+        */
         return super.onOptionsItemSelected(item);
     }
 

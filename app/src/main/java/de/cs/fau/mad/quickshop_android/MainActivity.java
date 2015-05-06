@@ -1,17 +1,13 @@
 package de.cs.fau.mad.quickshop_android;
 
-import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 
 import cs.fau.mad.quickshop_android.R;
 
@@ -29,6 +25,7 @@ public class MainActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +35,9 @@ public class MainActivity extends ActionBarActivity
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.container, ListFragment.newInstance(0)).commit();
+
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
     }
@@ -45,23 +45,33 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
+
+        Log.d("Position selected: ", "" + position);
+
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, ListFragment.newInstance(position + 1))
-                .commit();
+        switch (position){
+            case 0:
+                fragmentManager.beginTransaction().replace(R.id.container, ListFragment.newInstance(position)).commit();
+                break;
+            case 1:
+                fragmentManager.beginTransaction().replace(R.id.container, AddListFragment.newInstance(position)).commit();
+                break;
+            default:
+                fragmentManager.beginTransaction().replace(R.id.container, ListFragment.newInstance(position)).commit();
+        }
+
     }
 
     public void onSectionAttached(int number) {
+        // changes the title in the actionbar by clicking on a section
         switch (number) {
+            case 0:
+                mTitle = getString(R.string.title_list_overview);
+                break;
             case 1:
-                mTitle = getString(R.string.title_section1);
+                mTitle = getString(R.string.title_add_list);
                 break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
+
         }
     }
 
@@ -92,10 +102,14 @@ public class MainActivity extends ActionBarActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id){
+            case R.id.action_add_list:
+                setTitle(R.string.title_add_list); // did not work? IDK why?
+                fragmentManager.beginTransaction().replace(R.id.container, AddListFragment.newInstance(1)).commit();
+
+                break;
         }
 
         return super.onOptionsItemSelected(item);

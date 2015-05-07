@@ -48,6 +48,14 @@ public class List {
     return sharedWith;
   }
 
+  public visibility getVisibility() {
+    return vis;
+  }
+
+  public void setVisibility(visibility visibility) {
+    this.vis = visibility;
+  }
+
   public Boolean save() {
     return storage.saveList(this);
   }
@@ -70,14 +78,6 @@ public class List {
         return;
       }
     }
-  }
-
-  public visibility getVisibility() {
-    return vis;
-  }
-
-  public void setVisibility(visibility visibility) {
-    this.vis = visibility;
   }
 
 }

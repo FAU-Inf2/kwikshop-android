@@ -1,22 +1,39 @@
 package de.cs.fau.mad.quickshop_android;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName = "item")
 public class Item {
 
+  @DatabaseField(id = true)
   private Integer id;
 
+  @DatabaseField
   private Boolean bought;
 
+  @DatabaseField(canBeNull = false)
   private String name;
 
+  @DatabaseField
   private Integer amount;
 
+  @DatabaseField
   private Boolean highlight;
 
+  @DatabaseField(canBeNull = true)
   private String comment;
 
+  @DatabaseField
   private Group group;
 
+  @DatabaseField
   private Unit unit;
+
+
+  Item() {
+   // Default no-arg constructor for generating Items, required for ORMLite
+  }
 
   public Integer getId() {
     return id;

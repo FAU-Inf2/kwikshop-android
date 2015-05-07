@@ -5,14 +5,20 @@ package de.cs.fau.mad.quickshop_android;
  */
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.internal.widget.AdapterViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,8 +33,10 @@ public  class ListFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String DATA = "data";
     private static final String SHOPPING_LIST = "shopping_list";
+    private ArrayList<String> entry = new ArrayList<String>();
     private ListView listView;
     private ListRowAdapter mListRowAdapter;
+    private TextView tvListEntry;
 
 
     public static ListFragment newInstance(int sectionNumber) {
@@ -46,21 +54,67 @@ public  class ListFragment extends Fragment {
 
         listView = (ListView) rootView.findViewById(android.R.id.list);
 
+        // retrieve stored data for list overview
         SharedPreferences data = getActivity().getSharedPreferences(DATA, 0);
         Set<String> shoppingList = data.getStringSet(SHOPPING_LIST, null);
-        ArrayList<String> items = new ArrayList<String>();
 
+        // copy data to ArrayList
         if(shoppingList != null){
             Iterator<String> it = shoppingList.iterator();
             while(it.hasNext()){
-                items.add(it.next());
+                entry.add(it.next());
             }
         }
 
-        // currently no shopping list available
-  
-        mListRowAdapter = new ListRowAdapter(getActivity(), R.layout.fragment_list_row, items);
+        // create adapter for list
+        mListRowAdapter = new ListRowAdapter(getActivity(), R.layout.fragment_list_row, entry);
         listView.setAdapter(mListRowAdapter);
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Delete shopping list")   // todo: fix hardcoded
+                        .setMessage("Are you sure you want to delete this entry?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                                SharedPreferences data = getActivity().getSharedPreferences(DATA, 0);
+                                SharedPreferences.Editor editor = data.edit();
+                                Set<String> shoppingList = data.getStringSet(SHOPPING_LIST, null);
+                                // create copy of list to manipulate
+                                TreeSet<String> copyShoppingList = new TreeSet<String>(shoppingList);
+
+                                if (copyShoppingList.contains(entry.get(position))) {
+                                    // Remove Entry from List
+                                    copyShoppingList.remove(entry.get(position));
+                                    editor.putStringSet(SHOPPING_LIST, copyShoppingList);
+                                    editor.apply();
+                                    if (editor.commit()) {
+                                        Toast.makeText(getActivity(), entry.get(position) + " wurde gelöscht!", Toast.LENGTH_LONG).show();
+                                        // refresh Adapter
+                                        mListRowAdapter.remove(entry.get(position));
+                                        mListRowAdapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                return true;
+            }
+
+
+        });
+
 
         return rootView;
     }

@@ -3,10 +3,11 @@
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.1.0'
-
+        classpath 'org.ajoberstar:gradle-git:1.1.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -18,3 +19,29 @@ allprojects {
         jcenter()
     }
 }
+
+import org.ajoberstar.grgit.*
+
+// writes info from git to build/info.txt
+task writeBuildInfo << {
+
+    def repo = Grgit.open(dir: project.file('.'))
+    def buildInfoFile = project.file("build/info.txt")
+
+    def buildInfo = "Commit: "
+    buildInfo <<= repo.head().id
+    buildInfo <<= "\n"
+
+    def branchName = repo.branch.getCurrent().getName()
+    buildInfo <<= "Branch: "
+    buildInfo <<= branchName
+    buildInfo <<= "\n"
+
+    def status = repo.status()
+    buildInfo <<= "Clean: "
+    buildInfo <<= status.isClean()
+    buildInfo <<= "\n"
+
+    buildInfoFile.text = buildInfo
+}
+

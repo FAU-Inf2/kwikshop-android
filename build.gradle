@@ -14,34 +14,39 @@ buildscript {
     }
 }
 
+import org.ajoberstar.grgit.*
+
 allprojects {
     repositories {
         jcenter()
     }
+
+    // writes info from git to build/info.txt for each project
+    task writeBuildInfo << {
+
+        def repo = Grgit.open(dir: project.getRootProject().file('.'))
+        def buildInfoFile = project.file("build/info.txt")
+
+        def buildInfo = "Commit: "
+        buildInfo <<= repo.head().id
+        buildInfo <<= "\n"
+
+        def branchName = repo.branch.getCurrent().getName()
+        buildInfo <<= "Branch: "
+        buildInfo <<= branchName
+        buildInfo <<= "\n"
+
+        def status = repo.status()
+        buildInfo <<= "Clean: "
+        buildInfo <<= status.isClean()
+        buildInfo <<= "\n"
+
+        buildInfoFile.text = buildInfo
+    }
+
 }
 
-import org.ajoberstar.grgit.*
 
-// writes info from git to build/info.txt
-task writeBuildInfo << {
 
-    def repo = Grgit.open(dir: project.file('.'))
-    def buildInfoFile = project.file("build/info.txt")
 
-    def buildInfo = "Commit: "
-    buildInfo <<= repo.head().id
-    buildInfo <<= "\n"
-
-    def branchName = repo.branch.getCurrent().getName()
-    buildInfo <<= "Branch: "
-    buildInfo <<= branchName
-    buildInfo <<= "\n"
-
-    def status = repo.status()
-    buildInfo <<= "Clean: "
-    buildInfo <<= status.isClean()
-    buildInfo <<= "\n"
-
-    buildInfoFile.text = buildInfo
-}
 

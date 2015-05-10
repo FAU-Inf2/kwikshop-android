@@ -16,4 +16,14 @@
     <string name="action_add_list_save">save</string>
 
     <string name="hint_add_list">new list name</string>
+    <string name="title_activity_about">About</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_about">About</string>
+
+    <!--Titles for properties displayed in the about screen-->
+    <string name="about_Branch_Title">Branch</string>
+    <string name="about_Commit_Title">Commit</string>
+    <string name="about_Version_Title">Version</string>
+
 </resources>

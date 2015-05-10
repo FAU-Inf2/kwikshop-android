@@ -3,13 +3,56 @@
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.1.0'
-
+        classpath 'org.ajoberstar:gradle-git:1.1.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+    }
+}
+
+import org.ajoberstar.grgit.*
+
+def isTravisBuild() {
+    def tarvisVar = System.getenv('TRAVIS') ?: 'false'
+    return tarvisVar.compareToIgnoreCase('true') == 0
+}
+
+def getGitRepository() {
+    def repo = Grgit.open(dir: project.getRootProject().file('.'))
+    return repo
+}
+
+def getGitCommitId() {
+
+    if(isTravisBuild()) {
+        return System.getenv('TRAVIS_COMMIT') ?: 'Unknown'
+    } else {
+        def repo = getGitRepository()
+        def commitId = repo.head().getAbbreviatedId(10)
+        if(!repo.status().isClean()) {
+            commitId += "+"
+        }
+        return commitId
+    }
+}
+
+def getGitBranchName() {
+    if(isTravisBuild()) {
+
+        def prVar = System.getenv('TRAVIS_PULL_REQUEST') ?: 'false';
+
+        if(prVar.compareToIgnoreCase('false') == 0) {
+            return System.getenv('TRAVIS_BRANCH') ?: 'Unknown'
+        } else {
+            return 'Pull-Request ' + prVar + ' for Branch ' + System.getEnv('TRAVIS_BRANCH') ?: ''
+        }
+    } else {
+        def repo = getGitRepository()
+        return repo.branch.getCurrent().getName()
     }
 }
 
@@ -17,4 +60,25 @@ allprojects {
     repositories {
         jcenter()
     }
+
+    // writes info from git to build/info.txt for each project
+    task writeBuildInfoFile() << {
+
+        def buildInfoFile = project.file("build/info.txt")
+
+        def buildInfo = "Commit: "
+        buildInfo <<= getGitCommitId()
+        buildInfo <<= "\n"
+
+        buildInfo <<= "Branch: "
+        buildInfo <<= getGitBranchName()
+        buildInfo <<= "\n"
+
+        buildInfoFile.text = buildInfo
+    }
+
 }
+
+
+
+

@@ -17,12 +17,12 @@ public abstract class ListStorage {
   /** 
    *  returns the list identified by id
    */
-  public abstract List loadList(Integer listId);
+  public abstract ShoppingList loadList(Integer listId);
 
   /** 
    *  saves a list in the storage
    */
-  public abstract Boolean saveList(List list);
+  public abstract Boolean saveList(ShoppingList list);
 
   /** 
    *  deletes a list

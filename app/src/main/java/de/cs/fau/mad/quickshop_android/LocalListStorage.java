@@ -14,12 +14,12 @@ public class LocalListStorage extends ListStorage {
     }
 
     @Override
-    public List loadList(Integer listID) {
+    public ShoppingList loadList(Integer listID) {
         return null;
     }
 
     @Override
-    public Boolean saveList(List list) {
+    public Boolean saveList(ShoppingList list) {
         return null;
     }
 

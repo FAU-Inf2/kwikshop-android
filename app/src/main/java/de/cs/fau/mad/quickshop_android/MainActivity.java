@@ -1,5 +1,6 @@
 package de.cs.fau.mad.quickshop_android;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -112,6 +113,13 @@ public class MainActivity extends ActionBarActivity
                 break;
         }
         */
+
+        if(id == R.id.action_about) {
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

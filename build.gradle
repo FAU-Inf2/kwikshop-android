@@ -21,28 +21,33 @@ allprojects {
         jcenter()
     }
 
-    // writes info from git to build/info.txt for each project
-    task writeBuildInfo << {
-
+    task determineBuildInfo << {
         def repo = Grgit.open(dir: project.getRootProject().file('.'))
+
+        def commitId = repo.head().getAbbreviatedId(10)
+        if(!repo.status().isClean()) {
+            commitId <<= "+"
+        }
+        project.ext.set("BUILDINFO_GIT_COMMITID", commitId)
+        project.ext.set("BUIDINFO_GIT_BRANCHNAME", repo.branch.getCurrent().getName())
+    }
+
+    // writes info from git to build/info.txt for each project
+    task writeBuildInfoFile() << {
+
         def buildInfoFile = project.file("build/info.txt")
 
         def buildInfo = "Commit: "
-        buildInfo <<= repo.head().id
+        buildInfo <<= project.ext.BUILDINFO_GIT_COMMITID
         buildInfo <<= "\n"
 
-        def branchName = repo.branch.getCurrent().getName()
         buildInfo <<= "Branch: "
-        buildInfo <<= branchName
-        buildInfo <<= "\n"
-
-        def status = repo.status()
-        buildInfo <<= "Clean: "
-        buildInfo <<= status.isClean()
+        buildInfo <<= project.ext.BUIDINFO_GIT_BRANCHNAME
         buildInfo <<= "\n"
 
         buildInfoFile.text = buildInfo
     }
+    writeBuildInfoFile.dependsOn determineBuildInfo
 
 }
 

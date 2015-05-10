@@ -34,7 +34,7 @@ def getGitCommitId() {
 
 def getGitBranchName() {
     def repo = getGitRepository()
-    return repo.branch.getCurrent().trackingBranch
+    return repo.branch.getCurrent().trackingBranch.getName()
 }
 
 allprojects {

@@ -16,6 +16,10 @@ buildscript {
 
 import org.ajoberstar.grgit.*
 
+def isTravisBuild() {
+    def tarvisVar = System.getenv('TRAVIS') ?: 'false'
+    return tarvisVar.compareToIgnoreCase('true') == 0
+}
 
 def getGitRepository() {
     def repo = Grgit.open(dir: project.getRootProject().file('.'))
@@ -23,18 +27,33 @@ def getGitRepository() {
 }
 
 def getGitCommitId() {
-    def repo = getGitRepository()
-    def commitId = repo.head().getAbbreviatedId(10)
-    if(!repo.status().isClean()) {
-        commitId += "+"
+
+    if(isTravisBuild()) {
+        return System.getenv('TRAVIS_COMMIT') ?: 'Unknown'
+    } else {
+        def repo = getGitRepository()
+        def commitId = repo.head().getAbbreviatedId(10)
+        if(!repo.status().isClean()) {
+            commitId += "+"
+        }
+        return commitId
     }
-    return commitId
 }
 
-
 def getGitBranchName() {
-    def repo = getGitRepository()
-    return repo.branch.getCurrent().getName()
+    if(isTravisBuild()) {
+
+        def prVar = System.getenv('TRAVIS_PULL_REQUEST') ?: 'false';
+
+        if(prVar.compareToIgnoreCase('false') == 0) {
+            return System.getenv('TRAVIS_BRANCH') ?: 'Unknown'
+        } else {
+            return 'Pull-Request ' + prVar + ' for Branch ' + System.getEnv('TRAVIS_BRANCH') ?: ''
+        }
+    } else {
+        def repo = getGitRepository()
+        return repo.branch.getCurrent().getName()
+    }
 }
 
 allprojects {

@@ -10,6 +10,8 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+        resValue "string", "BuildInfo_Git_Branch", getGitBranchName()
+        resValue "string", "BuildInfo_Git_Commit", getGitCommitId()
     }
     signingConfigs {
         release {

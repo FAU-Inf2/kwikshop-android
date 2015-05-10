@@ -16,20 +16,30 @@ buildscript {
 
 import org.ajoberstar.grgit.*
 
+
+def getGitRepository() {
+    def repo = Grgit.open(dir: project.getRootProject().file('.'))
+    return repo
+}
+
+def getGitCommitId() {
+    def repo = getGitRepository()
+    def commitId = repo.head().getAbbreviatedId(10)
+    if(!repo.status().isClean()) {
+        commitId += "+"
+    }
+    return commitId
+}
+
+
+def getGitBranchName() {
+    def repo = getGitRepository()
+    return repo.branch.getCurrent().getName()
+}
+
 allprojects {
     repositories {
         jcenter()
-    }
-
-    task determineBuildInfo << {
-        def repo = Grgit.open(dir: project.getRootProject().file('.'))
-
-        def commitId = repo.head().getAbbreviatedId(10)
-        if(!repo.status().isClean()) {
-            commitId <<= "+"
-        }
-        project.ext.set("BUILDINFO_GIT_COMMITID", commitId)
-        project.ext.set("BUIDINFO_GIT_BRANCHNAME", repo.branch.getCurrent().getName())
     }
 
     // writes info from git to build/info.txt for each project
@@ -38,19 +48,17 @@ allprojects {
         def buildInfoFile = project.file("build/info.txt")
 
         def buildInfo = "Commit: "
-        buildInfo <<= project.ext.BUILDINFO_GIT_COMMITID
+        buildInfo <<= getGitCommitId()
         buildInfo <<= "\n"
 
         buildInfo <<= "Branch: "
-        buildInfo <<= project.ext.BUIDINFO_GIT_BRANCHNAME
+        buildInfo <<= getGitBranchName()
         buildInfo <<= "\n"
 
         buildInfoFile.text = buildInfo
     }
-    writeBuildInfoFile.dependsOn determineBuildInfo
 
 }
-
 
 
 

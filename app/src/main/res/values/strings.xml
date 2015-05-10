@@ -24,10 +24,6 @@
     <!--Titles for properties displayed in the about screen-->
     <string name="about_Branch_Title">Branch</string>
     <string name="about_Commit_Title">Commit</string>
-
-    <!--Values displayed in the about screen (will be set during build)-->
-    <string name="BuildInfo_Git_Branch">UNKNOWN</string>
-    <string name="BuildInfo_Git_Commit">UNKNOWN</string>
     <string name="about_Version_Title">Version</string>
 
 </resources>

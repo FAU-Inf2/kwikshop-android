@@ -19,7 +19,7 @@
     <fragment android:id="@+id/navigation_drawer"
         android:layout_width="@dimen/navigation_drawer_width" android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:name="de.cs.fau.mad.quickshop_android.NavigationDrawerFragment"
+        android:name="de.cs.fau.mad.quickshop.android.NavigationDrawerFragment"
         tools:layout="@layout/fragment_navigation_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

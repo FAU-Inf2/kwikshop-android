@@ -1,4 +1,4 @@
-package de.cs.fau.mad.quickshop_android;
+package de.cs.fau.mad.quickshop.android;
 
 public class Group {
 

@@ -1,4 +1,4 @@
-package de.cs.fau.mad.quickshop_android;
+package de.cs.fau.mad.quickshop.android;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
@@ -20,9 +20,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import cs.fau.mad.quickshop_android.R;
 

@@ -1,4 +1,4 @@
-package de.cs.fau.mad.quickshop_android;
+package de.cs.fau.mad.quickshop.android;
 
 import android.content.Intent;
 import android.os.Bundle;

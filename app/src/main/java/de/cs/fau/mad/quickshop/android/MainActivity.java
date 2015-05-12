@@ -37,7 +37,7 @@ public class MainActivity extends ActionBarActivity
         mTitle = getTitle();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, ListFragment.newInstance(0)).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, ListOfShoppingListsFragment.newInstance(0)).commit();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
@@ -51,14 +51,12 @@ public class MainActivity extends ActionBarActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch (position){
-            case 0:
-                fragmentManager.beginTransaction().replace(R.id.container, ListFragment.newInstance(position)).commit();
-                break;
             case 1:
                 fragmentManager.beginTransaction().replace(R.id.container, AddListFragment.newInstance(position)).commit();
                 break;
+            case 0:
             default:
-                fragmentManager.beginTransaction().replace(R.id.container, ListFragment.newInstance(position)).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, ListOfShoppingListsFragment.newInstance(position)).commit();
         }
 
     }

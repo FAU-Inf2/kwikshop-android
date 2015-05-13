@@ -2,7 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp" >
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+    >
 
     <TextView
         android:id="@+id/list_row_textView_Main"
@@ -25,7 +29,8 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_below="@id/list_row_textView_Main"
         android:textColor="@color/secondary_text_default_material_light"
-        />
+        android:layout_marginTop="-10dp"
+        android:layout_marginBottom="5dp" />
 
 
 </RelativeLayout>

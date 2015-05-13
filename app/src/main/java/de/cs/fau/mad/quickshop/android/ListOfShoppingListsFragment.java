@@ -1,6 +1,7 @@
 package de.cs.fau.mad.quickshop.android;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -74,8 +75,8 @@ public  class ListOfShoppingListsFragment extends Fragment {
         m_ListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO open shopping list details view
-                showToast("Shopping list item log press");
+                Intent intent = new Intent(getActivity(), ShoppingListDetailActivity.class);
+                startActivity(intent);
                 return true;
             }
         });
@@ -86,8 +87,8 @@ public  class ListOfShoppingListsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                //Just for debugging
-                showToast("Floating action button clicked");
+                Intent intent = new Intent(getActivity(), ShoppingListDetailActivity.class);
+                startActivity(intent);
             }
         });
 

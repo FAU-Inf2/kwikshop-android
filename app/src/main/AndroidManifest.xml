@@ -20,6 +20,10 @@
             android:name="de.cs.fau.mad.quickshop.android.AboutActivity"
             android:label="@string/title_activity_about" >
         </activity>
+        <activity
+            android:name="de.cs.fau.mad.quickshop.android.ShoppingListDetailActivity"
+            android:label="@string/title_activity_shopping_list_detail" >
+        </activity>
     </application>
 
 </manifest>

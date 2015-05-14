@@ -106,7 +106,7 @@ public class NavigationDrawerFragment extends Fragment {
                 new String[]{
                         "Shopping Lists",
                         "Add new List",
-                        "TEST" /* REMOVE ME, ONLY FOR TESTING */
+                        "Item details demo" /* TODO: REMOVE THIS, ONLY FOR TESTING */
                 }));
 
 

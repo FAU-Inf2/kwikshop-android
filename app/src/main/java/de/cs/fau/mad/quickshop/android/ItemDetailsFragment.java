@@ -96,7 +96,8 @@ public class ItemDetailsFragment extends Fragment {
         // TODO: Fill UI elements with data from Item
         productname_text.setText("Test123");
 
-        // TODO: Fill spinner with real data from Units
+        // TODO: Fill spinner with real data from Units + select correct unit
+        // http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
         String colors[] = {"Red","Blue","White","Yellow","Black", "Green","Purple","Orange","Grey"};
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, colors);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

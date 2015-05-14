@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "item")
 public class Item {
 
-  @DatabaseField(id = true)
+  @DatabaseField(generatedId = true)
   private Integer id;
 
   @DatabaseField
@@ -24,11 +24,18 @@ public class Item {
   @DatabaseField(canBeNull = true)
   private String comment;
 
-  @DatabaseField
+  @DatabaseField(foreign = true)
   private Group group;
 
-  @DatabaseField
+  @DatabaseField(foreign = true)
   private Unit unit;
+
+   /**
+   * the ShoppingList, that contains this Item.
+    * (Required for ORMLite)
+   */
+  @DatabaseField(foreign = true)
+  private ShoppingList shoppingList;
 
 
   public Item() {
@@ -95,4 +102,11 @@ public class Item {
     this.unit = unit;
   }
 
+    public void setShoppingList(ShoppingList shoppingList) {
+        this.shoppingList = shoppingList;
+    }
+
+    public ShoppingList getShoppingList() {
+        return shoppingList;
+    }
 }

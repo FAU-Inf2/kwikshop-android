@@ -1,10 +1,19 @@
 package de.cs.fau.mad.quickshop.android;
 
-public class Group {
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
+@DatabaseTable(tableName = "group")
+public class Group {
+  @DatabaseField(generatedId = true)
   private int id;
 
+  @DatabaseField(canBeNull = false)
   private String name;
+
+  public Group() {
+      // Default no-arg constructor for generating Groups, required for ORMLite
+  }
 
   public int getId() {
     return id;

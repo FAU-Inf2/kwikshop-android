@@ -21,6 +21,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_about">About</string>
 
+    <string name="items">Items</string>
+
     <!--Titles for properties displayed in the about screen-->
     <string name="about_Branch_Title">Branch</string>
     <string name="about_Commit_Title">Commit</string>

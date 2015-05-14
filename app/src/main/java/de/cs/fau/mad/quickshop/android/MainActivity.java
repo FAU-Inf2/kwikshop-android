@@ -37,7 +37,7 @@ public class MainActivity extends ActionBarActivity
         mTitle = getTitle();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, ListFragment.newInstance(0)).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, ListOfShoppingListsFragment.newInstance(0)).commit();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
@@ -67,10 +67,10 @@ public class MainActivity extends ActionBarActivity
         // changes the title in the actionbar by clicking on a section
         switch (number) {
             case 0:
-                mTitle = getString(R.string.title_list_overview);
+                mTitle = getString(R.string.title_default_list);
                 break;
             case 1:
-                mTitle = getString(R.string.title_add_list);
+                mTitle = getString(R.string.title_list_overview);
                 break;
 
         }

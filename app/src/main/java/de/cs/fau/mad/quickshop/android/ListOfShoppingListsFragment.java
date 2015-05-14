@@ -29,7 +29,6 @@ public  class ListOfShoppingListsFragment extends Fragment {
     //region Constants
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private static final String TAG_LISTSTORAGE = "tag_ListStorage";
 
     //endregion
 
@@ -37,6 +36,8 @@ public  class ListOfShoppingListsFragment extends Fragment {
     //region Fields
 
     private ListStorageFragment m_ListStorageFragment;
+    private ListView m_ListView;
+    private ListOfShoppingListsListRowAdapter m_ListRowAdapter;
 
     //endregion
 
@@ -63,22 +64,22 @@ public  class ListOfShoppingListsFragment extends Fragment {
 
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(TAG_LISTSTORAGE);
+        m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
         if (m_ListStorageFragment == null) {
             m_ListStorageFragment = new ListStorageFragment();
             m_ListStorageFragment.setListStorage(new ListStorageMock());
             fm.beginTransaction().add(
-                    m_ListStorageFragment, TAG_LISTSTORAGE)
+                    m_ListStorageFragment, ListStorageFragment.TAG_LISTSTORAGE)
                     .commit();
         }
 
 
         View rootView = inflater.inflate(R.layout.fragment_list_of_shoppinglists, container, false);
-        ListView m_ListView = (ListView) rootView.findViewById(android.R.id.list);
+        m_ListView = (ListView) rootView.findViewById(android.R.id.list);
 
 
         // create adapter for list
-        ListAdapter m_ListRowAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), m_ListStorageFragment.getListStorage());
+        m_ListRowAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), m_ListStorageFragment.getListStorage());
         m_ListView.setAdapter(m_ListRowAdapter);
 
 
@@ -97,7 +98,10 @@ public  class ListOfShoppingListsFragment extends Fragment {
         m_ListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), ShoppingListDetailActivity.class);
+
+                Intent intent = new Intent(getActivity(), ShoppingListDetailActivity.class)
+                        .putExtra(ShoppingListDetailActivity.EXTRA_SHOPPINGLISTID, id);
+
                 startActivity(intent);
                 return true;
             }
@@ -121,6 +125,11 @@ public  class ListOfShoppingListsFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+
+        if (m_ListRowAdapter != null) {
+            m_ListRowAdapter.reload();
+        }
+
     }
 
 

@@ -30,6 +30,8 @@ public class ListOfShoppingListsListRowAdapter implements ListAdapter {
 
     //region Fields
 
+    private ArrayList<DataSetObserver> m_Observers = new ArrayList<>();
+
     private final Activity m_ParentActivity;
     private final ListStorage m_ListStorage;
 
@@ -93,12 +95,12 @@ public class ListOfShoppingListsListRowAdapter implements ListAdapter {
 
     @Override
     public void registerDataSetObserver(DataSetObserver observer) {
-
+        m_Observers.add(observer);
     }
 
     @Override
     public void unregisterDataSetObserver(DataSetObserver observer) {
-
+        m_Observers.remove(observer);
     }
 
     @Override
@@ -135,6 +137,17 @@ public class ListOfShoppingListsListRowAdapter implements ListAdapter {
     @Override
     public boolean isEmpty() {
         return false;
+    }
+
+    //endregion
+
+    //region Public Methods
+
+
+    public void reload() {
+        for (DataSetObserver observer : m_Observers) {
+            observer.onChanged();
+        }
     }
 
     //endregion

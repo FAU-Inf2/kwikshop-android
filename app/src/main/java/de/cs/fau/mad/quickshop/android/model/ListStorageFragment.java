@@ -7,6 +7,12 @@ import de.cs.fau.mad.quickshop.android.ListStorage;
 
 public class ListStorageFragment extends Fragment {
 
+    //region Constants
+
+    public static final String TAG_LISTSTORAGE = "tag_ListStorage";
+
+    //endregion
+
 
     //region Fields
 

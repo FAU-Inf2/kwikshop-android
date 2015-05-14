@@ -11,24 +11,30 @@ import de.cs.fau.mad.quickshop.android.ShoppingList;
 public class ListStorageMock extends ListStorage {
 
     private static int nextId = 1;
-    private ArrayList<ShoppingList> m_Lists = new ArrayList<>();
+    private static ArrayList<ShoppingList> m_Lists = new ArrayList<>();
+
+
 
 
     public ListStorageMock() {
 
-        for(int i = 0; i < 10; i++) {
+        if (m_Lists.size() == 0) {
 
-            int newListId = createList();
-            ShoppingList newList = loadList(newListId);
+            for (int i = 0; i < 10; i++) {
 
-            int itemCount = new Random().nextInt(30);
+                int newListId = createList();
+                ShoppingList newList = loadList(newListId);
 
-            for(int j = 0; j < itemCount; j++) {
-                Item newItem = new Item();
+                int itemCount = new Random().nextInt(30);
 
-                newList.addItem(newItem);
+                for (int j = 0; j < itemCount; j++) {
+                    Item newItem = new Item();
+
+                    newList.addItem(newItem);
+                }
             }
         }
+
     }
 
     @Override
@@ -56,7 +62,7 @@ public class ListStorageMock extends ListStorage {
             }
         }
 
-        throw new IllegalArgumentException("Unknown list");
+        throw new IllegalArgumentException("Unknown list, id = " + listId);
     }
 
     @Override

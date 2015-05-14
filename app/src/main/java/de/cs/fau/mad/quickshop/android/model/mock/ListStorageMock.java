@@ -10,16 +10,16 @@ import de.cs.fau.mad.quickshop.android.ShoppingList;
 
 public class ListStorageMock extends ListStorage {
 
+    private static int nextId = 1;
     private ArrayList<ShoppingList> m_Lists = new ArrayList<>();
-
 
 
     public ListStorageMock() {
 
         for(int i = 0; i < 10; i++) {
 
-            ShoppingList newList = new ShoppingList(i);
-            newList.setName("Shopping list " + (i + 1));
+            int newListId = createList();
+            ShoppingList newList = loadList(newListId);
 
             int itemCount = new Random().nextInt(30);
 
@@ -31,12 +31,16 @@ public class ListStorageMock extends ListStorage {
 
             m_Lists.add(newList);
         }
-
     }
 
     @Override
     public int createList() {
-        throw new UnsupportedOperationException();
+
+        int id = nextId++;
+        ShoppingList newList = new ShoppingList(id);
+        newList.setName("Shopping list " + id);
+
+        return id;
     }
 
     @Override
@@ -57,11 +61,28 @@ public class ListStorageMock extends ListStorage {
 
     @Override
     public Boolean saveList(ShoppingList list) {
-        throw new UnsupportedOperationException();
+
+        deleteList(list.getId());
+        m_Lists.add(list);
+        return true;
+
     }
 
     @Override
     public Boolean deleteList(Integer id) {
-        throw new UnsupportedOperationException();
+
+        ShoppingList listToRemove = null;
+        for (ShoppingList existingList : m_Lists) {
+            if (existingList.getId() == id) {
+                listToRemove = existingList;
+                break;
+            }
+        }
+
+        if (listToRemove != null) {
+            return m_Lists.remove(listToRemove);
+        } else {
+            return false;
+        }
     }
 }

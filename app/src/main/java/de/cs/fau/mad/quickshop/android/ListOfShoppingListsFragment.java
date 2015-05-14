@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.melnykov.fab.FloatingActionButton;
 
 
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.model.mock.ListStorageMock;
 
 /**
@@ -27,6 +29,14 @@ public  class ListOfShoppingListsFragment extends Fragment {
     //region Constants
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final String TAG_LISTSTORAGE = "tag_ListStorage";
+
+    //endregion
+
+
+    //region Fields
+
+    private ListStorageFragment m_ListStorageFragment;
 
     //endregion
 
@@ -51,12 +61,24 @@ public  class ListOfShoppingListsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(TAG_LISTSTORAGE);
+        if (m_ListStorageFragment == null) {
+            m_ListStorageFragment = new ListStorageFragment();
+            m_ListStorageFragment.setListStorage(new ListStorageMock());
+            fm.beginTransaction().add(
+                    m_ListStorageFragment, TAG_LISTSTORAGE)
+                    .commit();
+        }
+
+
         View rootView = inflater.inflate(R.layout.fragment_list_of_shoppinglists, container, false);
         ListView m_ListView = (ListView) rootView.findViewById(android.R.id.list);
 
 
         // create adapter for list
-        ListAdapter m_ListRowAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), new ListStorageMock());
+        ListAdapter m_ListRowAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), m_ListStorageFragment.getListStorage());
         m_ListView.setAdapter(m_ListRowAdapter);
 
 

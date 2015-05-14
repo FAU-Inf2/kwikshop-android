@@ -28,8 +28,6 @@ public class ListStorageMock extends ListStorage {
 
                 newList.addItem(newItem);
             }
-
-            m_Lists.add(newList);
         }
     }
 
@@ -39,6 +37,8 @@ public class ListStorageMock extends ListStorage {
         int id = nextId++;
         ShoppingList newList = new ShoppingList(id);
         newList.setName("Shopping list " + id);
+
+        m_Lists.add(newList);
 
         return id;
     }

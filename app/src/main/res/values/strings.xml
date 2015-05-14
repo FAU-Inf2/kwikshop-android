@@ -27,5 +27,6 @@
     <string name="about_Version_Title">Version</string>
     <string name="defaultItem">Touch to create a new item</string>
     <string name="ShoppingListItem">item</string>
+    <string name="title_default_list">Shopping List 1</string>
 
 </resources>

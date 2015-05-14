@@ -32,5 +32,8 @@
     <string name="cancel">Cancel</string>
     <string name="delete_shopping_list">Delete Shopping List</string>
 
+    <string name="defaultItem">Touch to create a new item</string>
+    <string name="ShoppingListItem">item</string>
+    <string name="title_default_list">Shopping List 1</string>
 
 </resources>

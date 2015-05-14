@@ -6,8 +6,8 @@
     <item android:id="@+id/action_add_list"
           android:icon="@drawable/ic_action_add"
           android:title="@string/action_settings"
-          app:showAsAction="ifRoom" />
-    -->
+          app:showAsAction="ifRoom" />-->
+
 
 
 

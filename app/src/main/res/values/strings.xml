@@ -25,5 +25,7 @@
     <string name="about_Branch_Title">Branch</string>
     <string name="about_Commit_Title">Commit</string>
     <string name="about_Version_Title">Version</string>
+    <string name="defaultItem">Touch to create a new item</string>
+    <string name="ShoppingListItem">item</string>
 
 </resources>

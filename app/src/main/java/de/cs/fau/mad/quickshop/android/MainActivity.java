@@ -57,6 +57,11 @@ public class MainActivity extends ActionBarActivity
             case 1:
                 fragmentManager.beginTransaction().replace(R.id.container, AddListFragment.newInstance(position)).commit();
                 break;
+            /* TODO: REMOVE ME, ONLY FOR TESTING */
+            case 2:
+                fragmentManager.beginTransaction().replace(R.id.container, ItemDetailsFragment.newInstance(position)).commit();
+                break;
+            /* END */
             default:
                 fragmentManager.beginTransaction().replace(R.id.container, ListFragment.newInstance(position)).commit();
         }

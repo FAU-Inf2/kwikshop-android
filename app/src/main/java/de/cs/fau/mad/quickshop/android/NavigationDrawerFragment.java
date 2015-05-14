@@ -105,7 +105,8 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.id.text1,
                 new String[]{
                         "Shopping Lists",
-                        "Add new List"
+                        "Add new List",
+                        "TEST" /* REMOVE ME, ONLY FOR TESTING */
                 }));
 
 

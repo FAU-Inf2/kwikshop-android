@@ -26,4 +26,12 @@
     <string name="about_Commit_Title">Commit</string>
     <string name="about_Version_Title">Version</string>
 
+    <string name="itemdetails_brand">Brand</string>
+    <string name="itemdetails_comment">Comment</string>
+    <string name="itemdetails_amount">Amount</string>
+    <string name="action_item_details_save">Save</string>
+    <string name="itemdetails_saved">Product saved</string>
+
+    <string name="error_empty_productname">Product name must not be empty</string>
+
 </resources>

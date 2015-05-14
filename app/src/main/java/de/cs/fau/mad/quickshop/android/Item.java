@@ -31,7 +31,7 @@ public class Item {
   private Unit unit;
 
 
-  Item() {
+  public Item() {
    // Default no-arg constructor for generating Items, required for ORMLite
   }
 

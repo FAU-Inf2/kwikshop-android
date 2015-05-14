@@ -55,10 +55,10 @@ public class MainActivity extends ActionBarActivity
                 fragmentManager.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(position)).commit();
                 break;
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.container,ListFragment.newInstance(position)).commit();
+                fragmentManager.beginTransaction().replace(R.id.container,ListOfShoppingListsFragment.newInstance(position)).commit();
                 break;
             default:
-                fragmentManager.beginTransaction().replace(R.id.container,  AddListFragment.newInstance(position)).commit() ;
+                fragmentManager.beginTransaction().replace(R.id.container, AddListFragment.newInstance(position)).commit();
         }
 
     }
@@ -67,7 +67,7 @@ public class MainActivity extends ActionBarActivity
         // changes the title in the actionbar by clicking on a section
         switch (number) {
             case 0:
-                mTitle = getString(R.string.title_default_list);
+                mTitle = getString(R.string.title_list_overview);
                 break;
             case 1:
                 mTitle = getString(R.string.title_add_list);

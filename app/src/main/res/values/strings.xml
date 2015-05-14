@@ -25,6 +25,11 @@
     <string name="about_Branch_Title">Branch</string>
     <string name="about_Commit_Title">Commit</string>
     <string name="about_Version_Title">Version</string>
+    <string name="title_activity_shopping_list_detail">ShoppingListDetailActivity</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_shopping_list">Delete Shopping List</string>
+
     <string name="defaultItem">Touch to create a new item</string>
     <string name="ShoppingListItem">item</string>
     <string name="title_default_list">Shopping List 1</string>

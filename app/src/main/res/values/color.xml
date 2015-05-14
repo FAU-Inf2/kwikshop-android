@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fab_Normal">#FF0000</color>
+    <color name="fab_Pressed">#00FF00</color>
+    <color name="fab_Ripple">#0000FF</color>
+</resources>

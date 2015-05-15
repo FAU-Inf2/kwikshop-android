@@ -48,7 +48,7 @@ def getGitBranchName() {
         if(prVar.compareToIgnoreCase('false') == 0) {
             return System.getenv('TRAVIS_BRANCH') ?: 'Unknown'
         } else {
-            return 'Pull-Request ' + prVar + ' for Branch ' + System.getEnv('TRAVIS_BRANCH') ?: ''
+            return 'Pull-Request ' + prVar + ' for Branch ' + System.getenv('TRAVIS_BRANCH') ?: ''
         }
     } else {
         def repo = getGitRepository()

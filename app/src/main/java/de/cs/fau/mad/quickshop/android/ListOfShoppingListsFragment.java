@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -63,7 +62,7 @@ public  class ListOfShoppingListsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 
-        FragmentManager fm = getActivity().getSupportFragmentManager();
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
         m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
         if (m_ListStorageFragment == null) {
             m_ListStorageFragment = new ListStorageFragment();
@@ -91,6 +90,8 @@ public  class ListOfShoppingListsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO: Open shopping list
                 showToast("Shopping list selected");
+                fm.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0)).commit();
+
             }
         });
 

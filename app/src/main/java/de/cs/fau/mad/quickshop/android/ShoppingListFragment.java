@@ -2,18 +2,22 @@ package de.cs.fau.mad.quickshop.android;
 
 import android.app.Activity;
 //import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.support.v4.app.Fragment;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
+import de.cs.fau.mad.quickshop.android.model.mock.ListStorageMock;
+
 /**
  * Created by Nicolas on 14/05/2015.
  */
@@ -24,10 +28,12 @@ public class ShoppingListFragment extends Fragment {
 
     //endregion
 
-
+    private ListStorageFragment m_ListStorageFragment;
+    private ShoppingListAdapter m_ShoppingList;
     //region Construction
 
     public static ShoppingListFragment newInstance(int sectionNumber) {
+
 
         ShoppingListFragment fragment = new ShoppingListFragment();
         Bundle args = new Bundle();
@@ -44,10 +50,22 @@ public class ShoppingListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
 
+        m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
+        if (m_ListStorageFragment == null) {
+            m_ListStorageFragment = new ListStorageFragment();
+            m_ListStorageFragment.setListStorage(new ListStorageMock());
+            fm.beginTransaction().add(
+                    m_ListStorageFragment, ListStorageFragment.TAG_LISTSTORAGE)
+                    .commit();
+        }
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
-        ListView m_ListView = (ListView) rootView.findViewById(android.R.id.list);
-
+        ListView m_ShoppingListView = (ListView) rootView.findViewById(R.id.list_shoppingList);
+        if (m_ShoppingList == null) {
+            m_ShoppingList = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList, generateData(m_ListStorageFragment.getListStorage().getAllLists().firstElement()));
+            m_ShoppingListView.setAdapter(m_ShoppingList);
+        }
         return rootView;
     }
 
@@ -63,11 +81,13 @@ public class ShoppingListFragment extends Fragment {
 
     //region Private Methods
 
-    private void showToast(String text) {
-        int duration = Toast.LENGTH_SHORT;
 
-        Toast toast = Toast.makeText(getActivity(), text, duration);
-        toast.show();
+    private ArrayList<String> generateData(ShoppingList shoppingList) {
+        ArrayList<String> items = new ArrayList<>();
+        for (Item item : shoppingList.getItems()) {
+            items.add(item.getName());
+        }
+        return items;
     }
 
     //endregion

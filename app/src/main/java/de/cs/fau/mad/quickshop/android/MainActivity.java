@@ -37,7 +37,7 @@ public class MainActivity extends ActionBarActivity
         mTitle = getTitle();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, ListOfShoppingListsFragment.newInstance(0)).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0)).commit();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));

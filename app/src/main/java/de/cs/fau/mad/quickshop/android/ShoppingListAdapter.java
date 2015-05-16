@@ -38,7 +38,7 @@ public class ShoppingListAdapter extends ArrayAdapter<String> {
             if(view == null ){
                 view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_shoppinglist_row, parent, false);
             }
-            //display the list's name and number of items in the list
+            //display items in the list
             TextView shoppingListNameView = (TextView) view.findViewById(R.id.tvItem);
 
             shoppingListNameView.setText(getItem(position));

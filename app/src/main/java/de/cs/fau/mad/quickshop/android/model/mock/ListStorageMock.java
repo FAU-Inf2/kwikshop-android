@@ -31,7 +31,7 @@ public class ListStorageMock extends ListStorage {
                     Item newItem = new Item();
 
                     newList.addItem(newItem);
-                    newItem.setName("Item numero "+ j);
+                    newItem.setName("Item number "+ j);
                 }
             }
         }

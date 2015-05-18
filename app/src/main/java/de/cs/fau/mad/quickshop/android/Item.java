@@ -21,6 +21,9 @@ public class Item {
   @DatabaseField
   private Boolean highlight;
 
+  @DatabaseField
+  private String brand;
+
   @DatabaseField(canBeNull = true)
   private String comment;
 
@@ -69,6 +72,14 @@ public class Item {
 
   public void setHighlight(Boolean highlight) {
     this.highlight = highlight;
+  }
+
+  public String getBrand() {
+    return brand;
+  }
+
+  public void setBrand(String brand) {
+    this.brand = brand;
   }
 
   public String getComment() {

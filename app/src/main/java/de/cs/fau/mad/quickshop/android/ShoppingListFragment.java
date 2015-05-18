@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.support.v4.app.Fragment;
@@ -66,6 +67,17 @@ public class ShoppingListFragment extends Fragment {
             m_ShoppingList = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList, generateData(m_ListStorageFragment.getListStorage().getAllLists().firstElement()));
             m_ShoppingListView.setAdapter(m_ShoppingList);
         }
+
+        // OnClickListener to open the item details view
+        m_ShoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO: Open item details view
+                Toast.makeText(getActivity(), "Test" + id, Toast.LENGTH_LONG).show();
+                fm.beginTransaction().replace(R.id.container, ItemDetailsFragment.newInstance(2)).commit();
+            }
+        });
+
         return rootView;
     }
 

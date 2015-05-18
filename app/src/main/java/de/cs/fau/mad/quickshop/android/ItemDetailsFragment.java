@@ -3,6 +3,7 @@ package de.cs.fau.mad.quickshop.android;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 
 public class ItemDetailsFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -44,6 +46,7 @@ public class ItemDetailsFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -73,11 +76,6 @@ public class ItemDetailsFragment extends Fragment {
         }
     }
 
-    private void saveItem() {
-        // TODO: Save item in storage
-        Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,29 +84,11 @@ public class ItemDetailsFragment extends Fragment {
         }
     }
 
-    private void SetupDetails() {
-        productname_text = (EditText) mFragmentView.findViewById(R.id.productname_text);
-        amount_text = (EditText) mFragmentView.findViewById(R.id.amount_text);
-        unit_spinner = (Spinner) mFragmentView.findViewById(R.id.unit_spinner);
-        brand_text = (EditText) mFragmentView.findViewById(R.id.brand_text);
-        comment_text = (EditText) mFragmentView.findViewById(R.id.comment_text);
-
-        // TODO: Fill UI elements with data from Item
-        productname_text.setText("Test123");
-
-        // TODO: Fill spinner with real data from Units + select correct unit
-        // http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
-        String colors[] = {"Red","Blue","White","Yellow","Black", "Green","Purple","Orange","Grey"};
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, colors);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        unit_spinner.setAdapter(spinnerArrayAdapter);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mFragmentView = inflater.inflate(R.layout.fragment_item_details, container, false);
-        SetupDetails();
+        SetupUI();
         setHasOptionsMenu(true);
         return mFragmentView;
     }
@@ -125,5 +105,34 @@ public class ItemDetailsFragment extends Fragment {
         super.onDetach();
     }
 
+    private void saveItem() {
+        // TODO: Save item in storage
+        Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
+    }
 
+    private void SetupUI() {
+        productname_text = (EditText) mFragmentView.findViewById(R.id.productname_text);
+        amount_text = (EditText) mFragmentView.findViewById(R.id.amount_text);
+        unit_spinner = (Spinner) mFragmentView.findViewById(R.id.unit_spinner);
+        brand_text = (EditText) mFragmentView.findViewById(R.id.brand_text);
+        comment_text = (EditText) mFragmentView.findViewById(R.id.comment_text);
+
+
+        //final FragmentManager fm = getActivity().getSupportFragmentManager();
+        //ListStorageFragment m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
+        //mItem = m_ListStorageFragment.getListStorage().getAllLists().get(0).getItems().
+
+        // Fill UI elements with data from Item
+        productname_text.setText(mItem.getName());
+        amount_text.setText(mItem.getAmount());
+        brand_text.setText(mItem.getBrand());
+        comment_text.setText(mItem.getComment());
+
+        // TODO: Fill spinner with real data from Units + select correct unit
+        // http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
+        String colors[] = {"Red","Blue","White","Yellow","Black", "Green","Purple","Orange","Grey"};
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, colors);
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        unit_spinner.setAdapter(spinnerArrayAdapter);
+    }
 }

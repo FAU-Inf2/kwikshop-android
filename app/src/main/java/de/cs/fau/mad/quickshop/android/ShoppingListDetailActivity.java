@@ -30,8 +30,11 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.messages.ChangeType;
+import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.model.mock.ListStorageMock;
+import de.greenrobot.event.EventBus;
 
 public class ShoppingListDetailActivity extends ActionBarActivity {
 
@@ -175,8 +178,14 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                m_ListStorageFragment.getListStorage().deleteList(m_ShoppingList.getId());
+
+                int listId = m_ShoppingList.getId();
+
+                m_ListStorageFragment.getListStorage().deleteList(listId);
                 removeCalendarEvent();
+
+                EventBus.getDefault().post(new ShoppingListChangedEvent(listId, ChangeType.Deleted));
+
                 finish();
             }
         });
@@ -204,6 +213,11 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
 
 
     private void onCancel() {
+
+        if(m_IsNewList) {
+            m_ListStorageFragment.getListStorage().deleteList(m_ShoppingList.getId());
+        }
+
         finish();
     }
 
@@ -211,6 +225,13 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
         m_ShoppingList.setName(m_TextView_ShoppingListName.getText().toString());
         m_ListStorageFragment.getListStorage().saveList(m_ShoppingList);
         writeEventToCalendar();
+
+        ChangeType changeType = m_IsNewList
+                ? ChangeType.Added
+                : ChangeType.PropertiesModified;
+
+        EventBus.getDefault().post(new ShoppingListChangedEvent(m_ShoppingList.getId(), changeType));
+
         finish();
     }
 
@@ -338,7 +359,5 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
 
 
     //endregion
-
-
 
 }

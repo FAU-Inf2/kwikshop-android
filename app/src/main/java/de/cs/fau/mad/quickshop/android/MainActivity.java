@@ -37,7 +37,7 @@ public class MainActivity extends ActionBarActivity
         mTitle = getTitle();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0)).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0, 0)).commit(); // TODO: (0, 0) -> (0, x), where x is the ID of the last opened list
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
@@ -52,16 +52,11 @@ public class MainActivity extends ActionBarActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch (position){
             case 0:
-                fragmentManager.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(position)).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(position, 0)).commit(); // TODO: 0 is the ID of the last opened list
                 break;
             case 1:
                 fragmentManager.beginTransaction().replace(R.id.container,ListOfShoppingListsFragment.newInstance(position)).commit();
                 break;
-            /* TODO: REMOVE ME, ONLY FOR TESTING */
-            case 2:
-                fragmentManager.beginTransaction().replace(R.id.container, ItemDetailsFragment.newInstance(position)).commit();
-                break;
-            /* END */
             default:
                 fragmentManager.beginTransaction().replace(R.id.container, AddListFragment.newInstance(position)).commit();
         }

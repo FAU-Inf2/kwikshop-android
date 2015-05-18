@@ -7,7 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class Item {
 
   @DatabaseField(id = true)
-  private Integer id;
+  private int id;
 
   @DatabaseField
   private Boolean bought;
@@ -16,7 +16,7 @@ public class Item {
   private String name;
 
   @DatabaseField
-  private Integer amount;
+  private int amount = 1;
 
   @DatabaseField
   private Boolean highlight;
@@ -38,8 +38,13 @@ public class Item {
    // Default no-arg constructor for generating Items, required for ORMLite
   }
 
-  public Integer getId() {
+  public int getId() {
     return id;
+  }
+
+  // TODO: REMOVE THIS, only for testing. IDs should be read only
+  public void setID(int id) {
+    this.id = id;
   }
 
   public Boolean isBought() {
@@ -58,11 +63,11 @@ public class Item {
     this.name = name;
   }
 
-  public Integer getAmount() {
+  public int getAmount() {
     return amount;
   }
 
-  public void setAmount(Integer amount) {
+  public void setAmount(int amount) {
     this.amount = amount;
   }
 
@@ -75,7 +80,7 @@ public class Item {
   }
 
   public String getBrand() {
-    return brand;
+    return (brand == null ? "" : brand);
   }
 
   public void setBrand(String brand) {
@@ -83,7 +88,7 @@ public class Item {
   }
 
   public String getComment() {
-    return comment;
+    return (comment == null ? "" : comment);
   }
 
   public void setComment(String comment) {

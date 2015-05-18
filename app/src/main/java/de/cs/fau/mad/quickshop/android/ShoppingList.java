@@ -92,9 +92,16 @@ public class ShoppingList {
     }
   }
 
-
   public Collection<Item> getItems() {
     return Collections.unmodifiableCollection(this.items);
   }
 
+  public Item getItem(int id) {
+    for(Item item : items) {
+      if(item.getId() == id) {
+        return item;
+      }
+    }
+    return null;
+  }
 }

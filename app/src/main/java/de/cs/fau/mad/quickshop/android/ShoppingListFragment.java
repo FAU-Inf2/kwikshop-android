@@ -26,28 +26,38 @@ public class ShoppingListFragment extends Fragment {
     //region Constants
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final String ARG_LISTID = "list_id";
 
     //endregion
 
     private ListStorageFragment m_ListStorageFragment;
     private ShoppingListAdapter m_ShoppingList;
+
+    private int listID;
+
     //region Construction
 
-    public static ShoppingListFragment newInstance(int sectionNumber) {
-
-
+    public static ShoppingListFragment newInstance(int sectionNumber, int listID) {
         ShoppingListFragment fragment = new ShoppingListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putInt(ARG_LISTID, listID);
         fragment.setArguments(args);
         return fragment;
-
     }
 
     //endregion
 
 
     //region Overrides
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            listID = getArguments().getInt(ARG_LISTID);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,7 +74,7 @@ public class ShoppingListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ListView m_ShoppingListView = (ListView) rootView.findViewById(R.id.list_shoppingList);
         if (m_ShoppingList == null) {
-            m_ShoppingList = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList, generateData(m_ListStorageFragment.getListStorage().getAllLists().firstElement()));
+            m_ShoppingList = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList, generateData(m_ListStorageFragment.getListStorage().loadList(listID)));
             m_ShoppingListView.setAdapter(m_ShoppingList);
         }
 
@@ -72,9 +82,9 @@ public class ShoppingListFragment extends Fragment {
         m_ShoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO: Open item details view
-                Toast.makeText(getActivity(), "Test" + id, Toast.LENGTH_LONG).show();
-                fm.beginTransaction().replace(R.id.container, ItemDetailsFragment.newInstance(2)).commit();
+                // Open item details view
+                Toast.makeText(getActivity(), "ID: " + id, Toast.LENGTH_LONG).show();
+                fm.beginTransaction().replace(R.id.container, ItemDetailsFragment.newInstance(listID, (int) id)).commit();
             }
         });
 

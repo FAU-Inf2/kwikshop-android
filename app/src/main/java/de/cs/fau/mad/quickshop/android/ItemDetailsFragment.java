@@ -15,15 +15,23 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.Collection;
+
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 
 public class ItemDetailsFragment extends Fragment {
-    private static final String ARG_SECTION_NUMBER = "section_number";
-    private int section_number;
+    private static final String ARG_LISTID = "list_id";
+    private static final String ARG_ITEMID = "item_id";
 
     private View mFragmentView;
 
+    private ListStorageFragment m_ListStorageFragment;
+
+    private int listID;
+    private int itemID;
+
+    private ShoppingList mShoppingList;
     private Item mItem;
 
     /* UI elements */
@@ -33,18 +41,11 @@ public class ItemDetailsFragment extends Fragment {
     private EditText brand_text;
     private EditText comment_text;
 
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param sectionNumber Parameter 1.
-     * @return A new instance of fragment ItemDetailsFragment.
-     */
-    public static ItemDetailsFragment newInstance(int sectionNumber) {
+    public static ItemDetailsFragment newInstance(int listID, int itemID) {
         ItemDetailsFragment fragment = new ItemDetailsFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putInt(ARG_LISTID, listID);
+        args.putInt(ARG_ITEMID, itemID);
         fragment.setArguments(args);
 
         return fragment;
@@ -66,7 +67,6 @@ public class ItemDetailsFragment extends Fragment {
                 if(productname_text.getText().length() > 0) {
                     saveItem();
                     // TODO: return to the list
-                    //getFragmentManager().popBackStackImmediate(); // Close this fragment
                 } else {
                     Toast.makeText(getActivity(), getResources().getString(R.string.error_empty_productname), Toast.LENGTH_LONG).show();
                 }
@@ -80,7 +80,8 @@ public class ItemDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            section_number = getArguments().getInt(ARG_SECTION_NUMBER);
+            listID = getArguments().getInt(ARG_LISTID);
+            itemID = getArguments().getInt(ARG_ITEMID);
         }
     }
 
@@ -93,12 +94,12 @@ public class ItemDetailsFragment extends Fragment {
         return mFragmentView;
     }
 
-    @Override
+    /*@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
-    }
+                getArguments().getInt(ARG_LISTID));
+    }*/
 
     @Override
     public void onDetach() {
@@ -106,8 +107,20 @@ public class ItemDetailsFragment extends Fragment {
     }
 
     private void saveItem() {
+        mItem.setName(productname_text.getText().toString());
+        mItem.setAmount(Integer.parseInt(amount_text.getText().toString()));
+        mItem.setBrand(brand_text.getText().toString());
+        //mItem.setUnit();
+        mItem.setBrand(brand_text.getText().toString());
+
         // TODO: Save item in storage
+        mShoppingList.removeItem(mItem.getId());
+        mShoppingList.addItem(mItem);
+        m_ListStorageFragment.getListStorage().saveList(mShoppingList);
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
+
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0, listID)).commit();
     }
 
     private void SetupUI() {
@@ -117,14 +130,15 @@ public class ItemDetailsFragment extends Fragment {
         brand_text = (EditText) mFragmentView.findViewById(R.id.brand_text);
         comment_text = (EditText) mFragmentView.findViewById(R.id.comment_text);
 
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
+        m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
 
-        //final FragmentManager fm = getActivity().getSupportFragmentManager();
-        //ListStorageFragment m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
-        //mItem = m_ListStorageFragment.getListStorage().getAllLists().get(0).getItems().
+        mShoppingList = m_ListStorageFragment.getListStorage().loadList(listID);
+        mItem = m_ListStorageFragment.getListStorage().loadList(listID).getItem(itemID);
 
         // Fill UI elements with data from Item
         productname_text.setText(mItem.getName());
-        amount_text.setText(mItem.getAmount());
+        amount_text.setText(new Integer(mItem.getAmount()).toString());
         brand_text.setText(mItem.getBrand());
         comment_text.setText(mItem.getComment());
 

@@ -19,8 +19,14 @@ public class ShoppingList {
   private String name;
 
   /**
+   * unique id for calendar event
+   */
+  private long calendarEventId = -1;
+
+  /**
    * type: Account.id
    */
+
   private Vector<Integer> sharedWith;
 
   private LinkedList<Item> items = new LinkedList<>(); // TODO: different data type?
@@ -42,13 +48,13 @@ public class ShoppingList {
     return id;
   }
 
-  public String getName() {
-    return name;
-  }
+  public String getName() { return name; }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+  public void setName(String name) { this.name = name; }
+
+  public long getCalendarEventId() {return calendarEventId; }
+
+  public void setCalendarEventId(long calendarEventId){this.calendarEventId = calendarEventId; }
 
   public Vector getSharedWith() {
     return sharedWith;

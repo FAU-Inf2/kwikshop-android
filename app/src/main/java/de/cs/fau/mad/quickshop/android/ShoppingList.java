@@ -1,5 +1,7 @@
 package de.cs.fau.mad.quickshop.android;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Vector;
@@ -21,7 +23,7 @@ public class ShoppingList {
    */
   private Vector<Integer> sharedWith;
 
-  private LinkedList<Item> items; // TODO: different data type?
+  private LinkedList<Item> items = new LinkedList<>(); // TODO: different data type?
 
   private ListStorage storage;
   private Account owner;
@@ -31,6 +33,10 @@ public class ShoppingList {
   }
   private visibility vis;
 
+
+  public ShoppingList(int id) {
+    this.id = id;
+  }
 
   public int getId() {
     return id;
@@ -78,6 +84,11 @@ public class ShoppingList {
         return;
       }
     }
+  }
+
+
+  public Collection<Item> getItems() {
+    return Collections.unmodifiableCollection(this.items);
   }
 
 }

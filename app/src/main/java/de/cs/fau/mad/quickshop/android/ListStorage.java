@@ -12,7 +12,7 @@ public abstract class ListStorage {
   /** 
    *  returns a Vector of list ids
    */
-  public abstract Vector getAllLists();
+  public abstract Vector<ShoppingList> getAllLists();
 
   /** 
    *  returns the list identified by id

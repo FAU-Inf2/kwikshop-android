@@ -32,10 +32,16 @@ public class ShoppingListFragment extends Fragment {
 
     //endregion
 
+
+    //region Fields
+
     private ListStorageFragment m_ListStorageFragment;
     private ShoppingListAdapter m_ShoppingList;
 
     private int listID;
+
+    //endregion
+
 
     //region Construction
 
@@ -87,7 +93,8 @@ public class ShoppingListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Open item details view
                 Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
-                fm.beginTransaction().replace(R.id.container, ItemDetailsFragment.newInstance(listID, (int) id)).commit();
+                fm.beginTransaction().replace(R.id.container, ItemDetailsFragment.newInstance(listID, (int) id))
+                        .addToBackStack(null).commit();
             }
         });
 
@@ -109,6 +116,7 @@ public class ShoppingListFragment extends Fragment {
     }
 
     //endregion
+
 
     //region Event Handlers
 
@@ -139,4 +147,5 @@ public class ShoppingListFragment extends Fragment {
     }
 
     //endregion
+
 }

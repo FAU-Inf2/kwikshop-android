@@ -94,7 +94,8 @@ public  class ListOfShoppingListsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO: Open shopping list
                 showToast("Shopping list selected, ID: " + id);
-                fm.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0, (int)id)).commit();
+                fm.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0, (int) id))
+                        .addToBackStack(null).commit();
             }
         });
 

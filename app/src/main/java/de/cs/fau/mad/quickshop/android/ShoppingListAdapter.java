@@ -22,10 +22,8 @@ public class ShoppingListAdapter extends ArrayAdapter<String> {
 
     public ShoppingListAdapter(Context context, int textViewResourceId,
                               List<String> objects, ShoppingList shoppingList) {
+
         super(context, textViewResourceId, objects);
-        /*for (int i = 0; i < objects.size(); ++i) {
-            mIdMap.put(objects.get(i), i);
-        }*/
         this.shoppingList = shoppingList;
     }
 
@@ -38,6 +36,7 @@ public class ShoppingListAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, View view, ViewGroup parent){
+
         if(view == null ){
             view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_shoppinglist_row, parent, false);
         }
@@ -48,8 +47,10 @@ public class ShoppingListAdapter extends ArrayAdapter<String> {
 
         return view;
     }
+
     @Override
     public boolean hasStableIds() {
         return true;
     }
+
 }

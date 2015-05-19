@@ -16,13 +16,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.messages.ItemChangedEvent;
+import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.model.mock.ListStorageMock;
+import de.greenrobot.event.EventBus;
 
-/**
- * Created by Nicolas on 14/05/2015.
- */
+
 public class ShoppingListFragment extends Fragment {
+
     //region Constants
 
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -88,6 +90,8 @@ public class ShoppingListFragment extends Fragment {
             }
         });
 
+        EventBus.getDefault().register(this);
+
         return rootView;
     }
 
@@ -97,12 +101,33 @@ public class ShoppingListFragment extends Fragment {
         ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
+    //endregion
+
+    //region Event Handlers
+
+    public void onEvent(ShoppingListChangedEvent event) {
+
+        if (event.getListId() == this.listID && this.m_ShoppingList != null) {
+            this.m_ShoppingList.notifyDataSetChanged();
+        }
+    }
+
+    public void onEvent(ItemChangedEvent event) {
+        if (event.getShoppingListId() == this.listID && this.m_ShoppingList != null) {
+            this.m_ShoppingList.notifyDataSetChanged();
+        }
+    }
 
     //endregion
 
 
     //region Private Methods
-
 
     private ArrayList<String> generateData(ShoppingList shoppingList) {
         ArrayList<String> items = new ArrayList<>();

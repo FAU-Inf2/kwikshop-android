@@ -1,6 +1,6 @@
 package de.cs.fau.mad.quickshop.android.messages;
 
-public enum ChangeType {
+public enum ShoppingListChangeType {
 
     PropertiesModified,
     ItemsAdded,

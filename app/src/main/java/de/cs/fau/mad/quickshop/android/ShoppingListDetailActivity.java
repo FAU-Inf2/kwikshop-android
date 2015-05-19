@@ -6,7 +6,6 @@ import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.CalendarContract;
@@ -14,13 +13,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -30,7 +24,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import cs.fau.mad.quickshop_android.R;
-import de.cs.fau.mad.quickshop.android.messages.ChangeType;
+import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangeType;
 import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.model.mock.ListStorageMock;
@@ -184,7 +178,7 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
                 m_ListStorageFragment.getListStorage().deleteList(listId);
                 removeCalendarEvent();
 
-                EventBus.getDefault().post(new ShoppingListChangedEvent(listId, ChangeType.Deleted));
+                EventBus.getDefault().post(new ShoppingListChangedEvent(listId, ShoppingListChangeType.Deleted));
 
                 finish();
             }
@@ -226,9 +220,9 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
         m_ListStorageFragment.getListStorage().saveList(m_ShoppingList);
         writeEventToCalendar();
 
-        ChangeType changeType = m_IsNewList
-                ? ChangeType.Added
-                : ChangeType.PropertiesModified;
+        ShoppingListChangeType changeType = m_IsNewList
+                ? ShoppingListChangeType.Added
+                : ShoppingListChangeType.PropertiesModified;
 
         EventBus.getDefault().post(new ShoppingListChangedEvent(m_ShoppingList.getId(), changeType));
 

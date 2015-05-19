@@ -2,24 +2,37 @@ package de.cs.fau.mad.quickshop.android.messages;
 
 public class ShoppingListChangedEvent {
 
-    final int m_ListId;
-    final ChangeType m_ChangeType;
+
+    //region Fields
+
+    private final int m_ListId;
+    private final ShoppingListChangeType m_ChangeType;
+
+    //endregion
 
 
-    public ShoppingListChangedEvent(int listId, ChangeType changeType) {
+    //region Constructor
+
+    public ShoppingListChangedEvent(int listId, ShoppingListChangeType changeType) {
 
         this.m_ListId = listId;
         this.m_ChangeType = changeType;
 
     }
 
+    //endregion
+
+
+    //region Getters
+
+    public ShoppingListChangeType getChangeType() {
+        return this.m_ChangeType;
+    }
 
     public int getListId() {
         return m_ListId;
     }
 
-    public ChangeType getChangeType() {
-        return this.m_ChangeType;
-    }
+    //endregion
 
 }

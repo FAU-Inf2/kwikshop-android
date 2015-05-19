@@ -143,8 +143,6 @@ public class ListOfShoppingListsListRowAdapter implements ListAdapter {
     //endregion
 
 
-
-
     //region Public Methods
 
     public void notifyDataSetChanged() {
@@ -155,6 +153,7 @@ public class ListOfShoppingListsListRowAdapter implements ListAdapter {
     }
 
     //endregion
+
 
     //region Private Methods
 
@@ -167,7 +166,6 @@ public class ListOfShoppingListsListRowAdapter implements ListAdapter {
     }
 
     //endregion
-
 
 
 }

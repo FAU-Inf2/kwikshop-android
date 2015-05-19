@@ -18,7 +18,10 @@ import android.widget.Toast;
 import java.util.Collection;
 
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.messages.ItemChangeType;
+import de.cs.fau.mad.quickshop.android.messages.ItemChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
+import de.greenrobot.event.EventBus;
 
 public class ItemDetailsFragment extends Fragment {
     private static final String ARG_LISTID = "list_id";
@@ -91,6 +94,9 @@ public class ItemDetailsFragment extends Fragment {
         mFragmentView = inflater.inflate(R.layout.fragment_item_details, container, false);
         SetupUI();
         setHasOptionsMenu(true);
+
+        EventBus.getDefault().register(this);
+
         return mFragmentView;
     }
 
@@ -121,6 +127,9 @@ public class ItemDetailsFragment extends Fragment {
 
         final FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0, listID)).commit();
+
+
+        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, mItem.getId(), mShoppingList.getId()));
     }
 
     private void SetupUI() {
@@ -149,4 +158,23 @@ public class ItemDetailsFragment extends Fragment {
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         unit_spinner.setAdapter(spinnerArrayAdapter);
     }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
+
+    //region Event Handlers
+
+    public void onEvent(ItemChangedEvent event) {
+        if (mShoppingList.getId() == event.getShoppingListId() && event.getItemId() == mItem.getId()) {
+            //TODO update UI accordingly
+        }
+    }
+
+    //endregion
+
 }

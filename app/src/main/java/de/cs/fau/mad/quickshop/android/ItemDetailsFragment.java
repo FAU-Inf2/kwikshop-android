@@ -68,8 +68,10 @@ public class ItemDetailsFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_item_details_save:
                 if(productname_text.getText().length() > 0) {
+
                     saveItem();
-                    // TODO: return to the list
+                    getActivity().getSupportFragmentManager().popBackStack();
+
                 } else {
                     Toast.makeText(getActivity(), getResources().getString(R.string.error_empty_productname), Toast.LENGTH_LONG).show();
                 }
@@ -122,9 +124,6 @@ public class ItemDetailsFragment extends Fragment {
         mShoppingList.updateItem(mItem);
         m_ListStorageFragment.getListStorage().saveList(mShoppingList);
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
-
-        final FragmentManager fm = getActivity().getSupportFragmentManager();
-        fm.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0, listID)).commit();
 
         EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, mItem.getId(), mShoppingList.getId()));
     }

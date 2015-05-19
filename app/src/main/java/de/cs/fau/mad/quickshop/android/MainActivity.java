@@ -51,10 +51,16 @@ public class MainActivity extends ActionBarActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch (position){
             case 0:
-                fragmentManager.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(position, 0)).commit(); // TODO: 0 is the ID of the last opened list
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, ShoppingListFragment.newInstance(position, 0))
+                        .addToBackStack(null)
+                        .commit(); // TODO: 0 is the ID of the last opened list
                 break;
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.container,ListOfShoppingListsFragment.newInstance(position)).commit();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, ListOfShoppingListsFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
                 break;
 
         }

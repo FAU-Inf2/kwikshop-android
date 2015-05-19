@@ -92,6 +92,23 @@ public class ShoppingList {
     }
   }
 
+  public void removeItem(Item item) {
+    ListIterator<Item> listIterator = items.listIterator();
+
+    while (listIterator.hasNext()) {
+      Item currentItem = listIterator.next();
+      if(currentItem.getId() == item.getId()) {
+        items.remove(currentItem);
+        return;
+      }
+    }
+  }
+
+  public void updateItem(Item item) {
+    removeItem(item);
+    addItem(item);
+  }
+
   public Collection<Item> getItems() {
     return Collections.unmodifiableCollection(this.items);
   }

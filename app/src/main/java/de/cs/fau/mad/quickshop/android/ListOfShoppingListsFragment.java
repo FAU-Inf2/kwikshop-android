@@ -95,7 +95,6 @@ public  class ListOfShoppingListsFragment extends Fragment {
                 //TODO: Open shopping list
                 showToast("Shopping list selected, ID: " + id);
                 fm.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0, (int)id)).commit();
-
             }
         });
 

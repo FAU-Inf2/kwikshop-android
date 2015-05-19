@@ -76,7 +76,8 @@ public class ShoppingListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ListView m_ShoppingListView = (ListView) rootView.findViewById(R.id.list_shoppingList);
         if (m_ShoppingList == null) {
-            m_ShoppingList = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList, generateData(m_ListStorageFragment.getListStorage().loadList(listID)));
+            m_ShoppingList = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList, generateData(m_ListStorageFragment.getListStorage().loadList(listID)),
+                    m_ListStorageFragment.getListStorage().loadList(listID));
             m_ShoppingListView.setAdapter(m_ShoppingList);
         }
 
@@ -85,7 +86,7 @@ public class ShoppingListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Open item details view
-                Toast.makeText(getActivity(), "ID: " + id, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
                 fm.beginTransaction().replace(R.id.container, ItemDetailsFragment.newInstance(listID, (int) id)).commit();
             }
         });

@@ -32,8 +32,7 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -57,8 +56,7 @@ public class MainActivity extends ActionBarActivity
             case 1:
                 fragmentManager.beginTransaction().replace(R.id.container,ListOfShoppingListsFragment.newInstance(position)).commit();
                 break;
-            default:
-                fragmentManager.beginTransaction().replace(R.id.container, AddListFragment.newInstance(position)).commit();
+
         }
 
     }

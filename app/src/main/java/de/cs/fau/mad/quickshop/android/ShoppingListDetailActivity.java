@@ -105,8 +105,10 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
 
         //if a new list is created the create Button is displayed, else edit
         Button createCalendarEvent = (Button) findViewById(R.id.create_calendar_event);
-        Button editCalendarEvent = (Button) findViewById(R.id.edit_calendar_event);
 
+        if(m_ShoppingList.getCalendarEventDate().getCalendarEventId() != -1){
+            createCalendarEvent.setText(R.string.edit_calendar_event);
+        }
 
         Button deleteButton = (Button) findViewById(R.id.button_delete);
         if (m_IsNewList) {
@@ -115,13 +117,6 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
             deleteButton.setVisibility(View.VISIBLE);
         }
 
-        if(m_ShoppingList.getCalendarEventDate().getCalendarEventId() == -1){
-            editCalendarEvent.setVisibility(View.GONE);
-            createCalendarEvent.setVisibility(View.VISIBLE);
-        }else{
-            createCalendarEvent.setVisibility(View.GONE);
-            editCalendarEvent.setVisibility(View.VISIBLE);
-        }
 
         attachEventHandlers();
 
@@ -184,26 +179,16 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
             }
         });
 
-      //  m_EventDate.initialize(m_ShoppingList.getCalendarEventDate());
 
         Button createCalendarEvent = (Button) findViewById(R.id.create_calendar_event);
-        Button editCalendarEvent = (Button) findViewById(R.id.edit_calendar_event);
 
-        if(m_ShoppingList.getCalendarEventDate().getCalendarEventId() == -1) {
             createCalendarEvent.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     m_EventDate.initialize(m_ShoppingList.getCalendarEventDate());
                     showDialog(DATE_DIALOG_ID);
                 }
             });
-        }else{
-            editCalendarEvent.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    m_EventDate.initialize(m_ShoppingList.getCalendarEventDate());
-                    showDialog(DATE_DIALOG_ID);
-                }
-            });
-        }
+
 
     }
 

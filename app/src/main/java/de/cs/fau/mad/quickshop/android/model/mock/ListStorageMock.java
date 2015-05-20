@@ -10,7 +10,7 @@ import de.cs.fau.mad.quickshop.android.ShoppingList;
 
 public class ListStorageMock extends ListStorage {
 
-    private static int nextId = 1;
+    private static int nextId = 0;
     private static ArrayList<ShoppingList> m_Lists = new ArrayList<>();
 
 
@@ -29,9 +29,10 @@ public class ListStorageMock extends ListStorage {
 
                 for (int j = 0; j < itemCount; j++) {
                     Item newItem = new Item();
+                    newItem.setID(j);
+                    newItem.setName("Item number "+ j);
 
                     newList.addItem(newItem);
-                    newItem.setName("Item number "+ j);
                 }
             }
         }

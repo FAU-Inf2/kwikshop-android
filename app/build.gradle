@@ -31,11 +31,22 @@ android {
 }
 
 dependencies {
+
     compile fileTree(include: ['*.jar'], dir: 'libs')
+
+    //Google support libaries for older android version
     compile 'com.android.support:appcompat-v7:21.0.+'
     compile 'com.android.support:appcompat-v7:+'
+
+    //orm-lite (Object mapper)
     compile 'com.j256.ormlite:ormlite-android:4.48'
+
+    //Floating action button common in material design applications
+
     compile 'com.melnykov:floatingactionbutton:1.3.0'
+
+    //event bus for publish-subscribe messaging
+    compile 'de.greenrobot:eventbus:2.4.0'
 }
 
 allprojects {

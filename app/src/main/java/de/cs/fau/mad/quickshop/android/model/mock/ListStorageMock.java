@@ -11,6 +11,7 @@ import de.cs.fau.mad.quickshop.android.ShoppingList;
 public class ListStorageMock extends ListStorage {
 
     private static int nextId = 0;
+    private static boolean defaultListCreated = false;
     private static ArrayList<ShoppingList> m_Lists = new ArrayList<>();
 
 
@@ -18,7 +19,7 @@ public class ListStorageMock extends ListStorage {
 
     public ListStorageMock() {
 
-        if (m_Lists.size() == 0) {
+        if (!defaultListCreated) {
 
             int newListId = createList();
             ShoppingList newList = loadList(newListId);
@@ -32,6 +33,8 @@ public class ListStorageMock extends ListStorage {
 
                 newList.addItem(newItem);
             }
+
+            defaultListCreated = true;
 
         }
 

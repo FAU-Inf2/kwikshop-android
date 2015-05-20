@@ -71,7 +71,7 @@ public class ShoppingListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 
@@ -94,16 +94,18 @@ public class ShoppingListFragment extends Fragment {
         shoppingListView.setAdapter(m_ShoppingListAdapter);
 
 
+    /*
         // OnClickListener to open the item details view
         shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Open item details view
                 Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
-                fm.beginTransaction().replace(R.id.container, ItemDetailsFragment.newInstance(listID, (int) id))
+                fm.beginTransaction().replace(container, ItemDetailsFragment.newInstance(listID, (int) id))
                         .addToBackStack(null).commit();
             }
         });
+    */
 
         //Setting spinner adapter to sort by button
         Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
@@ -120,11 +122,6 @@ public class ShoppingListFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
-    }
 
     @Override
     public void onDestroyView() {

@@ -16,7 +16,6 @@ import android.widget.Toast;
 import android.support.v4.app.Fragment;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.messages.ItemChangedEvent;
@@ -35,14 +34,21 @@ public class ShoppingListFragment extends Fragment {
 
     //endregion
 
+
+    //region Fields
+
     private ListStorageFragment m_ListStorageFragment;
-    private ShoppingListAdapter m_ShoppingList;
+    private ShoppingListAdapter m_ShoppingListAdapter;
 
     private int listID;
+
+    //endregion
+
 
     //region Construction
 
     public static ShoppingListFragment newInstance(int sectionNumber, int listID) {
+
         ShoppingListFragment fragment = new ShoppingListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -66,6 +72,7 @@ public class ShoppingListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 
         m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
@@ -76,20 +83,25 @@ public class ShoppingListFragment extends Fragment {
                     m_ListStorageFragment, ListStorageFragment.TAG_LISTSTORAGE)
                     .commit();
         }
+
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
-        ListView m_ShoppingListView = (ListView) rootView.findViewById(R.id.list_shoppingList);
-        if (m_ShoppingList == null) {
-            m_ShoppingList = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList, generateData(m_ListStorageFragment.getListStorage().loadList(listID)));
-            m_ShoppingListView.setAdapter(m_ShoppingList);
-        }
+        ListView shoppingListView = (ListView) rootView.findViewById(R.id.list_shoppingList);
+
+        m_ShoppingListAdapter = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList,
+                generateData(m_ListStorageFragment.getListStorage().loadList(listID)),
+                m_ListStorageFragment.getListStorage().loadList(listID));
+
+        shoppingListView.setAdapter(m_ShoppingListAdapter);
+
 
         // OnClickListener to open the item details view
-        m_ShoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Open item details view
-                Toast.makeText(getActivity(), "ID: " + id, Toast.LENGTH_LONG).show();
-                fm.beginTransaction().replace(R.id.container, ItemDetailsFragment.newInstance(listID, (int) id)).commit();
+                Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
+                fm.beginTransaction().replace(R.id.container, ItemDetailsFragment.newInstance(listID, (int) id))
+                        .addToBackStack(null).commit();
             }
         });
 
@@ -122,18 +134,23 @@ public class ShoppingListFragment extends Fragment {
 
     //endregion
 
+
     //region Event Handlers
 
     public void onEvent(ShoppingListChangedEvent event) {
 
-        if (event.getListId() == this.listID && this.m_ShoppingList != null) {
-            this.m_ShoppingList.notifyDataSetChanged();
+        if (event.getListId() == this.listID && this.m_ShoppingListAdapter != null) {
+            this.m_ShoppingListAdapter.clear();
+            this.m_ShoppingListAdapter.addAll(generateData(m_ListStorageFragment.getListStorage().loadList(listID)));
+            this.m_ShoppingListAdapter.notifyDataSetChanged();
         }
     }
 
     public void onEvent(ItemChangedEvent event) {
-        if (event.getShoppingListId() == this.listID && this.m_ShoppingList != null) {
-            this.m_ShoppingList.notifyDataSetChanged();
+        if (event.getShoppingListId() == this.listID && this.m_ShoppingListAdapter != null) {
+            this.m_ShoppingListAdapter.clear();
+            this.m_ShoppingListAdapter.addAll(generateData(m_ListStorageFragment.getListStorage().loadList(listID)));
+            this.m_ShoppingListAdapter.notifyDataSetChanged();
         }
     }
 
@@ -151,4 +168,5 @@ public class ShoppingListFragment extends Fragment {
     }
 
     //endregion
+
 }

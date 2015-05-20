@@ -68,8 +68,10 @@ public class ItemDetailsFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_item_details_save:
                 if(productname_text.getText().length() > 0) {
+
                     saveItem();
-                    // TODO: return to the list
+                    getActivity().getSupportFragmentManager().popBackStack();
+
                 } else {
                     Toast.makeText(getActivity(), getResources().getString(R.string.error_empty_productname), Toast.LENGTH_LONG).show();
                 }
@@ -116,18 +118,12 @@ public class ItemDetailsFragment extends Fragment {
         mItem.setName(productname_text.getText().toString());
         mItem.setAmount(Integer.parseInt(amount_text.getText().toString()));
         mItem.setBrand(brand_text.getText().toString());
-        //mItem.setUnit();
+        //mItem.setUnit(); // TODO: Set Unit
         mItem.setBrand(brand_text.getText().toString());
 
-        // TODO: Save item in storage
-        mShoppingList.removeItem(mItem.getId());
-        mShoppingList.addItem(mItem);
+        mShoppingList.updateItem(mItem);
         m_ListStorageFragment.getListStorage().saveList(mShoppingList);
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
-
-        final FragmentManager fm = getActivity().getSupportFragmentManager();
-        fm.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0, listID)).commit();
-
 
         EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, mItem.getId(), mShoppingList.getId()));
     }
@@ -147,7 +143,7 @@ public class ItemDetailsFragment extends Fragment {
 
         // Fill UI elements with data from Item
         productname_text.setText(mItem.getName());
-        amount_text.setText(new Integer(mItem.getAmount()).toString());
+        amount_text.setText(Integer.toString(mItem.getAmount()));
         brand_text.setText(mItem.getBrand());
         comment_text.setText(mItem.getComment());
 
@@ -171,7 +167,7 @@ public class ItemDetailsFragment extends Fragment {
 
     public void onEvent(ItemChangedEvent event) {
         if (mShoppingList.getId() == event.getShoppingListId() && event.getItemId() == mItem.getId()) {
-            //TODO update UI accordingly
+            SetupUI();
         }
     }
 

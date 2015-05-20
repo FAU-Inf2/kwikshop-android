@@ -17,36 +17,40 @@ import cs.fau.mad.quickshop_android.R;
  */
 public class ShoppingListAdapter extends ArrayAdapter<String> {
 
-        HashMap<String, Integer> mIdMap = new HashMap<>();
+    HashMap<String, Integer> mIdMap = new HashMap<>();
+    ShoppingList shoppingList;
 
-        public ShoppingListAdapter(Context context, int textViewResourceId,
-                                  List<String> objects) {
-                        super(context, textViewResourceId, objects);
-                        for (int i = 0; i < objects.size(); ++i) {
-                            mIdMap.put(objects.get(i), i);
-                        }
+    public ShoppingListAdapter(Context context, int textViewResourceId,
+                              List<String> objects, ShoppingList shoppingList) {
+
+        super(context, textViewResourceId, objects);
+        this.shoppingList = shoppingList;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        //String item = getItem(position);
+        //return mIdMap.get(item);
+        return shoppingList.getItem(position).getId();
+    }
+
+    @Override
+    public View getView(int position, View view, ViewGroup parent){
+
+        if(view == null ){
+            view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_shoppinglist_row, parent, false);
         }
+        //display items in the list
+        TextView shoppingListNameView = (TextView) view.findViewById(R.id.tvItem);
 
-        @Override
-        public long getItemId(int position) {
-            String item = getItem(position);
-            return mIdMap.get(item);
-        }
+        shoppingListNameView.setText(shoppingList.getItem(position).getName());
 
-        @Override
-        public View getView(int position, View view, ViewGroup parent){
-            if(view == null ){
-                view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_shoppinglist_row, parent, false);
-            }
-            //display items in the list
-            TextView shoppingListNameView = (TextView) view.findViewById(R.id.tvItem);
+        return view;
+    }
 
-            shoppingListNameView.setText(getItem(position));
+    @Override
+    public boolean hasStableIds() {
+        return true;
+    }
 
-            return view;
-        }
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
 }

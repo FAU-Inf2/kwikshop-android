@@ -15,11 +15,11 @@
         android:text="@string/ShoppingListItem"
         android:editable="false"
         android:textSize="@dimen/abc_text_size_large_material"
-        android:background="@drawable/textviewborder"
         android:textIsSelectable="false"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:maxHeight="25dp"
-        android:textStyle="bold" />/>
+        android:textStyle="bold"
+        android:background="@drawable/textviewborder" />/>
 
 </RelativeLayout>

@@ -46,5 +46,10 @@
     <string name="itemdetails_saved">Product saved</string>
 
     <string name="error_empty_productname">Product name must not be empty</string>
+    <string name="magic">magic</string>
+    <string name="sort_by">Sort by</string>
 
+    <string-array name="sort_by_array">
+        <item>Magic</item>
+    </string-array>
 </resources>

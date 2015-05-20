@@ -6,6 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "item")
 public class Item {
 
+  // TODO: we might want to change the annotation to generatedId = true
   @DatabaseField(id = true)
   private int id;
 
@@ -21,18 +22,24 @@ public class Item {
   @DatabaseField
   private Boolean highlight;
 
-  @DatabaseField
+  @DatabaseField(canBeNull = true)
   private String brand;
 
   @DatabaseField(canBeNull = true)
   private String comment;
 
-  @DatabaseField
+  @DatabaseField(foreign = true)
   private Group group;
 
-  @DatabaseField
+  @DatabaseField(foreign = true)
   private Unit unit;
 
+   /**
+   * the ShoppingList, that contains this Item.
+    * (Required for ORMLite)
+   */
+  @DatabaseField(foreign = true)
+  private ShoppingList shoppingList;
 
   public Item() {
    // Default no-arg constructor for generating Items, required for ORMLite
@@ -110,5 +117,13 @@ public class Item {
   public void setUnit(Unit unit) {
     this.unit = unit;
   }
+  
+  //TODO: REMOVE THIS, only for testing. The shoppingList should only be changed by ORM
+  public void setShoppingList(ShoppingList shoppingList) {
+      this.shoppingList = shoppingList;
+  }
 
+  public ShoppingList getShoppingList() {
+      return shoppingList;
+  }
 }

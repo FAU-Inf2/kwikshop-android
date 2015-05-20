@@ -20,21 +20,19 @@ public class ListStorageMock extends ListStorage {
 
         if (m_Lists.size() == 0) {
 
-            for (int i = 0; i < 10; i++) {
+            int newListId = createList();
+            ShoppingList newList = loadList(newListId);
 
-                int newListId = createList();
-                ShoppingList newList = loadList(newListId);
+            int itemCount = new Random().nextInt(30);
 
-                int itemCount = new Random().nextInt(30);
+            for (int j = 0; j < itemCount; j++) {
+                Item newItem = new Item();
+                newItem.setID(j);
+                newItem.setName("Item number " + j);
 
-                for (int j = 0; j < itemCount; j++) {
-                    Item newItem = new Item();
-                    newItem.setID(j);
-                    newItem.setName("Item number "+ j);
-
-                    newList.addItem(newItem);
-                }
+                newList.addItem(newItem);
             }
+
         }
 
     }

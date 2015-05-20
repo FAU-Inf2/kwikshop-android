@@ -12,6 +12,7 @@ public class CalendarEventDate{
     private int day;
     private int hour;
     private int minute;
+    private boolean isSet = false;
 
     public CalendarEventDate(){
         this.year = 0;
@@ -64,6 +65,7 @@ public class CalendarEventDate{
     }
 
 
+
     //getter
     public long getCalendarEventId(){
         return calendarEventId;
@@ -89,11 +91,12 @@ public class CalendarEventDate{
         return minute;
     }
 
-
+    public boolean getIsSet() { return isSet; }
 
     //compares the id of a given CalendarEventDate
     //if id has default value current time is set, else time from eventDate
-    public void inittialize(CalendarEventDate eventDate){
+    public void initialize(CalendarEventDate eventDate){
+            this.isSet = true;
             if(eventDate.getCalendarEventId() == -1) {
                 final Calendar c = Calendar.getInstance();
                 setYear(c.get(Calendar.YEAR));

@@ -111,12 +111,16 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
         Button deleteButton = (Button) findViewById(R.id.button_delete);
         if (m_IsNewList) {
             deleteButton.setVisibility(View.GONE);
+        } else {
+            deleteButton.setVisibility(View.VISIBLE);
+        }
+
+        if(m_ShoppingList.getCalendarEventDate().getCalendarEventId() == -1){
             editCalendarEvent.setVisibility(View.GONE);
             createCalendarEvent.setVisibility(View.VISIBLE);
-        } else {
+        }else{
             createCalendarEvent.setVisibility(View.GONE);
             editCalendarEvent.setVisibility(View.VISIBLE);
-            deleteButton.setVisibility(View.VISIBLE);
         }
 
         attachEventHandlers();
@@ -180,7 +184,7 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
             }
         });
 
-        m_EventDate.inittialize(m_ShoppingList.getCalendarEventDate());
+      //  m_EventDate.initialize(m_ShoppingList.getCalendarEventDate());
 
         Button createCalendarEvent = (Button) findViewById(R.id.create_calendar_event);
         Button editCalendarEvent = (Button) findViewById(R.id.edit_calendar_event);
@@ -188,12 +192,14 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
         if(m_ShoppingList.getCalendarEventDate().getCalendarEventId() == -1) {
             createCalendarEvent.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    m_EventDate.initialize(m_ShoppingList.getCalendarEventDate());
                     showDialog(DATE_DIALOG_ID);
                 }
             });
         }else{
             editCalendarEvent.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    m_EventDate.initialize(m_ShoppingList.getCalendarEventDate());
                     showDialog(DATE_DIALOG_ID);
                 }
             });
@@ -214,8 +220,9 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
     private void onSave() {
         m_ShoppingList.setName(m_TextView_ShoppingListName.getText().toString());
         m_ListStorageFragment.getListStorage().saveList(m_ShoppingList);
-        writeEventToCalendar();
-
+        if(m_EventDate.getIsSet() == true) {
+            writeEventToCalendar();
+        }
         ShoppingListChangeType changeType = m_IsNewList
                 ? ShoppingListChangeType.Added
                 : ShoppingListChangeType.PropertiesModified;
@@ -227,25 +234,6 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
 
     //functionality for calendar use
 
-
-    //set value of the pickers
-    private void initializePickers(){
-            //set current time as default value
-        if(m_ShoppingList.getCalendarEventDate().getCalendarEventId() == -1) {
-            final Calendar c = Calendar.getInstance();
-            m_EventDate.setYear(c.get(Calendar.YEAR));
-            m_EventDate.setMonth(c.get(Calendar.MONTH));
-            m_EventDate.setDay(c.get(Calendar.DAY_OF_MONTH));
-            m_EventDate.setHour(c.get(Calendar.HOUR_OF_DAY));
-            m_EventDate.setMinute(c.get(Calendar.MINUTE));
-        }else{
-            m_EventDate.setYear(m_ShoppingList.getCalendarEventDate().getYear());
-            m_EventDate.setMonth(m_ShoppingList.getCalendarEventDate().getMonth());
-            m_EventDate.setDay(m_ShoppingList.getCalendarEventDate().getDay());
-            m_EventDate.setHour(m_ShoppingList.getCalendarEventDate().getHour());
-            m_EventDate.setMinute(m_ShoppingList.getCalendarEventDate().getMinute());
-        }
-    }
 
     //update date
     private void updateDate() {

@@ -28,6 +28,7 @@ public class ShoppingList {
   /**
    * Date of an Event for Calendar Usage
    */
+  @DatabaseField(foreign = true, canBeNull = true)
   private CalendarEventDate eventDate = new CalendarEventDate();
 
   /**

@@ -1,17 +1,32 @@
 package de.cs.fau.mad.quickshop.android;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import java.util.Calendar;
 
-
+@DatabaseTable(tableName = "calendarEvent")
 public class CalendarEventDate{
-
+    //TODO: we might want to change it to generatedId = true
+    @DatabaseField(id = true)
     private long calendarEventId = -1;
 
+    @DatabaseField
     private int year;
+
+    @DatabaseField
     private int month;
+
+    @DatabaseField
     private int day;
+
+    @DatabaseField
     private int hour;
+
+    @DatabaseField
     private int minute;
+
+    @DatabaseField
     private boolean isSet = false;
 
     public CalendarEventDate(){

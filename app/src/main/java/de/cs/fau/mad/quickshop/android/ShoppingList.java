@@ -19,9 +19,9 @@ public class ShoppingList {
   private String name;
 
   /**
-   * unique id for calendar event
+   * Date of an Event for Calendar Usage
    */
-  private long calendarEventId = -1;
+  private CalendarEventDate eventDate = new CalendarEventDate();
 
   /**
    * type: Account.id
@@ -52,9 +52,9 @@ public class ShoppingList {
 
   public void setName(String name) { this.name = name; }
 
-  public long getCalendarEventId() {return calendarEventId; }
+  public CalendarEventDate getCalendarEventDate() {return eventDate; }
 
-  public void setCalendarEventId(long calendarEventId){this.calendarEventId = calendarEventId; }
+  public void setCalendarEventDate(CalendarEventDate eventDate){this.eventDate = eventDate; }
 
   public Vector getSharedWith() {
     return sharedWith;

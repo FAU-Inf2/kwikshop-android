@@ -51,11 +51,7 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
 
     private TextView m_TextView_ShoppingListName;
 
-    private int m_Year;
-    private int m_Month;
-    private int m_Day;
-    private int m_Hour;
-    private int m_Minute;
+    private CalendarEventDate m_EventDate = new CalendarEventDate();
 
     static final int TIME_DIALOG_ID = 1;
     static final int DATE_DIALOG_ID = 0;
@@ -181,12 +177,12 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
             }
         });
 
-        initializePickers();
+        m_EventDate.inittialize(m_ShoppingList.getCalendarEventDate());
 
         Button createCalendarEvent = (Button) findViewById(R.id.create_calendar_event);
         Button editCalendarEvent = (Button) findViewById(R.id.edit_calendar_event);
 
-        if(m_ShoppingList.getCalendarEventId() == -1) {
+        if(m_ShoppingList.getCalendarEventDate().getCalendarEventId() == -1) {
             createCalendarEvent.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     showDialog(DATE_DIALOG_ID);
@@ -220,13 +216,20 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
     //set value of the pickers
     private void initializePickers(){
             //set current time as default value
+        if(m_ShoppingList.getCalendarEventDate().getCalendarEventId() == -1) {
             final Calendar c = Calendar.getInstance();
-            m_Year = c.get(Calendar.YEAR);
-            m_Month = c.get(Calendar.MONTH);
-            m_Day = c.get(Calendar.DAY_OF_MONTH);
-            m_Hour = c.get(Calendar.HOUR_OF_DAY);
-            m_Minute = c.get(Calendar.MINUTE);
-            //TODO: set old value for update
+            m_EventDate.setYear(c.get(Calendar.YEAR));
+            m_EventDate.setMonth(c.get(Calendar.MONTH));
+            m_EventDate.setDay(c.get(Calendar.DAY_OF_MONTH));
+            m_EventDate.setHour(c.get(Calendar.HOUR_OF_DAY));
+            m_EventDate.setMinute(c.get(Calendar.MINUTE));
+        }else{
+            m_EventDate.setYear(m_ShoppingList.getCalendarEventDate().getYear());
+            m_EventDate.setMonth(m_ShoppingList.getCalendarEventDate().getMonth());
+            m_EventDate.setDay(m_ShoppingList.getCalendarEventDate().getDay());
+            m_EventDate.setHour(m_ShoppingList.getCalendarEventDate().getHour());
+            m_EventDate.setMinute(m_ShoppingList.getCalendarEventDate().getMinute());
+        }
     }
 
     //update date
@@ -237,20 +240,23 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
 
     public void writeEventToCalendar() {
 
-        if(m_ShoppingList.getCalendarEventId() == -1) {
+        if(m_ShoppingList.getCalendarEventDate().getCalendarEventId() == -1) {
             //create Event
             long calID = 1;
-            long startMillis = 0;
-            long endMillis = 0;
+            long startMillis;
+            long endMillis;
             Calendar beginTime = Calendar.getInstance();
-            beginTime.set(m_Year, m_Month, m_Day, m_Hour, m_Minute);
+            beginTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
+                    m_EventDate.getHour(), m_EventDate.getMinute());
             startMillis = beginTime.getTimeInMillis();
             Calendar endTime = Calendar.getInstance();
-            endTime.set(m_Year, m_Month, m_Day, m_Hour, m_Minute + 30);
+            endTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
+                    m_EventDate.getHour(), m_EventDate.getMinute() + 30);
             endMillis = endTime.getTimeInMillis();
 
             ContentResolver cr = getContentResolver();
             ContentValues values = new ContentValues();
+            values.put(CalendarContract.Events.HAS_ALARM, true);
             values.put(CalendarContract.Events.DTSTART, startMillis);
             values.put(CalendarContract.Events.DTEND, endMillis);
             values.put(CalendarContract.Events.TITLE, m_ShoppingList.getName());
@@ -258,17 +264,29 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
             TimeZone defaultTimeZone = TimeZone.getDefault();
             values.put(CalendarContract.Events.EVENT_TIMEZONE, defaultTimeZone.getID());
             Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
-            m_ShoppingList.setCalendarEventId(Long.parseLong(uri.getLastPathSegment()));
+            m_ShoppingList.getCalendarEventDate().setCalendarEventId((Long.parseLong(uri.getLastPathSegment())));
+
+
+            //sets alarm
+            ContentValues reminders = new ContentValues();
+            reminders.put(CalendarContract.Reminders.EVENT_ID, m_ShoppingList.getCalendarEventDate().getCalendarEventId());
+            reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+            reminders.put(CalendarContract.Reminders.MINUTES, 0);
+
+            Uri uri2 = cr.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
+
         }else{
             //update Event
-            long startMillis = 0;
-            long endMillis = 0;
+            long startMillis;
+            long endMillis;
 
             Calendar beginTime = Calendar.getInstance();
-            beginTime.set(m_Year, m_Month, m_Day, m_Hour, m_Minute);
+            beginTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
+                    m_EventDate.getHour(), m_EventDate.getMinute());
             startMillis = beginTime.getTimeInMillis();
             Calendar endTime = Calendar.getInstance();
-            endTime.set(m_Year, m_Month, m_Day, m_Hour, m_Minute + 30);
+            endTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
+                    m_EventDate.getHour(), m_EventDate.getMinute() + 30);
             endMillis = endTime.getTimeInMillis();
 
             ContentResolver cr = getContentResolver();
@@ -277,18 +295,36 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
             values.put(CalendarContract.Events.DTEND, endMillis);
             values.put(CalendarContract.Events.TITLE, m_ShoppingList.getName());
             Uri updateUri = null;
-            updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, m_ShoppingList.getCalendarEventId());
+            updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, m_ShoppingList.
+                    getCalendarEventDate().getCalendarEventId());
             int rows = getContentResolver().update(updateUri, values, null, null);
+
+
+            //sets alarm
+            ContentValues reminders = new ContentValues();
+            reminders.put(CalendarContract.Reminders.EVENT_ID, m_ShoppingList.getCalendarEventDate().getCalendarEventId());
+            reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+            reminders.put(CalendarContract.Reminders.MINUTES, 0);
+
+            Uri uri2 = cr.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
+
         }
+        m_ShoppingList.getCalendarEventDate().setYear(m_EventDate.getYear());
+        m_ShoppingList.getCalendarEventDate().setMonth(m_EventDate.getMonth());
+        m_ShoppingList.getCalendarEventDate().setDay(m_EventDate.getDay());
+        m_ShoppingList.getCalendarEventDate().setHour(m_EventDate.getHour());
+        m_ShoppingList.getCalendarEventDate().setMinute(m_EventDate.getMinute());
+
     }
 
     public void removeCalendarEvent() {
         //remove Event
-        if (m_ShoppingList.getCalendarEventId() != -1) {
+        if (m_ShoppingList.getCalendarEventDate().getCalendarEventId() != -1) {
             ContentResolver cr = getContentResolver();
             ContentValues values = new ContentValues();
             Uri deleteUri = null;
-            deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, m_ShoppingList.getCalendarEventId());
+            deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, m_ShoppingList.
+                    getCalendarEventDate().getCalendarEventId());
             int rows = getContentResolver().delete(deleteUri, null, null);
         }
     }
@@ -300,9 +336,9 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
 
                 public void onDateSet(DatePicker view, int year,
                                       int monthOfYear, int dayOfMonth) {
-                    m_Year = year;
-                    m_Month = monthOfYear;
-                    m_Day = dayOfMonth;
+                    m_EventDate.setYear(year);
+                    m_EventDate.setMonth(monthOfYear);
+                    m_EventDate.setDay(dayOfMonth);
                     updateDate();
                 }
             };
@@ -312,8 +348,8 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    m_Hour = hourOfDay;
-                    m_Minute = minute;
+                    m_EventDate.setHour(hourOfDay);
+                    m_EventDate.setMinute(minute);
                 }
             };
 
@@ -324,11 +360,11 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
             case DATE_DIALOG_ID:
                 return new DatePickerDialog(this,
                         mDateSetListener,
-                        m_Year, m_Month, m_Day);
+                        m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay());
 
             case TIME_DIALOG_ID:
                 return new TimePickerDialog(this,
-                        mTimeSetListener, m_Hour, m_Minute, false);
+                        mTimeSetListener, m_EventDate.getHour(), m_EventDate.getMinute(), false);
 
         }
         return null;

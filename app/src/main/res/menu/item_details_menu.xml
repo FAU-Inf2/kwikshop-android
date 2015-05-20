@@ -9,8 +9,8 @@
           app:showAsAction="ifRoom" />
     -->
 
-    <item android:id="@+id/action_add_list_save"
-          android:title="@string/action_add_list_save"
+    <item android:id="@+id/action_item_details_save"
+          android:title="@string/action_item_details_save"
           android:orderInCategory="100"
           app:showAsAction="ifRoom" />
 

@@ -26,6 +26,11 @@ public class ShoppingList {
   private String name;
 
   /**
+   * Date of an Event for Calendar Usage
+   */
+  private CalendarEventDate eventDate = new CalendarEventDate();
+
+  /**
    * type: Account.id
    */
   @ForeignCollectionField
@@ -56,13 +61,13 @@ public class ShoppingList {
     return id;
   }
 
-  public String getName() {
-    return name;
-  }
+  public String getName() { return name; }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+  public void setName(String name) { this.name = name; }
+
+  public CalendarEventDate getCalendarEventDate() {return eventDate; }
+
+  public void setCalendarEventDate(CalendarEventDate eventDate){this.eventDate = eventDate; }
 
   public Collection getSharedWith() {
     return sharedWith;
@@ -100,9 +105,33 @@ public class ShoppingList {
     }
   }
 
+  public void removeItem(Item item) {
+    Iterator<Item> iterator = items.iterator();
+
+    while (iterator.hasNext()) {
+      Item currentItem = iterator.next();
+      if(currentItem.getId() == item.getId()) {
+        items.remove(currentItem);
+        return;
+      }
+    }
+  }
+
+  public void updateItem(Item item) {
+    removeItem(item);
+    addItem(item);
+  }
 
   public Collection<Item> getItems() {
     return Collections.unmodifiableCollection(this.items);
   }
 
+  public Item getItem(int id) {
+    for(Item item : items) {
+      if(item.getId() == id) {
+        return item;
+      }
+    }
+    return null;
+  }
 }

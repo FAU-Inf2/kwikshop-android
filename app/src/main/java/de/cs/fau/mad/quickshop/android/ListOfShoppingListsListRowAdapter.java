@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangedEvent;
 
 /**
  * ListAdapter for displaying the list of shopping lists
@@ -141,11 +142,12 @@ public class ListOfShoppingListsListRowAdapter implements ListAdapter {
 
     //endregion
 
+
     //region Public Methods
 
+    public void notifyDataSetChanged() {
 
-    public void reload() {
-        for (DataSetObserver observer : m_Observers) {
+        for(DataSetObserver observer : m_Observers) {
             observer.onChanged();
         }
     }
@@ -164,7 +166,6 @@ public class ListOfShoppingListsListRowAdapter implements ListAdapter {
     }
 
     //endregion
-
 
 
 }

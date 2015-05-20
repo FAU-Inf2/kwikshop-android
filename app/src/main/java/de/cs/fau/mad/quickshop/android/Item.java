@@ -6,8 +6,9 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "item")
 public class Item {
 
-  @DatabaseField(generatedId = true)
-  private Integer id;
+  // TODO: we might want to change the annotation to generatedId = true
+  @DatabaseField(id = true)
+  private int id;
 
   @DatabaseField
   private Boolean bought;
@@ -16,10 +17,13 @@ public class Item {
   private String name;
 
   @DatabaseField
-  private Integer amount;
+  private int amount = 1;
 
   @DatabaseField
   private Boolean highlight;
+
+  @DatabaseField(canBeNull = true)
+  private String brand;
 
   @DatabaseField(canBeNull = true)
   private String comment;
@@ -37,13 +41,17 @@ public class Item {
   @DatabaseField(foreign = true)
   private ShoppingList shoppingList;
 
-
   public Item() {
    // Default no-arg constructor for generating Items, required for ORMLite
   }
 
-  public Integer getId() {
+  public int getId() {
     return id;
+  }
+
+  // TODO: REMOVE THIS, only for testing. IDs should be read only
+  public void setID(int id) {
+    this.id = id;
   }
 
   public Boolean isBought() {
@@ -62,11 +70,11 @@ public class Item {
     this.name = name;
   }
 
-  public Integer getAmount() {
+  public int getAmount() {
     return amount;
   }
 
-  public void setAmount(Integer amount) {
+  public void setAmount(int amount) {
     this.amount = amount;
   }
 
@@ -78,8 +86,16 @@ public class Item {
     this.highlight = highlight;
   }
 
+  public String getBrand() {
+    return (brand == null ? "" : brand);
+  }
+
+  public void setBrand(String brand) {
+    this.brand = brand;
+  }
+
   public String getComment() {
-    return comment;
+    return (comment == null ? "" : comment);
   }
 
   public void setComment(String comment) {
@@ -101,12 +117,13 @@ public class Item {
   public void setUnit(Unit unit) {
     this.unit = unit;
   }
+  
+  //TODO: REMOVE THIS, only for testing. The shoppingList should only be changed by ORM
+  public void setShoppingList(ShoppingList shoppingList) {
+      this.shoppingList = shoppingList;
+  }
 
-    public void setShoppingList(ShoppingList shoppingList) {
-        this.shoppingList = shoppingList;
-    }
-
-    public ShoppingList getShoppingList() {
-        return shoppingList;
-    }
+  public ShoppingList getShoppingList() {
+      return shoppingList;
+  }
 }

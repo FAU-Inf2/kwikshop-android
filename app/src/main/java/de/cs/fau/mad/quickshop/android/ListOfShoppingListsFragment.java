@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -17,11 +16,13 @@ import com.melnykov.fab.FloatingActionButton;
 
 
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.model.mock.ListStorageMock;
+import de.greenrobot.event.EventBus;
 
 /**
- * Fragement for list of shopping lists
+ * Fragment for list of shopping lists
  */
 public  class ListOfShoppingListsFragment extends Fragment {
 
@@ -63,7 +64,7 @@ public  class ListOfShoppingListsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 
-        FragmentManager fm = getActivity().getSupportFragmentManager();
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
         m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
         if (m_ListStorageFragment == null) {
             m_ListStorageFragment = new ListStorageFragment();
@@ -82,6 +83,8 @@ public  class ListOfShoppingListsFragment extends Fragment {
         m_ListRowAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), m_ListStorageFragment.getListStorage());
         m_ListView.setAdapter(m_ListRowAdapter);
 
+        EventBus.getDefault().register(this);
+
 
         // wire up event handlers
 
@@ -90,7 +93,9 @@ public  class ListOfShoppingListsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO: Open shopping list
-                showToast("Shopping list selected");
+                showToast("Shopping list selected, ID: " + id);
+                fm.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0, (int) id))
+                        .addToBackStack(null).commit();
             }
         });
 
@@ -126,12 +131,25 @@ public  class ListOfShoppingListsFragment extends Fragment {
         super.onAttach(activity);
         ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
 
-        if (m_ListRowAdapter != null) {
-            m_ListRowAdapter.reload();
-        }
-
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
+    //endregion
+
+
+    //region Event Handlers
+
+    public void onEvent(ShoppingListChangedEvent ev) {
+
+        if(m_ListRowAdapter != null) {
+            m_ListRowAdapter.notifyDataSetChanged();
+        }
+    }
 
     //endregion
 
@@ -139,6 +157,7 @@ public  class ListOfShoppingListsFragment extends Fragment {
     //region Private Methods
 
     private void showToast(String text) {
+
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(getActivity(), text, duration);

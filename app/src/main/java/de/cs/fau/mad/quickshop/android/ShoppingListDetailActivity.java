@@ -1,24 +1,34 @@
 package de.cs.fau.mad.quickshop.android;
 
-import android.content.Context;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
+import android.provider.CalendarContract;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
+
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangeType;
+import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.model.mock.ListStorageMock;
+import de.greenrobot.event.EventBus;
 
 public class ShoppingListDetailActivity extends ActionBarActivity {
 
@@ -37,6 +47,12 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
     private ShoppingList m_ShoppingList;
 
     private TextView m_TextView_ShoppingListName;
+
+    private CalendarEventDate m_EventDate = new CalendarEventDate();
+
+    static final int TIME_DIALOG_ID = 1;
+    static final int DATE_DIALOG_ID = 0;
+
 
     //endregion
 
@@ -87,6 +103,12 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
+        //if a new list is created the create Button is displayed, else edit
+        Button createCalendarEvent = (Button) findViewById(R.id.create_calendar_event);
+
+        if(m_ShoppingList.getCalendarEventDate().getCalendarEventId() != -1){
+            createCalendarEvent.setText(R.string.edit_calendar_event);
+        }
 
         Button deleteButton = (Button) findViewById(R.id.button_delete);
         if (m_IsNewList) {
@@ -94,6 +116,7 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
         } else {
             deleteButton.setVisibility(View.VISIBLE);
         }
+
 
         attachEventHandlers();
 
@@ -109,7 +132,7 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
         //hide default action bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setDisplayShowHomeEnabled (false);
+        actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
 
@@ -144,27 +167,200 @@ public class ShoppingListDetailActivity extends ActionBarActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                m_ListStorageFragment.getListStorage().deleteList(m_ShoppingList.getId());
+
+                int listId = m_ShoppingList.getId();
+
+                m_ListStorageFragment.getListStorage().deleteList(listId);
+                removeCalendarEvent();
+
+                EventBus.getDefault().post(new ShoppingListChangedEvent(listId, ShoppingListChangeType.Deleted));
+
                 finish();
             }
         });
+
+
+        Button createCalendarEvent = (Button) findViewById(R.id.create_calendar_event);
+
+            createCalendarEvent.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    m_EventDate.initialize(m_ShoppingList.getCalendarEventDate());
+                    showDialog(DATE_DIALOG_ID);
+                }
+            });
+
 
     }
 
 
     private void onCancel() {
+
+        if(m_IsNewList) {
+            m_ListStorageFragment.getListStorage().deleteList(m_ShoppingList.getId());
+        }
+
         finish();
     }
 
     private void onSave() {
         m_ShoppingList.setName(m_TextView_ShoppingListName.getText().toString());
         m_ListStorageFragment.getListStorage().saveList(m_ShoppingList);
+        if(m_EventDate.getIsSet() == true) {
+            writeEventToCalendar();
+        }
+        ShoppingListChangeType changeType = m_IsNewList
+                ? ShoppingListChangeType.Added
+                : ShoppingListChangeType.PropertiesModified;
+
+        EventBus.getDefault().post(new ShoppingListChangedEvent(m_ShoppingList.getId(), changeType));
+
         finish();
     }
 
+    //functionality for calendar use
+
+
+    //update date
+    private void updateDate() {
+        showDialog(TIME_DIALOG_ID);
+    }
+
+
+    public void writeEventToCalendar() {
+
+        if(m_ShoppingList.getCalendarEventDate().getCalendarEventId() == -1) {
+            //create Event
+            long calID = 1;
+            long startMillis;
+            long endMillis;
+            Calendar beginTime = Calendar.getInstance();
+            beginTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
+                    m_EventDate.getHour(), m_EventDate.getMinute());
+            startMillis = beginTime.getTimeInMillis();
+            Calendar endTime = Calendar.getInstance();
+            endTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
+                    m_EventDate.getHour(), m_EventDate.getMinute() + 30);
+            endMillis = endTime.getTimeInMillis();
+
+            ContentResolver cr = getContentResolver();
+            ContentValues values = new ContentValues();
+            values.put(CalendarContract.Events.HAS_ALARM, true);
+            values.put(CalendarContract.Events.DTSTART, startMillis);
+            values.put(CalendarContract.Events.DTEND, endMillis);
+            values.put(CalendarContract.Events.TITLE, m_ShoppingList.getName());
+            values.put(CalendarContract.Events.CALENDAR_ID, calID);
+            TimeZone defaultTimeZone = TimeZone.getDefault();
+            values.put(CalendarContract.Events.EVENT_TIMEZONE, defaultTimeZone.getID());
+            Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+            m_ShoppingList.getCalendarEventDate().setCalendarEventId((Long.parseLong(uri.getLastPathSegment())));
+
+
+            //sets alarm
+            ContentValues reminders = new ContentValues();
+            reminders.put(CalendarContract.Reminders.EVENT_ID, m_ShoppingList.getCalendarEventDate().getCalendarEventId());
+            reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+            reminders.put(CalendarContract.Reminders.MINUTES, 0);
+
+            Uri uri2 = cr.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
+
+        }else{
+            //update Event
+            long startMillis;
+            long endMillis;
+
+            Calendar beginTime = Calendar.getInstance();
+            beginTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
+                    m_EventDate.getHour(), m_EventDate.getMinute());
+            startMillis = beginTime.getTimeInMillis();
+            Calendar endTime = Calendar.getInstance();
+            endTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
+                    m_EventDate.getHour(), m_EventDate.getMinute() + 30);
+            endMillis = endTime.getTimeInMillis();
+
+            ContentResolver cr = getContentResolver();
+            ContentValues values = new ContentValues();
+            values.put(CalendarContract.Events.DTSTART, startMillis);
+            values.put(CalendarContract.Events.DTEND, endMillis);
+            values.put(CalendarContract.Events.TITLE, m_ShoppingList.getName());
+            Uri updateUri = null;
+            updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, m_ShoppingList.
+                    getCalendarEventDate().getCalendarEventId());
+            int rows = getContentResolver().update(updateUri, values, null, null);
+
+
+            //sets alarm
+            ContentValues reminders = new ContentValues();
+            reminders.put(CalendarContract.Reminders.EVENT_ID, m_ShoppingList.getCalendarEventDate().getCalendarEventId());
+            reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+            reminders.put(CalendarContract.Reminders.MINUTES, 0);
+
+            Uri uri2 = cr.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
+
+        }
+        m_ShoppingList.getCalendarEventDate().setYear(m_EventDate.getYear());
+        m_ShoppingList.getCalendarEventDate().setMonth(m_EventDate.getMonth());
+        m_ShoppingList.getCalendarEventDate().setDay(m_EventDate.getDay());
+        m_ShoppingList.getCalendarEventDate().setHour(m_EventDate.getHour());
+        m_ShoppingList.getCalendarEventDate().setMinute(m_EventDate.getMinute());
+
+    }
+
+    public void removeCalendarEvent() {
+        //remove Event
+        if (m_ShoppingList.getCalendarEventDate().getCalendarEventId() != -1) {
+            ContentResolver cr = getContentResolver();
+            ContentValues values = new ContentValues();
+            Uri deleteUri = null;
+            deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, m_ShoppingList.
+                    getCalendarEventDate().getCalendarEventId());
+            int rows = getContentResolver().delete(deleteUri, null, null);
+        }
+    }
+
+
+    //Datepicker dialog generation
+    private DatePickerDialog.OnDateSetListener mDateSetListener =
+            new DatePickerDialog.OnDateSetListener() {
+
+                public void onDateSet(DatePicker view, int year,
+                                      int monthOfYear, int dayOfMonth) {
+                    m_EventDate.setYear(year);
+                    m_EventDate.setMonth(monthOfYear);
+                    m_EventDate.setDay(dayOfMonth);
+                    updateDate();
+                }
+            };
+
+
+    // Timepicker dialog generation
+    private TimePickerDialog.OnTimeSetListener mTimeSetListener =
+            new TimePickerDialog.OnTimeSetListener() {
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    m_EventDate.setHour(hourOfDay);
+                    m_EventDate.setMinute(minute);
+                }
+            };
+
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DATE_DIALOG_ID:
+                return new DatePickerDialog(this,
+                        mDateSetListener,
+                        m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay());
+
+            case TIME_DIALOG_ID:
+                return new TimePickerDialog(this,
+                        mTimeSetListener, m_EventDate.getHour(), m_EventDate.getMinute(), false);
+
+        }
+        return null;
+    }
+
+
+
 
     //endregion
-
-
 
 }

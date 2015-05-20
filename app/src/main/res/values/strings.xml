@@ -21,6 +21,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_about">About</string>
 
+    <string name="create_calendar_event">Create calendar event</string>
+    <string name="edit_calendar_event">Edit calendar event</string>
+
     <string name="items">Items</string>
 
     <!--Titles for properties displayed in the about screen-->
@@ -36,4 +39,17 @@
     <string name="ShoppingListItem">item</string>
     <string name="title_default_list">Shopping List 1</string>
 
+    <string name="itemdetails_brand">Brand</string>
+    <string name="itemdetails_comment">Comment</string>
+    <string name="itemdetails_amount">Amount</string>
+    <string name="action_item_details_save">Save</string>
+    <string name="itemdetails_saved">Product saved</string>
+
+    <string name="error_empty_productname">Product name must not be empty</string>
+    <string name="magic">magic</string>
+    <string name="sort_by">Sort by</string>
+
+    <string-array name="sort_by_array">
+        <item>Magic</item>
+    </string-array>
 </resources>

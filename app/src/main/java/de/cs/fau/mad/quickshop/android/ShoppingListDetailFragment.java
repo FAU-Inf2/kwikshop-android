@@ -125,7 +125,6 @@ public class ShoppingListDetailFragment extends Fragment {
         //if a new list is created the create Button is displayed, else edit
         Button createCalendarEvent = (Button) rootView.findViewById(R.id.create_calendar_event);
 
-        //todo: doesnt work anymore
         if (m_ShoppingList.getCalendarEventDate().getCalendarEventId() != -1) {
             createCalendarEvent.setText(R.string.edit_calendar_event);
         }
@@ -178,8 +177,6 @@ public class ShoppingListDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 m_ListStorageFragment.getLocalListStorage().deleteList(m_ShoppingList.getId());
-                //todo doesnt work anymore
-                removeCalendarEvent();
                 getActivity().finish();
             }
         });
@@ -204,10 +201,6 @@ public class ShoppingListDetailFragment extends Fragment {
     private void onSave() {
         m_ShoppingList.setName(m_TextView_ShoppingListName.getText().toString());
         m_ListStorageFragment.getLocalListStorage().saveList(m_ShoppingList);
-
-        if(m_EventDate.getIsSet()) {
-            writeEventToCalendar();
-        }
 
         EventBus.getDefault().post(new ShoppingListChangedEvent(m_ShoppingList.getId(), ShoppingListChangeType.PropertiesModified));
 

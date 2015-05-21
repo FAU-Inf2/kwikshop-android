@@ -74,23 +74,25 @@ public class ShoppingListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        new ListStorageFragment().SetupLocalListStorageFragment(getActivity().getSupportFragmentManager(), getActivity().getApplicationContext());
+
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 
-        m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
+        /*m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
         if (m_ListStorageFragment == null) {
             m_ListStorageFragment = new ListStorageFragment();
-            m_ListStorageFragment.setListStorage(new ListStorageMock());
+            //m_ListStorageFragment.setListStorage(new ListStorageMock());
             fm.beginTransaction().add(
                     m_ListStorageFragment, ListStorageFragment.TAG_LISTSTORAGE)
                     .commit();
-        }
+        }*/
 
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ListView shoppingListView = (ListView) rootView.findViewById(R.id.list_shoppingList);
 
         ShoppingList shoppingList = null;
         try {
-            shoppingList = m_ListStorageFragment.getListStorage().loadList(listID);
+            shoppingList = m_ListStorageFragment.getLocalListStorage().loadList(listID);
         } catch (IllegalArgumentException ex) { //TODO: we should probably introduce our own exception types
             showToast(ex.getMessage());
             Intent intent = new Intent(getActivity(), ShoppingListActivity.class);
@@ -151,7 +153,7 @@ public class ShoppingListFragment extends Fragment {
 
         if (event.getListId() == this.listID && this.m_ShoppingListAdapter != null) {
             this.m_ShoppingListAdapter.clear();
-            this.m_ShoppingListAdapter.addAll(generateData(m_ListStorageFragment.getListStorage().loadList(listID)));
+            this.m_ShoppingListAdapter.addAll(generateData(m_ListStorageFragment.getLocalListStorage().loadList(listID)));
             this.m_ShoppingListAdapter.notifyDataSetChanged();
         }
     }
@@ -159,7 +161,7 @@ public class ShoppingListFragment extends Fragment {
     public void onEvent(ItemChangedEvent event) {
         if (event.getShoppingListId() == this.listID && this.m_ShoppingListAdapter != null) {
             this.m_ShoppingListAdapter.clear();
-            this.m_ShoppingListAdapter.addAll(generateData(m_ListStorageFragment.getListStorage().loadList(listID)));
+            this.m_ShoppingListAdapter.addAll(generateData(m_ListStorageFragment.getLocalListStorage().loadList(listID)));
             this.m_ShoppingListAdapter.notifyDataSetChanged();
         }
     }

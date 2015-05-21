@@ -65,15 +65,17 @@ public  class ListOfShoppingListsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 
-        final FragmentManager fm = getActivity().getSupportFragmentManager();
+        new ListStorageFragment().SetupLocalListStorageFragment(getActivity().getSupportFragmentManager(), getActivity().getApplicationContext());
+
+        /*final FragmentManager fm = getActivity().getSupportFragmentManager();
         m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
         if (m_ListStorageFragment == null) {
             m_ListStorageFragment = new ListStorageFragment();
-            m_ListStorageFragment.setListStorage(new ListStorageMock());
+            //m_ListStorageFragment.setListStorage(new ListStorageMock());
             fm.beginTransaction().add(
                     m_ListStorageFragment, ListStorageFragment.TAG_LISTSTORAGE)
                     .commit();
-        }
+        }*/
 
 
         View rootView = inflater.inflate(R.layout.fragment_list_of_shoppinglists, container, false);
@@ -81,7 +83,7 @@ public  class ListOfShoppingListsFragment extends Fragment {
 
 
         // create adapter for list
-        m_ListRowAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), m_ListStorageFragment.getListStorage());
+        m_ListRowAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), m_ListStorageFragment.getLocalListStorage());
         m_ListView.setAdapter(m_ListRowAdapter);
 
         EventBus.getDefault().register(this);
@@ -93,7 +95,6 @@ public  class ListOfShoppingListsFragment extends Fragment {
         m_ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO: Open shopping list
                 showToast("Shopping list selected, ID: " + id);
                // fm.beginTransaction().replace(R.layout.fragment_list_of_shoppinglists, ShoppingListFragment.newInstance(0, (int) id))
                 //        .addToBackStack(null).commit();

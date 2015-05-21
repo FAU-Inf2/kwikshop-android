@@ -116,7 +116,7 @@ public class ItemDetailsFragment extends Fragment {
         mItem.setBrand(brand_text.getText().toString());
 
         mShoppingList.updateItem(mItem);
-        m_ListStorageFragment.getListStorage().saveList(mShoppingList);
+        m_ListStorageFragment.getLocalListStorage().saveList(mShoppingList);
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
 
         EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, mItem.getId(), mShoppingList.getId()));
@@ -132,8 +132,8 @@ public class ItemDetailsFragment extends Fragment {
         final FragmentManager fm = getActivity().getSupportFragmentManager();
         m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
 
-        mShoppingList = m_ListStorageFragment.getListStorage().loadList(listID);
-        mItem = m_ListStorageFragment.getListStorage().loadList(listID).getItem(itemID);
+        mShoppingList = m_ListStorageFragment.getLocalListStorage().loadList(listID);
+        mItem = m_ListStorageFragment.getLocalListStorage().loadList(listID).getItem(itemID);
 
         // Fill UI elements with data from Item
         productname_text.setText(mItem.getName());

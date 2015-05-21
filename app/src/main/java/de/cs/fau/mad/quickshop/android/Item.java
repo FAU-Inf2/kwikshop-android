@@ -6,8 +6,10 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "item")
 public class Item {
 
+  public static final String FOREIGN_SHOPPINGLIST_FIELD_NAME = "shoppingList";
+
   // TODO: we might want to change the annotation to generatedId = true
-  @DatabaseField(id = true)
+  @DatabaseField(generatedId = true)
   private int id;
 
   @DatabaseField
@@ -38,7 +40,7 @@ public class Item {
    * the ShoppingList, that contains this Item.
     * (Required for ORMLite)
    */
-  @DatabaseField(foreign = true)
+  @DatabaseField(foreign = true, columnName = FOREIGN_SHOPPINGLIST_FIELD_NAME)
   private ShoppingList shoppingList;
 
   public Item() {

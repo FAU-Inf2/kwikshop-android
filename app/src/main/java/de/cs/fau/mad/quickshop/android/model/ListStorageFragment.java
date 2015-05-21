@@ -1,9 +1,15 @@
 package de.cs.fau.mad.quickshop.android.model;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
+import de.cs.fau.mad.quickshop.android.DatabaseHelper;
+import de.cs.fau.mad.quickshop.android.Item;
 import de.cs.fau.mad.quickshop.android.ListStorage;
+import de.cs.fau.mad.quickshop.android.LocalListStorage;
+import de.cs.fau.mad.quickshop.android.ShoppingList;
 
 public class ListStorageFragment extends Fragment {
 
@@ -16,7 +22,9 @@ public class ListStorageFragment extends Fragment {
 
     //region Fields
 
-    private ListStorage m_ListStorage;
+    private static LocalListStorage m_LocalListStorage;
+    private static ListStorageFragment m_ListStorageFragment;
+    private static DatabaseHelper m_DatabaseHelper;
 
     //endregion
 
@@ -34,13 +42,50 @@ public class ListStorageFragment extends Fragment {
 
     //region Public Methods
 
-    public void setListStorage(ListStorage value) {
-        this.m_ListStorage = value;
+    public static LocalListStorage getLocalListStorage() {
+        return m_LocalListStorage;
     }
 
+    public static DatabaseHelper getDatabaseHelper() {
+        return m_DatabaseHelper;
+    }
 
-    public ListStorage getListStorage() {
-        return this.m_ListStorage;
+    public static ListStorageFragment getListStorageFragment() {
+        return m_ListStorageFragment;
+    }
+
+    public void SetupLocalListStorageFragment(FragmentManager fm, Context context) {
+        // ListStorage is already created? -> Nothing to do
+        if(m_LocalListStorage != null)
+            return;
+
+        // Our ListStorage needs a DatabaseHelper
+        if(m_DatabaseHelper == null)
+            m_DatabaseHelper = new DatabaseHelper(context);
+
+        // Find / create the ListStorageFragment
+        m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
+        if (m_ListStorageFragment == null) {
+            m_ListStorageFragment = new ListStorageFragment();
+
+            fm.beginTransaction().add(
+                    m_ListStorageFragment, ListStorageFragment.TAG_LISTSTORAGE)
+                    .commit();
+        }
+
+        // Create ListStorage
+        m_LocalListStorage = new LocalListStorage();
+
+        // TODO: Remove this - Creates a test list
+        if(m_LocalListStorage.getAllLists().size() == 0) {
+            int m = m_LocalListStorage.createList();
+            ShoppingList list = m_LocalListStorage.loadList(m);
+            list.setName("DB List 1");
+            Item i1 = new Item();
+            i1.setName("DB Item 1");
+            list.addItem(i1);
+            list.save();
+        }
     }
 
     //endregion

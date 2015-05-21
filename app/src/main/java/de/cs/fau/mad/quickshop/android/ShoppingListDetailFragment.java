@@ -14,9 +14,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.messages.ItemChangeType;
+import de.cs.fau.mad.quickshop.android.messages.ItemChangedEvent;
+import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangeType;
+import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.model.mock.ListStorageMock;
 import de.cs.fau.mad.quickshop.android.interfaces.ISaveCancelActivity;
+import de.greenrobot.event.EventBus;
 
 public class ShoppingListDetailFragment extends Fragment {
 
@@ -67,17 +72,17 @@ public class ShoppingListDetailFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.activity_shopping_list_detail, container, false);
 
+        new ListStorageFragment().SetupLocalListStorageFragment(getActivity().getSupportFragmentManager(), getActivity().getApplicationContext());
 
-        FragmentManager fm = getActivity().getSupportFragmentManager();
+        /*FragmentManager fm = getActivity().getSupportFragmentManager();
         m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
         if (m_ListStorageFragment == null) {
             m_ListStorageFragment = new ListStorageFragment();
-            m_ListStorageFragment.setListStorage(new ListStorageMock());
+            //m_ListStorageFragment.setListStorage(new ListStorageMock());
             fm.beginTransaction().add(
                     m_ListStorageFragment, ListStorageFragment.TAG_LISTSTORAGE)
                     .commit();
-        }
-
+        }*/
 
         Intent intent = getActivity().getIntent();
 
@@ -88,12 +93,11 @@ public class ShoppingListDetailFragment extends Fragment {
 
         } else {
 
-            shoppingListId = m_ListStorageFragment.getListStorage().createList();
+            shoppingListId = m_ListStorageFragment.getLocalListStorage().createList();
             m_IsNewList = true;
         }
 
-        m_ShoppingList = m_ListStorageFragment.getListStorage().loadList(shoppingListId);
-
+        m_ShoppingList = m_ListStorageFragment.getLocalListStorage().loadList(shoppingListId);
 
         m_TextView_ShoppingListName = (TextView) rootView.findViewById(R.id.textView_ShoppingListName);
         m_TextView_ShoppingListName.setFocusable(true);
@@ -117,11 +121,14 @@ public class ShoppingListDetailFragment extends Fragment {
             deleteButton.setVisibility(View.VISIBLE);
         }
 
-
         attachEventHandlers();
 
-
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     //endregion
@@ -129,12 +136,8 @@ public class ShoppingListDetailFragment extends Fragment {
 
     //region Private Methods
 
-    //region Private Methods
-
 
     private void attachEventHandlers() {
-
-
         Activity activity = getActivity();
         if (activity instanceof ISaveCancelActivity) {
             ISaveCancelActivity saveCancelActivity = (ISaveCancelActivity) activity;
@@ -145,8 +148,6 @@ public class ShoppingListDetailFragment extends Fragment {
                     onSave();
                 }
             });
-
-
             saveCancelActivity.setOnCancelClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -160,13 +161,12 @@ public class ShoppingListDetailFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                m_ListStorageFragment.getListStorage().deleteList(m_ShoppingList.getId());
+                m_ListStorageFragment.getLocalListStorage().deleteList(m_ShoppingList.getId());
                 getActivity().finish();
             }
         });
 
     }
-
 
     private void onCancel() {
         getActivity().finish();
@@ -174,7 +174,10 @@ public class ShoppingListDetailFragment extends Fragment {
 
     private void onSave() {
         m_ShoppingList.setName(m_TextView_ShoppingListName.getText().toString());
-        m_ListStorageFragment.getListStorage().saveList(m_ShoppingList);
+        m_ListStorageFragment.getLocalListStorage().saveList(m_ShoppingList);
+
+        EventBus.getDefault().post(new ShoppingListChangedEvent(m_ShoppingList.getId(), ShoppingListChangeType.PropertiesModified));
+
         getActivity().finish();
     }
 

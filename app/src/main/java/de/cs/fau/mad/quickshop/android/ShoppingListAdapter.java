@@ -31,7 +31,7 @@ public class ShoppingListAdapter extends ArrayAdapter<String> {
     public long getItemId(int position) {
         //String item = getItem(position);
         //return mIdMap.get(item);
-        return shoppingList.getItem(position).getId();
+        return shoppingList.getItemByPosition(position).getId();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ShoppingListAdapter extends ArrayAdapter<String> {
         //display items in the list
         TextView shoppingListNameView = (TextView) view.findViewById(R.id.tvItem);
 
-        shoppingListNameView.setText(shoppingList.getItem(position).getName());
+        shoppingListNameView.setText(shoppingList.getItemByPosition(position).getName());
 
         return view;
     }

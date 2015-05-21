@@ -20,7 +20,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
     private static final String DATABASE_NAME = "quickshop.db";
 
-    private static final int DATABASE_VERSION = 1; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 2; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -37,6 +37,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private Dao<Group, Integer> groupDao = null;
     private RuntimeExceptionDao<Group, Integer> groupRuntimeDao = null;
 
+    private Dao<CalendarEventDate, Integer> calendarDao = null;
+    private RuntimeExceptionDao<CalendarEventDate, Integer> calendarRuntimeDao = null;
 
 
     public DatabaseHelper(Context context)  {
@@ -52,6 +54,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.createTable(connectionSource, ShoppingList.class);
             TableUtils.createTable(connectionSource, Unit.class);
             TableUtils.createTable(connectionSource, Group.class);
+            TableUtils.createTable(connectionSource, CalendarEventDate.class);
 
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
@@ -69,6 +72,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.dropTable(connectionSource, ShoppingList.class, true);
             TableUtils.dropTable(connectionSource, Unit.class, true);
             TableUtils.dropTable(connectionSource, Group.class, true);
+            TableUtils.dropTable(connectionSource, CalendarEventDate.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(db, connectionSource);
         } catch (SQLException e) {
@@ -148,6 +152,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         return groupRuntimeDao;
     }
 
+    public Dao<CalendarEventDate, Integer> getCalendarDao() throws SQLException {
+        if (calendarDao == null) {
+            calendarDao = getDao(CalendarEventDate.class);
+        }
+        return calendarDao;
+    }
+
+    public RuntimeExceptionDao<CalendarEventDate, Integer> getCalendarRuntimeDao() {
+        if (calendarRuntimeDao == null) {
+            calendarRuntimeDao = getRuntimeExceptionDao(CalendarEventDate.class);
+        }
+        return calendarRuntimeDao;
+    }
+
     @Override
     public void close() {
         super.close();
@@ -165,5 +183,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
         groupDao = null;
         groupRuntimeDao = null;
+
+        calendarDao = null;
+        calendarRuntimeDao = null;
     }
 }

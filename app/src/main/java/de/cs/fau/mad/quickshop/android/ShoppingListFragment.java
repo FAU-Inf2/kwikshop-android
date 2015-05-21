@@ -87,11 +87,21 @@ public class ShoppingListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ListView shoppingListView = (ListView) rootView.findViewById(R.id.list_shoppingList);
 
-        m_ShoppingListAdapter = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList,
-                generateData(m_ListStorageFragment.getListStorage().loadList(listID)),
-                m_ListStorageFragment.getListStorage().loadList(listID));
+        ShoppingList shoppingList = null;
+        try {
+            shoppingList = m_ListStorageFragment.getListStorage().loadList(listID);
+        } catch (IllegalArgumentException ex) { //TODO: we should probably introduce our own exception types
+            showToast(ex.getMessage());
+            fm.beginTransaction().replace(R.id.container, ListOfShoppingListsFragment.newInstance(1)).commit();
+        }
 
-        shoppingListView.setAdapter(m_ShoppingListAdapter);
+        if (shoppingList != null) {
+
+            m_ShoppingListAdapter = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList,
+                    generateData(shoppingList),
+                    shoppingList);
+
+            shoppingListView.setAdapter(m_ShoppingListAdapter);
 
 
     /*
@@ -107,17 +117,18 @@ public class ShoppingListFragment extends Fragment {
         });
     */
 
-        //Setting spinner adapter to sort by button
-        Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.sort_by_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+            //Setting spinner adapter to sort by button
+            Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
+            // Create an ArrayAdapter using the string array and a default spinner layout
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.sort_by_array, android.R.layout.simple_spinner_item);
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Apply the adapter to the spinner
+            spinner.setAdapter(adapter);
 
-        EventBus.getDefault().register(this);
+            EventBus.getDefault().register(this);
+        }
 
         return rootView;
     }
@@ -163,6 +174,19 @@ public class ShoppingListFragment extends Fragment {
         }
         return items;
     }
+
+    //region Private Methods
+
+    private void showToast(String text) {
+
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(getActivity(), text, duration);
+        toast.show();
+    }
+
+    //endregion
+
 
     //endregion
 

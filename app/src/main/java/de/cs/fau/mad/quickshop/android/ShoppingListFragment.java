@@ -3,6 +3,7 @@ package de.cs.fau.mad.quickshop.android;
 
 import android.app.Activity;
 //import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -92,7 +93,8 @@ public class ShoppingListFragment extends Fragment {
             shoppingList = m_ListStorageFragment.getListStorage().loadList(listID);
         } catch (IllegalArgumentException ex) { //TODO: we should probably introduce our own exception types
             showToast(ex.getMessage());
-          //  fm.beginTransaction().replace(R.id.container, ListOfShoppingListsFragment.newInstance(1)).commit();
+            Intent intent = new Intent(getActivity(), ShoppingListActivity.class);
+            startActivity(intent);
         }
 
         if (shoppingList != null) {
@@ -104,18 +106,18 @@ public class ShoppingListFragment extends Fragment {
             shoppingListView.setAdapter(m_ShoppingListAdapter);
 
 
-    /*
+
         // OnClickListener to open the item details view
         shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Open item details view
                 Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
-                fm.beginTransaction().replace(container, ItemDetailsFragment.newInstance(listID, (int) id))
+                fm.beginTransaction().replace(BaseActivity.frameLayout.getId() , ItemDetailsFragment.newInstance(listID, (int) id))
                         .addToBackStack(null).commit();
             }
         });
-    */
+
 
             //Setting spinner adapter to sort by button
             Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);

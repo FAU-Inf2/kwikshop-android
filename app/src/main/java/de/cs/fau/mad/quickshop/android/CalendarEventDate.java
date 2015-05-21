@@ -1,12 +1,27 @@
 package de.cs.fau.mad.quickshop.android;
 
+import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.TimePickerDialog;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.CalendarContract;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 @DatabaseTable(tableName = "calendarEvent")
-public class CalendarEventDate{
+public class CalendarEventDate extends Activity{
     //TODO: we might want to change it to generatedId = true
     @DatabaseField(id = true)
     private long calendarEventId = -1;
@@ -129,8 +144,6 @@ public class CalendarEventDate{
 
 
     }
-
-
 
 }
 

@@ -30,6 +30,7 @@ public  class ListOfShoppingListsFragment extends Fragment {
     //region Constants
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final String SHOPPING_LIST_ID = "shopping_list_id";
 
     //endregion
 
@@ -94,8 +95,13 @@ public  class ListOfShoppingListsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO: Open shopping list
                 showToast("Shopping list selected, ID: " + id);
-                fm.beginTransaction().replace(R.id.container, ShoppingListFragment.newInstance(0, (int) id))
-                        .addToBackStack(null).commit();
+               // fm.beginTransaction().replace(R.layout.fragment_list_of_shoppinglists, ShoppingListFragment.newInstance(0, (int) id))
+                //        .addToBackStack(null).commit();
+
+                Intent intent = new Intent(getActivity(), ShoppingListActivity.class);
+                intent.putExtra(SHOPPING_LIST_ID,(int) id);
+                startActivity(intent);
+
             }
         });
 
@@ -126,12 +132,7 @@ public  class ListOfShoppingListsFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
 
-    }
 
     @Override
     public void onDestroyView() {

@@ -11,14 +11,18 @@ import android.widget.TextView;
 import cs.fau.mad.quickshop_android.R;
 
 
-public class AboutActivity extends ActionBarActivity {
+public class AboutActivity extends BaseActivity  {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
+
+        // set layout in frameLayout from BaseActivity to access the navigation Drawer
+        // do not use setContentView()!
+        getLayoutInflater().inflate(R.layout.activity_about, frameLayout);
+        mDrawerList.setItemChecked(position, true);
+        setTitle(listArray.get(position));
 
         TextView versionView = (TextView) findViewById(R.id.about_textView_Version);
         try {

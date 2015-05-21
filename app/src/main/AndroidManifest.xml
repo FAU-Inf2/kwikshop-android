@@ -11,14 +11,14 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="de.cs.fau.mad.quickshop.android.MainActivity"
-            android:label="@string/app_name" >
+            android:name="de.cs.fau.mad.quickshop.android.ListOfShoppingListsActivity"
+            android:label="@string/title_activity_ListList" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="de.cs.fau.mad.quickshop.android.AboutActivity"
             android:label="@string/title_activity_about" >
@@ -26,6 +26,10 @@
         <activity
             android:name="de.cs.fau.mad.quickshop.android.ShoppingListDetailActivity"
             android:label="@string/title_activity_shopping_list_detail" >
+        </activity>
+        <activity
+            android:name="de.cs.fau.mad.quickshop.android.ShoppingListActivity"
+            android:label="@string/title_activity_ShoppingList" >
         </activity>
     </application>
 

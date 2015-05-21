@@ -6,25 +6,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
 import cs.fau.mad.quickshop_android.R;
 
 /**
  * Created by Robert on 01.05.2015.
  */
-public class ListRowAdapter extends ArrayAdapter<String>{
+public class NavigationDrawerAdapter extends ArrayAdapter<String> {
 
     private ArrayList<String> mList;
-    private int row;
+    private int res;
     private Activity activity;
+    private int[] icons = {R.drawable.ic_list, R.drawable.ic_list, R.drawable.ic_list};
 
-    public ListRowAdapter(Activity act, int resource, ArrayList<String> objects) {
+
+    public NavigationDrawerAdapter(Activity act, int resource, ArrayList<String> objects) {
         super(act, resource, objects);
             activity = act;
-            row = resource;
+            res = resource;
             mList = objects;
     }
 
@@ -37,23 +40,26 @@ public class ListRowAdapter extends ArrayAdapter<String>{
 
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(row, null);
+            view = inflater.inflate(res, null);
 
             holder = new ViewHolder();
-            holder.tvItem = (TextView) view.findViewById(R.id.tvItem);
+            holder.tvItemName = (TextView) view.findViewById(R.id.tvNavItemName);
+            holder.ivItemIcon = (ImageView) view.findViewById(R.id.ivNavItemIcon);
 
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
         }
 
-        holder.tvItem.setText(mList.get(position));
+        holder.tvItemName.setText(mList.get(position));
+        holder.ivItemIcon.setImageResource(icons[position]);
 
         return view;
 
     }
 
     public class ViewHolder {
-        public TextView tvItem;
+        public TextView tvItemName;
+        public ImageView ivItemIcon;
     }
 }

@@ -102,12 +102,6 @@ public class ItemDetailsFragment extends Fragment {
         return mFragmentView;
     }
 
-    /*@Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_LISTID));
-    }*/
 
     @Override
     public void onDetach() {

@@ -71,7 +71,7 @@ public class ShoppingListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 
@@ -92,7 +92,7 @@ public class ShoppingListFragment extends Fragment {
             shoppingList = m_ListStorageFragment.getListStorage().loadList(listID);
         } catch (IllegalArgumentException ex) { //TODO: we should probably introduce our own exception types
             showToast(ex.getMessage());
-            fm.beginTransaction().replace(R.id.container, ListOfShoppingListsFragment.newInstance(1)).commit();
+          //  fm.beginTransaction().replace(R.id.container, ListOfShoppingListsFragment.newInstance(1)).commit();
         }
 
         if (shoppingList != null) {

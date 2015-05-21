@@ -63,4 +63,10 @@
     <string-array name="sort_by_array">
         <item>Magic</item>
     </string-array>
+
+
+    <!-- Settings -->
+    <string name="settings_option_1_name">Option 1</string>
+    <string name="settings_option_1_desc">Description of option 1</string>
+
 </resources>

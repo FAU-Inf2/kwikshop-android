@@ -15,7 +15,7 @@
     <string name="title_activity_ListList">QuickShop</string>
     <string name="title_activity_AddListOfShoppingLists">Add List of Shopping Lists</string>
     <string name="title_activity_ShoppingList">Shopping List</string>
-
+    <string name="title_activity_SettingsActivity">Settings</string>
 
     <!-- Navigation Drawer -->
     <string name="open_drawer">open</string>

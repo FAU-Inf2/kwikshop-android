@@ -51,13 +51,11 @@ public class BaseActivity extends ActionBarActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        // set a custom shadow that overlays the main content when the drawer opens
-        //mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-
 
         //Add Names to ArrayList
         listArray.add("About");
         listArray.add("Shopping List");
+        listArray.add("Settings");
 
 
         // set up the drawer's list view with items and click listener
@@ -151,6 +149,9 @@ public class BaseActivity extends ActionBarActivity {
                 break;
             case 1:
                 startActivity(new Intent(this, ListOfShoppingListsActivity.class));
+                break;
+            case 2:
+                startActivity(new Intent(this, SettingActivity.class));
                 break;
 
 

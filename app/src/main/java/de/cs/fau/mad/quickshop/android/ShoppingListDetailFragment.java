@@ -53,6 +53,7 @@ public class ShoppingListDetailFragment extends Fragment {
     //endregion
 
 
+
     public static ShoppingListDetailFragment newInstance(int sectionNumber) {
 
         ShoppingListDetailFragment fragment = new ShoppingListDetailFragment();

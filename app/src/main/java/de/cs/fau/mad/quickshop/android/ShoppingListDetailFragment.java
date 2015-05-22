@@ -114,6 +114,7 @@ public class ShoppingListDetailFragment extends Fragment {
             createCalendarEvent.setText(R.string.edit_calendar_event);
         }
 
+
         Button deleteButton = (Button) rootView.findViewById(R.id.button_delete);
         if (m_IsNewList) {
             deleteButton.setVisibility(View.GONE);

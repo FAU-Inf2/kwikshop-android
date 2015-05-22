@@ -3,6 +3,9 @@ package de.cs.fau.mad.quickshop.android.model;
 import com.j256.ormlite.stmt.DeleteBuilder;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 
 import de.cs.fau.mad.quickshop.android.common.Item;
@@ -23,17 +26,19 @@ public class LocalListStorage extends ListStorage {
     }
 
     @Override
-    public Vector getAllLists() {
-        Vector<ShoppingList> lists = new Vector<>();
+    public List<ShoppingList> getAllLists() {
         try {
+            ArrayList<ShoppingList> lists = new ArrayList<>();
             for(ShoppingList list : ListStorageFragment.getDatabaseHelper().getShoppingListDao()) {
                 lists.add(list);
             }
+            return Collections.unmodifiableList(lists);
+
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
-        return lists;
+
     }
 
     @Override

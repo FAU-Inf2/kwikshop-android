@@ -1,6 +1,6 @@
 package de.cs.fau.mad.quickshop.android.model;
 
-import java.util.Vector;
+import java.util.List;
 
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 
@@ -14,7 +14,7 @@ public abstract class ListStorage {
   /** 
    *  returns a Vector of list ids
    */
-  public abstract Vector<ShoppingList> getAllLists();
+  public abstract List<ShoppingList> getAllLists();
 
   /** 
    *  returns the list identified by id

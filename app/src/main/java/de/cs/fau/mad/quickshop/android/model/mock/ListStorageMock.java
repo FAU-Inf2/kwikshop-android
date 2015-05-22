@@ -1,8 +1,9 @@
 package de.cs.fau.mad.quickshop.android.model.mock;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
-import java.util.Vector;
 
 import de.cs.fau.mad.quickshop.android.model.ListStorage;
 import de.cs.fau.mad.quickshop.android.common.Item;
@@ -53,8 +54,8 @@ public class ListStorageMock extends ListStorage {
     }
 
     @Override
-    public Vector<ShoppingList> getAllLists() {
-        return new Vector<>(m_Lists);
+    public List<ShoppingList> getAllLists() {
+        return Collections.unmodifiableList(m_Lists);
     }
 
     @Override

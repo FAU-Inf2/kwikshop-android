@@ -1,4 +1,6 @@
-package de.cs.fau.mad.quickshop.android;
+package de.cs.fau.mad.quickshop.android.common;
+
+import de.cs.fau.mad.quickshop.android.common.Account;
 
 public class LocalAccount extends Account {
     @Override

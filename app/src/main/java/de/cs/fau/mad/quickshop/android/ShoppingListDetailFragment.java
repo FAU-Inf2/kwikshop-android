@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +12,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import cs.fau.mad.quickshop_android.R;
-import de.cs.fau.mad.quickshop.android.messages.ItemChangeType;
-import de.cs.fau.mad.quickshop.android.messages.ItemChangedEvent;
+import de.cs.fau.mad.quickshop.android.common.CalendarEventDate;
+import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangeType;
 import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
-import de.cs.fau.mad.quickshop.android.model.mock.ListStorageMock;
 import de.cs.fau.mad.quickshop.android.interfaces.ISaveCancelActivity;
 import de.greenrobot.event.EventBus;
 

@@ -6,10 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import de.cs.fau.mad.quickshop.android.DatabaseHelper;
-import de.cs.fau.mad.quickshop.android.Item;
-import de.cs.fau.mad.quickshop.android.ListStorage;
+import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.LocalListStorage;
-import de.cs.fau.mad.quickshop.android.ShoppingList;
+import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 
 public class ListStorageFragment extends Fragment {
 

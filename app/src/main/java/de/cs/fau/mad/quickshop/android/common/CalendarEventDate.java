@@ -1,4 +1,4 @@
-package de.cs.fau.mad.quickshop.android;
+package de.cs.fau.mad.quickshop.android.common;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

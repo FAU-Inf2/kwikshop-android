@@ -6,14 +6,19 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.sql.SQLException;
+
+import de.cs.fau.mad.quickshop.android.common.AccountID;
+import de.cs.fau.mad.quickshop.android.common.CalendarEventDate;
+import de.cs.fau.mad.quickshop.android.common.Group;
+import de.cs.fau.mad.quickshop.android.common.Item;
+import de.cs.fau.mad.quickshop.android.common.ShoppingList;
+import de.cs.fau.mad.quickshop.android.common.Unit;
 
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper{

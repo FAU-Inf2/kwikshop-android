@@ -1,18 +1,18 @@
-package de.cs.fau.mad.quickshop.android;
+package de.cs.fau.mad.quickshop.android.common;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "unit")
-public class Unit {
+@DatabaseTable(tableName = "group")
+public class Group {
   @DatabaseField(generatedId = true)
   private int id;
 
   @DatabaseField(canBeNull = false)
   private String name;
 
-  public Unit(){
-      // Default no-arg constructor for generating Units, required for ORMLite
+  public Group() {
+      // Default no-arg constructor for generating Groups, required for ORMLite
   }
 
   public int getId() {

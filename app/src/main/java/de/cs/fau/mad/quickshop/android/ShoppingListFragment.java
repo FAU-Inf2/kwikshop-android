@@ -1,7 +1,6 @@
 package de.cs.fau.mad.quickshop.android;
 
 
-import android.app.Activity;
 //import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,10 +18,11 @@ import android.support.v4.app.Fragment;
 import java.util.ArrayList;
 
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.common.Item;
+import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.messages.ItemChangedEvent;
 import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
-import de.cs.fau.mad.quickshop.android.model.mock.ListStorageMock;
 import de.greenrobot.event.EventBus;
 
 

@@ -6,15 +6,13 @@ import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import cs.fau.mad.quickshop_android.R;
-import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangedEvent;
+import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 
 /**
  * ListAdapter for displaying the list of shopping lists

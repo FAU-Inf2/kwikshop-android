@@ -5,8 +5,8 @@ import java.util.Random;
 import java.util.Vector;
 
 import de.cs.fau.mad.quickshop.android.ListStorage;
-import de.cs.fau.mad.quickshop.android.Item;
-import de.cs.fau.mad.quickshop.android.ShoppingList;
+import de.cs.fau.mad.quickshop.android.common.Item;
+import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 
 public class ListStorageMock extends ListStorage {
 

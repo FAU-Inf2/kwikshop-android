@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 
 /**
  * Created by Nicolas on 15/05/2015.

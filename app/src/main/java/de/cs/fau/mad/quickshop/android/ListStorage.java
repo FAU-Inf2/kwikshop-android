@@ -2,6 +2,8 @@ package de.cs.fau.mad.quickshop.android;
 
 import java.util.Vector;
 
+import de.cs.fau.mad.quickshop.android.common.ShoppingList;
+
 public abstract class ListStorage {
 
   /** 

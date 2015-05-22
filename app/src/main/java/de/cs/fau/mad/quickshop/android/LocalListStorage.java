@@ -1,11 +1,12 @@
 package de.cs.fau.mad.quickshop.android;
 
-import android.support.v4.app.FragmentManager;
-
 import com.j256.ormlite.stmt.DeleteBuilder;
 
 import java.sql.SQLException;
 import java.util.Vector;
+
+import de.cs.fau.mad.quickshop.android.common.Item;
+import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 
 public class LocalListStorage extends ListStorage {

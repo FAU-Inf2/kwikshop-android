@@ -1,4 +1,4 @@
-package de.cs.fau.mad.quickshop.android;
+package de.cs.fau.mad.quickshop.android.common;
 
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
@@ -7,10 +7,13 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.Iterator;
-import java.util.Vector;
 
+import de.cs.fau.mad.quickshop.android.LocalListStorage;
+import de.cs.fau.mad.quickshop.android.common.Account;
+import de.cs.fau.mad.quickshop.android.common.AccountID;
+import de.cs.fau.mad.quickshop.android.common.CalendarEventDate;
+import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 
 @DatabaseTable(tableName = "shoppingList")

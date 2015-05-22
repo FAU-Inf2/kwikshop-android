@@ -1,6 +1,5 @@
 package de.cs.fau.mad.quickshop.android;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,9 +14,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.Collection;
-
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.common.Item;
+import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.messages.ItemChangeType;
 import de.cs.fau.mad.quickshop.android.messages.ItemChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;

@@ -9,11 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-import de.cs.fau.mad.quickshop.android.LocalListStorage;
-import de.cs.fau.mad.quickshop.android.common.Account;
-import de.cs.fau.mad.quickshop.android.common.AccountID;
-import de.cs.fau.mad.quickshop.android.common.CalendarEventDate;
-import de.cs.fau.mad.quickshop.android.common.Item;
+import de.cs.fau.mad.quickshop.android.model.LocalListStorage;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 
 @DatabaseTable(tableName = "shoppingList")

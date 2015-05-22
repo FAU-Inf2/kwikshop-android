@@ -1,10 +1,8 @@
 package de.cs.fau.mad.quickshop.android;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +14,8 @@ import com.melnykov.fab.FloatingActionButton;
 
 
 import cs.fau.mad.quickshop_android.R;
-import de.cs.fau.mad.quickshop.android.messages.ShoppingListChangedEvent;
+import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
-import de.cs.fau.mad.quickshop.android.model.mock.ListStorageMock;
 import de.greenrobot.event.EventBus;
 
 /**

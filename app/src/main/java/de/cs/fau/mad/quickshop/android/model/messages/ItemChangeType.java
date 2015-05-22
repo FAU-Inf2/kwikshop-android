@@ -1,4 +1,4 @@
-package de.cs.fau.mad.quickshop.android.messages;
+package de.cs.fau.mad.quickshop.android.model.messages;
 
 public enum ItemChangeType {
 

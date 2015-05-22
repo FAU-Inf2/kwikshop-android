@@ -1,4 +1,4 @@
-package de.cs.fau.mad.quickshop.android;
+package de.cs.fau.mad.quickshop.android.model;
 
 import android.database.sqlite.SQLiteDatabase;
 

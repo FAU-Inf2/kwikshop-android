@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
 
-import de.cs.fau.mad.quickshop.android.ListStorage;
+import de.cs.fau.mad.quickshop.android.model.ListStorage;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 

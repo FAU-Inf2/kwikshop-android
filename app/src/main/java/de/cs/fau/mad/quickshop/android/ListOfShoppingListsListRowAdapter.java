@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
+import de.cs.fau.mad.quickshop.android.model.ListStorage;
 
 /**
  * ListAdapter for displaying the list of shopping lists

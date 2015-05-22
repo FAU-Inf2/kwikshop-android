@@ -68,6 +68,7 @@ public class ShoppingListDetailFragment extends Fragment {
     //endregion
 
 
+
     public static ShoppingListDetailFragment newInstance(int sectionNumber) {
 
         ShoppingListDetailFragment fragment = new ShoppingListDetailFragment();
@@ -128,6 +129,7 @@ public class ShoppingListDetailFragment extends Fragment {
         if (m_ShoppingList.getCalendarEventDate().getCalendarEventId() != -1) {
             createCalendarEvent.setText(R.string.edit_calendar_event);
         }
+
 
         Button deleteButton = (Button) rootView.findViewById(R.id.button_delete);
         if (m_IsNewList) {

@@ -17,7 +17,7 @@ import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangeType;
 import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
-import de.cs.fau.mad.quickshop.android.interfaces.ISaveCancelActivity;
+import de.cs.fau.mad.quickshop.android.view.interfaces.SaveCancelActivity;
 import de.greenrobot.event.EventBus;
 
 public class ShoppingListDetailFragment extends Fragment {
@@ -138,8 +138,8 @@ public class ShoppingListDetailFragment extends Fragment {
 
     private void attachEventHandlers() {
         Activity activity = getActivity();
-        if (activity instanceof ISaveCancelActivity) {
-            ISaveCancelActivity saveCancelActivity = (ISaveCancelActivity) activity;
+        if (activity instanceof SaveCancelActivity) {
+            SaveCancelActivity saveCancelActivity = (SaveCancelActivity) activity;
 
             saveCancelActivity.setOnSaveClickListener(new View.OnClickListener() {
                 @Override

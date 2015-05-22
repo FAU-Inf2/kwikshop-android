@@ -6,10 +6,10 @@ import android.view.View;
 import android.widget.Button;
 
 import cs.fau.mad.quickshop_android.R;
-import de.cs.fau.mad.quickshop.android.interfaces.ISaveCancelActivity;
+import de.cs.fau.mad.quickshop.android.view.interfaces.SaveCancelActivity;
 
 
-public class ShoppingListDetailActivity extends BaseActivity implements ISaveCancelActivity {
+public class ShoppingListDetailActivity extends BaseActivity implements SaveCancelActivity {
 
 
     //region Constants

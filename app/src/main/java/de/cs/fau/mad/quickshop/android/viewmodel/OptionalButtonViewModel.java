@@ -2,7 +2,7 @@ package de.cs.fau.mad.quickshop.android.viewmodel;
 
 import de.cs.fau.mad.quickshop.android.viewmodel.common.Command;
 
-public class OptionalButtonViewModel {
+public class OptionalButtonViewModel<T> {
 
     //listener interface
     public interface Listener {
@@ -14,10 +14,10 @@ public class OptionalButtonViewModel {
     private Listener listener;
 
     private boolean isAvailable;
-    private final Command command;
+    private final Command<T> command;
 
 
-    public OptionalButtonViewModel(Command command) {
+    public OptionalButtonViewModel(Command<T> command) {
         if (command == null) {
             throw new IllegalArgumentException("'command' must not be null");
         }
@@ -39,7 +39,7 @@ public class OptionalButtonViewModel {
     }
 
 
-    public Command getCommand() {
+    public Command<T> getCommand() {
         return command;
     }
 }

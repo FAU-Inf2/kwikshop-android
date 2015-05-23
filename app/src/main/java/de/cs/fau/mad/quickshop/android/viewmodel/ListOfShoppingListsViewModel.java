@@ -7,7 +7,7 @@ import de.cs.fau.mad.quickshop.android.model.ListStorage;
 import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.viewmodel.common.Command;
 import de.cs.fau.mad.quickshop.android.viewmodel.common.ObservableArrayList;
-import de.cs.fau.mad.quickshop.android.viewmodel.common.ViewManagerInterface;
+import de.cs.fau.mad.quickshop.android.viewmodel.common.ViewLauncher;
 import de.cs.fau.mad.quickshop.android.viewmodel.common.ViewModelBase;
 import de.greenrobot.event.EventBus;
 
@@ -20,18 +20,31 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
     }
 
     // infrastructure references
-    private ViewManagerInterface viewManager;
+    private ViewLauncher viewManager;
     private ListStorage listStorage = null; //TODO: initialize
     private Listener listener;
 
     // backing fields for properties
     private ObservableArrayList<ShoppingList> shoppingLists;
-    private final Command addShoppingListCommand = new Command() {
+    private final Command addShoppingListCommand = new Command<Object>() {
         @Override
-        public void execute() {
-            viewManager.showView(new ShoppingListDetailsViewModel());
+        public void execute(Object parameter) {
+            viewManager.showNewShoppingListView();
         }
     };
+    private final Command<Integer> selectShoppingListCommand = new Command<Integer>() {
+        @Override
+        public void execute(Integer shoppingListId) {
+
+        }
+    };
+    private final Command selectShoppingListDetailsCommand = new Command<Integer>() {
+        @Override
+        public void execute(Integer shoppingListId) {
+
+        }
+    };
+
 
 
     public ListOfShoppingListsViewModel() {

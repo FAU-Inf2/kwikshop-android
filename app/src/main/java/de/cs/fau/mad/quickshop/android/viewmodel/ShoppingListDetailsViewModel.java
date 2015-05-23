@@ -50,31 +50,31 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
         this.saveCommand = new Command() {
             @Override
-            public void execute() {
+            public void execute(Object parameter) {
                 saveCommandExecute();
             }
         };
         this.cancelCommand = new Command() {
             @Override
-            public void execute() {
+            public void execute(Object parameter) {
                 cancelCommandExecute();
             }
         };
         this.deleteCommand = new Command() {
             @Override
-            public void execute() {
+            public void execute(Object parameter) {
                 deleteCommandExecute();
             }
         };
         this.editCalendarEventCommand = new Command() {
             @Override
-            public void execute() {
+            public void execute(Object parameter) {
                 editCalendarEventCommandExecute();
             }
         };
         this.createCalendarEventCommand = new Command() {
             @Override
-            public void execute() {
+            public void execute(Object parameter) {
                 createCalendarEventCommandExecute();
             }
         };

@@ -43,6 +43,14 @@ public class ObservableArrayList<T> extends ArrayList<T> {
     Listener<T> listener;           //current listener
 
 
+    public ObservableArrayList() {
+        super();
+    }
+
+    public ObservableArrayList(Collection<? extends T> c) {
+        super(c);
+    }
+
 
     public void setListener(final Listener<T> value) {
         this.listener = value;

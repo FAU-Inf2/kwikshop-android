@@ -4,8 +4,6 @@ public abstract class ViewModelBase {
 
     public interface Listener {
 
-        void onNameChanged(String value);
-
         void onFinish();
     }
 

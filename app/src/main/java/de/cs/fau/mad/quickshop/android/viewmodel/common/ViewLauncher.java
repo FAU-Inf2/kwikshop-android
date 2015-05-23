@@ -4,8 +4,10 @@ import de.cs.fau.mad.quickshop.android.viewmodel.ShoppingListDetailsViewModel;
 
 public interface ViewLauncher {
 
-    void showNewShoppingListView();
+    void showAddShoppingListView();
 
     void showShoppingListDetailsView(int shoppingListId);
+
+    void showShoppingList(int shoppingListId);
 
 }

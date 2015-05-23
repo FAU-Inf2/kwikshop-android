@@ -7,36 +7,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
 
 
+import java.util.List;
+
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
+import de.cs.fau.mad.quickshop.android.view.DefaultViewLauncher;
+import de.cs.fau.mad.quickshop.android.viewmodel.ListOfShoppingListsViewModel;
 import de.greenrobot.event.EventBus;
 
 /**
  * Fragment for list of shopping lists
  */
-public  class ListOfShoppingListsFragment extends Fragment {
+public class ListOfShoppingListsFragment extends Fragment implements ListOfShoppingListsViewModel.Listener {
 
 
     //region Constants
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private static final String SHOPPING_LIST_ID = "shopping_list_id";
+
 
     //endregion
 
 
     //region Fields
 
-    private ListStorageFragment m_ListStorageFragment;
     private ListView m_ListView;
-    private ListOfShoppingListsListRowAdapter m_ListRowAdapter;
+    private ListOfShoppingListsViewModel viewModel;
 
     //endregion
 
@@ -61,29 +66,20 @@ public  class ListOfShoppingListsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity().getSupportFragmentManager(), getActivity().getApplicationContext());
 
-        /*final FragmentManager fm = getActivity().getSupportFragmentManager();
-        m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
-        if (m_ListStorageFragment == null) {
-            m_ListStorageFragment = new ListStorageFragment();
-            //m_ListStorageFragment.setListStorage(new ListStorageMock());
-            fm.beginTransaction().add(
-                    m_ListStorageFragment, ListStorageFragment.TAG_LISTSTORAGE)
-                    .commit();
-        }*/
-
+        viewModel = new ListOfShoppingListsViewModel(new DefaultViewLauncher(getActivity()),
+                ListStorageFragment.getLocalListStorage());
+        viewModel.setListener(this);
 
         View rootView = inflater.inflate(R.layout.fragment_list_of_shoppinglists, container, false);
         m_ListView = (ListView) rootView.findViewById(android.R.id.list);
 
 
         // create adapter for list
-        m_ListRowAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), m_ListStorageFragment.getLocalListStorage());
-        m_ListView.setAdapter(m_ListRowAdapter);
+        ListOfShoppingListsListRowAdapter listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists());
+        m_ListView.setAdapter(listAdapter);
 
-        EventBus.getDefault().register(this);
 
 
         // wire up event handlers
@@ -93,12 +89,8 @@ public  class ListOfShoppingListsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 showToast("Shopping list selected, ID: " + id);
-               // fm.beginTransaction().replace(R.layout.fragment_list_of_shoppinglists, ShoppingListFragment.newInstance(0, (int) id))
-                //        .addToBackStack(null).commit();
 
-                Intent intent = new Intent(getActivity(), ShoppingListActivity.class);
-                intent.putExtra(SHOPPING_LIST_ID,(int) id);
-                startActivity(intent);
+                viewModel.getSelectShoppingListCommand().execute((int) id);
 
             }
         });
@@ -108,10 +100,7 @@ public  class ListOfShoppingListsFragment extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent = new Intent(getActivity(), ShoppingListDetailActivity.class)
-                        .putExtra(ShoppingListDetailActivity.EXTRA_SHOPPINGLISTID, id);
-
-                startActivity(intent);
+                viewModel.getSelectShoppingListDetailsCommand().execute((int) id);
                 return true;
             }
         });
@@ -121,9 +110,7 @@ public  class ListOfShoppingListsFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent = new Intent(getActivity(), ShoppingListDetailActivity.class);
-                startActivity(intent);
+                viewModel.getAddShoppingListCommand().execute(null);
             }
         });
 
@@ -132,25 +119,11 @@ public  class ListOfShoppingListsFragment extends Fragment {
 
 
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        EventBus.getDefault().unregister(this);
-    }
 
     //endregion
 
 
-    //region Event Handlers
 
-    public void onEvent(ShoppingListChangedEvent ev) {
-
-        if(m_ListRowAdapter != null) {
-            m_ListRowAdapter.notifyDataSetChanged();
-        }
-    }
-
-    //endregion
 
 
     //region Private Methods
@@ -164,5 +137,20 @@ public  class ListOfShoppingListsFragment extends Fragment {
     }
 
     //endregion
+
+    @Override
+    public void onShoppingListsChanged(List<ShoppingList> newValue) {
+
+        m_ListView.setAdapter(new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists()));
+    }
+
+
+    @Override
+    public void onFinish() {
+
+    }
+
+
+
 
 }

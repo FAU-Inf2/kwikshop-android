@@ -20,8 +20,8 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
     }
 
     // infrastructure references
-    private ViewLauncher viewManager;
-    private ListStorage listStorage = null; //TODO: initialize
+    private ViewLauncher viewLauchner;
+    private ListStorage listStorage;
     private Listener listener;
 
     // backing fields for properties
@@ -29,25 +29,28 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
     private final Command addShoppingListCommand = new Command<Object>() {
         @Override
         public void execute(Object parameter) {
-            viewManager.showNewShoppingListView();
+            viewLauchner.showAddShoppingListView();
         }
     };
     private final Command<Integer> selectShoppingListCommand = new Command<Integer>() {
         @Override
         public void execute(Integer shoppingListId) {
-
+            viewLauchner.showShoppingList(shoppingListId);
         }
     };
     private final Command selectShoppingListDetailsCommand = new Command<Integer>() {
         @Override
         public void execute(Integer shoppingListId) {
-
+            viewLauchner.showShoppingListDetailsView(shoppingListId);
         }
     };
 
 
+    public ListOfShoppingListsViewModel(ViewLauncher viewLauncher, ListStorage listStorage) {
 
-    public ListOfShoppingListsViewModel() {
+        this.viewLauchner = viewLauncher;
+        this.listStorage = listStorage;
+        setShoppingLists(new ObservableArrayList<ShoppingList>(listStorage.getAllLists()));
 
         EventBus.getDefault().register(this);
 
@@ -74,23 +77,28 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         }
     }
 
-    public Command getAddShoppingListCommand() {
+    public Command<Integer> getAddShoppingListCommand() {
         return this.addShoppingListCommand;
     }
 
+    public Command<Integer> getSelectShoppingListCommand() {
+        return this.selectShoppingListCommand;
+    }
+
+    public Command getSelectShoppingListDetailsCommand() {
+        return this.selectShoppingListDetailsCommand;
+    }
 
     @Override
     protected Listener getListener() {
         return listener;
     }
 
-
     public void onEvent(ShoppingListChangedEvent ev) {
 
         //TODO: only update list entries that were changed, instead of recreating the entire list
         setShoppingLists(new ObservableArrayList<>(listStorage.getAllLists()));
     }
-
 
     @Override
     public void finish() {

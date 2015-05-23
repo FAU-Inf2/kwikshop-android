@@ -160,7 +160,9 @@ public class ShoppingListDetailFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                m_ListStorageFragment.getLocalListStorage().deleteList(m_ShoppingList.getId());
+                int id = m_ShoppingList.getId();
+                m_ListStorageFragment.getLocalListStorage().deleteList(id);
+                EventBus.getDefault().post(new ShoppingListChangedEvent(id, ShoppingListChangeType.Deleted));
                 getActivity().finish();
             }
         });

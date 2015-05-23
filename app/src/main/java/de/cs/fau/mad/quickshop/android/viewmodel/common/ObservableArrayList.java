@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * Wrapper for lists that can be monitored for modifications ot the list
+ * Arraylist that can be monitored for changes
  *
  * @param <T> The type of items the list holds
  */
-public class ObservableList<T> implements List<T> {
+public class ObservableArrayList<T> extends ArrayList<T> {
 
 
     /**
@@ -41,24 +41,7 @@ public class ObservableList<T> implements List<T> {
 
 
     Listener<T> listener;           //current listener
-    final List<T> wrappedList;      //the underlying list instance being wrapped
 
-
-    /**
-     * Initializes a new instance of ObservableList wrapping a new (empty) list
-     */
-    public ObservableList() {
-        this(new ArrayList<T>());
-    }
-
-    /**
-     * Initializes a new instance of ObservableList wrapping the specified list
-     *
-     * @param wrappedList The list to be wrapped
-     */
-    public ObservableList(List<T> wrappedList) {
-        this.wrappedList = wrappedList;
-    }
 
 
     public void setListener(final Listener<T> value) {
@@ -67,7 +50,7 @@ public class ObservableList<T> implements List<T> {
 
     @Override
     public void add(int location, T object) {
-        wrappedList.add(location, object);
+        super.add(location, object);
         if (listener != null) {
             listener.onItemAdded(object);
         }
@@ -75,7 +58,7 @@ public class ObservableList<T> implements List<T> {
 
     @Override
     public boolean add(T object) {
-        boolean success = wrappedList.add(object);
+        boolean success = super.add(object);
         if (success && listener != null) {
             listener.onItemAdded(object);
         }
@@ -84,7 +67,7 @@ public class ObservableList<T> implements List<T> {
 
     @Override
     public boolean addAll(int location, Collection<? extends T> collection) {
-        boolean success = wrappedList.addAll(location, collection);
+        boolean success = super.addAll(location, collection);
         if (success && listener != null) {
             for (T item : collection) {
                 listener.onItemAdded(item);
@@ -95,7 +78,7 @@ public class ObservableList<T> implements List<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> collection) {
-        boolean success = wrappedList.addAll(collection);
+        boolean success = super.addAll(collection);
         if (success && listener != null) {
             for (T item : collection) {
                 listener.onItemAdded(item);
@@ -107,46 +90,22 @@ public class ObservableList<T> implements List<T> {
     @Override
     public void clear() {
         if (listener != null) {
-            List<T> allItems = new ArrayList<>(wrappedList);
-            wrappedList.clear();
+            List<T> allItems = new ArrayList<>(this);
+            super.clear();
             for (T item : allItems) {
                 listener.onItemRemoved(item);
             }
         } else {
-            wrappedList.clear();
+            super.clear();
         }
     }
 
-    @Override
-    public boolean contains(Object object) {
-        return wrappedList.contains(object);
-    }
-
-    @Override
-    public boolean containsAll(@NonNull Collection<?> collection) {
-        return wrappedList.containsAll(collection);
-    }
-
-    @Override
-    public T get(int location) {
-        return wrappedList.get(location);
-    }
-
-    @Override
-    public int indexOf(Object object) {
-        return wrappedList.indexOf(object);
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return wrappedList.isEmpty();
-    }
 
     @NonNull
     @Override
     public Iterator<T> iterator() {
 
-        final Iterator<T> baseIterator = wrappedList.iterator();
+        final Iterator<T> baseIterator = super.iterator();
         return new Iterator<T>() {
 
             @Override
@@ -168,27 +127,23 @@ public class ObservableList<T> implements List<T> {
         };
     }
 
-    @Override
-    public int lastIndexOf(Object object) {
-        return wrappedList.lastIndexOf(object);
-    }
 
     @NonNull
     @Override
     public ListIterator<T> listIterator() {
 
-        return new ReadonlyListIteratorWrapper(wrappedList.listIterator());
+        return new ReadonlyListIteratorWrapper(super.listIterator());
     }
 
     @NonNull
     @Override
     public ListIterator<T> listIterator(int location) {
-        return new ReadonlyListIteratorWrapper(wrappedList.listIterator(location));
+        return new ReadonlyListIteratorWrapper(super.listIterator(location));
     }
 
     @Override
     public T remove(int location) {
-        T removedItem = wrappedList.remove(location);
+        T removedItem = super.remove(location);
         if (listener != null) {
             listener.onItemRemoved(removedItem);
         }
@@ -197,7 +152,7 @@ public class ObservableList<T> implements List<T> {
 
     @Override
     public boolean remove(Object object) {
-        boolean success = wrappedList.remove(object);
+        boolean success = super.remove(object);
         if (success && listener != null) {
             try {
                 listener.onItemRemoved((T) object);
@@ -222,7 +177,7 @@ public class ObservableList<T> implements List<T> {
 
     @Override
     public T set(int location, T object) {
-        T oldItem = wrappedList.set(location, object);
+        T oldItem = super.set(location, object);
         if (listener != null) {
             listener.onItemRemoved(oldItem);
             listener.onItemAdded(object);
@@ -230,28 +185,6 @@ public class ObservableList<T> implements List<T> {
         return oldItem;
     }
 
-    @Override
-    public int size() {
-        return wrappedList.size();
-    }
-
-    @NonNull
-    @Override
-    public List<T> subList(int start, int end) {
-        return wrappedList.subList(start, end);
-    }
-
-    @NonNull
-    @Override
-    public Object[] toArray() {
-        return wrappedList.toArray();
-    }
-
-    @NonNull
-    @Override
-    public <T1> T1[] toArray(T1[] array) {
-        return wrappedList.toArray(array);
-    }
 
 
     private class ReadonlyListIteratorWrapper implements ListIterator<T> {

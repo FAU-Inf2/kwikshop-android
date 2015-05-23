@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.viewmodel.common.Command;
-import de.cs.fau.mad.quickshop.android.viewmodel.common.ObservableList;
+import de.cs.fau.mad.quickshop.android.viewmodel.common.ObservableArrayList;
 import de.cs.fau.mad.quickshop.android.viewmodel.common.ViewManagerInterface;
 
 public class ListOfShoppingListsViewModel extends ShoppingListViewModelBase {
@@ -20,7 +20,7 @@ public class ListOfShoppingListsViewModel extends ShoppingListViewModelBase {
     private Listener listener;
 
     // backing fields for properties
-    private ObservableList<ShoppingList> shoppingLists;
+    private ObservableArrayList<ShoppingList> shoppingLists;
     private final Command addShoppingListCommand = new Command() {
         @Override
         public void execute() {
@@ -36,11 +36,11 @@ public class ListOfShoppingListsViewModel extends ShoppingListViewModelBase {
 
     // Getters / Setters
 
-    public ObservableList<ShoppingList> getShoppingLists() {
+    public ObservableArrayList<ShoppingList> getShoppingLists() {
         return this.shoppingLists;
     }
 
-    private void setShoppingLists(final ObservableList<ShoppingList> value) {
+    private void setShoppingLists(final ObservableArrayList<ShoppingList> value) {
         if (value != shoppingLists) {
             this.shoppingLists = value;
             if (listener != null) {

@@ -7,10 +7,10 @@ import de.cs.fau.mad.quickshop.android.viewmodel.common.Command;
 import de.cs.fau.mad.quickshop.android.viewmodel.common.ObservableArrayList;
 import de.cs.fau.mad.quickshop.android.viewmodel.common.ViewManagerInterface;
 
-public class ListOfShoppingListsViewModel extends ShoppingListViewModelBase {
+public class ListOfShoppingListsViewModel {
 
     // listener interface
-    public interface Listener extends ShoppingListViewModelBase.Listener {
+    public interface Listener {
 
         void onShoppingListsChanged(final List<ShoppingList> newValue);
     }
@@ -54,8 +54,7 @@ public class ListOfShoppingListsViewModel extends ShoppingListViewModelBase {
     }
 
 
-    @Override
-    protected ShoppingListViewModelBase.Listener getListener() {
+    protected Listener getListener() {
         return listener;
     }
 

@@ -1,5 +1,9 @@
 package de.cs.fau.mad.quickshop.android.viewmodel;
 
+/**
+ * Base class for all view models used to display a shopping list.
+ * Offers to get the name of the shopping list
+ */
 public abstract class ShoppingListViewModelBase {
 
     private String name;

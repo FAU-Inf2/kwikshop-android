@@ -12,6 +12,7 @@ public abstract class ShoppingListViewModelBase {
 
         void onNameChanged(String value);
 
+        void onFinsh();
     }
 
 
@@ -29,6 +30,16 @@ public abstract class ShoppingListViewModelBase {
         }
     }
 
+
+    public void finish() {
+
+        //Override in sub-classes to add code that needs to run when the view model is closed
+
+        if (getListener() != null) {
+            getListener().onFinsh();
+            ;
+        }
+    }
 
     protected abstract Listener getListener();
 }

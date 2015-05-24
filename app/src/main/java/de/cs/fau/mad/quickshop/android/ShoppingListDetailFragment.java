@@ -51,9 +51,6 @@ public class ShoppingListDetailFragment extends Fragment {
 
     private CalendarEventDate m_EventDate = new CalendarEventDate();
 
-    static final int TIME_DIALOG_ID = 1;
-    static final int DATE_DIALOG_ID = 0;
-
     private View rootView;
 
     //endregion
@@ -120,6 +117,7 @@ public class ShoppingListDetailFragment extends Fragment {
             createCalendarEvent.setText(R.string.edit_calendar_event);
         }
 
+        EventBus.getDefault().register(this);
 
         Button deleteButton = (Button) rootView.findViewById(R.id.button_delete);
         if (m_IsNewList) {
@@ -135,6 +133,7 @@ public class ShoppingListDetailFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
         super.onDestroyView();
     }
 
@@ -169,8 +168,7 @@ public class ShoppingListDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int id = m_ShoppingList.getId();
-                //todo: does not work yet
-                //removeCalendarEvent();
+                removeCalendarEvent();
                 m_ListStorageFragment.getLocalListStorage().deleteList(id);
                 EventBus.getDefault().post(new ShoppingListChangedEvent(id, ShoppingListChangeType.Deleted));
                 getActivity().finish();
@@ -202,26 +200,28 @@ public class ShoppingListDetailFragment extends Fragment {
 
     private void onSave() {
         m_ShoppingList.setName(m_TextView_ShoppingListName.getText().toString());
-        //todo: does not work yet
-  /*      if (m_EventDate.getIsSet()) {
+        if (m_EventDate.getIsSet()) {
             writeEventToCalendar();
+            m_ShoppingList.getCalendarEventDate().setYear(m_EventDate.getYear());
+            m_ShoppingList.getCalendarEventDate().setMonth(m_EventDate.getMonth());
+            m_ShoppingList.getCalendarEventDate().setDay(m_EventDate.getDay());
+            m_ShoppingList.getCalendarEventDate().setHour(m_EventDate.getHour());
+            m_ShoppingList.getCalendarEventDate().setMinute(m_EventDate.getMinute());
+
         }
-    */    m_ListStorageFragment.getLocalListStorage().saveList(m_ShoppingList);
+        m_ListStorageFragment.getLocalListStorage().saveList(m_ShoppingList);
 
         EventBus.getDefault().post(new ShoppingListChangedEvent(m_ShoppingList.getId(), ShoppingListChangeType.PropertiesModified));
 
         getActivity().finish();
     }
 
+    public void onEvent(CalendarEventDate eventDate){
+        this.m_EventDate = eventDate;
+    }
+
     public void writeEventToCalendar() {
-/*
-        final Calendar c = Calendar.getInstance();
-        m_EventDate.setYear(getArguments() != null ? getArguments().getInt("year") : c.get(Calendar.YEAR));
-        m_EventDate.setMonth(getArguments() != null ? getArguments().getInt("month") : c.get(Calendar.MONTH));
-        m_EventDate.setDay(getArguments() != null ? getArguments().getInt("day") : c.get(Calendar.DAY_OF_MONTH));
-        m_EventDate.setHour(getArguments() != null ? getArguments().getInt("hour") : c.get(Calendar.HOUR_OF_DAY));
-        m_EventDate.setMinute(getArguments() != null ? getArguments().getInt("minute") : c.get(Calendar.MINUTE));
-*/
+
 
         if (m_ShoppingList.getCalendarEventDate().getCalendarEventId() == -1) {
             //create Event
@@ -294,11 +294,13 @@ public class ShoppingListDetailFragment extends Fragment {
 
 
         }
+        //todo: does not get saved
         m_ShoppingList.getCalendarEventDate().setYear(m_EventDate.getYear());
         m_ShoppingList.getCalendarEventDate().setMonth(m_EventDate.getMonth());
         m_ShoppingList.getCalendarEventDate().setDay(m_EventDate.getDay());
         m_ShoppingList.getCalendarEventDate().setHour(m_EventDate.getHour());
         m_ShoppingList.getCalendarEventDate().setMinute(m_EventDate.getMinute());
+
 
 
     }

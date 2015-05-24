@@ -11,6 +11,7 @@ import java.util.Calendar;
 
 import de.cs.fau.mad.quickshop.android.common.CalendarEventDate;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
+import de.greenrobot.event.EventBus;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
@@ -19,6 +20,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     private int day;
     private int hour;
     private int minute;
+    private CalendarEventDate eventDate = new CalendarEventDate();
 
     public TimePickerFragment(){
 
@@ -41,12 +43,14 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         this.hour = hourOfDay;
         this.minute = minute;
 
-        Bundle args = new Bundle();
-        args.putInt("year", year);
-        args.putInt("month", month);
-        args.putInt("day", day);
-        args.putInt("hour", hourOfDay);
-        args.putInt("minute", minute);
+        eventDate.setYear(year);
+        eventDate.setMonth(month);
+        eventDate.setDay(day);
+        eventDate.setHour(hourOfDay);
+        eventDate.setMinute(minute);
+        eventDate.setIsSet(true);
+
+        EventBus.getDefault().post(eventDate);
     }
 
 }

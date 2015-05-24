@@ -27,7 +27,6 @@ import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangeType;
 import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.view.interfaces.SaveCancelActivity;
-import de.cs.fau.mad.quickshop.android.viewmodel.DatePickerFragment;
 import de.greenrobot.event.EventBus;
 
 public class ShoppingListDetailFragment extends Fragment {
@@ -171,7 +170,6 @@ public class ShoppingListDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int id = m_ShoppingList.getId();
-                removeCalendarEvent();
                 m_ListStorageFragment.getLocalListStorage().deleteList(id);
                 EventBus.getDefault().post(new ShoppingListChangedEvent(id, ShoppingListChangeType.Deleted));
                 getActivity().finish();
@@ -179,14 +177,6 @@ public class ShoppingListDetailFragment extends Fragment {
         });
 
         Button createCalendarEvent = (Button) rootView.findViewById(R.id.create_calendar_event);
-
-        createCalendarEvent.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                m_EventDate.initialize(m_ShoppingList.getCalendarEventDate());
-                DialogFragment newFragment = new DatePickerFragment(m_EventDate, m_ShoppingList);
-                newFragment.show(getActivity().getFragmentManager(), "datePicker");
-            }
-        });
 
     }
 
@@ -199,9 +189,6 @@ public class ShoppingListDetailFragment extends Fragment {
 
     private void onSave() {
         m_ShoppingList.setName(m_TextView_ShoppingListName.getText().toString());
-        if (m_EventDate.getIsSet()) {
-            writeEventToCalendar();
-        }
         m_ListStorageFragment.getLocalListStorage().saveList(m_ShoppingList);
 
         EventBus.getDefault().post(new ShoppingListChangedEvent(m_ShoppingList.getId(), ShoppingListChangeType.PropertiesModified));
@@ -209,105 +196,6 @@ public class ShoppingListDetailFragment extends Fragment {
         getActivity().finish();
     }
 
-
-
-
-    public void writeEventToCalendar() {
-
-        if (m_ShoppingList.getCalendarEventDate().getCalendarEventId() == -1) {
-            //create Event
-            long calID = 1;
-            long startMillis;
-            long endMillis;
-            Calendar beginTime = Calendar.getInstance();
-            beginTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
-                    m_EventDate.getHour(), m_EventDate.getMinute());
-            startMillis = beginTime.getTimeInMillis();
-            Calendar endTime = Calendar.getInstance();
-            endTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
-                    m_EventDate.getHour(), m_EventDate.getMinute() + 30);
-            endMillis = endTime.getTimeInMillis();
-
-            ContentResolver cr = getActivity().getContentResolver();
-            ContentValues values = new ContentValues();
-            values.put(CalendarContract.Events.HAS_ALARM, true);
-            values.put(CalendarContract.Events.DTSTART, startMillis);
-            values.put(CalendarContract.Events.DTEND, endMillis);
-            values.put(CalendarContract.Events.TITLE, m_ShoppingList.getName());
-            values.put(CalendarContract.Events.CALENDAR_ID, calID);
-            TimeZone defaultTimeZone = TimeZone.getDefault();
-            values.put(CalendarContract.Events.EVENT_TIMEZONE, defaultTimeZone.getID());
-            Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
-            m_ShoppingList.getCalendarEventDate().setCalendarEventId((Long.parseLong(uri.getLastPathSegment())));
-
-
-            //sets alarm
-            ContentValues reminders = new ContentValues();
-            reminders.put(CalendarContract.Reminders.EVENT_ID, m_ShoppingList.getCalendarEventDate().getCalendarEventId());
-            reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
-            reminders.put(CalendarContract.Reminders.MINUTES, 0);
-
-            Uri uri2 = cr.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
-
-
-        } else {
-            //update Event
-            long startMillis;
-            long endMillis;
-
-            Calendar beginTime = Calendar.getInstance();
-            beginTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
-                    m_EventDate.getHour(), m_EventDate.getMinute());
-            startMillis = beginTime.getTimeInMillis();
-            Calendar endTime = Calendar.getInstance();
-            endTime.set(m_EventDate.getYear(), m_EventDate.getMonth(), m_EventDate.getDay(),
-                    m_EventDate.getHour(), m_EventDate.getMinute() + 30);
-            endMillis = endTime.getTimeInMillis();
-
-            ContentResolver cr = getActivity().getContentResolver();
-            ContentValues values = new ContentValues();
-            values.put(CalendarContract.Events.DTSTART, startMillis);
-            values.put(CalendarContract.Events.DTEND, endMillis);
-            values.put(CalendarContract.Events.TITLE, m_ShoppingList.getName());
-            Uri updateUri;
-            updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, m_ShoppingList.
-                    getCalendarEventDate().getCalendarEventId());
-            int rows = getActivity().getContentResolver().update(updateUri, values, null, null);
-
-
-            //sets alarm
-            ContentValues reminders = new ContentValues();
-            reminders.put(CalendarContract.Reminders.EVENT_ID, m_ShoppingList.getCalendarEventDate().getCalendarEventId());
-            reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
-            reminders.put(CalendarContract.Reminders.MINUTES, 0);
-
-            Uri uri2 = cr.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
-
-
-        }
-        m_ShoppingList.getCalendarEventDate().setYear(m_EventDate.getYear());
-        m_ShoppingList.getCalendarEventDate().setMonth(m_EventDate.getMonth());
-        m_ShoppingList.getCalendarEventDate().setDay(m_EventDate.getDay());
-        m_ShoppingList.getCalendarEventDate().setHour(m_EventDate.getHour());
-        m_ShoppingList.getCalendarEventDate().setMinute(m_EventDate.getMinute());
-
-
-    }
-
-
-    public void removeCalendarEvent() {
-        //remove Event
-        if (m_ShoppingList.getCalendarEventDate().getCalendarEventId() != -1) {
-            ContentResolver cr = getActivity().getContentResolver();
-            ContentValues values = new ContentValues();
-            Uri deleteUri;
-            deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, m_ShoppingList.
-                    getCalendarEventDate().getCalendarEventId());
-            int rows = getActivity().getContentResolver().delete(deleteUri, null, null);
-
-        }
-
-    }
 
 
     //endregion

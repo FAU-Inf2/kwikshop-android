@@ -112,22 +112,20 @@ public class CalendarEventDate{
     //if id has default value current time is set, else time from eventDate
     public void initialize(CalendarEventDate eventDate){
             this.isSet = true;
-        //todo: else case not working properly
-           // if(eventDate.getCalendarEventId() == -1) {
+            if(eventDate.getCalendarEventId() == -1) {
                 final Calendar c = Calendar.getInstance();
                 setYear(c.get(Calendar.YEAR));
                 setMonth(c.get(Calendar.MONTH));
                 setDay(c.get(Calendar.DAY_OF_MONTH));
                 setHour(c.get(Calendar.HOUR_OF_DAY));
                 setMinute(c.get(Calendar.MINUTE));
-           /* }else{
+           }else{
                 setYear(eventDate.getYear());
                 setMonth(eventDate.getMonth());
                 setDay(eventDate.getDay());
                 setHour(eventDate.getHour());
                 setMinute(eventDate.getMinute());
             }
-*/
 
     }
 

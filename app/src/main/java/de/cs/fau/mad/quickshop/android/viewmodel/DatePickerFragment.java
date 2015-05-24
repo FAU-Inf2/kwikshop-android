@@ -14,6 +14,8 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     private ShoppingList shoppingList;
 
 
+    public DatePickerFragment(){
+    }
 
     public DatePickerFragment(CalendarEventDate eventDate, ShoppingList shoppingList){
         this.eventDate = eventDate;

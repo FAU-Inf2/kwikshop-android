@@ -16,6 +16,10 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     private CalendarEventDate eventDate;
     private ShoppingList shoppingList;
 
+    public TimePickerFragment(){
+
+    }
+
 
     public TimePickerFragment(CalendarEventDate eventDate, ShoppingList shoppingList){
         this.eventDate = eventDate;

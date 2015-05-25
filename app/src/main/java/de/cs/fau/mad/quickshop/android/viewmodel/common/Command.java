@@ -2,14 +2,16 @@ package de.cs.fau.mad.quickshop.android.viewmodel.common;
 
 public abstract class Command<T> {
 
+    private static CommandListener nullListener = new NullListener();
+
     private boolean isAvailable = true;
     private boolean canExecute = true;
-    private CommandListener listener;
+    private CommandListener listener = nullListener;
 
 
     public void setListener(CommandListener listener) {
         if (listener == null) {
-            this.listener = new NullListener();
+            this.listener = nullListener;
         } else {
             this.listener = listener;
         }
@@ -41,7 +43,7 @@ public abstract class Command<T> {
     public abstract void execute(T parameter);
 
 
-    private class NullListener implements CommandListener {
+    private static class NullListener implements CommandListener {
 
         @Override
         public void onIsAvailableChanged(boolean newValue) {

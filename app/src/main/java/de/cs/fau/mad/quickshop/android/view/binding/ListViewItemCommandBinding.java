@@ -1,4 +1,4 @@
-package de.cs.fau.mad.quickshop.android.view;
+package de.cs.fau.mad.quickshop.android.view.binding;
 
 import android.view.View;
 import android.widget.AdapterView;

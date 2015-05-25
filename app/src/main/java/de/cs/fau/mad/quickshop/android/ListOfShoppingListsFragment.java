@@ -1,28 +1,21 @@
 package de.cs.fau.mad.quickshop.android;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.melnykov.fab.FloatingActionButton;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
-import de.cs.fau.mad.quickshop.android.view.ButtonBinding;
 import de.cs.fau.mad.quickshop.android.view.DefaultViewLauncher;
 import de.cs.fau.mad.quickshop.android.view.FragmentWithViewModel;
-import de.cs.fau.mad.quickshop.android.view.ListViewItemCommandBinding;
+import de.cs.fau.mad.quickshop.android.view.binding.ListViewItemCommandBinding;
 import de.cs.fau.mad.quickshop.android.viewmodel.ListOfShoppingListsViewModel;
-import de.cs.fau.mad.quickshop.android.viewmodel.common.Command;
 
 /**
  * Fragment for list of shopping lists

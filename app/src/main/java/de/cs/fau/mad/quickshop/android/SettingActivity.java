@@ -17,10 +17,9 @@ public class SettingActivity extends BaseActivity  {
         // do not use setContentView()!
 
 
-
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().add(R.id.content_frame, SettingFragment.newInstance(0)).commit();
+            fragmentManager.beginTransaction().add(frameLayout.getId(), SettingFragment.newInstance(0)).commit();
         }
 
     }

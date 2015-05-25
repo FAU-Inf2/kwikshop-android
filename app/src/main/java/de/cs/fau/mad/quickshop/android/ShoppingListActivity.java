@@ -31,7 +31,7 @@ public class ShoppingListActivity extends BaseActivity {
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().add(R.id.content_frame, ShoppingListFragment.newInstance(0,id)).commit();
+            fragmentManager.beginTransaction().add(frameLayout.getId(), ShoppingListFragment.newInstance(0,id)).commit();
         }
     }
 

@@ -17,12 +17,7 @@ public class AboutActivity extends BaseActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // set layout in frameLayout from BaseActivity to access the navigation Drawer
-        // do not use setContentView()!
-        getLayoutInflater().inflate(R.layout.activity_about, frameLayout);
-        mDrawerList.setItemChecked(position, true);
-        setTitle(listArray.get(position));
+        setContentView(R.layout.activity_about);
 
         TextView versionView = (TextView) findViewById(R.id.about_textView_Version);
         try {

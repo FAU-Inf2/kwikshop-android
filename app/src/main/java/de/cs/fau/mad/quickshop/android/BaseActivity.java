@@ -180,6 +180,13 @@ public class BaseActivity extends ActionBarActivity {
 
         switch (item.getItemId()) {
             case R.id.action_settings:
+                startActivity(new Intent(this, SettingActivity.class));
+                return true;
+            case R.id.action_about:
+                startActivity(new Intent(this, AboutActivity.class));
+                return true;
+            case R.id.action_shoppinglists:
+                startActivity(new Intent(this, ListOfShoppingListsActivity.class));
                 return true;
 
             default:

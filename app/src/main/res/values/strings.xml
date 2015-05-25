@@ -69,4 +69,10 @@
     <string name="settings_option_1_name">Option 1</string>
     <string name="settings_option_1_desc">Description of option 1</string>
 
+
+    <!-- Overflow Action Menu -->
+    <string name="overflow_action_menu_settings">setting</string>
+    <string name="overflow_action_menu_about">about</string>
+    <string name="overflow_action_menu_listofshoppinglists">shopping lists</string>
+
 </resources>

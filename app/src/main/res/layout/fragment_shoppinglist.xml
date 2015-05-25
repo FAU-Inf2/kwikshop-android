@@ -8,7 +8,16 @@
     <TextView android:id="@+id/section_label" android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <ListView
+    <!-- <ListView
+        android:id="@+id/list_shoppingList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/defaultEditableItem" /> -->
+
+    <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
         android:id="@+id/list_shoppingList"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

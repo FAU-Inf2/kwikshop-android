@@ -287,8 +287,10 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             throw new UnsupportedOperationException();
         }
 
+        if (shoppingList.getCalendarEventDate().getCalendarEventId() != -1) {
+            deleteCalendarEventCommandExecute();
+        }
 
-        deleteCalendarEventCommandExecute();
         listStorage.deleteList(this.shoppingListId);
         EventBus.getDefault().post(new ShoppingListChangedEvent(this.shoppingListId, ShoppingListChangeType.Deleted));
         finish();

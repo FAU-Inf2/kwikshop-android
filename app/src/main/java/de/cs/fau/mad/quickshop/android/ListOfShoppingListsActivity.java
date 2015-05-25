@@ -12,7 +12,7 @@ public class ListOfShoppingListsActivity extends BaseActivity {
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().add(R.id.content_frame, ListOfShoppingListsFragment.newInstance(1)).commit();
+            fragmentManager.beginTransaction().add(R.id.content_frame, ListOfShoppingListsFragment.newInstance()).commit();
         }
     }
 

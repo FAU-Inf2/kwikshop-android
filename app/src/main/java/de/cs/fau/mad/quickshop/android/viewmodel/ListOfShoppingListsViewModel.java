@@ -77,7 +77,7 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         }
     }
 
-    public Command<Integer> getAddShoppingListCommand() {
+    public Command getAddShoppingListCommand() {
         return this.addShoppingListCommand;
     }
 
@@ -85,7 +85,7 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         return this.selectShoppingListCommand;
     }
 
-    public Command getSelectShoppingListDetailsCommand() {
+    public Command<Integer> getSelectShoppingListDetailsCommand() {
         return this.selectShoppingListDetailsCommand;
     }
 

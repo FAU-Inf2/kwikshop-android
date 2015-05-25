@@ -22,7 +22,15 @@ public abstract class ShoppingListViewModelBase extends ViewModelBase {
     }
 
     protected void setName(final String value) {
-        if ((name != null && !name.equals(value)) || value == null) {
+
+        boolean changed = false;
+        if(name == null) {
+            changed = name != value;
+        } else {
+            changed = !name.equals(value);
+        }
+
+        if (changed) {
             this.name = value;
             Listener listener = getListener();
             if (listener != null) {

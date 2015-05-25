@@ -20,6 +20,7 @@ import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.view.ButtonBinding;
 import de.cs.fau.mad.quickshop.android.view.DefaultViewLauncher;
 import de.cs.fau.mad.quickshop.android.view.FragmentWithViewModel;
+import de.cs.fau.mad.quickshop.android.view.ListViewItemCommandBinding;
 import de.cs.fau.mad.quickshop.android.viewmodel.ListOfShoppingListsViewModel;
 import de.cs.fau.mad.quickshop.android.viewmodel.common.Command;
 
@@ -61,27 +62,10 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
         // wire up event handlers
 
         //click on list item
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Command command = viewModel.getSelectShoppingListCommand();
-                if (command.getCanExecute()) {
-                    command.execute((int) id);
-                }
-            }
-        });
+        bindListViewItem(android.R.id.list, ListViewItemCommandBinding.ListViewItemCommandType.Click, viewModel.getSelectShoppingListCommand());
 
         //long click on list item
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Command<Integer> command = viewModel.getSelectShoppingListDetailsCommand();
-                if (command.getCanExecute()) {
-                    command.execute((int) id);
-                }
-                return true;
-            }
-        });
+        bindListViewItem(android.R.id.list, ListViewItemCommandBinding.ListViewItemCommandType.LongClick, viewModel.getSelectShoppingListDetailsCommand());
 
         //click on floating action button (add)
         bindButton(R.id.fab, viewModel.getAddShoppingListCommand());

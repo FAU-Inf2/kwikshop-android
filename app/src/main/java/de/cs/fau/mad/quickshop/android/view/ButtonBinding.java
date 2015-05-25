@@ -10,7 +10,7 @@ import de.cs.fau.mad.quickshop.android.viewmodel.common.CommandListener;
  * Support class to easily wire up a Button in a view with a Command from the view model
  * TODO: Figure out a way to support commands with parameters
  */
-public class ButtonBinding implements CommandListener, View.OnClickListener {
+public class ButtonBinding extends Binding implements CommandListener, View.OnClickListener {
 
 
     private final View button;

@@ -29,6 +29,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:id="@+id/edit_calendar_event"
+        android:text="@string/edit_calendar_event"
+        android:layout_margin="50dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:layout_below="@id/textView_ShoppingListName"

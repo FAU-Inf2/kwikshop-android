@@ -43,7 +43,7 @@ public class ShoppingListDetailActivity extends BaseActivity implements SaveCanc
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().add(frameLayout.getId(), ShoppingListDetailFragment.newInstance(1)).commit();
+            fragmentManager.beginTransaction().add(frameLayout.getId(), ShoppingListDetailFragment.newInstance()).commit();
         }
 
         showActionBar();
@@ -67,19 +67,18 @@ public class ShoppingListDetailActivity extends BaseActivity implements SaveCanc
     //region ISaveCancelActivity Implementation
 
     @Override
-    public void setOnSaveClickListener(View.OnClickListener listener) {
-
+    public View getSaveButton() {
         ActionBar actionBar = getSupportActionBar();
         Button button = (Button) actionBar.getCustomView().findViewById(R.id.button_save);
-        button.setOnClickListener(listener);
+        return button;
     }
 
     @Override
-    public void setOnCancelClickListener(View.OnClickListener listener) {
+    public View getCancelButton() {
 
         ActionBar actionBar = getSupportActionBar();
         Button button = (Button) actionBar.getCustomView().findViewById(R.id.button_cancel);
-        button.setOnClickListener(listener);
+        return button;
     }
 
     //endregion

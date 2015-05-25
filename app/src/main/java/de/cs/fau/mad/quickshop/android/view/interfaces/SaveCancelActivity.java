@@ -8,9 +8,10 @@ import android.view.View;
 public interface SaveCancelActivity {
 
 
-    void setOnSaveClickListener(View.OnClickListener listener);
+    View getSaveButton();
 
-    void setOnCancelClickListener(View.OnClickListener listener);
+    View getCancelButton();
+
 
 
 }

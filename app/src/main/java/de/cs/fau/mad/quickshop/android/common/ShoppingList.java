@@ -39,7 +39,7 @@ public class ShoppingList {
     @ForeignCollectionField
     private ForeignCollection<AccountID> sharedWith;
 
-    @ForeignCollectionField
+    @ForeignCollectionField(eager = true)
     private ForeignCollection<Item> items; // TODO: is Collection fine for everyone?
 
     private LocalListStorage listStorage;
@@ -139,9 +139,5 @@ public class ShoppingList {
             }
         }
         return null;
-    }
-
-    public Item getItemByPosition(int position) {
-        return (Item) items.toArray()[position];
     }
 }

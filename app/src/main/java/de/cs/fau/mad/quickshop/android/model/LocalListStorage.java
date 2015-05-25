@@ -62,7 +62,7 @@ public class LocalListStorage extends ListStorage {
             e.printStackTrace();
             return false;
         }
-        return false;
+        return true;
     }
 
     @Override

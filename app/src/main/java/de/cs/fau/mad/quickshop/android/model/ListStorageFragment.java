@@ -81,6 +81,13 @@ public class ListStorageFragment extends Fragment {
             Item i1 = new Item();
             i1.setName("DB Item 1");
             list.addItem(i1);
+            Item i2 = new Item();
+            i2.setName("DB Item 2");
+            i2.setBought(true);
+            list.addItem(i2);
+            Item i3 = new Item();
+            i3.setName("DB Item 3");
+            list.addItem(i3);
             list.save();
         }
     }

@@ -13,16 +13,16 @@ public class Item {
   private int id;
 
   @DatabaseField
-  private Boolean bought;
+  private Boolean bought = false;
 
   @DatabaseField(canBeNull = false)
-  private String name;
+  private String name = "";
 
   @DatabaseField
   private int amount = 1;
 
   @DatabaseField
-  private Boolean highlight;
+  private Boolean highlight = false;
 
   @DatabaseField(canBeNull = true)
   private String brand;

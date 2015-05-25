@@ -20,11 +20,23 @@
     <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
         android:id="@+id/list_shoppingList"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="false"
         android:layout_below="@+id/defaultEditableItem" />
+
+    <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+        android:id="@+id/list_shoppingListBought"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="false"
+        android:layout_marginTop="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_below="@+id/list_shoppingList"/>
 
     <view
         android:layout_width="wrap_content"
@@ -38,7 +50,8 @@
         fab:fab_colorNormal="@color/fab_Normal"
         fab:fab_colorPressed="@color/fab_Pressed"
         fab:fab_colorRipple="@color/fab_Ripple"
-        android:src="@drawable/ic_action_add" />
+        android:src="@drawable/ic_action_add"
+        />
 
     <EditText
         android:layout_width="wrap_content"

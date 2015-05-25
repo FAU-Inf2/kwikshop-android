@@ -4,23 +4,28 @@ package de.cs.fau.mad.quickshop.android;
 //import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.support.v4.app.Fragment;
+
+import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 
 import java.util.ArrayList;
 
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
+import de.cs.fau.mad.quickshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.quickshop.android.model.messages.ItemChangedEvent;
+import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangeType;
 import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.greenrobot.event.EventBus;
@@ -40,6 +45,7 @@ public class ShoppingListFragment extends Fragment {
 
     private ListStorageFragment m_ListStorageFragment;
     private ShoppingListAdapter m_ShoppingListAdapter;
+    private ShoppingListAdapter m_ShoppingListAdapterBought;
 
     private int listID;
 
@@ -49,7 +55,6 @@ public class ShoppingListFragment extends Fragment {
     //region Construction
 
     public static ShoppingListFragment newInstance(int sectionNumber, int listID) {
-
         ShoppingListFragment fragment = new ShoppingListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -73,22 +78,14 @@ public class ShoppingListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
 
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity().getSupportFragmentManager(), getActivity().getApplicationContext());
-
-        final FragmentManager fm = getActivity().getSupportFragmentManager();
-
-        /*m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
-        if (m_ListStorageFragment == null) {
-            m_ListStorageFragment = new ListStorageFragment();
-            //m_ListStorageFragment.setListStorage(new ListStorageMock());
-            fm.beginTransaction().add(
-                    m_ListStorageFragment, ListStorageFragment.TAG_LISTSTORAGE)
-                    .commit();
-        }*/
+        m_ListStorageFragment = ListStorageFragment.getListStorageFragment();
 
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
-        ListView shoppingListView = (ListView) rootView.findViewById(R.id.list_shoppingList);
+        DynamicListView shoppingListView = (DynamicListView) rootView.findViewById(R.id.list_shoppingList);
+        DynamicListView shoppingListViewBought = (DynamicListView) rootView.findViewById(R.id.list_shoppingListBought);
 
         ShoppingList shoppingList = null;
         try {
@@ -100,26 +97,57 @@ public class ShoppingListFragment extends Fragment {
         }
 
         if (shoppingList != null) {
-
+            // Upper list for Items that are not yet bought
             m_ShoppingListAdapter = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList,
-                    generateData(shoppingList),
+                    generateData(shoppingList, false),
                     shoppingList);
 
-            shoppingListView.setAdapter(m_ShoppingListAdapter);
+            SimpleSwipeUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(m_ShoppingListAdapter, getActivity(),
+                    new OnDismissCallback() {
+                        @Override
+                        public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
+                            for (int position : reverseSortedPositions) {
+                                m_ShoppingListAdapter.removeByPosition(position);
+                                UpdateLists();
+                            }
+                        }
+                    }
+            );
+            swipeUndoAdapter.setAbsListView(shoppingListView);
+            shoppingListView.setAdapter(swipeUndoAdapter);
+            shoppingListView.enableSimpleSwipeUndo();
 
+            // --- //
 
+            // Lower list for Items that are already bought
+            m_ShoppingListAdapterBought = new ShoppingListAdapter(getActivity(), R.id.list_shoppingListBought,
+                    generateData(shoppingList, true),
+                    shoppingList);
 
-        // OnClickListener to open the item details view
-        shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Open item details view
-                Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
-                fm.beginTransaction().replace(BaseActivity.frameLayout.getId() , ItemDetailsFragment.newInstance(listID, (int) id))
-                        .addToBackStack(null).commit();
-            }
-        });
+            shoppingListViewBought.enableSwipeToDismiss(
+                    new OnDismissCallback() {
+                        @Override
+                        public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
+                            for (int position : reverseSortedPositions) {
+                                m_ShoppingListAdapterBought.removeByPosition(position);
+                                UpdateLists();
+                            }
+                        }
+                    }
+            );
 
+            shoppingListViewBought.setAdapter(m_ShoppingListAdapterBought);
+
+            // OnClickListener to open the item details view
+            /*shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // Open item details view
+                    Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
+                    fm.beginTransaction().replace(BaseActivity.frameLayout.getId() , ItemDetailsFragment.newInstance(listID, (int) id))
+                            .addToBackStack(null).commit();
+                }
+            });*/
 
             //Setting spinner adapter to sort by button
             Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
@@ -130,8 +158,6 @@ public class ShoppingListFragment extends Fragment {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             // Apply the adapter to the spinner
             spinner.setAdapter(adapter);
-
-            EventBus.getDefault().register(this);
         }
 
         return rootView;
@@ -150,19 +176,14 @@ public class ShoppingListFragment extends Fragment {
     //region Event Handlers
 
     public void onEvent(ShoppingListChangedEvent event) {
-
         if (event.getListId() == this.listID && this.m_ShoppingListAdapter != null) {
-            this.m_ShoppingListAdapter.clear();
-            this.m_ShoppingListAdapter.addAll(generateData(m_ListStorageFragment.getLocalListStorage().loadList(listID)));
-            this.m_ShoppingListAdapter.notifyDataSetChanged();
+            UpdateLists();
         }
     }
 
     public void onEvent(ItemChangedEvent event) {
         if (event.getShoppingListId() == this.listID && this.m_ShoppingListAdapter != null) {
-            this.m_ShoppingListAdapter.clear();
-            this.m_ShoppingListAdapter.addAll(generateData(m_ListStorageFragment.getLocalListStorage().loadList(listID)));
-            this.m_ShoppingListAdapter.notifyDataSetChanged();
+            UpdateLists();
         }
     }
 
@@ -171,10 +192,21 @@ public class ShoppingListFragment extends Fragment {
 
     //region Private Methods
 
-    private ArrayList<String> generateData(ShoppingList shoppingList) {
-        ArrayList<String> items = new ArrayList<>();
+    private void UpdateLists() {
+        m_ShoppingListAdapter.clear();
+        m_ShoppingListAdapter.addAll(generateData(m_ListStorageFragment.getLocalListStorage().loadList(listID), false));
+        m_ShoppingListAdapter.notifyDataSetChanged();
+
+        m_ShoppingListAdapterBought.clear();
+        m_ShoppingListAdapterBought.addAll(generateData(m_ListStorageFragment.getLocalListStorage().loadList(listID), true));
+        m_ShoppingListAdapterBought.notifyDataSetChanged();
+    }
+
+    private ArrayList<Integer> generateData(ShoppingList shoppingList, boolean isBought) {
+        ArrayList<Integer> items = new ArrayList<>();
         for (Item item : shoppingList.getItems()) {
-            items.add(item.getName());
+            if(item.isBought() == isBought)
+                items.add(item.getId());
         }
         return items;
     }
@@ -182,15 +214,10 @@ public class ShoppingListFragment extends Fragment {
     //region Private Methods
 
     private void showToast(String text) {
-
         int duration = Toast.LENGTH_SHORT;
-
         Toast toast = Toast.makeText(getActivity(), text, duration);
         toast.show();
     }
-
-    //endregion
-
 
     //endregion
 

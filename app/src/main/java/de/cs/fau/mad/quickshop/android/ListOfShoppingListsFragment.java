@@ -93,7 +93,6 @@ public class ListOfShoppingListsFragment extends Fragment implements ListOfShopp
 
     @Override
     public void onShoppingListsChanged(List<ShoppingList> newValue) {
-
         m_ListView.setAdapter(new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists()));
     }
 

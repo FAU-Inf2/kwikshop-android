@@ -29,6 +29,10 @@ public class ButtonBinding extends Binding implements CommandListener, View.OnCl
         this.button = button;
         this.command = command;
 
+
+        button.setVisibility(command.getIsAvailable() ? View.VISIBLE : View.GONE);
+        button.setEnabled(command.getCanExecute());
+
         this.button.setOnClickListener(this);
         this.command.setListener(this);
     }
@@ -36,7 +40,7 @@ public class ButtonBinding extends Binding implements CommandListener, View.OnCl
 
     @Override
     public void onIsAvailableChanged(boolean newValue) {
-        button.setVisibility(newValue ? View.GONE : View.VISIBLE);
+        button.setVisibility(newValue ? View.VISIBLE : View.GONE);
     }
 
     @Override

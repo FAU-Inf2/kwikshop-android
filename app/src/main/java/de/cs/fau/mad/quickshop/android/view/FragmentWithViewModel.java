@@ -21,12 +21,14 @@ public abstract class FragmentWithViewModel extends Fragment {
     private List<Binding> bindings = new ArrayList<>();
 
 
-    protected void bindButton(int buttonId, Command command) {
-
-        View button = getRootView().findViewById(buttonId);
+    protected void bindButton(View button, Command command) {
         ButtonBinding binding = new ButtonBinding(button, command);
         this.bindings.add(binding);
+    }
 
+    protected void bindButton(int buttonId, Command command) {
+        View button = getRootView().findViewById(buttonId);
+        bindButton(button, command);
     }
 
 

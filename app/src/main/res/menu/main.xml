@@ -25,7 +25,7 @@
             <item android:id="@+id/action_listofshoppinglists"
                   android:icon="@android:drawable/ic_menu_agenda"
                   app:showAsAction="ifRoom"
-                  android:title="@string/overflow_action_menu_shoppinglists" />
+                  android:title="@string/overflow_action_menu_listofshoppinglists" />
 
         </menu>
 

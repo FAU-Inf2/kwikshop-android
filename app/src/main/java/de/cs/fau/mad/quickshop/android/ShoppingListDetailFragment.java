@@ -42,7 +42,7 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
         super.onCreate(savedInstanceState);
 
         rootView = inflater.inflate(R.layout.activity_shopping_list_detail, container, false);
-        new ListStorageFragment().SetupLocalListStorageFragment(getActivity().getSupportFragmentManager(), getActivity().getApplicationContext());
+        new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
 
         viewModel = initializeViewModel();

@@ -1,8 +1,10 @@
 package de.cs.fau.mad.quickshop.android.model;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import de.cs.fau.mad.quickshop.android.common.Item;
@@ -51,7 +53,9 @@ public class ListStorageFragment extends Fragment {
         return m_ListStorageFragment;
     }
 
-    public void SetupLocalListStorageFragment(FragmentManager fm, Context context) {
+    public void SetupLocalListStorageFragment(FragmentActivity activity) {
+        FragmentManager fm = activity.getSupportFragmentManager();
+        Context context = activity.getBaseContext();
         // ListStorage is already created? -> Nothing to do
         if(m_LocalListStorage != null)
             return;

@@ -80,7 +80,7 @@ public class ShoppingListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
 
-        new ListStorageFragment().SetupLocalListStorageFragment(getActivity().getSupportFragmentManager(), getActivity().getApplicationContext());
+        new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
         m_ListStorageFragment = ListStorageFragment.getListStorageFragment();
 
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);

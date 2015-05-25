@@ -38,7 +38,7 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         //TODO: storage setup needs to be simpler
-        new ListStorageFragment().SetupLocalListStorageFragment(getActivity().getSupportFragmentManager(), getActivity().getApplicationContext());
+        new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
         //create view model instance
         viewModel = new ListOfShoppingListsViewModel(new DefaultViewLauncher(getActivity()),

@@ -47,9 +47,6 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     private final Command deleteCommand;
     private final Command editCalendarEventCommand;
     private final Command createCalendarEventCommand;
-    private final OptionalButtonViewModel deleteButton;
-    private final OptionalButtonViewModel editCalendarEventButton;
-    private final OptionalButtonViewModel createCalendarEventButton;
 
 
     /**
@@ -101,9 +98,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
                 createCalendarEventCommandExecute();
             }
         };
-        this.deleteButton = new OptionalButtonViewModel(deleteCommand);
-        this.editCalendarEventButton = new OptionalButtonViewModel(editCalendarEventCommand);
-        this.createCalendarEventButton = new OptionalButtonViewModel(createCalendarEventCommand);
+
         setUp();
 
 
@@ -118,6 +113,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         this.listeners.remove(listener);
     }
 
+
     // Getters / Setters
 
     public Command getSaveCommand() {
@@ -128,18 +124,17 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         return cancelCommand;
     }
 
-    public OptionalButtonViewModel getDeleteButton() {
-        return deleteButton;
+    public Command getDeleteCommand() {
+        return this.deleteCommand;
     }
 
-    public OptionalButtonViewModel getEditCalendarEventButton() {
-        return editCalendarEventButton;
+    public Command getEditCalendarEventCommand() {
+        return this.editCalendarEventCommand;
     }
 
-    public OptionalButtonViewModel getCreateCalendarEventButton() {
-        return createCalendarEventButton;
+    public Command getCreateCalendarEventCommand() {
+        return this.createCalendarEventCommand;
     }
-
 
 
     @Override
@@ -147,18 +142,29 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         return compositeListener;
     }
 
+
     private void setUp() {
 
-        if (!newShoppingList) {
+        this.saveCommand.setIsAvailable(true);
+        this.cancelCommand.setIsAvailable(true);
+
+        if (newShoppingList) {
+
+            this.deleteCommand.setIsAvailable(false);
+            this.editCalendarEventCommand.setIsAvailable(false);
+            this.createCalendarEventCommand.setIsAvailable(false);
+
+        } else {
+
+            this.deleteCommand.setIsAvailable(true);
 
             //TODO: handle exception when list is not found
             this.shoppingList = listStorage.loadList(shoppingListId);
             setName(shoppingList.getName());
-            getDeleteButton().setIsAvailable(true);
 
             boolean calendarEventExists = shoppingList.getCalendarEventDate().getCalendarEventId() != -1;
-            getEditCalendarEventButton().setIsAvailable(calendarEventExists);
-            getCreateCalendarEventButton().setIsAvailable(!calendarEventExists);
+            this.editCalendarEventCommand.setIsAvailable(calendarEventExists);
+            this.createCalendarEventCommand.setIsAvailable(!calendarEventExists);
         }
     }
 
@@ -198,5 +204,6 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     private void createCalendarEventCommandExecute() {
         //TODO
     }
+
 
 }

@@ -28,7 +28,7 @@ public abstract class Command<T> {
     }
 
     public boolean getCanExecute() {
-        return canExecute;
+        return canExecute && getIsAvailable();
     }
 
     public void setCanExecute(boolean value) {

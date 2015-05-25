@@ -33,6 +33,8 @@ public class BaseActivity extends ActionBarActivity {
         frameLayout = (FrameLayout)findViewById(R.id.content_frame);
 
 
+        frameLayout = (FrameLayout) findViewById(R.id.content_frame);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }

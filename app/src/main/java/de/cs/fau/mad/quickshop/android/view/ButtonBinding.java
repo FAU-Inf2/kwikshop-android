@@ -29,7 +29,9 @@ public class ButtonBinding implements CommandListener, View.OnClickListener {
 
         this.button = button;
         this.command = command;
+
         this.button.setOnClickListener(this);
+        this.command.setListener(this);
     }
 
 

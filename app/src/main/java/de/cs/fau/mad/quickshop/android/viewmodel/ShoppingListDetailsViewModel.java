@@ -1,5 +1,8 @@
 package de.cs.fau.mad.quickshop.android.viewmodel;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.model.ListStorage;
 import de.cs.fau.mad.quickshop.android.viewmodel.common.Command;
@@ -11,8 +14,28 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
     }
 
+    private class CompositeListener implements Listener {
+
+        @Override
+        public void onNameChanged(String value) {
+            for (Listener l : listeners) {
+                onNameChanged(value);
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            for (Listener l : listeners) {
+                onFinish();
+            }
+        }
+    }
+
+
     //other fields
-    private Listener listener;
+    private List<Listener> listeners = new LinkedList<>();
+    private Listener compositeListener = new CompositeListener();
+
     private final ListStorage listStorage = null;  //TODO: initialize
     private final int shoppingListId;
     private final boolean newShoppingList;
@@ -87,8 +110,12 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     }
 
 
-    public void setListener(Listener value) {
-        this.listener = value;
+    public void addListener(Listener value) {
+        this.listeners.add(value);
+    }
+
+    public void removeListener(Listener listener) {
+        this.listeners.remove(listener);
     }
 
     // Getters / Setters
@@ -117,7 +144,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
     @Override
     protected ShoppingListViewModelBase.Listener getListener() {
-        return listener;
+        return compositeListener;
     }
 
     private void setUp() {

@@ -185,7 +185,7 @@ public class BaseActivity extends ActionBarActivity {
             case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
-            case R.id.action_shoppinglists:
+            case R.id.action_listofshoppinglists:
                 startActivity(new Intent(this, ListOfShoppingListsActivity.class));
                 return true;
 

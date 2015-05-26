@@ -2,12 +2,8 @@ package de.cs.fau.mad.quickshop.android.view;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.Intent;
 import android.os.Bundle;
 
-import de.cs.fau.mad.quickshop.android.DatePickerFragment;
-import de.cs.fau.mad.quickshop.android.ShoppingListActivity;
-import de.cs.fau.mad.quickshop.android.ShoppingListDetailActivity;
 import de.cs.fau.mad.quickshop.android.viewmodel.common.ViewLauncher;
 
 public class DefaultViewLauncher implements ViewLauncher {

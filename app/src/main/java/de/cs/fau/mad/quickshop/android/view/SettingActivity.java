@@ -1,9 +1,7 @@
-package de.cs.fau.mad.quickshop.android;
+package de.cs.fau.mad.quickshop.android.view;
 
 
 import android.os.Bundle;
-
-import cs.fau.mad.quickshop_android.R;
 
 
 public class SettingActivity extends BaseActivity  {

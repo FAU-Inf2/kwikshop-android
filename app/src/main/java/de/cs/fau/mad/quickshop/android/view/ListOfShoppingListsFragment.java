@@ -1,4 +1,4 @@
-package de.cs.fau.mad.quickshop.android;
+package de.cs.fau.mad.quickshop.android.view;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,8 +12,6 @@ import java.util.List;
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
-import de.cs.fau.mad.quickshop.android.view.DefaultViewLauncher;
-import de.cs.fau.mad.quickshop.android.view.FragmentWithViewModel;
 import de.cs.fau.mad.quickshop.android.view.binding.ListViewItemCommandBinding;
 import de.cs.fau.mad.quickshop.android.viewmodel.ListOfShoppingListsViewModel;
 

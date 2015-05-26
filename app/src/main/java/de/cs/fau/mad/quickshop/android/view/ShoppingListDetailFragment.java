@@ -1,4 +1,4 @@
-package de.cs.fau.mad.quickshop.android;
+package de.cs.fau.mad.quickshop.android.view;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,8 +13,6 @@ import android.widget.TextView;
 
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
-import de.cs.fau.mad.quickshop.android.view.DefaultViewLauncher;
-import de.cs.fau.mad.quickshop.android.view.FragmentWithViewModel;
 import de.cs.fau.mad.quickshop.android.view.interfaces.SaveCancelActivity;
 import de.cs.fau.mad.quickshop.android.viewmodel.ShoppingListDetailsViewModel;
 

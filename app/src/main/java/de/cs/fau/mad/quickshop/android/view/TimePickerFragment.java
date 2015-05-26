@@ -1,29 +1,31 @@
+package de.cs.fau.mad.quickshop.android.view;
 
-package de.cs.fau.mad.quickshop.android;
-
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.widget.DatePicker;
+import android.support.v4.app.FragmentManager;
+import android.widget.TimePicker;
 
 import java.util.Calendar;
 
 import de.cs.fau.mad.quickshop.android.common.CalendarEventDate;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
+import de.greenrobot.event.EventBus;
 
-
-public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
     private int year;
     private int month;
     private int day;
     private int hour;
     private int minute;
+    private CalendarEventDate eventDate = new CalendarEventDate();
 
-    public DatePickerFragment(){
+    public TimePickerFragment(){
 
     }
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -34,27 +36,22 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         this.hour = getArguments() != null ? getArguments().getInt("hour") : c.get(Calendar.HOUR_OF_DAY);
         this.minute = getArguments() != null ? getArguments().getInt("minute") : c.get(Calendar.MINUTE);
 
-        return new DatePickerDialog(getActivity(), this, year, month, day);
+        return new TimePickerDialog(getActivity(), this, hour, minute, false);
     }
 
-    public void onDateSet(DatePicker view, int year, int month, int day) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute){
+        this.hour = hourOfDay;
+        this.minute = minute;
 
-        Bundle args = new Bundle();
-        args.putInt("year", year);
-        args.putInt("month", month);
-        args.putInt("day", day);
-        args.putInt("hour", hour);
-        args.putInt("minute", minute);
+        eventDate.setYear(year);
+        eventDate.setMonth(month);
+        eventDate.setDay(day);
+        eventDate.setHour(hourOfDay);
+        eventDate.setMinute(minute);
+        eventDate.setIsSet(true);
 
-        DialogFragment newFragment = new TimePickerFragment();
-        newFragment.setArguments(args);
-        newFragment.show(getActivity().getFragmentManager(), "timePicker");
-
-
-
+        EventBus.getDefault().post(eventDate);
     }
 
 }
+

@@ -1,17 +1,14 @@
-package de.cs.fau.mad.quickshop.android;
+package de.cs.fau.mad.quickshop.android.view;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
 
 import cs.fau.mad.quickshop_android.R;
 
 
-public class AboutActivity extends BaseActivity  {
+public class AboutActivity extends BaseActivity {
 
 
     @Override

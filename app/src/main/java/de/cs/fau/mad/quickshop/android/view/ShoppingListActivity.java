@@ -1,10 +1,8 @@
-package de.cs.fau.mad.quickshop.android;
+package de.cs.fau.mad.quickshop.android.view;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
-import cs.fau.mad.quickshop_android.R;
 
 public class ShoppingListActivity extends BaseActivity {
 

@@ -33,7 +33,6 @@ public class ShoppingListFragment extends Fragment {
 
     //region Constants
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String ARG_LISTID = "list_id";
 
     //endregion
@@ -52,10 +51,9 @@ public class ShoppingListFragment extends Fragment {
 
     //region Construction
 
-    public static ShoppingListFragment newInstance(int sectionNumber, int listID) {
+    public static ShoppingListFragment newInstance(int listID) {
         ShoppingListFragment fragment = new ShoppingListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         args.putInt(ARG_LISTID, listID);
         fragment.setArguments(args);
         return fragment;

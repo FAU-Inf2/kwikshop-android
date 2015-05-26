@@ -1,120 +1,122 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity$PlaceholderFragment"
-    android:background="#00ffffff">
+    android:background="#00ffffff"
+    tools:context=".MainActivity$PlaceholderFragment">
 
-    <TextView android:id="@+id/section_label" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
-    <!-- <ListView
-        android:id="@+id/list_shoppingList"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="false"
-        android:layout_below="@+id/defaultEditableItem" /> -->
-
-    <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
-        android:id="@+id/list_shoppingList"
+    <!--Other content of the view-->
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="false"
-        android:layout_below="@+id/defaultEditableItem" />
+        android:orientation="vertical">
 
-    <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
-        android:id="@+id/list_shoppingListBought"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="false"
-        android:layout_marginTop="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:layout_below="@+id/list_shoppingList"/>
+        <!--Sort-by Spinner-->
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="70dip">
 
+            <Spinner
+                android:id="@+id/spinner"
+                style="@android:style/Widget.Holo.Light.Spinner"
+                android:layout_width="97dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_margin="10dp"
+                android:spinnerMode="dropdown" />
+
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@id/spinner"
+                android:layout_toStartOf="@id/spinner"
+                android:gravity="center_vertical"
+                android:maxHeight="26dp"
+                android:text="@string/sort_by"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+        </RelativeLayout>
+
+        <!--Quick add bar-->
+        <RelativeLayout
+            android:id="@+id/quickAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip"
+            android:layout_marginEnd="15dip"
+            android:layout_marginStart="15dip"
+            android:layout_marginTop="10dip">
+
+
+            <EditText
+                android:id="@+id/defaultEditableItem"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/defaultItem"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <ImageButton
+                android:id="@+id/button"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="40dip"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/defaultEditableItem"
+                android:layout_alignEnd="@+id/defaultEditableItem"
+                android:layout_alignRight="@+id/defaultEditableItem"
+                android:layout_alignTop="@+id/defaultEditableItem"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_action_add" />
+
+        </RelativeLayout>
+
+        <!--List of not-bought items-->
+        <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+            android:id="@+id/list_shoppingList"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="false"
+            android:layout_below="@+id/quickAdd" />
+
+        <!--List of bought items-->
+        <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+            android:id="@+id/list_shoppingListBought"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="false"
+            android:layout_below="@+id/list_shoppingList"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp" />
+
+
+    </LinearLayout>
+
+    <!--Floating Action button-->
     <view
+        android:id="@+id/fab"
+        class="com.melnykov.fab.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        class="com.melnykov.fab.FloatingActionButton"
-        android:id="@+id/fab"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_margin="16dp"
+        android:layout_weight="10"
+        android:src="@drawable/ic_action_add"
         fab:fab_colorNormal="@color/fab_Normal"
         fab:fab_colorPressed="@color/fab_Pressed"
-        fab:fab_colorRipple="@color/fab_Ripple"
-        android:src="@drawable/ic_action_add"
-        />
+        fab:fab_colorRipple="@color/fab_Ripple" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:id="@+id/defaultEditableItem"
-        android:hint="@string/defaultItem"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_alignTop="@+id/button"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button"
-        android:layout_alignBottom="@+id/button"
-        android:layout_toRightOf="@+id/section_label"
-        android:layout_toEndOf="@+id/section_label"
-
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp" />
-
-    <ImageButton
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:src="@drawable/ic_action_add"
-        android:singleLine="true"
-        android:layout_below="@+id/section_label"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="43dp" />
-
-    <TableRow
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/defaultEditableItem"
-        android:weightSum="1">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/sort_by"
-            android:id="@+id/textView"
-            android:layout_alignBottom="@+id/spinner"
-            android:layout_alignLeft="@+id/spinner"
-            android:layout_alignStart="@+id/spinner"
-            android:maxHeight="26dp"
-            android:layout_weight="1.05"
-            android:outlineProvider="background"
-            android:gravity="center_vertical|right" />
-
-        <Spinner
-            android:layout_width="97dp"
-            android:layout_height="fill_parent"
-            android:id="@+id/spinner"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:spinnerMode="dropdown"
-            style="@android:style/Widget.Holo.Light.Spinner"
-            android:layout_margin="10dp" />
-
-    </TableRow>
 
 </RelativeLayout>

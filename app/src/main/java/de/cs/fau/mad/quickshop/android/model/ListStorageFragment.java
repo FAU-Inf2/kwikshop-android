@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
+import de.cs.fau.mad.quickshop.android.common.Unit;
 
 public class ListStorageFragment extends Fragment {
 
@@ -82,17 +83,44 @@ public class ListStorageFragment extends Fragment {
             int m = m_LocalListStorage.createList();
             ShoppingList list = m_LocalListStorage.loadList(m);
             list.setName("DB List 1");
+
             Item i1 = new Item();
             i1.setName("DB Item 1");
+            i1.setComment("Sample comment");
             list.addItem(i1);
+
             Item i2 = new Item();
             i2.setName("DB Item 2");
+            i2.setComment("Some really long comment. It just goes on and on and on and on and on and on and on and on and on and on and on and on");
             i2.setBought(true);
             list.addItem(i2);
+
             Item i3 = new Item();
             i3.setName("DB Item 3");
             list.addItem(i3);
+
+            Item i4 = new Item();
+            i4.setName("DB Item 4");
+            i4.setComment("Comment");
+            i4.setBrand("Some brand name");
+            list.addItem(i4);
+
+
+            Item i5 = new Item();
+            i5.setName("DB Item 4");
+            i5.setComment("Comment");
+            i5.setBrand("Some brand name");
+            i5.setAmount(250);
+            list.addItem(i5);
+
+            Item i6 = new Item();
+            i6.setName("DB Item 6");
+            i6.setAmount(5);
+            list.addItem(i6);
+
             list.save();
+
+
         }
     }
 

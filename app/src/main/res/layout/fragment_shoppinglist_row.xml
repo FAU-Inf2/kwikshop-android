@@ -1,25 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/list_row_main">
+
+        <TextView
+            android:id="@+id/list_row_textView_Main"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|top"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:gravity="center_vertical"
+            android:background="?android:attr/activatedBackgroundIndicator"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:textColor="@color/primary_text_default_material_light"
+            android:text="Shopping list Name" />
+
+        <TextView
+            android:id="@+id/list_row_textView_amount"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:gravity="center_vertical"
+            android:background="?android:attr/activatedBackgroundIndicator"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:textColor="@color/primary_text_default_material_light"
+            android:text="Amount" />
+
+    </GridLayout>
+
 
     <TextView
-        android:id="@+id/tvItem"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:textColor="#ff000000"
-        android:autoText="false"
-        android:text="@string/ShoppingListItem"
-        android:editable="false"
-        android:textSize="@dimen/abc_text_size_large_material"
-        android:textIsSelectable="false"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:maxHeight="25dp"
-        android:textStyle="bold"
-        android:background="@drawable/textviewborder" />/>
+        android:id="@+id/list_row_textView_brand"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:singleLine="true"
+        android:text="Your brand goes here"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@id/list_row_main"
+        android:textColor="@color/secondary_text_default_material_light"
+        android:layout_marginTop="-10dp"
+        android:ellipsize="end"
+        android:layout_marginBottom="5dp" />
+
+
+    <TextView
+        android:id="@+id/list_row_textView_comment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:singleLine="true"
+        android:text="Your comments go here"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@id/list_row_textView_brand"
+        android:textColor="@color/secondary_text_default_material_light"
+        android:layout_marginTop="-10dp"
+        android:ellipsize="end"
+        android:layout_marginBottom="5dp" />
+
 
 </RelativeLayout>

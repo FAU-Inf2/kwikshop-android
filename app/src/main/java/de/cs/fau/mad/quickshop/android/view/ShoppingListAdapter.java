@@ -19,10 +19,10 @@ import java.util.Map;
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
+import de.cs.fau.mad.quickshop.android.common.Unit;
+import de.cs.fau.mad.quickshop.android.util.StringHelper;
 
-/**
- * Created by Nicolas on 15/05/2015.
- */
+
 public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAdapter, Swappable{
 
     ShoppingList shoppingList;
@@ -40,13 +40,48 @@ public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAd
 
     @Override
     public View getView(int position, View view, ViewGroup parent){
+
         if(view == null ){
             view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_shoppinglist_row, parent, false);
         }
-        //display items in the list
-        TextView shoppingListNameView = (TextView) view.findViewById(R.id.tvItem);
 
-        shoppingListNameView.setText(shoppingList.getItem(getItem(position)).getName());
+        Item item = shoppingList.getItem(getItem(position));
+
+        //display items in the list
+        TextView shoppingListNameView = (TextView) view.findViewById(R.id.list_row_textView_Main);
+        shoppingListNameView.setText(item.getName());
+
+        String comment = item.getComment();
+        TextView commentView = (TextView) view.findViewById(R.id.list_row_textView_comment);
+        if (StringHelper.isNullOrWhiteSpace(comment)) {
+            commentView.setVisibility(View.GONE);
+        } else {
+            commentView.setVisibility(View.VISIBLE);
+            commentView.setText(comment);
+        }
+
+        String brand = item.getBrand();
+        TextView brandView = (TextView) view.findViewById(R.id.list_row_textView_brand);
+        if (StringHelper.isNullOrWhiteSpace(brand)) {
+            brandView.setVisibility(View.GONE);
+        } else {
+            brandView.setVisibility(View.VISIBLE);
+            brandView.setText(brand);
+        }
+
+
+        int amount = item.getAmount();
+        TextView amountView = (TextView) view.findViewById(R.id.list_row_textView_amount);
+        if (amount <= 1) {
+            amountView.setVisibility(View.GONE);
+
+        } else {
+            Unit unit = item.getUnit();
+            String unitStr = unit != null ? unit.toString() : "";
+
+            amountView.setVisibility(View.VISIBLE);
+            amountView.setText(String.format("%d %s", amount, unitStr));
+        }
 
         return view;
     }

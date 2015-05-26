@@ -58,7 +58,6 @@
         android:layout_height="fill_parent"
         android:id="@+id/defaultEditableItem"
         android:hint="@string/defaultItem"
-        android:textSize="@dimen/abc_text_size_large_material"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_alignTop="@+id/button"
         android:layout_alignRight="@+id/button"
@@ -66,7 +65,9 @@
         android:layout_alignBottom="@+id/button"
         android:layout_toRightOf="@+id/section_label"
         android:layout_toEndOf="@+id/section_label"
-        android:paddingStart="15dp" />
+
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" />
 
     <ImageButton
         style="?android:attr/borderlessButtonStyle"

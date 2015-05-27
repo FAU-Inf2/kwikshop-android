@@ -16,13 +16,14 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
               android:background="#88888888"
               android:gravity="center"
               android:orientation="horizontal"
               android:paddingRight="8dp"
-              tools:ignore="overdraw">
+              tools:ignore="overdraw"
+    >
 
     <TextView
         android:id="@+id/undo_row_texttv"

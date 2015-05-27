@@ -5,7 +5,8 @@
     android:paddingBottom="5dp"
     android:paddingTop="5dp"
     android:paddingLeft="20dp"
-    android:paddingRight="20dp">
+    android:paddingRight="20dp"
+                android:background="#ffffffff">
 
     <GridLayout
         android:layout_width="match_parent"

@@ -113,6 +113,7 @@ public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAd
         if (mview == null) {
             mview = LayoutInflater.from(getContext()).inflate(R.layout.shoppinglist_undo_row, viewGroup, false);
         }
+        mview.setMinimumHeight(viewGroup.getHeight()); // Match the Item's height
         return mview;
     }
 

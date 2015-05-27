@@ -1,6 +1,7 @@
 package de.cs.fau.mad.quickshop.android.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,9 +11,9 @@ public class ShoppingListActivity extends BaseActivity {
     private static final String SHOPPING_LIST_ID = "shopping_list_id";
 
 
-    public static Intent getIntent(Activity activity, int shoppingListId) {
+    public static Intent getIntent(Context context, int shoppingListId) {
 
-        Intent intent = new Intent(activity, ShoppingListActivity.class);
+        Intent intent = new Intent(context, ShoppingListActivity.class);
         intent.putExtra(SHOPPING_LIST_ID, (int) shoppingListId);
         return intent;
     }

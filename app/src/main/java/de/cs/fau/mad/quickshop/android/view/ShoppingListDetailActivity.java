@@ -1,6 +1,7 @@
 package de.cs.fau.mad.quickshop.android.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -21,12 +22,12 @@ public class ShoppingListDetailActivity extends BaseActivity implements SaveCanc
     //endregion
 
 
-    public static Intent getIntent(Activity activity) {
-        return new Intent(activity, ShoppingListDetailActivity.class);
+    public static Intent getIntent(Context context) {
+        return new Intent(context, ShoppingListDetailActivity.class);
     }
 
-    public static Intent getIntent(Activity activity, int shoppingListId) {
-        return new Intent(activity, ShoppingListDetailActivity.class)
+    public static Intent getIntent(Context context, int shoppingListId) {
+        return new Intent(context, ShoppingListDetailActivity.class)
                 .putExtra(ShoppingListDetailActivity.EXTRA_SHOPPINGLISTID, (long) shoppingListId);
     }
 

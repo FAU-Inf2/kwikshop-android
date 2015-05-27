@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.Fragment;
 
@@ -25,9 +26,12 @@ import java.util.ArrayList;
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
+import de.cs.fau.mad.quickshop.android.model.ListStorage;
+import de.cs.fau.mad.quickshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.quickshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
+import de.cs.fau.mad.quickshop.android.util.StringHelper;
 import de.greenrobot.event.EventBus;
 
 
@@ -42,13 +46,17 @@ public class ShoppingListFragment extends Fragment {
 
     //region Fields
 
-    private ListStorageFragment m_ListStorageFragment;
-    private ShoppingListAdapter m_ShoppingListAdapter;
-    private ShoppingListAdapter m_ShoppingListAdapterBought;
+
+    private ShoppingListAdapter shoppingListAdapter;
+    private ShoppingListAdapter shoppingListAdapterBought;
     private DynamicListView shoppingListView;
     private DynamicListView shoppingListViewBought;
-
+    private ListStorage listStorage;
+    private ShoppingList shoppingList = null;
     private int listID;
+
+
+    private TextView textView_QuickAdd;
 
     //endregion
 
@@ -98,18 +106,19 @@ public class ShoppingListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         EventBus.getDefault().register(this);
 
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
-        m_ListStorageFragment = ListStorageFragment.getListStorageFragment();
+
+        listStorage = ListStorageFragment.getLocalListStorage();
 
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         shoppingListView = (DynamicListView) rootView.findViewById(R.id.list_shoppingList);
         shoppingListViewBought = (DynamicListView) rootView.findViewById(R.id.list_shoppingListBought);
 
-        ShoppingList shoppingList = null;
         try {
-            shoppingList = m_ListStorageFragment.getLocalListStorage().loadList(listID);
+            shoppingList = listStorage.loadList(listID);
         } catch (IllegalArgumentException ex) { //TODO: we should probably introduce our own exception types
             showToast(ex.getMessage());
             Intent intent = new Intent(getActivity(), ShoppingListActivity.class);
@@ -118,16 +127,16 @@ public class ShoppingListFragment extends Fragment {
 
         if (shoppingList != null) {
             // Upper list for Items that are not yet bought
-            m_ShoppingListAdapter = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList,
+            shoppingListAdapter = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList,
                     generateData(shoppingList, false),
                     shoppingList);
 
-            SimpleSwipeUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(m_ShoppingListAdapter, getActivity(),
+            SimpleSwipeUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
                     new OnDismissCallback() {
                         @Override
                         public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
                             for (int position : reverseSortedPositions) {
-                                m_ShoppingListAdapter.removeByPosition(position);
+                                shoppingListAdapter.removeByPosition(position);
                                 UpdateLists();
                             }
                         }
@@ -141,7 +150,7 @@ public class ShoppingListFragment extends Fragment {
             // --- //
 
             // Lower list for Items that are already bought
-            m_ShoppingListAdapterBought = new ShoppingListAdapter(getActivity(), R.id.list_shoppingListBought,
+            shoppingListAdapterBought = new ShoppingListAdapter(getActivity(), R.id.list_shoppingListBought,
                     generateData(shoppingList, true),
                     shoppingList);
 
@@ -150,14 +159,14 @@ public class ShoppingListFragment extends Fragment {
                         @Override
                         public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
                             for (int position : reverseSortedPositions) {
-                                m_ShoppingListAdapterBought.removeByPosition(position);
+                                shoppingListAdapterBought.removeByPosition(position);
                                 UpdateLists();
                             }
                         }
                     }
             );
 
-            shoppingListViewBought.setAdapter(m_ShoppingListAdapterBought);
+            shoppingListViewBought.setAdapter(shoppingListAdapterBought);
             justifyListViewHeightBasedOnChildren(shoppingListViewBought);
 
             // OnClickListener to open the item details view
@@ -170,6 +179,44 @@ public class ShoppingListFragment extends Fragment {
                             .addToBackStack(null).commit();
                 }
             });*/
+
+            View fab = rootView.findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Fragment newItemFragment = ItemDetailsFragment.newInstance(listID);
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(BaseActivity.frameLayout.getId(), newItemFragment)
+                            .addToBackStack(null).commit();
+                }
+            });
+
+
+            textView_QuickAdd = (TextView) rootView.findViewById(R.id.textView_quickAdd);
+            View button_QuickAdd = rootView.findViewById(R.id.button_quickAdd);
+            button_QuickAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //adding empty items without a name is not supported
+                    if (!StringHelper.isNullOrWhiteSpace(textView_QuickAdd.getText())) {
+
+                        Item newItem = new Item();
+                        newItem.setName(textView_QuickAdd.getText().toString());
+
+                        shoppingList.addItem(newItem);
+
+                        listStorage.saveList(shoppingList);
+
+                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+
+                        //reset quick add text
+                        textView_QuickAdd.setText("");
+                    }
+                }
+            });
+
 
             //Setting spinner adapter to sort by button
             Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
@@ -188,8 +235,10 @@ public class ShoppingListFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
+
     }
 
 
@@ -199,13 +248,13 @@ public class ShoppingListFragment extends Fragment {
     //region Event Handlers
 
     public void onEvent(ShoppingListChangedEvent event) {
-        if (event.getListId() == this.listID && this.m_ShoppingListAdapter != null) {
+        if (event.getListId() == this.listID && this.shoppingListAdapter != null) {
             UpdateLists();
         }
     }
 
     public void onEvent(ItemChangedEvent event) {
-        if (event.getShoppingListId() == this.listID && this.m_ShoppingListAdapter != null) {
+        if (event.getShoppingListId() == this.listID && this.shoppingListAdapter != null) {
             UpdateLists();
         }
     }
@@ -216,14 +265,14 @@ public class ShoppingListFragment extends Fragment {
     //region Private Methods
 
     private void UpdateLists() {
-        m_ShoppingListAdapter.clear();
-        m_ShoppingListAdapter.addAll(generateData(m_ListStorageFragment.getLocalListStorage().loadList(listID), false));
-        m_ShoppingListAdapter.notifyDataSetChanged();
+        shoppingListAdapter.clear();
+        shoppingListAdapter.addAll(generateData(listStorage.loadList(listID), false));
+        shoppingListAdapter.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(shoppingListView);
 
-        m_ShoppingListAdapterBought.clear();
-        m_ShoppingListAdapterBought.addAll(generateData(m_ListStorageFragment.getLocalListStorage().loadList(listID), true));
-        m_ShoppingListAdapterBought.notifyDataSetChanged();
+        shoppingListAdapterBought.clear();
+        shoppingListAdapterBought.addAll(generateData(listStorage.loadList(listID), true));
+        shoppingListAdapterBought.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);
     }
 

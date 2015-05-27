@@ -5,23 +5,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import cs.fau.mad.quickshop_android.R;
+import dagger.ObjectGraph;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.view.binding.ListViewItemCommandBinding;
 import de.cs.fau.mad.quickshop.android.viewmodel.ListOfShoppingListsViewModel;
+import de.cs.fau.mad.quickshop.android.viewmodel.di.QuickshopViewModelModule;
 
 /**
  * Fragment for list of shopping lists
  */
 public class ListOfShoppingListsFragment extends FragmentWithViewModel implements ListOfShoppingListsViewModel.Listener {
 
-    private ListView listView;
-    private View rootView;
+
+    @InjectView(android.R.id.list)
+    ListView listView_ShoppingLists;
+
+    @InjectView(R.id.fab)
+    View floatingActionButton;
 
     private ListOfShoppingListsViewModel viewModel;
 
@@ -38,28 +45,29 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
         //TODO: storage setup needs to be simpler
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
-        //create view model instance
-        viewModel = new ListOfShoppingListsViewModel(new DefaultViewLauncher(getActivity()),
-                ListStorageFragment.getLocalListStorage());
+        // get view model (injected using dagger)
+        ObjectGraph objectGraph = ObjectGraph.create(new QuickshopViewModelModule(getActivity()));
+        viewModel = objectGraph.get(ListOfShoppingListsViewModel.class);
         viewModel.setListener(this);
 
-        rootView = inflater.inflate(R.layout.fragment_list_of_shoppinglists, container, false);
-        listView = (ListView) rootView.findViewById(android.R.id.list);
+        View rootView = inflater.inflate(R.layout.fragment_list_of_shoppinglists, container, false);
+        ButterKnife.inject(this, rootView);
+
+
 
         // create adapter for list
         ListOfShoppingListsListRowAdapter listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists());
-        listView.setAdapter(listAdapter);
+        listView_ShoppingLists.setAdapter(listAdapter);
 
-        // wire up event handlers
+        // bind view to view model
 
         //click on list item
-        bindListViewItem(android.R.id.list, ListViewItemCommandBinding.ListViewItemCommandType.Click, viewModel.getSelectShoppingListCommand());
-
+        bindListViewItem(listView_ShoppingLists, ListViewItemCommandBinding.ListViewItemCommandType.Click, viewModel.getSelectShoppingListCommand());
         //long click on list item
-        bindListViewItem(android.R.id.list, ListViewItemCommandBinding.ListViewItemCommandType.LongClick, viewModel.getSelectShoppingListDetailsCommand());
+        bindListViewItem(listView_ShoppingLists, ListViewItemCommandBinding.ListViewItemCommandType.LongClick, viewModel.getSelectShoppingListDetailsCommand());
 
         //click on floating action button (add)
-        bindButton(R.id.fab, viewModel.getAddShoppingListCommand());
+        bindButton(floatingActionButton, viewModel.getAddShoppingListCommand());
 
         return rootView;
     }
@@ -68,26 +76,12 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
     @Override
     public void onShoppingListsChanged(List<ShoppingList> newValue) {
 
-        listView.setAdapter(new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists()));
+        listView_ShoppingLists.setAdapter(new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists()));
     }
 
     @Override
     public void onFinish() {
         //nothing to dp
-    }
-
-
-    private void showToast(String text) {
-
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(getActivity(), text, duration);
-        toast.show();
-    }
-
-    @Override
-    protected View getRootView() {
-        return rootView;
     }
 
 

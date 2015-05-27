@@ -55,7 +55,7 @@
 
 
             <EditText
-                android:id="@+id/defaultEditableItem"
+                android:id="@+id/textView_quickAdd"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/defaultItem"
@@ -63,14 +63,14 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <ImageButton
-                android:id="@+id/button"
+                android:id="@+id/button_quickAdd"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="40dip"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/defaultEditableItem"
-                android:layout_alignEnd="@+id/defaultEditableItem"
-                android:layout_alignRight="@+id/defaultEditableItem"
-                android:layout_alignTop="@+id/defaultEditableItem"
+                android:layout_alignBottom="@id/textView_quickAdd"
+                android:layout_alignEnd="@id/textView_quickAdd"
+                android:layout_alignRight="@id/textView_quickAdd"
+                android:layout_alignTop="@id/textView_quickAdd"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_action_add" />
 

@@ -2,6 +2,7 @@ package de.cs.fau.mad.quickshop.android.view;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 
 import de.cs.fau.mad.quickshop.android.viewmodel.common.ViewLauncher;

@@ -2,6 +2,8 @@ package de.cs.fau.mad.quickshop.android.viewmodel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.model.ListStorage;
 import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangedEvent;
@@ -20,8 +22,9 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
     }
 
     // infrastructure references
-    private ViewLauncher viewLauchner;
-    private ListStorage listStorage;
+    private final ViewLauncher viewLauchner;
+    private final ListStorage listStorage;
+
     private Listener listener;
 
     // backing fields for properties
@@ -45,15 +48,15 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         }
     };
 
-
+    @Inject
     public ListOfShoppingListsViewModel(ViewLauncher viewLauncher, ListStorage listStorage) {
 
         this.viewLauchner = viewLauncher;
         this.listStorage = listStorage;
+
         setShoppingLists(new ObservableArrayList<ShoppingList>(listStorage.getAllLists()));
 
         EventBus.getDefault().register(this);
-
     }
 
 

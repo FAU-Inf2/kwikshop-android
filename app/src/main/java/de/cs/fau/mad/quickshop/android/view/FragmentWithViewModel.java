@@ -26,20 +26,13 @@ public abstract class FragmentWithViewModel extends Fragment {
         this.bindings.add(binding);
     }
 
-    protected void bindButton(int buttonId, Command command) {
-        View button = getRootView().findViewById(buttonId);
-        bindButton(button, command);
-    }
 
+    protected void bindListViewItem(ListView listView, ListViewItemCommandBinding.ListViewItemCommandType type, Command<Integer> command) {
 
-    protected void bindListViewItem(int listViewId, ListViewItemCommandBinding.ListViewItemCommandType type, Command<Integer> command) {
-
-        ListView listView = (ListView) getRootView().findViewById(listViewId);
         Binding binding = new ListViewItemCommandBinding(type, listView, command);
         this.bindings.add(binding);
 
     }
 
-    protected abstract View getRootView();
 
 }

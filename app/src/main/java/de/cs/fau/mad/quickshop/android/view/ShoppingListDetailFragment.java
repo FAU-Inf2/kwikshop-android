@@ -11,10 +11,16 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnTextChanged;
 import cs.fau.mad.quickshop_android.R;
+import dagger.ObjectGraph;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.view.interfaces.SaveCancelActivity;
+import de.cs.fau.mad.quickshop.android.viewmodel.ListOfShoppingListsViewModel;
 import de.cs.fau.mad.quickshop.android.viewmodel.ShoppingListDetailsViewModel;
+import de.cs.fau.mad.quickshop.android.viewmodel.di.QuickshopViewModelModule;
 
 public class ShoppingListDetailFragment extends FragmentWithViewModel implements ShoppingListDetailsViewModel.Listener {
 
@@ -22,11 +28,21 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
     public static final String EXTRA_SHOPPINGLISTID = "extra_ShoppingListId";
 
 
-    private ShoppingListDetailsViewModel viewModel;
-    private View rootView;
-    private TextView textViewShoppingListName;
+    @InjectView(R.id.textView_ShoppingListName)
+    TextView textView_ShoppingListName;
 
+    @InjectView(R.id.button_delete)
+    View button_Delete;
+
+    @InjectView(R.id.create_calendar_event)
+    View button_CreateCalendarEvent;
+
+    @InjectView(R.id.edit_calendar_event)
+    View button_EditCalendarEvent;
+
+    private ShoppingListDetailsViewModel viewModel;
     private boolean updatingViewModel = false;
+
 
     public static ShoppingListDetailFragment newInstance() {
         ShoppingListDetailFragment fragment = new ShoppingListDetailFragment();
@@ -39,49 +55,31 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         super.onCreate(savedInstanceState);
 
-        rootView = inflater.inflate(R.layout.activity_shopping_list_detail, container, false);
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
+        ObjectGraph objectGraph = ObjectGraph.create(new QuickshopViewModelModule(getActivity()));
+        viewModel = objectGraph.get(ShoppingListDetailsViewModel.class);
+        initializeViewModel();
 
-        viewModel = initializeViewModel();
+        View rootView = inflater.inflate(R.layout.activity_shopping_list_detail, container, false);
+        ButterKnife.inject(this, rootView);
+
+
 
 
         // focus test box
-        textViewShoppingListName = (TextView) rootView.findViewById(R.id.textView_ShoppingListName);
-        textViewShoppingListName.setText(viewModel.getName());
-        textViewShoppingListName.setFocusable(true);
-        textViewShoppingListName.setFocusableInTouchMode(true);
-        textViewShoppingListName.requestFocus();
-        textViewShoppingListName.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                updatingViewModel = true;
-                String text = textViewShoppingListName.getText().toString();
-                viewModel.setName(text);
-                updatingViewModel = false;
-            }
-        });
-
+        textView_ShoppingListName.setText(viewModel.getName());
+        textView_ShoppingListName.setFocusable(true);
+        textView_ShoppingListName.setFocusableInTouchMode(true);
+        textView_ShoppingListName.requestFocus();
 
         //show keyboard
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-
-        bindButton(R.id.button_delete, viewModel.getDeleteCommand());
-        bindButton(R.id.create_calendar_event, viewModel.getCreateCalendarEventCommand());
-        bindButton(R.id.edit_calendar_event, viewModel.getEditCalendarEventCommand());
-
+        //set up binding between view and view model
+        bindButton(button_Delete, viewModel.getDeleteCommand());
+        bindButton(button_CreateCalendarEvent, viewModel.getCreateCalendarEventCommand());
+        bindButton(button_EditCalendarEvent, viewModel.getEditCalendarEventCommand());
 
         Activity activity = getActivity();
         if (activity instanceof SaveCancelActivity) {
@@ -105,36 +103,38 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
     @Override
     public void onNameChanged(String value) {
+        //update name changed in the view model in the view
         if (!updatingViewModel) {
-            textViewShoppingListName.setText(viewModel.getName());
+            textView_ShoppingListName.setText(viewModel.getName());
         }
     }
 
     @Override
     public void onFinish() {
-        textViewShoppingListName.setText("");
+        textView_ShoppingListName.setText("");
         getActivity().finish();
     }
 
 
-    @Override
-    protected View getRootView() {
-        return rootView;
+    @OnTextChanged(R.id.textView_ShoppingListName)
+    public void textView_ShoppingListName_OnTextChanged(CharSequence s) {
+
+        //send updated value for shopping list name to the view model
+        updatingViewModel = true;
+        viewModel.setName(s != null ? s.toString() : "");
+        updatingViewModel = false;
+
     }
 
-
-    private ShoppingListDetailsViewModel initializeViewModel() {
+    private void initializeViewModel() {
 
         Intent intent = getActivity().getIntent();
-        int shoppingListId;
-        if (intent.hasExtra(EXTRA_SHOPPINGLISTID)) {
-            shoppingListId = ((Long) intent.getExtras().get(EXTRA_SHOPPINGLISTID)).intValue();
-            return new ShoppingListDetailsViewModel(getActivity(), new DefaultViewLauncher(getActivity()),
-                    ListStorageFragment.getLocalListStorage(), shoppingListId);
 
+        if (intent.hasExtra(EXTRA_SHOPPINGLISTID)) {
+            int shoppingListId = ((Long) intent.getExtras().get(EXTRA_SHOPPINGLISTID)).intValue();
+            viewModel.initialize(shoppingListId);
         } else {
-            return new ShoppingListDetailsViewModel(getActivity(), new DefaultViewLauncher(getActivity()),
-                    ListStorageFragment.getLocalListStorage());
+            viewModel.initialize();
         }
     }
 

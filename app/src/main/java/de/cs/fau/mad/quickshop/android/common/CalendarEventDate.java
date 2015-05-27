@@ -112,7 +112,7 @@ public class CalendarEventDate{
 
     //compares the id of a given CalendarEventDate
     //if id has default value current time is set, else time from eventDate
-    public void initialize(CalendarEventDate eventDate){
+    public void initialize(){
             this.isSet = true;
             //if(eventDate.getCalendarEventId() == -1) {
                 final Calendar c = Calendar.getInstance();

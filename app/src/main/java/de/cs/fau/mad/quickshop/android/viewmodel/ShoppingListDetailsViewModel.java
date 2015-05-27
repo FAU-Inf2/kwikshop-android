@@ -259,6 +259,8 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         }
         CalendarEventDate calendarEventDate = getCalendarEventDate();
 
+
+        shoppingList.setName(this.getName());
         if (calendarEventDate.getIsSet()) {
             writeEventToCalendar();
             shoppingList.getCalendarEventDate().setYear(calendarEventDate.getYear());
@@ -268,7 +270,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             shoppingList.getCalendarEventDate().setMinute(calendarEventDate.getMinute());
 
         }
-        shoppingList.setName(this.getName());
+
         listStorage.saveList(shoppingList);
 
         EventBus.getDefault().post(new ShoppingListChangedEvent(shoppingList.getId(), ShoppingListChangeType.PropertiesModified));
@@ -312,7 +314,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
         setCalendarEventDate(new CalendarEventDate());
         CalendarEventDate eventDate = getCalendarEventDate();
-        eventDate.initialize(shoppingList.getCalendarEventDate());
+        eventDate.initialize();
 
         viewLauncher.showDatePicker(eventDate.getYear(), eventDate.getMonth(), eventDate.getDay(),
                 eventDate.getHour(), eventDate.getMinute());

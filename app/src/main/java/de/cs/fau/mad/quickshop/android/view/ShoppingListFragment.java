@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.support.v4.app.Fragment;
@@ -43,6 +45,8 @@ public class ShoppingListFragment extends Fragment {
     private ListStorageFragment m_ListStorageFragment;
     private ShoppingListAdapter m_ShoppingListAdapter;
     private ShoppingListAdapter m_ShoppingListAdapterBought;
+    private DynamicListView shoppingListView;
+    private DynamicListView shoppingListViewBought;
 
     private int listID;
 
@@ -72,6 +76,26 @@ public class ShoppingListFragment extends Fragment {
         }
     }
 
+    public void justifyListViewHeightBasedOnChildren (DynamicListView listView) {
+        ListAdapter adapter = listView.getAdapter();
+
+        if (adapter == null) {
+            return;
+        }
+        ViewGroup vg = listView;
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, vg);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams par = listView.getLayoutParams();
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        listView.setLayoutParams(par);
+        listView.requestLayout();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
@@ -80,8 +104,8 @@ public class ShoppingListFragment extends Fragment {
         m_ListStorageFragment = ListStorageFragment.getListStorageFragment();
 
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
-        DynamicListView shoppingListView = (DynamicListView) rootView.findViewById(R.id.list_shoppingList);
-        DynamicListView shoppingListViewBought = (DynamicListView) rootView.findViewById(R.id.list_shoppingListBought);
+        shoppingListView = (DynamicListView) rootView.findViewById(R.id.list_shoppingList);
+        shoppingListViewBought = (DynamicListView) rootView.findViewById(R.id.list_shoppingListBought);
 
         ShoppingList shoppingList = null;
         try {
@@ -112,6 +136,7 @@ public class ShoppingListFragment extends Fragment {
             swipeUndoAdapter.setAbsListView(shoppingListView);
             shoppingListView.setAdapter(swipeUndoAdapter);
             shoppingListView.enableSimpleSwipeUndo();
+            justifyListViewHeightBasedOnChildren(shoppingListView);
 
             // --- //
 
@@ -133,6 +158,7 @@ public class ShoppingListFragment extends Fragment {
             );
 
             shoppingListViewBought.setAdapter(m_ShoppingListAdapterBought);
+            justifyListViewHeightBasedOnChildren(shoppingListViewBought);
 
             // OnClickListener to open the item details view
             /*shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -166,6 +192,7 @@ public class ShoppingListFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
+
     //endregion
 
 
@@ -192,10 +219,12 @@ public class ShoppingListFragment extends Fragment {
         m_ShoppingListAdapter.clear();
         m_ShoppingListAdapter.addAll(generateData(m_ListStorageFragment.getLocalListStorage().loadList(listID), false));
         m_ShoppingListAdapter.notifyDataSetChanged();
+        justifyListViewHeightBasedOnChildren(shoppingListView);
 
         m_ShoppingListAdapterBought.clear();
         m_ShoppingListAdapterBought.addAll(generateData(m_ListStorageFragment.getLocalListStorage().loadList(listID), true));
         m_ShoppingListAdapterBought.notifyDataSetChanged();
+        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
     }
 
     private ArrayList<Integer> generateData(ShoppingList shoppingList, boolean isBought) {

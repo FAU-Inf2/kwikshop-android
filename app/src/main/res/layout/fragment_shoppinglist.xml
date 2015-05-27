@@ -76,29 +76,38 @@
 
         </RelativeLayout>
 
-        <!--List of not-bought items-->
-        <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
-            android:id="@+id/list_shoppingList"
-            android:layout_width="fill_parent"
+        <ScrollView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="false"
-            android:layout_below="@+id/quickAdd" />
+            android:layout_below="@+id/quickAdd" >
 
-        <!--List of bought items-->
-        <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
-            android:id="@+id/list_shoppingListBought"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="false"
-            android:layout_below="@+id/list_shoppingList"
-            android:layout_marginTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
+                <!--List of not-bought items-->
+                <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+                    android:id="@+id/list_shoppingList"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentStart="false" />
+
+                <!--List of bought items-->
+                <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+                    android:id="@+id/list_shoppingListBought"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentStart="false"
+                    android:layout_below="@+id/list_shoppingList"
+                    android:layout_marginTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp" />
+            </RelativeLayout>
+        </ScrollView>
 
     </LinearLayout>
 

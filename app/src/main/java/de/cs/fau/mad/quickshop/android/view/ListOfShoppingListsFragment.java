@@ -11,10 +11,12 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cs.fau.mad.quickshop_android.R;
+import dagger.ObjectGraph;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.view.binding.ListViewItemCommandBinding;
 import de.cs.fau.mad.quickshop.android.viewmodel.ListOfShoppingListsViewModel;
+import de.cs.fau.mad.quickshop.android.viewmodel.di.QuickshopViewModelModule;
 
 /**
  * Fragment for list of shopping lists
@@ -43,20 +45,21 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
         //TODO: storage setup needs to be simpler
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
+        // get view model (injected using dagger)
+        ObjectGraph objectGraph = ObjectGraph.create(new QuickshopViewModelModule(getActivity()));
+        viewModel = objectGraph.get(ListOfShoppingListsViewModel.class);
+        viewModel.setListener(this);
+
         View rootView = inflater.inflate(R.layout.fragment_list_of_shoppinglists, container, false);
         ButterKnife.inject(this, rootView);
 
-        //create view model instance
-        viewModel = new ListOfShoppingListsViewModel(new DefaultViewLauncher(getActivity()),
-                ListStorageFragment.getLocalListStorage());
-        viewModel.setListener(this);
 
 
         // create adapter for list
         ListOfShoppingListsListRowAdapter listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists());
         listView_ShoppingLists.setAdapter(listAdapter);
 
-        // wire up event handlers
+        // bind view to view model
 
         //click on list item
         bindListViewItem(listView_ShoppingLists, ListViewItemCommandBinding.ListViewItemCommandType.Click, viewModel.getSelectShoppingListCommand());

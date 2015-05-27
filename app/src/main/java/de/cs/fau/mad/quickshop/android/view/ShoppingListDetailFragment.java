@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnTextChanged;
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.view.interfaces.SaveCancelActivity;
@@ -56,43 +57,21 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
-
         viewModel = initializeViewModel();
-
 
         // focus test box
         textView_ShoppingListName.setText(viewModel.getName());
         textView_ShoppingListName.setFocusable(true);
         textView_ShoppingListName.setFocusableInTouchMode(true);
         textView_ShoppingListName.requestFocus();
-        textView_ShoppingListName.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                updatingViewModel = true;
-                String text = textView_ShoppingListName.getText().toString();
-                viewModel.setName(text);
-                updatingViewModel = false;
-            }
-        });
 
         //show keyboard
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
+        //set up binding between view and view model
         bindButton(button_Delete, viewModel.getDeleteCommand());
         bindButton(button_CreateCalendarEvent, viewModel.getCreateCalendarEventCommand());
         bindButton(button_EditCalendarEvent, viewModel.getEditCalendarEventCommand());
-
 
         Activity activity = getActivity();
         if (activity instanceof SaveCancelActivity) {
@@ -116,6 +95,7 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
     @Override
     public void onNameChanged(String value) {
+        //update name changed in the view model in the view
         if (!updatingViewModel) {
             textView_ShoppingListName.setText(viewModel.getName());
         }
@@ -128,7 +108,15 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
     }
 
 
+    @OnTextChanged(R.id.textView_ShoppingListName)
+    public void textView_ShoppingListName_OnTextChanged(CharSequence s) {
 
+        //send updated value for shopping list name to the view model
+        updatingViewModel = true;
+        viewModel.setName(s != null ? s.toString() : "");
+        updatingViewModel = false;
+
+    }
 
     private ShoppingListDetailsViewModel initializeViewModel() {
 

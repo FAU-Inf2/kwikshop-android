@@ -144,7 +144,8 @@ public class ItemDetailsFragment extends Fragment {
         m_ListStorageFragment.getLocalListStorage().saveList(mShoppingList);
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
 
-        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, mItem.getId(), mShoppingList.getId()));
+        ItemChangeType changeType = isNewItem ? ItemChangeType.Added : ItemChangeType.PropertiesModified;
+        EventBus.getDefault().post(new ItemChangedEvent(changeType, mShoppingList.getId(), mItem.getId()));
     }
 
     private void SetupUI() {

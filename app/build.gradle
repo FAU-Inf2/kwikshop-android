@@ -51,6 +51,10 @@ dependencies {
     compile 'com.nhaarman.listviewanimations:lib-core:3.1.0@aar'
     compile 'com.nhaarman.listviewanimations:lib-manipulation:3.1.0@aar'
     compile 'com.nhaarman.listviewanimations:lib-core-slh:3.1.0@aar'
+
+    //Dependency injection
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    compile 'com.jakewharton:butterknife:6.1.0'
 }
 
 allprojects {

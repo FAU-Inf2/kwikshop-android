@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.inject.Inject;
+
 import de.cs.fau.mad.quickshop.android.common.CalendarEventDate;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.model.ListStorage;
@@ -53,37 +55,29 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     private final Context context;
     private final ListStorage listStorage;
     private final ViewLauncher viewLauncher;
+
     private int shoppingListId;
-    private final boolean newShoppingList;
+    private boolean newShoppingList;
     private ShoppingList shoppingList;
 
     // backing fields for properties
-    private final Command saveCommand;
-    private final Command cancelCommand;
-    private final Command deleteCommand;
-    private final Command editCalendarEventCommand;
-    private final Command createCalendarEventCommand;
-    private final Command deleteCalendarEventCommand;
+    private Command saveCommand;
+    private Command cancelCommand;
+    private Command deleteCommand;
+    private Command editCalendarEventCommand;
+    private Command createCalendarEventCommand;
+    private Command deleteCalendarEventCommand;
     private CalendarEventDate calendarEventDate = new CalendarEventDate();
 
 
-    /**
-     * Initializes a new instance of ShoppingListDetailsViewModel without an associated shopping list
-     * (will create a new list on save)
-     */
-    public ShoppingListDetailsViewModel(final Context context, final ViewLauncher viewLauncher,
-                                        final ListStorage listStorage) {
-        this(context, viewLauncher, listStorage, -1);
-    }
 
     /**
      * Initializes a new instance of ShoppingListDetailsViewModel for the specified shopping list
      * (will modify the shopping lsit on save)
-     *
-     * @param shoppingListId The id of the shopping list to create a view model for
      */
+    @Inject
     public ShoppingListDetailsViewModel(final Context context, final ViewLauncher viewLauncher,
-                                        final ListStorage listStorage, final int shoppingListId) {
+                                        final ListStorage listStorage) {
 
         if (context == null) {
             throw new IllegalArgumentException("'context' must not be null");
@@ -100,6 +94,15 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         this.context = context;
         this.viewLauncher = viewLauncher;
         this.listStorage = listStorage;
+
+
+    }
+
+    public void initialize() {
+        initialize(-1);
+    }
+
+    public void initialize(int shoppingListId) {
         this.shoppingListId = shoppingListId;
         this.newShoppingList = shoppingListId == -1;
 
@@ -140,11 +143,9 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             }
         };
 
+
         setUp();
-
-
     }
-
 
     public void addListener(Listener value) {
         this.listeners.add(value);

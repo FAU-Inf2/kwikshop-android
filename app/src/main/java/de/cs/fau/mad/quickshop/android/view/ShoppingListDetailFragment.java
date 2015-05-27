@@ -15,9 +15,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnTextChanged;
 import cs.fau.mad.quickshop_android.R;
+import dagger.ObjectGraph;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.view.interfaces.SaveCancelActivity;
+import de.cs.fau.mad.quickshop.android.viewmodel.ListOfShoppingListsViewModel;
 import de.cs.fau.mad.quickshop.android.viewmodel.ShoppingListDetailsViewModel;
+import de.cs.fau.mad.quickshop.android.viewmodel.di.QuickshopViewModelModule;
 
 public class ShoppingListDetailFragment extends FragmentWithViewModel implements ShoppingListDetailsViewModel.Listener {
 
@@ -52,12 +55,17 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         super.onCreate(savedInstanceState);
 
+        new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
+
+        ObjectGraph objectGraph = ObjectGraph.create(new QuickshopViewModelModule(getActivity()));
+        viewModel = objectGraph.get(ShoppingListDetailsViewModel.class);
+        initializeViewModel();
+
         View rootView = inflater.inflate(R.layout.activity_shopping_list_detail, container, false);
         ButterKnife.inject(this, rootView);
 
-        new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
-        viewModel = initializeViewModel();
+
 
         // focus test box
         textView_ShoppingListName.setText(viewModel.getName());
@@ -118,18 +126,15 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
     }
 
-    private ShoppingListDetailsViewModel initializeViewModel() {
+    private void initializeViewModel() {
 
         Intent intent = getActivity().getIntent();
-        int shoppingListId;
-        if (intent.hasExtra(EXTRA_SHOPPINGLISTID)) {
-            shoppingListId = ((Long) intent.getExtras().get(EXTRA_SHOPPINGLISTID)).intValue();
-            return new ShoppingListDetailsViewModel(getActivity(), new DefaultViewLauncher(getActivity()),
-                    ListStorageFragment.getLocalListStorage(), shoppingListId);
 
+        if (intent.hasExtra(EXTRA_SHOPPINGLISTID)) {
+            int shoppingListId = ((Long) intent.getExtras().get(EXTRA_SHOPPINGLISTID)).intValue();
+            viewModel.initialize(shoppingListId);
         } else {
-            return new ShoppingListDetailsViewModel(getActivity(), new DefaultViewLauncher(getActivity()),
-                    ListStorageFragment.getLocalListStorage());
+            viewModel.initialize();
         }
     }
 

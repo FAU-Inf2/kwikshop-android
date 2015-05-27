@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.quickshop.android.view.interfaces.SaveCancelActivity;
@@ -22,11 +24,21 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
     public static final String EXTRA_SHOPPINGLISTID = "extra_ShoppingListId";
 
 
-    private ShoppingListDetailsViewModel viewModel;
-    private View rootView;
-    private TextView textViewShoppingListName;
+    @InjectView(R.id.textView_ShoppingListName)
+    TextView textView_ShoppingListName;
 
+    @InjectView(R.id.button_delete)
+    View button_Delete;
+
+    @InjectView(R.id.create_calendar_event)
+    View button_CreateCalendarEvent;
+
+    @InjectView(R.id.edit_calendar_event)
+    View button_EditCalendarEvent;
+
+    private ShoppingListDetailsViewModel viewModel;
     private boolean updatingViewModel = false;
+
 
     public static ShoppingListDetailFragment newInstance() {
         ShoppingListDetailFragment fragment = new ShoppingListDetailFragment();
@@ -39,7 +51,9 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         super.onCreate(savedInstanceState);
 
-        rootView = inflater.inflate(R.layout.activity_shopping_list_detail, container, false);
+        View rootView = inflater.inflate(R.layout.activity_shopping_list_detail, container, false);
+        ButterKnife.inject(this, rootView);
+
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
 
@@ -47,12 +61,11 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
 
         // focus test box
-        textViewShoppingListName = (TextView) rootView.findViewById(R.id.textView_ShoppingListName);
-        textViewShoppingListName.setText(viewModel.getName());
-        textViewShoppingListName.setFocusable(true);
-        textViewShoppingListName.setFocusableInTouchMode(true);
-        textViewShoppingListName.requestFocus();
-        textViewShoppingListName.addTextChangedListener(new TextWatcher() {
+        textView_ShoppingListName.setText(viewModel.getName());
+        textView_ShoppingListName.setFocusable(true);
+        textView_ShoppingListName.setFocusableInTouchMode(true);
+        textView_ShoppingListName.requestFocus();
+        textView_ShoppingListName.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -67,20 +80,18 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
             @Override
             public void afterTextChanged(Editable s) {
                 updatingViewModel = true;
-                String text = textViewShoppingListName.getText().toString();
+                String text = textView_ShoppingListName.getText().toString();
                 viewModel.setName(text);
                 updatingViewModel = false;
             }
         });
 
-
         //show keyboard
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-
-        bindButton(R.id.button_delete, viewModel.getDeleteCommand());
-        bindButton(R.id.create_calendar_event, viewModel.getCreateCalendarEventCommand());
-        bindButton(R.id.edit_calendar_event, viewModel.getEditCalendarEventCommand());
+        bindButton(button_Delete, viewModel.getDeleteCommand());
+        bindButton(button_CreateCalendarEvent, viewModel.getCreateCalendarEventCommand());
+        bindButton(button_EditCalendarEvent, viewModel.getEditCalendarEventCommand());
 
 
         Activity activity = getActivity();
@@ -106,21 +117,17 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
     @Override
     public void onNameChanged(String value) {
         if (!updatingViewModel) {
-            textViewShoppingListName.setText(viewModel.getName());
+            textView_ShoppingListName.setText(viewModel.getName());
         }
     }
 
     @Override
     public void onFinish() {
-        textViewShoppingListName.setText("");
+        textView_ShoppingListName.setText("");
         getActivity().finish();
     }
 
 
-    @Override
-    protected View getRootView() {
-        return rootView;
-    }
 
 
     private ShoppingListDetailsViewModel initializeViewModel() {

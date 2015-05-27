@@ -5,10 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
@@ -20,8 +21,12 @@ import de.cs.fau.mad.quickshop.android.viewmodel.ListOfShoppingListsViewModel;
  */
 public class ListOfShoppingListsFragment extends FragmentWithViewModel implements ListOfShoppingListsViewModel.Listener {
 
-    private ListView listView;
-    private View rootView;
+
+    @InjectView(android.R.id.list)
+    ListView listView_ShoppingLists;
+
+    @InjectView(R.id.fab)
+    View floatingActionButton;
 
     private ListOfShoppingListsViewModel viewModel;
 
@@ -38,28 +43,28 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
         //TODO: storage setup needs to be simpler
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
+        View rootView = inflater.inflate(R.layout.fragment_list_of_shoppinglists, container, false);
+        ButterKnife.inject(this, rootView);
+
         //create view model instance
         viewModel = new ListOfShoppingListsViewModel(new DefaultViewLauncher(getActivity()),
                 ListStorageFragment.getLocalListStorage());
         viewModel.setListener(this);
 
-        rootView = inflater.inflate(R.layout.fragment_list_of_shoppinglists, container, false);
-        listView = (ListView) rootView.findViewById(android.R.id.list);
 
         // create adapter for list
         ListOfShoppingListsListRowAdapter listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists());
-        listView.setAdapter(listAdapter);
+        listView_ShoppingLists.setAdapter(listAdapter);
 
         // wire up event handlers
 
         //click on list item
-        bindListViewItem(android.R.id.list, ListViewItemCommandBinding.ListViewItemCommandType.Click, viewModel.getSelectShoppingListCommand());
-
+        bindListViewItem(listView_ShoppingLists, ListViewItemCommandBinding.ListViewItemCommandType.Click, viewModel.getSelectShoppingListCommand());
         //long click on list item
-        bindListViewItem(android.R.id.list, ListViewItemCommandBinding.ListViewItemCommandType.LongClick, viewModel.getSelectShoppingListDetailsCommand());
+        bindListViewItem(listView_ShoppingLists, ListViewItemCommandBinding.ListViewItemCommandType.LongClick, viewModel.getSelectShoppingListDetailsCommand());
 
         //click on floating action button (add)
-        bindButton(R.id.fab, viewModel.getAddShoppingListCommand());
+        bindButton(floatingActionButton, viewModel.getAddShoppingListCommand());
 
         return rootView;
     }
@@ -68,26 +73,12 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
     @Override
     public void onShoppingListsChanged(List<ShoppingList> newValue) {
 
-        listView.setAdapter(new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists()));
+        listView_ShoppingLists.setAdapter(new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists()));
     }
 
     @Override
     public void onFinish() {
         //nothing to dp
-    }
-
-
-    private void showToast(String text) {
-
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(getActivity(), text, duration);
-        toast.show();
-    }
-
-    @Override
-    protected View getRootView() {
-        return rootView;
     }
 
 

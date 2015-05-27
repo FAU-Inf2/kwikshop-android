@@ -32,6 +32,7 @@ public class ItemDetailsFragment extends Fragment {
 
     private int listID;
     private int itemID;
+    private boolean isNewItem;
 
     private ShoppingList mShoppingList;
     private Item mItem;
@@ -43,6 +44,23 @@ public class ItemDetailsFragment extends Fragment {
     private EditText brand_text;
     private EditText comment_text;
 
+    /**
+     * Creates a new instance of ItemDetailsFragment for a new shooping list item in the specified list
+     *
+     * @param listID
+     * @return
+     */
+    public static ItemDetailsFragment newInstance(int listID) {
+        return newInstance(listID, -1);
+    }
+
+    /**
+     * Creats a new instance of ItemDetailsFragment for the specified shopping list item
+     *
+     * @param listID
+     * @param itemID
+     * @return
+     */
     public static ItemDetailsFragment newInstance(int listID, int itemID) {
         ItemDetailsFragment fragment = new ItemDetailsFragment();
         Bundle args = new Bundle();
@@ -87,6 +105,8 @@ public class ItemDetailsFragment extends Fragment {
             listID = getArguments().getInt(ARG_LISTID);
             itemID = getArguments().getInt(ARG_ITEMID);
         }
+        isNewItem = itemID == -1;
+
     }
 
     @Override
@@ -108,11 +128,17 @@ public class ItemDetailsFragment extends Fragment {
     }
 
     private void saveItem() {
+
+        if (isNewItem) {
+            mItem = new Item();
+        }
+
         mItem.setName(productname_text.getText().toString());
         mItem.setAmount(Integer.parseInt(amount_text.getText().toString()));
         mItem.setBrand(brand_text.getText().toString());
         //mItem.setUnit(); // TODO: Set Unit
         mItem.setBrand(brand_text.getText().toString());
+        mItem.setComment(comment_text.getText().toString());
 
         mShoppingList.updateItem(mItem);
         m_ListStorageFragment.getLocalListStorage().saveList(mShoppingList);
@@ -132,13 +158,23 @@ public class ItemDetailsFragment extends Fragment {
         m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
 
         mShoppingList = m_ListStorageFragment.getLocalListStorage().loadList(listID);
-        mItem = m_ListStorageFragment.getLocalListStorage().loadList(listID).getItem(itemID);
+        if(isNewItem) {
 
-        // Fill UI elements with data from Item
-        productname_text.setText(mItem.getName());
-        amount_text.setText(Integer.toString(mItem.getAmount()));
-        brand_text.setText(mItem.getBrand());
-        comment_text.setText(mItem.getComment());
+            productname_text.setText("");
+            amount_text.setText(Integer.toString(1));
+            brand_text.setText("");
+            comment_text.setText("");
+
+        } else {
+            mItem = m_ListStorageFragment.getLocalListStorage().loadList(listID).getItem(itemID);
+
+            // Fill UI elements with data from Item
+            productname_text.setText(mItem.getName());
+            amount_text.setText(Integer.toString(mItem.getAmount()));
+            brand_text.setText(mItem.getBrand());
+            comment_text.setText(mItem.getComment());
+        }
+
 
         // TODO: Fill spinner with real data from Units + select correct unit
         // http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position

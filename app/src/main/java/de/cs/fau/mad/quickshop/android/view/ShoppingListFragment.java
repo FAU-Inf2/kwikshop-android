@@ -145,6 +145,18 @@ public class ShoppingListFragment extends Fragment {
                 }
             });*/
 
+            View fab = rootView.findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Fragment newItemFragment = ItemDetailsFragment.newInstance(listID);
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(BaseActivity.frameLayout.getId(), newItemFragment)
+                            .addToBackStack(null).commit();
+                }
+            });
+
             //Setting spinner adapter to sort by button
             Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
             // Create an ArrayAdapter using the string array and a default spinner layout

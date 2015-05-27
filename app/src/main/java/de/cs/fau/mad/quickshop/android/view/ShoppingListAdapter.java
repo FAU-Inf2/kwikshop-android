@@ -1,6 +1,7 @@
 package de.cs.fau.mad.quickshop.android.view;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,7 @@ public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAd
 
         Item item = shoppingList.getItem(getItem(position));
 
-        //display items in the list
+        // Fill TextViews
         TextView shoppingListNameView = (TextView) view.findViewById(R.id.list_row_textView_Main);
         shoppingListNameView.setText(item.getName());
 
@@ -81,6 +82,17 @@ public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAd
 
             amountView.setVisibility(View.VISIBLE);
             amountView.setText(String.format("%d %s", amount, unitStr));
+        }
+
+        // Specific changes for bought Items
+        if(item.isBought()) {
+            shoppingListNameView.setPaintFlags(shoppingListNameView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            shoppingListNameView.setTextAppearance(getContext(), android.R.style.TextAppearance_DeviceDefault_Small);
+
+            // Hide details - maybe allow the user to toggle this
+            commentView.setVisibility(View.GONE);
+            brandView.setVisibility(View.GONE);
+            amountView.setVisibility(View.GONE);
         }
 
         return view;

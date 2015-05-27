@@ -79,7 +79,6 @@
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/quickAdd"
             >
 
             <RelativeLayout
@@ -88,27 +87,34 @@
                 android:background="#FFB6B6B6"
                 >
 
+                <View
+                    android:id="@+id/divider_top"
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"/>
+
                 <!--List of not-bought items-->
                 <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
                     android:id="@+id/list_shoppingList"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentStart="false"
-                    android:backgroundTintMode="src_over"/>
+                    android:layout_below="@+id/divider_top"
+                    />
+
+                <View
+                    android:id="@+id/divider_center"
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_below="@+id/list_shoppingList"/>
 
                 <!--List of bought items-->
                 <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
                     android:id="@+id/list_shoppingListBought"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentStart="false"
-                    android:layout_below="@+id/list_shoppingList"
-                    android:paddingBottom="25dp"
-                    />
+                    android:layout_alignParentEnd="false"
+                    android:layout_below="@+id/divider_center"/>
             </RelativeLayout>
         </ScrollView>
 

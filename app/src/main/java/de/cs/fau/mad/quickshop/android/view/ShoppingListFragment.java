@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.Fragment;
 
@@ -23,9 +25,12 @@ import java.util.ArrayList;
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
+import de.cs.fau.mad.quickshop.android.model.ListStorage;
+import de.cs.fau.mad.quickshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.quickshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
+import de.cs.fau.mad.quickshop.android.util.StringHelper;
 import de.greenrobot.event.EventBus;
 
 
@@ -44,7 +49,11 @@ public class ShoppingListFragment extends Fragment {
     private ShoppingListAdapter m_ShoppingListAdapter;
     private ShoppingListAdapter m_ShoppingListAdapterBought;
 
+    ShoppingList shoppingList = null;
     private int listID;
+
+
+    private TextView textView_QuickAdd;
 
     //endregion
 
@@ -83,7 +92,7 @@ public class ShoppingListFragment extends Fragment {
         DynamicListView shoppingListView = (DynamicListView) rootView.findViewById(R.id.list_shoppingList);
         DynamicListView shoppingListViewBought = (DynamicListView) rootView.findViewById(R.id.list_shoppingListBought);
 
-        ShoppingList shoppingList = null;
+
         try {
             shoppingList = m_ListStorageFragment.getLocalListStorage().loadList(listID);
         } catch (IllegalArgumentException ex) { //TODO: we should probably introduce our own exception types
@@ -156,6 +165,33 @@ public class ShoppingListFragment extends Fragment {
                             .addToBackStack(null).commit();
                 }
             });
+
+
+            textView_QuickAdd = (TextView) rootView.findViewById(R.id.textView_quickAdd);
+            View button_QuickAdd = rootView.findViewById(R.id.button_quickAdd);
+            button_QuickAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //adding empty items without a name is not supported
+                    if (!StringHelper.isNullOrWhiteSpace(textView_QuickAdd.getText())) {
+
+                        ListStorage listStorage = ListStorageFragment.getLocalListStorage();
+                        Item newItem = new Item();
+                        newItem.setName(textView_QuickAdd.getText().toString());
+
+                        shoppingList.addItem(newItem);
+
+                        listStorage.saveList(shoppingList);
+
+                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+
+                        //reset quick add text
+                        textView_QuickAdd.setText("");
+                    }
+                }
+            });
+
 
             //Setting spinner adapter to sort by button
             Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);

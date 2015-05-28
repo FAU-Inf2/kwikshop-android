@@ -117,7 +117,6 @@ public class ItemDetailsFragment extends Fragment {
         setHasOptionsMenu(true);
 
         // set actionbar title
-
         getActivity().setTitle(R.string.title_fragment_item_details);
 
         EventBus.getDefault().register(this);

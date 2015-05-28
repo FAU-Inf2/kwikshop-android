@@ -2,7 +2,9 @@ package de.cs.fau.mad.quickshop.android.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -23,11 +25,9 @@ public class BaseActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         frameLayout = (FrameLayout)findViewById(R.id.content_frame);
-        getSupportActionBar().setIcon(R.drawable.ic_launcher);
-       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
     }
 
@@ -52,9 +52,9 @@ public class BaseActivity extends ActionBarActivity {
             case R.id.action_listofshoppinglists:
                 startActivity(new Intent(this, ListOfShoppingListsActivity.class));
                 return true;
-            case R.id.home:
-                Toast.makeText(getApplicationContext(),"Go back!",Toast.LENGTH_LONG);
-                this.finish();
+            case android.R.id.home:
+                 NavUtils.navigateUpFromSameTask(this);
+                 //this.finish();
                 return true;
 
             default:

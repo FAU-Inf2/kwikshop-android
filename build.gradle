@@ -83,14 +83,6 @@ allprojects {
 
 }
 
-/*license {
-    def dir = getBuildDir().getParentFile();
-    def repo = getGitRepository()
-    println("MY message: " + dir.class.getResource("/app/src/main/res/META-INF/license.txt\""));
-    headerURI = repo.class.getResource("/app/src/main/res/META-INF/license.txt").toURI()
-    getClass().getClassLoader().getResource()
-}*/
-
 license { header = file('license.txt') }
 
 

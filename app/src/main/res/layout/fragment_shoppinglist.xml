@@ -16,17 +16,19 @@
         <!--Sort-by Spinner-->
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="70dip">
+            android:layout_height="41dp"
+            android:background="@color/dark_primary_color">
 
             <Spinner
                 android:id="@+id/spinner"
                 style="@android:style/Widget.Holo.Light.Spinner"
                 android:layout_width="97dp"
                 android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
+                android:spinnerMode="dropdown"
+                android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:layout_margin="10dp"
-                android:spinnerMode="dropdown" />
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true" />
 
 
             <TextView
@@ -38,7 +40,8 @@
                 android:gravity="center_vertical"
                 android:maxHeight="26dp"
                 android:text="@string/sort_by"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/text_icons" />
 
 
         </RelativeLayout>
@@ -48,10 +51,11 @@
             android:id="@+id/quickAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
-            android:layout_marginEnd="15dip"
-            android:layout_marginStart="15dip"
-            android:layout_marginTop="10dip">
+            android:paddingBottom="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:background="@color/text_icons">
 
 
             <EditText
@@ -91,7 +95,7 @@
                     android:id="@+id/divider_top"
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"/>
+                    android:background="@color/divider_color"/>
 
                 <!--List of not-bought items-->
                 <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
@@ -99,13 +103,13 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/divider_top"
-                    />
+                    android:background="@color/text_icons" />
 
                 <View
                     android:id="@+id/divider_center"
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
+                    android:background="@color/divider_color"
                     android:layout_below="@+id/list_shoppingList"/>
 
                 <!--List of bought items-->
@@ -114,7 +118,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="false"
-                    android:layout_below="@+id/divider_center"/>
+                    android:layout_alignParentRight="false"
+                    android:layout_below="@+id/divider_center"
+                    android:background="@color/text_icons" />
             </RelativeLayout>
         </ScrollView>
 

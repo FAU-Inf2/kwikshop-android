@@ -54,7 +54,6 @@ public class BaseActivity extends ActionBarActivity {
                 return true;
             case android.R.id.home:
                  NavUtils.navigateUpFromSameTask(this);
-                 //this.finish();
                 return true;
 
             default:

@@ -3,6 +3,8 @@ package de.cs.fau.mad.quickshop.android.view;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,7 +79,10 @@ public class ItemDetailsFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem menuItem = menu.findItem(R.id.empty);
+        menuItem.setVisible(false);
         inflater.inflate(R.menu.item_details_menu, menu);
+
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.Spinner;
@@ -179,15 +180,15 @@ public class ShoppingListFragment extends Fragment {
             justifyListViewHeightBasedOnChildren(shoppingListViewBought);
 
             // OnClickListener to open the item details view
-            /*shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     // Open item details view
                     Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
-                    fm.beginTransaction().replace(BaseActivity.frameLayout.getId() , ItemDetailsFragment.newInstance(listID, (int) id))
+                    getFragmentManager().beginTransaction().replace(BaseActivity.frameLayout.getId() , ItemDetailsFragment.newInstance(listID, (int) id))
                             .addToBackStack(null).commit();
                 }
-            });*/
+            });
 
             View fab = rootView.findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {

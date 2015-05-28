@@ -3,4 +3,6 @@
     <color name="fab_Normal">#FF0000</color>
     <color name="fab_Pressed">#00FF00</color>
     <color name="fab_Ripple">#0000FF</color>
+    <color name="primary_Color">#009688</color>
+    <color name="text_icons">#FFFFFF</color>
 </resources>

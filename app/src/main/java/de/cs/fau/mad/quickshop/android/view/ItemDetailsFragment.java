@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -123,6 +124,9 @@ public class ItemDetailsFragment extends Fragment {
 
         // set actionbar title
         getActivity().setTitle(R.string.title_fragment_item_details);
+
+        // disable go back arrow
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         EventBus.getDefault().register(this);
 

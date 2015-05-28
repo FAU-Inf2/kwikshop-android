@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -58,7 +60,7 @@ public class ShoppingListFragment extends Fragment {
     private int listID;
 
 
-    private TextView textView_QuickAdd;
+    private EditText textView_QuickAdd;
 
     //endregion
 
@@ -203,27 +205,28 @@ public class ShoppingListFragment extends Fragment {
             });
 
 
-            textView_QuickAdd = (TextView) rootView.findViewById(R.id.textView_quickAdd);
+            textView_QuickAdd = (EditText) rootView.findViewById(R.id.textView_quickAdd);
             View button_QuickAdd = rootView.findViewById(R.id.button_quickAdd);
             button_QuickAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    addItem();
 
-                    //adding empty items without a name is not supported
-                    if (!StringHelper.isNullOrWhiteSpace(textView_QuickAdd.getText())) {
+                }
+            });
 
-                        Item newItem = new Item();
-                        newItem.setName(textView_QuickAdd.getText().toString());
 
-                        shoppingList.addItem(newItem);
+            textView_QuickAdd.setFocusableInTouchMode(true);
+            textView_QuickAdd.requestFocus();
 
-                        listStorage.saveList(shoppingList);
-
-                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
-
-                        //reset quick add text
-                        textView_QuickAdd.setText("");
+            textView_QuickAdd .setOnKeyListener(new View.OnKeyListener() {
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    // If the event is a key-down event on the "enter" button
+                    if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                       addItem();
+                       return true;
                     }
+                    return false;
                 }
             });
 
@@ -248,6 +251,29 @@ public class ShoppingListFragment extends Fragment {
 
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
+
+    }
+
+
+
+    public void addItem(){
+
+        //adding empty items without a name is not supported
+        if (!StringHelper.isNullOrWhiteSpace(textView_QuickAdd.getText())) {
+
+            Item newItem = new Item();
+            newItem.setName(textView_QuickAdd.getText().toString());
+
+            shoppingList.addItem(newItem);
+
+            listStorage.saveList(shoppingList);
+
+            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+
+            //reset quick add text
+            textView_QuickAdd.setText("");
+        }
+
 
     }
 

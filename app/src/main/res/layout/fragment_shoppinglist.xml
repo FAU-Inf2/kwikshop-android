@@ -59,7 +59,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/defaultItem"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <ImageButton

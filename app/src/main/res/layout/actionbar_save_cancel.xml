@@ -10,7 +10,8 @@
         android:text="@string/cancel"
         android:layout_alignParentLeft="true"
         android:id="@+id/button_cancel"
-        />
+        android:background="@color/light_primary_color"
+        android:textColor="@color/dark_primary_color" />
 
     <Button
         android:layout_width="wrap_content"
@@ -18,7 +19,8 @@
         android:text="@string/save"
         android:layout_alignParentRight="true"
         android:id="@+id/button_save"
-        />
+        android:textColor="@color/dark_primary_color"
+        android:background="@color/light_primary_color" />
 
 
 

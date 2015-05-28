@@ -23,8 +23,11 @@ public class BaseActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         frameLayout = (FrameLayout)findViewById(R.id.content_frame);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_launcher);
     }
 
 
@@ -46,6 +49,9 @@ public class BaseActivity extends ActionBarActivity {
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
             case R.id.action_listofshoppinglists:
+                startActivity(new Intent(this, ListOfShoppingListsActivity.class));
+                return true;
+            case R.id.home:
                 startActivity(new Intent(this, ListOfShoppingListsActivity.class));
                 return true;
 

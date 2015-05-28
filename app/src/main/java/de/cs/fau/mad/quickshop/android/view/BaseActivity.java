@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import cs.fau.mad.quickshop_android.R;
 
@@ -22,12 +23,12 @@ public class BaseActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         frameLayout = (FrameLayout)findViewById(R.id.content_frame);
-
+        getSupportActionBar().setIcon(R.drawable.ic_launcher);
        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setIcon(R.drawable.ic_launcher);
+
     }
 
 
@@ -52,7 +53,8 @@ public class BaseActivity extends ActionBarActivity {
                 startActivity(new Intent(this, ListOfShoppingListsActivity.class));
                 return true;
             case R.id.home:
-                startActivity(new Intent(this, ListOfShoppingListsActivity.class));
+                Toast.makeText(getApplicationContext(),"Go back!",Toast.LENGTH_LONG);
+                this.finish();
                 return true;
 
             default:

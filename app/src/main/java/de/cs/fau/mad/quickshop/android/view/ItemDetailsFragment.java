@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -48,7 +49,7 @@ public class ItemDetailsFragment extends Fragment {
 
     /* UI elements */
     private AutoCompleteTextView productname_text;
-    private EditText amount_text;
+    private NumberPicker numberPicker;
     private Spinner  unit_spinner;
     private EditText brand_text;
     private EditText comment_text;
@@ -152,7 +153,7 @@ public class ItemDetailsFragment extends Fragment {
         }
 
         mItem.setName(productname_text.getText().toString());
-        mItem.setAmount(Integer.parseInt(amount_text.getText().toString()));
+        mItem.setAmount(numberPicker.getValue());
         mItem.setBrand(brand_text.getText().toString());
         //mItem.setUnit(); // TODO: Set Unit
         mItem.setBrand(brand_text.getText().toString());
@@ -172,7 +173,7 @@ public class ItemDetailsFragment extends Fragment {
 
     private void SetupUI() {
         productname_text = (AutoCompleteTextView) mFragmentView.findViewById(R.id.productname_text);
-        amount_text = (EditText) mFragmentView.findViewById(R.id.amount_text);
+        numberPicker = (NumberPicker) mFragmentView.findViewById(R.id.numberPicker);
         unit_spinner = (Spinner) mFragmentView.findViewById(R.id.unit_spinner);
         brand_text = (EditText) mFragmentView.findViewById(R.id.brand_text);
         comment_text = (EditText) mFragmentView.findViewById(R.id.comment_text);
@@ -187,7 +188,7 @@ public class ItemDetailsFragment extends Fragment {
         if(isNewItem) {
 
             productname_text.setText("");
-            amount_text.setText(Integer.toString(1));
+            numberPicker.setValue(1);
             brand_text.setText("");
             comment_text.setText("");
 
@@ -196,7 +197,7 @@ public class ItemDetailsFragment extends Fragment {
 
             // Fill UI elements with data from Item
             productname_text.setText(mItem.getName());
-            amount_text.setText(Integer.toString(mItem.getAmount()));
+            numberPicker.setValue(mItem.getAmount());
             brand_text.setText(mItem.getBrand());
             comment_text.setText(mItem.getComment());
         }

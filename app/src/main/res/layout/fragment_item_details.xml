@@ -36,7 +36,8 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:weightSum="1">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -46,23 +47,18 @@
                 android:id="@+id/amount_textview"
                 android:layout_marginLeft="30dp" />
 
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/amount_text"
-                android:layout_marginLeft="30dp"
-                android:layout_weight="33"
-                android:layout_marginRight="5dp"
-                android:inputType="numberDecimal"
-                android:singleLine="true" />
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="76dp"
+                android:id="@+id/numberPicker"
+                android:layout_marginLeft="40dp" />
 
             <Spinner
-                android:layout_width="fill_parent"
+                android:layout_width="135dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/unit_spinner"
-                android:layout_weight="33"
-                android:layout_marginRight="30dp"
-                android:focusable="false" />
+                android:focusable="false"
+                android:layout_marginLeft="10dp" />
 
         </TableRow>
 

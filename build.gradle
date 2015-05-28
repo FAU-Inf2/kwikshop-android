@@ -83,7 +83,9 @@ allprojects {
 
 }
 
-license { header = file('license.txt') }
+license {
+    header = file('license.txt')
+}
 
 
 

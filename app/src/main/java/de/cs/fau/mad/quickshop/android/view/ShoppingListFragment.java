@@ -126,6 +126,12 @@ public class ShoppingListFragment extends Fragment {
         }
 
         if (shoppingList != null) {
+
+            // set title for actionbar
+
+            getActivity().setTitle(shoppingList.getName());
+
+
             // Upper list for Items that are not yet bought
             shoppingListAdapter = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList,
                     generateData(shoppingList, false),

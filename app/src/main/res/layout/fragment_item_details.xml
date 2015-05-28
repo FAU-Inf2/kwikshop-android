@@ -44,7 +44,8 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/itemdetails_amount"
                 android:id="@+id/amount_textview"
-                android:layout_marginLeft="30dp" />
+                android:layout_marginLeft="30dp"
+                android:textColor="@color/primary_text" />
 
             <EditText
                 android:layout_width="fill_parent"
@@ -76,7 +77,8 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/itemdetails_brand"
             android:id="@+id/brand_textview"
-            android:layout_marginLeft="30dp" />
+            android:layout_marginLeft="30dp"
+            android:textColor="@color/primary_text" />
 
         <EditText
             android:layout_width="match_parent"
@@ -98,7 +100,8 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/itemdetails_comment"
             android:id="@+id/comment_textview"
-            android:layout_marginLeft="30dp" />
+            android:layout_marginLeft="30dp"
+            android:textColor="@color/primary_text" />
 
         <EditText
             android:layout_width="match_parent"

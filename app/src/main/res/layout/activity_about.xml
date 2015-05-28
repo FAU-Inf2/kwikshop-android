@@ -26,7 +26,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/app_name"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/primary_text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -34,7 +35,8 @@
                 android:layout_marginTop="20dp"
                 android:text="@string/about_Version_Title"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/primary_text" />
 
             <TextView
                 android:id="@+id/about_textView_Version"
@@ -42,7 +44,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="UNKNOWN"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/secondary_text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -50,14 +53,16 @@
                 android:layout_marginTop="20dp"
                 android:text="@string/about_Commit_Title"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/primary_text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="@string/BuildInfo_Git_Commit"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/secondary_text" />
 
 
             <TextView
@@ -66,14 +71,16 @@
                 android:layout_marginTop="20dp"
                 android:text="@string/about_Branch_Title"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/primary_text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="@string/BuildInfo_Git_Branch"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/secondary_text" />
 
 
         </LinearLayout>

@@ -128,7 +128,6 @@ public class ShoppingListFragment extends Fragment {
         if (shoppingList != null) {
 
             // set title for actionbar
-
             getActivity().setTitle(shoppingList.getName());
 
 

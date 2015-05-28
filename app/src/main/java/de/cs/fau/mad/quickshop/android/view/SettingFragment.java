@@ -49,6 +49,8 @@ public class SettingFragment extends Fragment{
             }
         });
 
+        // set title for actionbar
+        getActivity().setTitle(R.string.title_activity_settings);
 
         setList = new ArrayList<String>();
         setList.add(OPTION_ONE);

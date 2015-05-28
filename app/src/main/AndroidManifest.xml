@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="de.cs.fau.mad.quickshop.android.view.ListOfShoppingListsActivity"
-            android:label="@string/title_activity_ListList" >
+            android:label="@string/title_activity_list_of_shopping_list" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -35,12 +35,12 @@
         </activity>
         <activity
             android:name="de.cs.fau.mad.quickshop.android.view.ShoppingListActivity"
-            android:label="@string/title_activity_ShoppingList" >
+            android:label="@string/title_activity_shopping_list" >
         </activity>
 
         <activity
             android:name="de.cs.fau.mad.quickshop.android.view.SettingActivity"
-            android:label="@string/title_activity_ShoppingList" >
+            android:label="@string/title_activity_settings" >
         </activity>
     </application>
 

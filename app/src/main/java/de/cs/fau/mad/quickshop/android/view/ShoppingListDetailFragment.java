@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -55,6 +57,8 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
+
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
         ObjectGraph objectGraph = ObjectGraph.create(new QuickshopViewModelModule(getActivity()));
@@ -93,6 +97,8 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         return rootView;
     }
+
+
 
     @Override
     public void onDestroy() {

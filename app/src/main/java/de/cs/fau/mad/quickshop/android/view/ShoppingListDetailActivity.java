@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
@@ -49,6 +50,12 @@ public class ShoppingListDetailActivity extends BaseActivity implements SaveCanc
 
         showActionBar();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.shopping_list_menu, menu);
+        return true;
     }
 
     private void showActionBar() {

@@ -42,6 +42,9 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        // set title for actionbar
+        getActivity().setTitle(R.string.title_activity_list_of_shopping_list);
+
         //TODO: storage setup needs to be simpler
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 

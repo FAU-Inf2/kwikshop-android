@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:gravity="center_vertical"
-        android:background="?android:attr/activatedBackgroundIndicator"
+        android:background="@color/text_icons"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:textColor="@color/primary_text_default_material_light"
         android:text="Shopping list Name"
@@ -30,7 +30,8 @@
         android:layout_below="@id/list_row_textView_Main"
         android:textColor="@color/secondary_text_default_material_light"
         android:layout_marginTop="-10dp"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="5dp"
+        android:background="@color/text_icons" />
 
 
 </RelativeLayout>

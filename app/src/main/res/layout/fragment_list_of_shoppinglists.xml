@@ -13,7 +13,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="@color/text_icons" />
 
 
     <com.melnykov.fab.FloatingActionButton

@@ -5,4 +5,10 @@
     <color name="fab_Ripple">#0000FF</color>
     <color name="primary_Color">#009688</color>
     <color name="text_icons">#FFFFFF</color>
+    <color name="light_primary_color">#B2DFDB</color>
+    <color name="accent_color">#7C4DFF</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
+    <color name="divider_color">#B6B6B6</color>
+    <color name="dark_primary_color">#00796B</color>
 </resources>

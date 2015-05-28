@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
-        android:background="?android:attr/activatedBackgroundIndicator"
+        android:background="@color/text_icons"
         android:minHeight="?android:attr/listPreferredItemHeightSmall" />/>
 
 </RelativeLayout>

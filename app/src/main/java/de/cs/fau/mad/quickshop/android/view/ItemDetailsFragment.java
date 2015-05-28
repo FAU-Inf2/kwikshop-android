@@ -13,9 +13,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.Item;
@@ -40,8 +43,11 @@ public class ItemDetailsFragment extends Fragment {
     private ShoppingList mShoppingList;
     private Item mItem;
 
+    //TODO: move to db (otherwise changes are lost when exiting app)
+    private static ArrayList<String> autocompleteSuggestions = new ArrayList<>();
+
     /* UI elements */
-    private EditText productname_text;
+    private AutoCompleteTextView productname_text;
     private EditText amount_text;
     private Spinner  unit_spinner;
     private EditText brand_text;
@@ -152,6 +158,10 @@ public class ItemDetailsFragment extends Fragment {
         mItem.setBrand(brand_text.getText().toString());
         mItem.setComment(comment_text.getText().toString());
 
+        if(!autocompleteSuggestions.contains(productname_text.getText().toString())) {
+            autocompleteSuggestions.add(productname_text.getText().toString());
+        }
+
         mShoppingList.updateItem(mItem);
         m_ListStorageFragment.getLocalListStorage().saveList(mShoppingList);
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
@@ -161,11 +171,14 @@ public class ItemDetailsFragment extends Fragment {
     }
 
     private void SetupUI() {
-        productname_text = (EditText) mFragmentView.findViewById(R.id.productname_text);
+        productname_text = (AutoCompleteTextView) mFragmentView.findViewById(R.id.productname_text);
         amount_text = (EditText) mFragmentView.findViewById(R.id.amount_text);
         unit_spinner = (Spinner) mFragmentView.findViewById(R.id.unit_spinner);
         brand_text = (EditText) mFragmentView.findViewById(R.id.brand_text);
         comment_text = (EditText) mFragmentView.findViewById(R.id.comment_text);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, autocompleteSuggestions);
+        productname_text.setAdapter(adapter);
 
         final FragmentManager fm = getActivity().getSupportFragmentManager();
         m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);

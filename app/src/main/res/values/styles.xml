@@ -10,10 +10,11 @@
     <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background" tools:ignore="NewApi">@color/primary_Color</item>
         <item name="background">@color/primary_Color</item>
-        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
+        <item name="android:titleTextStyle">@style/MyActionBar.TitleTextStyle</item>
+        <item name="titleTextStyle">@style/MyActionBar.TitleTextStyle</item>
     </style>
 
-    <style name="MyTheme.ActionBar.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor" tools:ignore="NewApi">@color/text_icons</item>
+    <style name="MyActionBar.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/text_icons</item>
     </style>
 </resources>

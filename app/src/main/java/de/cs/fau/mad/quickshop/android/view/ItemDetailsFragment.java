@@ -195,6 +195,10 @@ public class ItemDetailsFragment extends Fragment {
         brand_text = (EditText) mFragmentView.findViewById(R.id.brand_text);
         comment_text = (EditText) mFragmentView.findViewById(R.id.comment_text);
 
+        String[] nums = new String[99];
+        for(int i=0; i<nums.length; i++)
+            nums[i] = Integer.toString(i);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, autocompleteSuggestions);
         productname_text.setAdapter(adapter);
 
@@ -204,6 +208,10 @@ public class ItemDetailsFragment extends Fragment {
         mShoppingList = m_ListStorageFragment.getLocalListStorage().loadList(listID);
         if(isNewItem) {
 
+            numberPicker.setMinValue(1);
+            numberPicker.setMaxValue(99);
+            numberPicker.setWrapSelectorWheel(false);
+            numberPicker.setDisplayedValues(nums);
             productname_text.setText("");
             numberPicker.setValue(1);
             brand_text.setText("");

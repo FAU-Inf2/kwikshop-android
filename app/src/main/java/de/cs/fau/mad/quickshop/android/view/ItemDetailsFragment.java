@@ -1,5 +1,6 @@
 package de.cs.fau.mad.quickshop.android.view;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +13,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -120,6 +123,8 @@ public class ItemDetailsFragment extends Fragment {
         }
         isNewItem = itemID == -1;
 
+
+
     }
 
     @Override
@@ -128,6 +133,9 @@ public class ItemDetailsFragment extends Fragment {
         mFragmentView = inflater.inflate(R.layout.fragment_item_details, container, false);
         SetupUI();
         setHasOptionsMenu(true);
+
+        // hide soft keys until users decides he wants to
+        hideKeyboard(); //todo does not work
 
         // set actionbar title
         getActivity().setTitle(R.string.title_fragment_item_details);
@@ -169,6 +177,15 @@ public class ItemDetailsFragment extends Fragment {
 
         ItemChangeType changeType = isNewItem ? ItemChangeType.Added : ItemChangeType.PropertiesModified;
         EventBus.getDefault().post(new ItemChangedEvent(changeType, mShoppingList.getId(), mItem.getId()));
+    }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager)  getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     private void SetupUI() {

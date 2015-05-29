@@ -36,7 +36,27 @@
     <string name="itemdetails_amount">Amount</string>
     <string name="action_item_details_save">Save</string>
     <string name="itemdetails_saved">Product saved</string>
-
+    <string-array name="measures">//TODO importing units from a library of units
+        <item>millimeters</item>
+        <item>centimeters</item>
+        <item>decimeters</item>
+        <item>meters</item>
+        <item>dekameters</item>
+        <item>hectometers</item>
+        <item>milliliters</item>
+        <item>centiliters</item>
+        <item>deciliters</item>
+        <item>liters</item>
+        <item>dekaliters</item>
+        <item>hectoliters</item>
+        <item>milligrams</item>
+        <item>centigrams</item>
+        <item>decigrams</item>
+        <item>grams</item>
+        <item>dekagrams</item>
+        <item>hectograms</item>
+        <item>kilograms</item>
+    </string-array>
 
     <!-- Settings -->
     <string name="settings_option_1_name">Option 1</string>

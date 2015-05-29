@@ -181,14 +181,17 @@ public class ShoppingListFragment extends Fragment {
             shoppingListViewBought.setAdapter(shoppingListAdapterBought);
             justifyListViewHeightBasedOnChildren(shoppingListViewBought);
 
-            // OnClickListener to open the item details view
-            shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+            shoppingListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     // Open item details view
                     Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
                     getFragmentManager().beginTransaction().replace(BaseActivity.frameLayout.getId() , ItemDetailsFragment.newInstance(listID, (int) id))
                             .addToBackStack(null).commit();
+
+                    return true;
                 }
             });
 

@@ -32,4 +32,26 @@ public class Unit {
     this.name = name;
   }
 
+
+  @Override
+  public int hashCode() {
+    return id;
+  }
+
+  @Override
+  public boolean equals(Object other) {
+
+    if (other == null) {
+      return false;
+    }
+
+    if (!(other instanceof Unit)) {
+      return false;
+    }
+
+    Unit otherUnit = (Unit) other;
+    return otherUnit.getId() == this.getId() &&
+            otherUnit.getName().equals(this.getName());
+  }
+
 }

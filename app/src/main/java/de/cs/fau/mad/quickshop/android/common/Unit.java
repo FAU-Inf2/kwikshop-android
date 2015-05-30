@@ -5,6 +5,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "unit")
 public class Unit {
+
   @DatabaseField(generatedId = true)
   private int id;
 

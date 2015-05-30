@@ -22,14 +22,22 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.j256.ormlite.dao.Dao;
+
+import java.lang.reflect.Array;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
+import de.cs.fau.mad.quickshop.android.common.Unit;
+import de.cs.fau.mad.quickshop.android.model.DatabaseHelper;
 import de.cs.fau.mad.quickshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.quickshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
@@ -233,12 +241,38 @@ public class ItemDetailsFragment extends Fragment {
 
         // TODO: Fill spinner with real data from Units + select correct unit
         // http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
-        String colors[] = getResources().getStringArray(R.array.measures);
-        Arrays.sort(colors);
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, colors);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        unit_spinner.setAdapter(spinnerArrayAdapter);
+
+        try {
+
+            DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+            Dao<Unit, Integer> unitDao = dbHelper.getUnitDao();
+
+            //get units from the database and sort them by name
+            List<Unit> units = unitDao.queryForAll();
+            Collections.sort(units, new Comparator<Unit>() {
+                @Override
+                public int compare(Unit lhs, Unit rhs) {
+                    return lhs.getName().compareTo(rhs.getName());
+                }
+            });
+
+            //TODO implement adapter for Unit instead of String
+
+            ArrayList<String> unitNames = new ArrayList<>();
+            for (Unit u : units) {
+                unitNames.add(u.getName());
+            }
+
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
+            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            unit_spinner.setAdapter(spinnerArrayAdapter);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
+
 
 
     @Override

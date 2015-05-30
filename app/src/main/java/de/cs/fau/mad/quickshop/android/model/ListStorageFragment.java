@@ -7,6 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
+import com.j256.ormlite.dao.Dao;
+
+import java.sql.SQLException;
+
+import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.common.Unit;
@@ -119,11 +124,35 @@ public class ListStorageFragment extends Fragment {
             list.addItem(i6);
 
             list.save();
+        }
 
 
+        try {
+            createUnitsInDatabase(activity);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     //endregion
+
+
+    private void createUnitsInDatabase(Context context) throws SQLException {
+
+        Dao<Unit, Integer> dao = getDatabaseHelper().getUnitDao();
+        int count = dao.queryForAll().size();
+
+        if (count > 0) {
+            return;
+        }
+
+        String units[] = context.getResources().getStringArray(R.array.measures);
+        for (String unitName : units) {
+            Unit newUnit = new Unit();
+            newUnit.setName(unitName);
+
+            dao.create(newUnit);
+        }
+    }
 
 }

@@ -23,16 +23,18 @@ import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.common.Unit;
 import de.cs.fau.mad.quickshop.android.util.StringHelper;
 
+public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Integer> implements UndoAdapter{
 
-public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAdapter, Swappable{
+    ShoppingList shoppingList;
+    Context context;
+    UnitDisplayHelper unitDisplayHelper;
 
-    private ShoppingList shoppingList;
-    private final UnitDisplayHelper unitDisplayHelper;
 
     public ShoppingListAdapter(Context context, int textViewResourceId,
                               List<Integer> objects, ShoppingList shoppingList) {
-        super(context, textViewResourceId, objects);
+        super(objects);
         this.shoppingList = shoppingList;
+        this.context = context;
         this.unitDisplayHelper = new UnitDisplayHelper(context);
     }
 
@@ -45,7 +47,7 @@ public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAd
     public View getView(int position, View view, ViewGroup parent){
 
         if(view == null ){
-            view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_shoppinglist_row, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.fragment_shoppinglist_row, parent, false);
         }
 
         Item item = shoppingList.getItem(getItem(position));
@@ -89,7 +91,7 @@ public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAd
         // Specific changes for bought Items
         if(item.isBought()) {
             shoppingListNameView.setPaintFlags(shoppingListNameView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            shoppingListNameView.setTextAppearance(getContext(), android.R.style.TextAppearance_DeviceDefault_Small);
+            shoppingListNameView.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
 
             // Hide details - maybe allow the user to toggle this
             commentView.setVisibility(View.GONE);
@@ -111,7 +113,7 @@ public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAd
 
         shoppingList.updateItem(item);
         shoppingList.save();
-        super.remove(item.getId());
+        super.remove(position);
         notifyDataSetChanged();
     }
 
@@ -125,7 +127,7 @@ public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAd
     public View getUndoView(int i, View view, ViewGroup viewGroup) {
         View mview = view;
         if (mview == null) {
-            mview = LayoutInflater.from(getContext()).inflate(R.layout.shoppinglist_undo_row, viewGroup, false);
+            mview = LayoutInflater.from(context).inflate(R.layout.shoppinglist_undo_row, viewGroup, false);
         }
         mview.setMinimumHeight(viewGroup.getHeight()); // Match the Item's height
         return mview;
@@ -137,8 +139,4 @@ public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAd
         return view.findViewById(R.id.undo_row_undobutton);
     }
 
-    @Override
-    public void swapItems(int i, int i1) {
-
-    }
 }

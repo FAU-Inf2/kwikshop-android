@@ -25,6 +25,13 @@
               tools:ignore="overdraw"
     >
 
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:id="@+id/imageView"
+        android:src="@drawable/ic_add_shopping_cart_black_48dp"
+        android:layout_marginLeft="5dp"/>
+
     <TextView
         android:id="@+id/undo_row_texttv"
         android:layout_width="0dp"

@@ -15,12 +15,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.Fragment;
 
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
+import com.nhaarman.listviewanimations.itemmanipulation.dragdrop.TouchViewDraggableManager;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
@@ -88,7 +90,7 @@ public class ShoppingListFragment extends Fragment {
         }
     }
 
-    public void justifyListViewHeightBasedOnChildren (DynamicListView listView) {
+    public void justifyListViewHeightBasedOnChildren(DynamicListView listView) {
         ListAdapter adapter = listView.getAdapter();
 
         if (adapter == null) {
@@ -157,6 +159,30 @@ public class ShoppingListFragment extends Fragment {
             swipeUndoAdapter.setAbsListView(shoppingListView);
             shoppingListView.setAdapter(swipeUndoAdapter);
             shoppingListView.enableSimpleSwipeUndo();
+            shoppingListView.enableDragAndDrop();
+            shoppingListView.setOnItemLongClickListener(
+                    new AdapterView.OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(final AdapterView<?> parent, final View view,
+                                                final int position, final long id) {
+                            ScrollView sview = (ScrollView) getView().findViewById(R.id.shoppinglist_scrollview);
+                            sview.requestDisallowInterceptTouchEvent(true);
+                            shoppingListView.startDragging(position);
+                            return true;
+                        }
+                    }
+            );
+
+            shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // Open item details view
+                    Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
+                    getFragmentManager().beginTransaction().replace(BaseActivity.frameLayout.getId(), ItemDetailsFragment.newInstance(listID, (int) id))
+                            .addToBackStack(null).commit();
+                    //return true;
+                }
+            });
+
             justifyListViewHeightBasedOnChildren(shoppingListView);
 
             // --- //
@@ -179,21 +205,9 @@ public class ShoppingListFragment extends Fragment {
             );
 
             shoppingListViewBought.setAdapter(shoppingListAdapterBought);
+            shoppingListViewBought.enableDragAndDrop();
             justifyListViewHeightBasedOnChildren(shoppingListViewBought);
 
-
-
-            shoppingListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    // Open item details view
-                    Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
-                    getFragmentManager().beginTransaction().replace(BaseActivity.frameLayout.getId() , ItemDetailsFragment.newInstance(listID, (int) id))
-                            .addToBackStack(null).commit();
-
-                    return true;
-                }
-            });
 
             View fab = rootView.findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {

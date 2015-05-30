@@ -70,7 +70,7 @@
 
 
     <!-- Shopping list -->
-    <string name="itemdeleted">Item deleted.</string>
+    <string name="itemdeleted">Moved to shopping cart</string>
     <string name="taptoundo">Undo</string>
     <string name="magic">magic</string>
     <string name="sort_by">Sort by</string>
@@ -86,6 +86,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="items">Items</string>
     <string name="error_empty_productname">Product name must not be empty</string>
+    <string name="shoppinglist_divider_textview">Shopping cart</string>
 
 
 </resources>

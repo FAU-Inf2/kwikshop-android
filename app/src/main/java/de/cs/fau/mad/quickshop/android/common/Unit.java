@@ -10,7 +10,16 @@ public class Unit {
   private int id;
 
   @DatabaseField(canBeNull = false)
+  //language-neutral name of the unit (= english)
   private String name;
+
+  @DatabaseField(canBeNull = true)
+  // the name of the string resource for the localized name of the unit
+  private String displayNameResourceName;
+
+  @DatabaseField(canBeNull = true)
+  //the name of the string resource for the localized short name of the unit
+  private String shortDisplayNameResourceName;
 
   public Unit(){
       // Default no-arg constructor for generating Units, required for ORMLite
@@ -24,12 +33,29 @@ public class Unit {
     this.id = id;
   }
 
+
   public String getName() {
-    return name;
+    return this.name;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setName(String value) {
+    this.name = value;
+  }
+
+  public String getDisplayNameResourceName() {
+    return displayNameResourceName;
+  }
+
+  public void setDisplayNameResourceName(String value) {
+    this.displayNameResourceName = value;
+  }
+
+  public String getShortDisplayNameResourceName() {
+    return shortDisplayNameResourceName;
+  }
+
+  public void setShortDisplayNameResourceName(String value) {
+    this.shortDisplayNameResourceName = value;
   }
 
 
@@ -49,9 +75,14 @@ public class Unit {
       return false;
     }
 
-    Unit otherUnit = (Unit) other;
-    return otherUnit.getId() == this.getId() &&
-            otherUnit.getName().equals(this.getName());
+    return equals((Unit) other);
+
   }
+
+
+  public boolean equals(Unit other) {
+    return other.getId() == this.getId() && other.getName().equals(this.getName());
+  }
+
 
 }

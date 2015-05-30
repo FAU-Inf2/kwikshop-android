@@ -28,7 +28,8 @@ public class ListStorageFragment extends Fragment {
     //region Fields
 
     private static LocalListStorage m_LocalListStorage;
-    private static LocalGroupStorage m_LocalGroupStorage;
+    private static SimpleStorage<Group> m_GroupStorage;
+    private static SimpleStorage<Unit> m_UnitStorage;
     private static ListStorageFragment m_ListStorageFragment;
     private static DatabaseHelper m_DatabaseHelper;
 
@@ -48,8 +49,12 @@ public class ListStorageFragment extends Fragment {
 
     //region Public Methods
 
-    public static SimpleStorage<Group> getLocalGroupStorage() {
-        return m_LocalGroupStorage;
+    public static SimpleStorage<Group> getGroupStorage() {
+        return m_GroupStorage;
+    }
+
+    public static SimpleStorage<Unit> getUnitStorage() {
+        return m_UnitStorage;
     }
 
     public static LocalListStorage getLocalListStorage() {
@@ -133,12 +138,13 @@ public class ListStorageFragment extends Fragment {
 
         try {
 
-            //create local group storage
-            m_LocalGroupStorage = new LocalGroupStorage(m_DatabaseHelper.getGroupDao());
+            //create local group storage and local unit storage
+            m_GroupStorage = new SimpleStorage<>(m_DatabaseHelper.getGroupDao());
+            createGroupsInDatabase(activity, m_GroupStorage);
 
-            createGroupsInDatabase(activity, m_LocalGroupStorage);
+            m_UnitStorage = new SimpleStorage<>(m_DatabaseHelper.getUnitDao());
+            createUnitsInDatabase(activity, m_UnitStorage);
 
-            createUnitsInDatabase(activity);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -147,25 +153,23 @@ public class ListStorageFragment extends Fragment {
     //endregion
 
 
-    private void createUnitsInDatabase(Context context) throws SQLException {
+    private void createUnitsInDatabase(Context context, SimpleStorage<Unit> unitStorage) throws SQLException {
 
-        Dao<Unit, Integer> dao = getDatabaseHelper().getUnitDao();
-        int count = dao.queryForAll().size();
-
+        int count = unitStorage.getItems().size();
         if (count > 0) {
             return;
         }
 
         Unit[] units = new DefaultDataProvider(context).getDefaultUnits();
         for (Unit u : units) {
-            dao.create(u);
+            unitStorage.addItem(u);
         }
     }
 
     private void createGroupsInDatabase(Context context, SimpleStorage<Group> groupStorage) {
 
-        List<Group> groups = groupStorage.getItems();
-        if (groups.size() > 0) {
+        int count = groupStorage.getItems().size();
+        if (count > 0) {
             return;
         }
 

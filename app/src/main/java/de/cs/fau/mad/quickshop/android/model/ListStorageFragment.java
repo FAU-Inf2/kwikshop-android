@@ -9,7 +9,9 @@ import android.support.v4.app.FragmentManager;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
+import java.util.List;
 
+import de.cs.fau.mad.quickshop.android.common.Group;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.common.Unit;
@@ -26,6 +28,7 @@ public class ListStorageFragment extends Fragment {
     //region Fields
 
     private static LocalListStorage m_LocalListStorage;
+    private static LocalGroupStorage m_LocalGroupStorage;
     private static ListStorageFragment m_ListStorageFragment;
     private static DatabaseHelper m_DatabaseHelper;
 
@@ -44,6 +47,10 @@ public class ListStorageFragment extends Fragment {
 
 
     //region Public Methods
+
+    public static SimpleStorage<Group> getLocalGroupStorage() {
+        return m_LocalGroupStorage;
+    }
 
     public static LocalListStorage getLocalListStorage() {
         return m_LocalListStorage;
@@ -124,8 +131,13 @@ public class ListStorageFragment extends Fragment {
             list.save();
         }
 
-
         try {
+
+            //create local group storage
+            m_LocalGroupStorage = new LocalGroupStorage(m_DatabaseHelper.getGroupDao());
+
+            createGroupsInDatabase(activity, m_LocalGroupStorage);
+
             createUnitsInDatabase(activity);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -148,6 +160,20 @@ public class ListStorageFragment extends Fragment {
         for (Unit u : units) {
             dao.create(u);
         }
+    }
+
+    private void createGroupsInDatabase(Context context, SimpleStorage<Group> groupStorage) {
+
+        List<Group> groups = groupStorage.getItems();
+        if (groups.size() > 0) {
+            return;
+        }
+
+        Group[] defaultGroups = new DefaultDataProvider(context).getDefaultGroups();
+        for (Group g : defaultGroups) {
+            groupStorage.addItem(g);
+        }
+
     }
 
 }

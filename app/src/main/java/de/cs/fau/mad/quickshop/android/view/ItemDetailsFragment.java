@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -56,6 +57,8 @@ public class ItemDetailsFragment extends Fragment {
     private boolean isNewItem;
 
     private ShoppingList mShoppingList;
+    private int selectedUnit = -1;
+    private List<Unit> units;
     private Item mItem;
 
     //TODO: move to db (otherwise changes are lost when exiting app)
@@ -174,7 +177,14 @@ public class ItemDetailsFragment extends Fragment {
         mItem.setName(productname_text.getText().toString());
         mItem.setAmount(numberPicker.getValue());
         mItem.setBrand(brand_text.getText().toString());
-        //mItem.setUnit(); // TODO: Set Unit
+
+        if (selectedUnit >= 0) {
+            Unit u = units.get(selectedUnit);
+            mItem.setUnit(u);
+        } else {
+            mItem.setUnit(null);
+        }
+
         mItem.setBrand(brand_text.getText().toString());
         mItem.setComment(comment_text.getText().toString());
 
@@ -248,7 +258,7 @@ public class ItemDetailsFragment extends Fragment {
             Dao<Unit, Integer> unitDao = dbHelper.getUnitDao();
 
             //get units from the database and sort them by name
-            List<Unit> units = unitDao.queryForAll();
+            units = unitDao.queryForAll();
             Collections.sort(units, new Comparator<Unit>() {
                 @Override
                 public int compare(Unit lhs, Unit rhs) {
@@ -266,6 +276,23 @@ public class ItemDetailsFragment extends Fragment {
             ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             unit_spinner.setAdapter(spinnerArrayAdapter);
+            unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    selectedUnit = position;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    selectedUnit = -1;
+                }
+            });
+
+
+            if (!isNewItem && mItem.getUnit() != null) {
+                int index = units.indexOf(mItem.getUnit());
+                unit_spinner.setSelection(index);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();

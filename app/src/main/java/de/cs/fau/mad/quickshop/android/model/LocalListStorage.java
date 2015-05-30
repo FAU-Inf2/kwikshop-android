@@ -46,6 +46,14 @@ public class LocalListStorage extends ListStorage {
         ShoppingList loadedList = null;
         try {
             loadedList = ListStorageFragment.getDatabaseHelper().getShoppingListDao().queryForId(listID);
+
+            for (Item i : loadedList.getItems()) {
+
+                if (i.getUnit() != null) {
+                    ListStorageFragment.getDatabaseHelper().getUnitDao().refresh(i.getUnit());
+                }
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

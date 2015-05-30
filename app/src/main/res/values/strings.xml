@@ -35,7 +35,7 @@
     <string name="itemdetails_comment">Comment</string>
     <string name="itemdetails_amount">Amount</string>
     <string name="action_item_details_save">Save</string>
-    <string name="itemdetails_saved">Product saved</string>
+    <string name="itemdetails_saved">Item saved</string>
     <string-array name="measures">//TODO importing units from a library of units
         <item>millimeters</item>
         <item>centimeters</item>

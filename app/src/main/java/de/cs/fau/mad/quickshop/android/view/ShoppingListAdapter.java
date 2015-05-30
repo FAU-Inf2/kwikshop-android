@@ -79,7 +79,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         } else {
             Unit unit = item.getUnit();
-            String unitStr = unit != null ? unit.toString() : "";
+            String unitStr = unit != null ? unit.getName() : "";
 
             amountView.setVisibility(View.VISIBLE);
             amountView.setText(String.format("%d %s", amount, unitStr));

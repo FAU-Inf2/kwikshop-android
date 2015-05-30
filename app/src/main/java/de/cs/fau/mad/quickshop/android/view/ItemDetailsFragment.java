@@ -270,50 +270,44 @@ public class ItemDetailsFragment extends Fragment {
 
         //populate unit picker with units from database
         UnitDisplayHelper unitDisplayHelper = new UnitDisplayHelper(getActivity());
-        try {
 
-            DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
-            Dao<Unit, Integer> unitDao = dbHelper.getUnitDao();
 
-            //get units from the database and sort them by name
-            units = unitDao.queryForAll();
-            Collections.sort(units, new Comparator<Unit>() {
-                @Override
-                public int compare(Unit lhs, Unit rhs) {
-                    return lhs.getName().compareTo(rhs.getName());
-                }
-            });
-
-            //TODO implement adapter for Unit instead of String
-
-            ArrayList<String> unitNames = new ArrayList<>();
-            for (Unit u : units) {
-                unitNames.add(unitDisplayHelper.getDisplayName(u));
+        //get units from the database and sort them by name
+        units = ListStorageFragment.getUnitStorage().getItems();
+        Collections.sort(units, new Comparator<Unit>() {
+            @Override
+            public int compare(Unit lhs, Unit rhs) {
+                return lhs.getName().compareTo(rhs.getName());
             }
+        });
 
-            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
-            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            unit_spinner.setAdapter(spinnerArrayAdapter);
-            unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    selectedUnit = position;
-                }
+        //TODO implement adapter for Unit instead of String
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                    selectedUnit = -1;
-                }
-            });
-
-            if (!isNewItem && item.getUnit() != null) {
-                int index = units.indexOf(item.getUnit());
-                unit_spinner.setSelection(index);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        ArrayList<String> unitNames = new ArrayList<>();
+        for (Unit u : units) {
+            unitNames.add(unitDisplayHelper.getDisplayName(u));
         }
+
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        unit_spinner.setAdapter(spinnerArrayAdapter);
+        unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedUnit = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedUnit = -1;
+            }
+        });
+
+        if (!isNewItem && item.getUnit() != null) {
+            int index = units.indexOf(item.getUnit());
+            unit_spinner.setSelection(index);
+        }
+
 
     }
 

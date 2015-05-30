@@ -269,6 +269,7 @@ public class ItemDetailsFragment extends Fragment {
         }
 
         //populate unit picker with units from database
+        UnitDisplayHelper unitDisplayHelper = new UnitDisplayHelper(getActivity());
         try {
 
             DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
@@ -287,7 +288,7 @@ public class ItemDetailsFragment extends Fragment {
 
             ArrayList<String> unitNames = new ArrayList<>();
             for (Unit u : units) {
-                unitNames.add(u.getName());
+                unitNames.add(unitDisplayHelper.getDisplayName(u));
             }
 
             ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, unitNames);

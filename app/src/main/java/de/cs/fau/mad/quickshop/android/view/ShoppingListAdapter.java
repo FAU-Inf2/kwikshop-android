@@ -26,12 +26,14 @@ import de.cs.fau.mad.quickshop.android.util.StringHelper;
 
 public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAdapter, Swappable{
 
-    ShoppingList shoppingList;
+    private ShoppingList shoppingList;
+    private final UnitDisplayHelper unitDisplayHelper;
 
     public ShoppingListAdapter(Context context, int textViewResourceId,
                               List<Integer> objects, ShoppingList shoppingList) {
         super(context, textViewResourceId, objects);
         this.shoppingList = shoppingList;
+        this.unitDisplayHelper = new UnitDisplayHelper(context);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAd
 
         } else {
             Unit unit = item.getUnit();
-            String unitStr = unit != null ? unit.getName() : "";
+            String unitStr = unit != null ? unitDisplayHelper.getShortDisplayName(unit) : "";
 
             amountView.setVisibility(View.VISIBLE);
             amountView.setText(String.format("%d %s", amount, unitStr));

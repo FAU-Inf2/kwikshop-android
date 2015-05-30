@@ -42,4 +42,30 @@ public class Group {
     this.displayNameResourceName = value;
   }
 
+  @Override
+  public int hashCode() {
+    return getName().hashCode();
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == null) {
+      return false;
+    }
+
+    if (other instanceof Group) {
+      return equals((Group) other);
+    } else {
+      return false;
+    }
+  }
+
+  public boolean equals(Group other) {
+    if (other == null) {
+      return false;
+    }
+
+    return other.getId() == this.getId() && other.getName().equals(this.getName());
+  }
+
 }

@@ -146,12 +146,9 @@ public class ListStorageFragment extends Fragment {
             return;
         }
 
-        String units[] = context.getResources().getStringArray(R.array.measures);
-        for (String unitName : units) {
-            Unit newUnit = new Unit();
-            newUnit.setName(unitName);
-
-            dao.create(newUnit);
+        Unit[] units = new DefaultUnitsProvider(context).getDefaultUnits();
+        for (Unit u : units) {
+            dao.create(u);
         }
     }
 

@@ -22,7 +22,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
     ShoppingList shoppingList;
     Context context;
-    UnitDisplayHelper unitDisplayHelper;
+    DisplayHelper unitDisplayHelper;
 
 
     public ShoppingListAdapter(Context context, int textViewResourceId,
@@ -30,7 +30,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         super(objects);
         this.shoppingList = shoppingList;
         this.context = context;
-        this.unitDisplayHelper = new UnitDisplayHelper(context);
+        this.unitDisplayHelper = new DisplayHelper(context);
     }
 
     @Override

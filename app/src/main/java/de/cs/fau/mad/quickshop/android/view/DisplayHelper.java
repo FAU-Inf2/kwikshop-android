@@ -2,15 +2,16 @@ package de.cs.fau.mad.quickshop.android.view;
 
 import android.content.Context;
 
+import de.cs.fau.mad.quickshop.android.common.Group;
 import de.cs.fau.mad.quickshop.android.common.Unit;
 import de.cs.fau.mad.quickshop.android.util.StringHelper;
 
-public class UnitDisplayHelper {
+public class DisplayHelper {
 
     private final Context context;
 
 
-    public UnitDisplayHelper(Context context) {
+    public DisplayHelper(Context context) {
 
         if (context == null) {
             throw new IllegalArgumentException("'context' must not be null");
@@ -19,6 +20,19 @@ public class UnitDisplayHelper {
         this.context = context;
     }
 
+
+    /**
+     * Gets the (localized) name for the specified group.
+     * If no resource for localized name has been specified, the language-neutral name is returned
+     */
+    public String getDisplayName(Group group) {
+
+        if (StringHelper.isNullOrWhiteSpace(group.getDisplayNameResourceName())) {
+            return group.getName();
+        } else {
+            return getStringByName(group.getDisplayNameResourceName());
+        }
+    }
 
     /**
      * Gets the (localized) name for the specified unit.
@@ -31,7 +45,6 @@ public class UnitDisplayHelper {
         } else {
             return getStringByName(unit.getDisplayNameResourceName());
         }
-
     }
 
     /**

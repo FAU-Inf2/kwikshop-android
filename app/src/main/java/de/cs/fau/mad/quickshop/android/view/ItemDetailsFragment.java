@@ -19,9 +19,6 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.j256.ormlite.dao.Dao;
-
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,7 +30,6 @@ import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.common.Unit;
-import de.cs.fau.mad.quickshop.android.model.DatabaseHelper;
 import de.cs.fau.mad.quickshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.quickshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
@@ -269,7 +265,7 @@ public class ItemDetailsFragment extends Fragment {
         }
 
         //populate unit picker with units from database
-        UnitDisplayHelper unitDisplayHelper = new UnitDisplayHelper(getActivity());
+        DisplayHelper unitDisplayHelper = new DisplayHelper(getActivity());
 
 
         //get units from the database and sort them by name

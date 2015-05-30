@@ -6,16 +6,11 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
-import com.nhaarman.listviewanimations.util.Swappable;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.Item;
@@ -27,7 +22,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
     ShoppingList shoppingList;
     Context context;
-    UnitDisplayHelper unitDisplayHelper;
+    DisplayHelper unitDisplayHelper;
 
 
     public ShoppingListAdapter(Context context, int textViewResourceId,
@@ -35,7 +30,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         super(objects);
         this.shoppingList = shoppingList;
         this.context = context;
-        this.unitDisplayHelper = new UnitDisplayHelper(context);
+        this.unitDisplayHelper = new DisplayHelper(context);
     }
 
     @Override

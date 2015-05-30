@@ -34,6 +34,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
@@ -45,6 +47,7 @@ import de.cs.fau.mad.quickshop.android.model.ListStorageFragment;
 import de.greenrobot.event.EventBus;
 
 public class ItemDetailsFragment extends Fragment {
+
     private static final String ARG_LISTID = "list_id";
     private static final String ARG_ITEMID = "item_id";
 
@@ -65,11 +68,22 @@ public class ItemDetailsFragment extends Fragment {
     private static ArrayList<String> autocompleteSuggestions = new ArrayList<>();
 
     /* UI elements */
-    private AutoCompleteTextView productname_text;
-    private NumberPicker numberPicker;
-    private Spinner  unit_spinner;
-    private EditText brand_text;
-    private EditText comment_text;
+
+    @InjectView(R.id.productname_text)
+    AutoCompleteTextView productname_text;
+
+    @InjectView(R.id.numberPicker)
+    NumberPicker numberPicker;
+
+    @InjectView(R.id.unit_spinner)
+    Spinner unit_spinner;
+
+    @InjectView(R.id.brand_text)
+    EditText brand_text;
+
+    @InjectView(R.id.comment_text)
+    EditText comment_text;
+
 
     /**
      * Creates a new instance of ItemDetailsFragment for a new shooping list item in the specified list
@@ -98,20 +112,23 @@ public class ItemDetailsFragment extends Fragment {
         return fragment;
     }
 
+
     public ItemDetailsFragment() {
         // Required empty public constructor
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
         MenuItem menuItem = menu.findItem(R.id.empty);
         menuItem.setVisible(false);
         inflater.inflate(R.menu.item_details_menu, menu);
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.action_item_details_save:
                 if(productname_text.getText().length() > 0) {
@@ -130,21 +147,24 @@ public class ItemDetailsFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             listID = getArguments().getInt(ARG_LISTID);
             itemID = getArguments().getInt(ARG_ITEMID);
         }
         isNewItem = itemID == -1;
 
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         mFragmentView = inflater.inflate(R.layout.fragment_item_details, container, false);
+        ButterKnife.inject(this, mFragmentView);
+
         SetupUI();
         setHasOptionsMenu(true);
 
@@ -210,16 +230,12 @@ public class ItemDetailsFragment extends Fragment {
     }
 
     private void SetupUI() {
-        productname_text = (AutoCompleteTextView) mFragmentView.findViewById(R.id.productname_text);
-        numberPicker = (NumberPicker) mFragmentView.findViewById(R.id.numberPicker);
-        unit_spinner = (Spinner) mFragmentView.findViewById(R.id.unit_spinner);
-        brand_text = (EditText) mFragmentView.findViewById(R.id.brand_text);
-        comment_text = (EditText) mFragmentView.findViewById(R.id.comment_text);
 
         //populate number picker
         String[] nums = new String[1000];
-        for(int i=0; i<nums.length; i++)
-            nums[i] = Integer.toString(i+1);
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = Integer.toString(i + 1);
+        }
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(1000);
         numberPicker.setWrapSelectorWheel(false);
@@ -247,10 +263,6 @@ public class ItemDetailsFragment extends Fragment {
             brand_text.setText(mItem.getBrand());
             comment_text.setText(mItem.getComment());
         }
-
-
-        // TODO: Fill spinner with real data from Units + select correct unit
-        // http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
 
         try {
 

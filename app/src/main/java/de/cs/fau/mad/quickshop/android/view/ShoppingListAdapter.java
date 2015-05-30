@@ -78,7 +78,7 @@ public class ShoppingListAdapter extends ArrayAdapter<Integer> implements UndoAd
 
         } else {
             Unit unit = item.getUnit();
-            String unitStr = unit != null ? unit.toString() : "";
+            String unitStr = unit != null ? unit.getName() : "";
 
             amountView.setVisibility(View.VISIBLE);
             amountView.setText(String.format("%d %s", amount, unitStr));

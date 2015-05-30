@@ -64,7 +64,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/defaultItem"
                 android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:inputType="textCapSentences"/>
 
             <ImageButton
                 android:id="@+id/button_quickAdd"

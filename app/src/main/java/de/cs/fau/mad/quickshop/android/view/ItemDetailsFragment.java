@@ -77,7 +77,7 @@ public class ItemDetailsFragment extends Fragment {
 
 
     /**
-     * Creates a new instance of ItemDetailsFragment for a new shooping list item in the specified list
+     * Creates a new instance of ItemDetailsFragment for a new shopping list item in the specified list
      *
      * @param listID
      * @return

@@ -26,7 +26,7 @@
             android:layout_marginRight="30dp"
             android:singleLine="true"
             android:textStyle="bold"
-            android:inputType="textCapWords" />
+            android:inputType="textCapSentences"/>
 
         <Space
             android:layout_width="match_parent"

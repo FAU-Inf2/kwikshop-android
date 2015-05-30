@@ -139,4 +139,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         return view.findViewById(R.id.undo_row_undobutton);
     }
 
+    @Override
+    public void swapItems(final int positionOne, final int positionTwo) {
+        super.swapItems(positionOne, positionTwo);
+    }
 }

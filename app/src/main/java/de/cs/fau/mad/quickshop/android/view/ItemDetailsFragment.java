@@ -27,6 +27,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cs.fau.mad.quickshop_android.R;
+import de.cs.fau.mad.quickshop.android.common.Group;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.common.Unit;
@@ -49,7 +50,9 @@ public class ItemDetailsFragment extends Fragment {
     private ShoppingList shoppingList;
     private Item item;
     private List<Unit> units;
-    private int selectedUnit = -1;
+    private int selectedUnitIndex = -1;
+    private List<Group> groups;
+    private int selectedGroupIndex = -1;
 
     //TODO: move to db (otherwise changes are lost when exiting app)
     private static ArrayList<String> autocompleteSuggestions = new ArrayList<>();
@@ -70,6 +73,9 @@ public class ItemDetailsFragment extends Fragment {
 
     @InjectView(R.id.comment_text)
     EditText comment_text;
+
+    @InjectView(R.id.group_spinner)
+    Spinner group_spinner;
 
 
     /**
@@ -198,11 +204,18 @@ public class ItemDetailsFragment extends Fragment {
         item.setAmount(numberPicker.getValue());
         item.setBrand(brand_text.getText().toString());
 
-        if (selectedUnit >= 0) {
-            Unit u = units.get(selectedUnit);
+        if (selectedUnitIndex >= 0) {
+            Unit u = units.get(selectedUnitIndex);
             item.setUnit(u);
         } else {
             item.setUnit(null);
+        }
+
+        if (selectedGroupIndex >= 0) {
+            Group g = groups.get(selectedGroupIndex);
+            item.setGroup(g);
+        } else {
+            item.setGroup(null);
         }
 
         item.setBrand(brand_text.getText().toString());
@@ -265,7 +278,7 @@ public class ItemDetailsFragment extends Fragment {
         }
 
         //populate unit picker with units from database
-        DisplayHelper unitDisplayHelper = new DisplayHelper(getActivity());
+        DisplayHelper displayHelper = new DisplayHelper(getActivity());
 
 
         //get units from the database and sort them by name
@@ -281,7 +294,7 @@ public class ItemDetailsFragment extends Fragment {
 
         ArrayList<String> unitNames = new ArrayList<>();
         for (Unit u : units) {
-            unitNames.add(unitDisplayHelper.getDisplayName(u));
+            unitNames.add(displayHelper.getDisplayName(u));
         }
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
@@ -290,12 +303,12 @@ public class ItemDetailsFragment extends Fragment {
         unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedUnit = position;
+                selectedUnitIndex = position;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                selectedUnit = -1;
+                selectedUnitIndex = -1;
             }
         });
 
@@ -304,7 +317,33 @@ public class ItemDetailsFragment extends Fragment {
             unit_spinner.setSelection(index);
         }
 
+        //get groups from the database and populate group spinner
+        groups = ListStorageFragment.getGroupStorage().getItems();
+        ArrayList<String> groupNames = new ArrayList<>();
+        for (Group g : groups) {
+            groupNames.add(displayHelper.getDisplayName(g));
+        }
 
+        ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groupNames);
+        groupSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        group_spinner.setAdapter(groupSpinnerArrayAdapter);
+        group_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedGroupIndex = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedGroupIndex = -1;
+            }
+        });
+
+
+        if (!isNewItem && item.getGroup() != null) {
+            int index = groups.indexOf(item.getGroup());
+            group_spinner.setSelection(index);
+        }
     }
 
 

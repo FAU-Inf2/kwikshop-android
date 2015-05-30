@@ -52,6 +52,10 @@ public class LocalListStorage extends ListStorage {
                 if (i.getUnit() != null) {
                     ListStorageFragment.getDatabaseHelper().getUnitDao().refresh(i.getUnit());
                 }
+
+                if (i.getGroup() != null) {
+                    ListStorageFragment.getDatabaseHelper().getGroupDao().refresh(i.getGroup());
+                }
             }
 
         } catch (SQLException e) {

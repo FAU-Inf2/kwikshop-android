@@ -108,6 +108,37 @@
             android:singleLine="true"
             android:inputType="textCapSentences" />
 
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/group"
+                android:textColor="@color/primary_text" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/group_spinner"
+                android:focusable="false"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp"
+                android:padding="10dp" />
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
 </FrameLayout>

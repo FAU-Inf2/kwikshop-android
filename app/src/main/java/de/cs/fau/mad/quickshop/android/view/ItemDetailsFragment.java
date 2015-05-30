@@ -3,17 +3,13 @@ package de.cs.fau.mad.quickshop.android.view;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,11 +21,8 @@ import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
 
-import java.lang.reflect.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -51,18 +44,16 @@ public class ItemDetailsFragment extends Fragment {
     private static final String ARG_LISTID = "list_id";
     private static final String ARG_ITEMID = "item_id";
 
-    private View mFragmentView;
+    private View rootView;
 
-    private ListStorageFragment m_ListStorageFragment;
-
-    private int listID;
-    private int itemID;
+    private int listId;
+    private int itemId;
     private boolean isNewItem;
 
-    private ShoppingList mShoppingList;
-    private int selectedUnit = -1;
+    private ShoppingList shoppingList;
+    private Item item;
     private List<Unit> units;
-    private Item mItem;
+    private int selectedUnit = -1;
 
     //TODO: move to db (otherwise changes are lost when exiting app)
     private static ArrayList<String> autocompleteSuggestions = new ArrayList<>();
@@ -151,10 +142,10 @@ public class ItemDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            listID = getArguments().getInt(ARG_LISTID);
-            itemID = getArguments().getInt(ARG_ITEMID);
+            listId = getArguments().getInt(ARG_LISTID);
+            itemId = getArguments().getInt(ARG_ITEMID);
         }
-        isNewItem = itemID == -1;
+        isNewItem = itemId == -1;
 
     }
 
@@ -162,8 +153,8 @@ public class ItemDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mFragmentView = inflater.inflate(R.layout.fragment_item_details, container, false);
-        ButterKnife.inject(this, mFragmentView);
+        rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
+        ButterKnife.inject(this, rootView);
 
         SetupUI();
         setHasOptionsMenu(true);
@@ -179,52 +170,65 @@ public class ItemDetailsFragment extends Fragment {
 
         EventBus.getDefault().register(this);
 
-        return mFragmentView;
+        return rootView;
     }
-
 
     @Override
     public void onDetach() {
         super.onDetach();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
+
+    public void onEvent(ItemChangedEvent event) {
+        if (shoppingList.getId() == event.getShoppingListId() && event.getItemId() == item.getId()) {
+            SetupUI();
+        }
+    }
+
+
     private void saveItem() {
 
         if (isNewItem) {
-            mItem = new Item();
+            item = new Item();
         }
 
-        mItem.setName(productname_text.getText().toString());
-        mItem.setAmount(numberPicker.getValue());
-        mItem.setBrand(brand_text.getText().toString());
+        item.setName(productname_text.getText().toString());
+        item.setAmount(numberPicker.getValue());
+        item.setBrand(brand_text.getText().toString());
 
         if (selectedUnit >= 0) {
             Unit u = units.get(selectedUnit);
-            mItem.setUnit(u);
+            item.setUnit(u);
         } else {
-            mItem.setUnit(null);
+            item.setUnit(null);
         }
 
-        mItem.setBrand(brand_text.getText().toString());
-        mItem.setComment(comment_text.getText().toString());
+        item.setBrand(brand_text.getText().toString());
+        item.setComment(comment_text.getText().toString());
 
-        if(!autocompleteSuggestions.contains(productname_text.getText().toString())) {
+        if (!autocompleteSuggestions.contains(productname_text.getText().toString())) {
             autocompleteSuggestions.add(productname_text.getText().toString());
         }
 
-        mShoppingList.updateItem(mItem);
-        m_ListStorageFragment.getLocalListStorage().saveList(mShoppingList);
+        shoppingList.updateItem(item);
+        ListStorageFragment.getLocalListStorage().saveList(shoppingList);
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
 
         ItemChangeType changeType = isNewItem ? ItemChangeType.Added : ItemChangeType.PropertiesModified;
-        EventBus.getDefault().post(new ItemChangedEvent(changeType, mShoppingList.getId(), mItem.getId()));
+        EventBus.getDefault().post(new ItemChangedEvent(changeType, shoppingList.getId(), item.getId()));
     }
 
     private void hideKeyboard() {
         // Check if no view has focus:
         View view = getActivity().getCurrentFocus();
         if (view != null) {
-            InputMethodManager inputManager = (InputMethodManager)  getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
@@ -241,29 +245,30 @@ public class ItemDetailsFragment extends Fragment {
         numberPicker.setWrapSelectorWheel(false);
         numberPicker.setDisplayedValues(nums);
 
+        //wire up auto-complete for product name
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, autocompleteSuggestions);
         productname_text.setAdapter(adapter);
 
-        final FragmentManager fm = getActivity().getSupportFragmentManager();
-        m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
+        // load shopping list and item and set values in UI
+        shoppingList = ListStorageFragment.getLocalListStorage().loadList(listId);
+        if (isNewItem) {
 
-        mShoppingList = m_ListStorageFragment.getLocalListStorage().loadList(listID);
-        if(isNewItem) {
             productname_text.setText("");
             numberPicker.setValue(1);
             brand_text.setText("");
             comment_text.setText("");
 
         } else {
-            mItem = m_ListStorageFragment.getLocalListStorage().loadList(listID).getItem(itemID);
+            item = shoppingList.getItem(itemId);
 
             // Fill UI elements with data from Item
-            productname_text.setText(mItem.getName());
-            numberPicker.setValue(mItem.getAmount());
-            brand_text.setText(mItem.getBrand());
-            comment_text.setText(mItem.getComment());
+            productname_text.setText(item.getName());
+            numberPicker.setValue(item.getAmount());
+            brand_text.setText(item.getBrand());
+            comment_text.setText(item.getComment());
         }
 
+        //populate unit picker with units from database
         try {
 
             DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
@@ -300,9 +305,8 @@ public class ItemDetailsFragment extends Fragment {
                 }
             });
 
-
-            if (!isNewItem && mItem.getUnit() != null) {
-                int index = units.indexOf(mItem.getUnit());
+            if (!isNewItem && item.getUnit() != null) {
+                int index = units.indexOf(item.getUnit());
                 unit_spinner.setSelection(index);
             }
 
@@ -313,22 +317,5 @@ public class ItemDetailsFragment extends Fragment {
     }
 
 
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        EventBus.getDefault().unregister(this);
-    }
-
-
-    //region Event Handlers
-
-    public void onEvent(ItemChangedEvent event) {
-        if (mShoppingList.getId() == event.getShoppingListId() && event.getItemId() == mItem.getId()) {
-            SetupUI();
-        }
-    }
-
-    //endregion
 
 }

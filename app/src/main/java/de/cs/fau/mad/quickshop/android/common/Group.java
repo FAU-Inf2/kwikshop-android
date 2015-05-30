@@ -11,6 +11,9 @@ public class Group {
   @DatabaseField(canBeNull = false)
   private String name;
 
+  @DatabaseField(canBeNull = true)
+  private String displayNameResourceName;
+
   public Group() {
       // Default no-arg constructor for generating Groups, required for ORMLite
   }
@@ -29,6 +32,14 @@ public class Group {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getDisplayNameResourceName() {
+    return displayNameResourceName;
+  }
+
+  public void setDisplayNameResourceName(String value) {
+    this.displayNameResourceName = value;
   }
 
 }

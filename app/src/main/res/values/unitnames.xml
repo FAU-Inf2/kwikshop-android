@@ -6,6 +6,9 @@
     They will be put into the application's database.
 
     Changing it might break the app when opening an older database
+
+    If you add an item here, please also add it in DefaultDataProvider in the model package
+
     -->
 
     <string name="unit_piece">piece</string>

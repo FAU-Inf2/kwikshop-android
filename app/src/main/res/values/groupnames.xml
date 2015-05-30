@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+     Be careful changing the names defined in this file.
+     They will be put into the application's database.
+
+     Changing it might break the app when opening an older database.
+
+     If you add an item here, please also add it in DefaultDataProvider in the model package
+
+     -->
+
+    <string name="group_CoffeeAndTea">Coffee &amp; Tea</string>
+    <string name="group_healthAndHygiene">Health &amp; Hygiene</string>
+    <string name="group_petSupplies">Pet Supplies</string>
+    <string name="group_household">Household</string>
+    <string name="group_breakPastries">Bread and Pastries</string>
+    <string name="group_beverages">Beverages</string>
+    <string name="group_sweetsAndSnacks">Sweets &amp; Snacks</string>
+    <string name="group_babyFoods">Baby Foods</string>
+    <string name="group_pasta">Pasta</string>
+    <string name="group_dairy">Milk &amp; Cheese</string>
+    <string name="group_fruitsAndVegetables">Fruits &amp; Vegetables</string>
+    <string name="group_meatAndFish">Meat &amp; Fish</string>
+    <string name="group_ingredientsAndSpices">Ingredients &amp; Spices</string>
+    <string name="group_frozenAndConvenience">Frozen &amp; Convenience</string>
+    <string name="group_tobacco">Tobacco</string>
+    <string name="group_Other">Other</string>
+
+</resources>

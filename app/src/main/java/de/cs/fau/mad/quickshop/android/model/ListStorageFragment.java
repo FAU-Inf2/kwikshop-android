@@ -1,6 +1,5 @@
 package de.cs.fau.mad.quickshop.android.model;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,7 +10,6 @@ import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
 
-import cs.fau.mad.quickshop_android.R;
 import de.cs.fau.mad.quickshop.android.common.Item;
 import de.cs.fau.mad.quickshop.android.common.ShoppingList;
 import de.cs.fau.mad.quickshop.android.common.Unit;
@@ -146,7 +144,7 @@ public class ListStorageFragment extends Fragment {
             return;
         }
 
-        Unit[] units = new DefaultUnitsProvider(context).getDefaultUnits();
+        Unit[] units = new DefaultDataProvider(context).getDefaultUnits();
         for (Unit u : units) {
             dao.create(u);
         }

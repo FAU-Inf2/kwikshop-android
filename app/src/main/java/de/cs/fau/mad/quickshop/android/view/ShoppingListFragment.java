@@ -176,7 +176,6 @@ public class ShoppingListFragment extends Fragment {
             shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     // Open item details view
-                    Toast.makeText(getActivity(), "ID: " + id + " - PID: " + parent.getItemIdAtPosition(position), Toast.LENGTH_LONG).show();
                     getFragmentManager().beginTransaction().replace(BaseActivity.frameLayout.getId(), ItemDetailsFragment.newInstance(listID, (int) id))
                             .addToBackStack(null).commit();
                     //return true;

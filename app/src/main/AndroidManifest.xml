@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cs.fau.mad.quickshop_android" >
+    package="cs.fau.mad.kwikshop_android" >
 
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="de.cs.fau.mad.quickshop.android.view.ListOfShoppingListsActivity"
+            android:name="de.cs.fau.mad.kwikshop.android.view.ListOfShoppingListsActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,47 +21,47 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="quickshop" />
+                <data android:scheme="http" android:host="kwikshop" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name="de.cs.fau.mad.quickshop.android.view.AboutActivity"
+            android:name="de.cs.fau.mad.kwikshop.android.view.AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName="de.cs.fau.mad.quickshop.android.view.ListOfShoppingListsActivity" >
+            android:parentActivityName="de.cs.fau.mad.kwikshop.android.view.ListOfShoppingListsActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.cs.fau.mad.quickshop.android.view.ListOfShoppingListsActivity" />
+                android:value="de.cs.fau.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
         </activity>
         <activity
-            android:name="de.cs.fau.mad.quickshop.android.view.ShoppingListDetailActivity"
+            android:name="de.cs.fau.mad.kwikshop.android.view.ShoppingListDetailActivity"
             android:label="@string/title_activity_shopping_list_detail"
-            android:parentActivityName="de.cs.fau.mad.quickshop.android.view.ListOfShoppingListsActivity" >
+            android:parentActivityName="de.cs.fau.mad.kwikshop.android.view.ListOfShoppingListsActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.cs.fau.mad.quickshop.android.view.ListOfShoppingListsActivity" />
+                android:value="de.cs.fau.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
         </activity>
         <activity
-            android:name="de.cs.fau.mad.quickshop.android.view.ShoppingListActivity"
+            android:name="de.cs.fau.mad.kwikshop.android.view.ShoppingListActivity"
             android:label="@string/title_activity_shopping_list"
-            android:parentActivityName="de.cs.fau.mad.quickshop.android.view.ListOfShoppingListsActivity" >
+            android:parentActivityName="de.cs.fau.mad.kwikshop.android.view.ListOfShoppingListsActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.cs.fau.mad.quickshop.android.view.ListOfShoppingListsActivity" />
+                android:value="de.cs.fau.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
 
         </activity>
 
         <activity
-            android:name="de.cs.fau.mad.quickshop.android.view.SettingActivity"
+            android:name="de.cs.fau.mad.kwikshop.android.view.SettingActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="de.cs.fau.mad.quickshop.android.view.ListOfShoppingListsActivity" >
+            android:parentActivityName="de.cs.fau.mad.kwikshop.android.view.ListOfShoppingListsActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.cs.fau.mad.quickshop.android.view.ListOfShoppingListsActivity" />
+                android:value="de.cs.fau.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
 
         </activity>
     </application>

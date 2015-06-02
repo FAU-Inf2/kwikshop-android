@@ -1,23 +1,34 @@
 package de.cs.fau.mad.kwikshop.android.util;
 
+import android.view.Display;
+
 import java.util.Comparator;
 
+import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
+import de.cs.fau.mad.kwikshop.android.view.DisplayHelper;
+import de.cs.fau.mad.kwikshop.android.view.ItemSortType;
 
 public class ItemComparatorHelper implements Comparator<Integer> {
 
-    public enum SortType {
-        MANUAL, // Manual ordering, edited by the user via drag and drop
-        GROUP   // Order by Group
-    }
+    private final ShoppingList shoppingList;
+    private final ItemSortType comparatorType;
+    private final DisplayHelper displayHelper;
 
-    ShoppingList shoppingList;
-    SortType comparatorType;
+    public ItemComparatorHelper(ShoppingList shoppingList, DisplayHelper displayHelper, ItemSortType comparatorType) {
 
-    public ItemComparatorHelper(ShoppingList shoppingList, SortType comparatorType) {
+        if (shoppingList == null) {
+            throw new IllegalArgumentException("'shoppingList' must not be null");
+        }
+
+        if (displayHelper == null) {
+            throw new IllegalArgumentException("'displayHelper' must not be null");
+        }
+
         this.shoppingList = shoppingList;
         this.comparatorType = comparatorType;
+        this.displayHelper = displayHelper;
     }
 
     @Override
@@ -33,12 +44,22 @@ public class ItemComparatorHelper implements Comparator<Integer> {
                 res = item1.getOrder() - item2.getOrder();
                 break;
             case GROUP:
-                // TODO
+
+                int groupOrder = displayHelper.getDisplayName(item1.getGroup())
+                        .compareTo(displayHelper.getDisplayName(item2.getGroup()));
+
+                //if groups are identical, sort by item order
+                res = groupOrder == 0
+                        ? item1.getOrder() - item2.getOrder()
+                        : groupOrder;
                 break;
+
             default:
                 res = item1.getOrder() - item2.getOrder();
         }
 
         return res;
     }
+
+
 }

@@ -1,70 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="5dp"
-    android:paddingTop="5dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-                android:background="@color/text_icons">
+    android:background="@color/text_icons"
+    android:orientation="vertical"
+    android:paddingBottom="5dp">
 
-    <GridLayout
+    <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/list_row_main">
+        android:id="@+id/group_header">
 
         <TextView
-            android:id="@+id/list_row_textView_Main"
+            android:text="Group Header"
+            android:background="@color/group_header_color"
+            android:paddingLeft="20dp"
+            android:id="@+id/group_header_text" />
+
+    </TableRow>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp">
+
+        <GridLayout
+            android:id="@+id/list_row_main"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|top"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:gravity="center_vertical"
-            android:background="?android:attr/activatedBackgroundIndicator"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:textColor="@color/primary_text"
-            android:text="Shopping list Name" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/list_row_textView_Main"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|top"
+                android:background="?android:attr/activatedBackgroundIndicator"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:text="Shopping list Name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/primary_text" />
+
+            <TextView
+                android:id="@+id/list_row_textView_amount"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top"
+                android:background="?android:attr/activatedBackgroundIndicator"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:text="Amount"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/primary_text" />
+
+        </GridLayout>
+
 
         <TextView
-            android:id="@+id/list_row_textView_amount"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:gravity="center_vertical"
-            android:background="?android:attr/activatedBackgroundIndicator"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:textColor="@color/primary_text"
-            android:text="Amount" />
-
-    </GridLayout>
-
-
-    <TextView
-        android:id="@+id/list_row_textView_brand"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:singleLine="true"
-        android:text="Your brand goes here"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@id/list_row_main"
-        android:textColor="@color/secondary_text"
-        android:layout_marginTop="-10dp"
-        android:ellipsize="end"
-        android:layout_marginBottom="5dp" />
+            android:id="@+id/list_row_textView_brand"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/list_row_main"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="-10dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="Your brand goes here"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/secondary_text" />
 
 
-    <TextView
-        android:id="@+id/list_row_textView_comment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:singleLine="true"
-        android:text="Your comments go here"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@id/list_row_textView_brand"
-        android:textColor="@color/secondary_text_default_material_light"
-        android:layout_marginTop="-10dp"
-        android:ellipsize="end"
-        android:layout_marginBottom="5dp" />
+        <TextView
+            android:id="@+id/list_row_textView_comment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/list_row_textView_brand"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="-10dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="Your comments go here"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/secondary_text_default_material_light" />
 
 
-</RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

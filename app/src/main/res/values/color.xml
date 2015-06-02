@@ -11,4 +11,5 @@
     <color name="secondary_text">#727272</color>
     <color name="divider_color">#B6B6B6</color>
     <color name="dark_primary_color">#00796B</color>
+    <color name="group_header_color">#E2E2E2</color>
 </resources>

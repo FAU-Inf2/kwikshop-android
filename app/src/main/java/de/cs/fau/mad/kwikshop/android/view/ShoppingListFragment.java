@@ -60,7 +60,6 @@ public class ShoppingListFragment extends Fragment {
     private ShoppingList shoppingList = null;
     private int listID;
 
-
     private EditText textView_QuickAdd;
 
     //endregion
@@ -142,7 +141,8 @@ public class ShoppingListFragment extends Fragment {
             // Upper list for Items that are not yet bought
             shoppingListAdapter = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList,
                     generateData(shoppingList, false),
-                    shoppingList);
+                    shoppingList,
+                    getItemSortType() == ItemSortType.GROUP);
 
             SimpleSwipeUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
                     new OnDismissCallback() {
@@ -188,7 +188,8 @@ public class ShoppingListFragment extends Fragment {
             // Lower list for Items that are already bought
             shoppingListAdapterBought = new ShoppingListAdapter(getActivity(), R.id.list_shoppingListBought,
                     generateData(shoppingList, true),
-                    shoppingList);
+                    shoppingList,
+                    getItemSortType() == ItemSortType.GROUP);
 
             shoppingListViewBought.enableSwipeToDismiss(
                     new OnDismissCallback() {
@@ -342,8 +343,7 @@ public class ShoppingListFragment extends Fragment {
             }
             initOrder++;
         }
-        // TODO: Get SortType from Spinner and sort accordingly
-        Collections.sort(items, new ItemComparatorHelper(shoppingList, ItemComparatorHelper.SortType.MANUAL));
+        Collections.sort(items, new ItemComparatorHelper(shoppingList, new DisplayHelper(getActivity()), getItemSortType()));
         return items;
     }
 
@@ -353,6 +353,12 @@ public class ShoppingListFragment extends Fragment {
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(getActivity(), text, duration);
         toast.show();
+    }
+
+
+    private ItemSortType getItemSortType() {
+        // TODO: Get SortType from Spinner and sort accordingly
+        return ItemSortType.GROUP;
     }
 
     //endregion

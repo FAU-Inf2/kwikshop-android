@@ -2,6 +2,7 @@ package de.cs.fau.mad.kwikshop.android.view;
 
 import android.content.Context;
 
+import cs.fau.mad.kwikshop_android.R;
 import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
 import de.cs.fau.mad.kwikshop.android.util.StringHelper;
@@ -27,7 +28,9 @@ public class DisplayHelper {
      */
     public String getDisplayName(Group group) {
 
-        if (StringHelper.isNullOrWhiteSpace(group.getDisplayNameResourceName())) {
+        if (group == null) {
+            return context.getResources().getString(R.string.other);
+        } else if (StringHelper.isNullOrWhiteSpace(group.getDisplayNameResourceName())) {
             return group.getName();
         } else {
             return getStringByName(group.getDisplayNameResourceName());

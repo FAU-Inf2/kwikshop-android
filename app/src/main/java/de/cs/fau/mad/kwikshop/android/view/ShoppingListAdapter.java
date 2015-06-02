@@ -16,22 +16,23 @@ import cs.fau.mad.kwikshop_android.R;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
-import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.kwikshop.android.util.StringHelper;
 
 public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Integer> implements UndoAdapter{
 
     ShoppingList shoppingList;
     Context context;
-    DisplayHelper unitDisplayHelper;
-
+    DisplayHelper displayHelper;
+    private final boolean groupItems;
 
     public ShoppingListAdapter(Context context, int textViewResourceId,
-                              List<Integer> objects, ShoppingList shoppingList) {
+                               List<Integer> objects, ShoppingList shoppingList, boolean groupItems) {
         super(objects);
         this.shoppingList = shoppingList;
         this.context = context;
-        this.unitDisplayHelper = new DisplayHelper(context);
+        this.displayHelper = new DisplayHelper(context);
+        this.groupItems = groupItems;
+
     }
 
     @Override
@@ -46,7 +47,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             view = LayoutInflater.from(context).inflate(R.layout.fragment_shoppinglist_row, parent, false);
         }
 
+
         Item item = shoppingList.getItem(getItem(position));
+
 
         // Fill TextViews
         TextView shoppingListNameView = (TextView) view.findViewById(R.id.list_row_textView_Main);
@@ -78,11 +81,38 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         } else {
             Unit unit = item.getUnit();
-            String unitStr = unit != null ? unitDisplayHelper.getShortDisplayName(unit) : "";
+            String unitStr = unit != null ? displayHelper.getShortDisplayName(unit) : "";
 
             amountView.setVisibility(View.VISIBLE);
             amountView.setText(String.format("%d %s", amount, unitStr));
         }
+
+        //determine if we have to show the group header (above the item)
+        //TODO: that's super ugly
+        boolean showHeader = false;
+        if (groupItems && !item.isBought()) {
+            if (position == 0) {
+                showHeader = true;
+            } else if (position > 0) {
+                Item previousItem = shoppingList.getItem(getItem(position - 1));
+                if (item.getGroup() == null && previousItem == null) {
+                    showHeader = false;
+                } else if (item.getGroup() != null) {
+                    showHeader = !item.getGroup().equals(previousItem.getGroup());
+                } else if (previousItem.getGroup() != null) {
+                    showHeader = !previousItem.getGroup().equals(item.getGroup());
+                }
+            }
+        }
+
+        View groupHeader = view.findViewById(R.id.group_header);
+        groupHeader.setVisibility(showHeader ? View.VISIBLE : View.GONE);
+        if (showHeader) {
+            TextView textView_GroupHeader = (TextView) view.findViewById(R.id.group_header_text);
+            String text = displayHelper.getDisplayName(item.getGroup());
+            textView_GroupHeader.setText(text);
+        }
+
 
         // Specific changes for bought Items
         if(item.isBought()) {
@@ -93,6 +123,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             commentView.setVisibility(View.GONE);
             brandView.setVisibility(View.GONE);
             amountView.setVisibility(View.GONE);
+            groupHeader.setVisibility(View.GONE);
         }
 
         return view;

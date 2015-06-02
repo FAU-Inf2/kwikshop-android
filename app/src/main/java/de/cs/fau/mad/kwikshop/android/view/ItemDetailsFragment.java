@@ -165,8 +165,11 @@ public class ItemDetailsFragment extends Fragment {
         hideKeyboard(); //todo does not work
 
         // set actionbar title
-        getActivity().setTitle(R.string.title_fragment_item_details);
-
+        if (isNewItem) {
+            getActivity().setTitle(R.string.title_fragment_item_details);
+        }else {
+            getActivity().setTitle(productname_text.getText().toString());
+        }
         // disable go back arrow
         ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 

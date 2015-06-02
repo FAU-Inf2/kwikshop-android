@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "de.cs.fau.mad.qwikshop_android"
+        applicationId "de.cs.fau.mad.kwikshop_android"
         minSdkVersion 16
         targetSdkVersion 21
         versionCode 1

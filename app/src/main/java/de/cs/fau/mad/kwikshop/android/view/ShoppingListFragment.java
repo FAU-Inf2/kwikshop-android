@@ -25,6 +25,7 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.Simple
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import cs.fau.mad.kwikshop_android.R;
 import de.cs.fau.mad.kwikshop.android.common.Item;
@@ -34,6 +35,7 @@ import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
+import de.cs.fau.mad.kwikshop.android.util.ItemComparatorHelper;
 import de.cs.fau.mad.kwikshop.android.util.StringHelper;
 import de.greenrobot.event.EventBus;
 
@@ -253,6 +255,7 @@ public class ShoppingListFragment extends Fragment {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             // Apply the adapter to the spinner
             spinner.setAdapter(adapter);
+            // TODO: Restore Spinner value from ShoppingList.sortType
         }
 
         return rootView;
@@ -327,10 +330,20 @@ public class ShoppingListFragment extends Fragment {
 
     private ArrayList<Integer> generateData(ShoppingList shoppingList, boolean isBought) {
         ArrayList<Integer> items = new ArrayList<>();
+        int initOrder = 1;
+
         for (Item item : shoppingList.getItems()) {
-            if(item.isBought() == isBought)
+            if(item.isBought() == isBought) {
                 items.add(item.getId());
+
+                // Set order if it is not yet set
+                if(item.getOrder() == -1)
+                    item.setOrder(initOrder);
+            }
+            initOrder++;
         }
+        // TODO: Get SortType from Spinner and sort accordingly
+        Collections.sort(items, new ItemComparatorHelper(shoppingList, ItemComparatorHelper.SortType.MANUAL));
         return items;
     }
 

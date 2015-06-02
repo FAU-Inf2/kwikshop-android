@@ -6,126 +6,138 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "item")
 public class Item {
 
-  public static final String FOREIGN_SHOPPINGLIST_FIELD_NAME = "shoppingList";
+    public static final String FOREIGN_SHOPPINGLIST_FIELD_NAME = "shoppingList";
 
-  // TODO: we might want to change the annotation to generatedId = true
-  @DatabaseField(generatedId = true)
-  private int id;
+    // TODO: we might want to change the annotation to generatedId = true
+    @DatabaseField(generatedId = true)
+    private int id;
 
-  @DatabaseField
-  private Boolean bought = false;
+    // Order of this Item in the ShoppingList
+    @DatabaseField
+    private int order = -1;
 
-  @DatabaseField(canBeNull = false)
-  private String name = "";
+    @DatabaseField
+    private Boolean bought = false;
 
-  @DatabaseField
-  private int amount = 1;
+    @DatabaseField(canBeNull = false)
+    private String name = "";
 
-  @DatabaseField
-  private Boolean highlight = false;
+    @DatabaseField
+    private int amount = 1;
 
-  @DatabaseField(canBeNull = true)
-  private String brand;
+    @DatabaseField
+    private Boolean highlight = false;
 
-  @DatabaseField(canBeNull = true)
-  private String comment;
+    @DatabaseField(canBeNull = true)
+    private String brand;
 
-  @DatabaseField(foreign = true)
-  private Group group;
+    @DatabaseField(canBeNull = true)
+    private String comment;
 
-  @DatabaseField(foreign = true)
-  private Unit unit;
+    @DatabaseField(foreign = true)
+    private Group group;
 
-   /**
-   * the ShoppingList, that contains this Item.
-    * (Required for ORMLite)
-   */
-  @DatabaseField(foreign = true, columnName = FOREIGN_SHOPPINGLIST_FIELD_NAME)
-  private ShoppingList shoppingList;
+    @DatabaseField(foreign = true)
+    private Unit unit;
 
-  public Item() {
-   // Default no-arg constructor for generating Items, required for ORMLite
-  }
+    /**
+     * the ShoppingList, that contains this Item.
+     * (Required for ORMLite)
+     */
+    @DatabaseField(foreign = true, columnName = FOREIGN_SHOPPINGLIST_FIELD_NAME)
+    private ShoppingList shoppingList;
 
-  public int getId() {
-    return id;
-  }
+    public Item() {
+        // Default no-arg constructor for generating Items, required for ORMLite
+    }
 
-  // TODO: REMOVE THIS, only for testing. IDs should be read only
-  public void setID(int id) {
-    this.id = id;
-  }
+    public int getId() {
+        return id;
+    }
 
-  public Boolean isBought() {
-    return bought;
-  }
+    // TODO: REMOVE THIS, only for testing. IDs should be read only
+    public void setID(int id) {
+        this.id = id;
+    }
 
-  public void setBought(Boolean bought) {
-    this.bought = bought;
-  }
+    public int getOrder() {
+        return order;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public void setOrder(int order) {
+        this.order = order;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public Boolean isBought() {
+        return bought;
+    }
 
-  public int getAmount() {
-    return amount;
-  }
+    public void setBought(Boolean bought) {
+        this.bought = bought;
+    }
 
-  public void setAmount(int amount) {
-    this.amount = amount;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public Boolean isHighlight() {
-    return highlight;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setHighlight(Boolean highlight) {
-    this.highlight = highlight;
-  }
+    public int getAmount() {
+        return amount;
+    }
 
-  public String getBrand() {
-    return (brand == null ? "" : brand);
-  }
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 
-  public void setBrand(String brand) {
-    this.brand = brand;
-  }
+    public Boolean isHighlight() {
+        return highlight;
+    }
 
-  public String getComment() {
-    return (comment == null ? "" : comment);
-  }
+    public void setHighlight(Boolean highlight) {
+        this.highlight = highlight;
+    }
 
-  public void setComment(String comment) {
-    this.comment = comment;
-  }
+    public String getBrand() {
+        return (brand == null ? "" : brand);
+    }
 
-  public Group getGroup() {
-    return group;
-  }
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
 
-  public void setGroup(Group group) {
-    this.group = group;
-  }
+    public String getComment() {
+        return (comment == null ? "" : comment);
+    }
 
-  public Unit getUnit() {
-    return unit;
-  }
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-  public void setUnit(Unit unit) {
-    this.unit = unit;
-  }
-  
-  //TODO: REMOVE THIS, only for testing. The shoppingList should only be changed by ORM
-  public void setShoppingList(ShoppingList shoppingList) {
-      this.shoppingList = shoppingList;
-  }
+    public Group getGroup() {
+        return group;
+    }
 
-  public ShoppingList getShoppingList() {
-      return shoppingList;
-  }
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
+    }
+
+    //TODO: REMOVE THIS, only for testing. The shoppingList should only be changed by ORM
+    public void setShoppingList(ShoppingList shoppingList) {
+        this.shoppingList = shoppingList;
+    }
+
+    public ShoppingList getShoppingList() {
+        return shoppingList;
+    }
 }

@@ -16,6 +16,7 @@ import cs.fau.mad.kwikshop_android.R;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
+import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.kwikshop.android.util.StringHelper;
 
 public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Integer> implements UndoAdapter{
@@ -106,7 +107,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             item.setBought(true);
         }
 
-        shoppingList.updateItem(item);
         shoppingList.save();
         super.remove(position);
         notifyDataSetChanged();
@@ -134,9 +134,16 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         return view.findViewById(R.id.undo_row_undobutton);
     }
 
+    // Used by drag and drop
     @Override
     public void swapItems(final int positionOne, final int positionTwo) {
+        Item i1 = shoppingList.getItem(getItem(positionOne));
+        Item i2 = shoppingList.getItem(getItem(positionTwo));
+        i1.setOrder(positionTwo);
+        i2.setOrder(positionOne);
+
+        shoppingList.save();
+
         super.swapItems(positionOne, positionTwo);
-        // TODO: Save the order of Items
     }
 }

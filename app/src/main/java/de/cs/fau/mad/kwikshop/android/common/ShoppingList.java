@@ -123,11 +123,6 @@ public class ShoppingList {
         removeItem(item.getId());
     }
 
-    public void updateItem(Item item) {
-        removeItem(item);
-        addItem(item);
-    }
-
     public Collection<Item> getItems() {
         return Collections.unmodifiableCollection(this.items);
     }

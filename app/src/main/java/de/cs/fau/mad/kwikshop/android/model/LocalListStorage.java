@@ -42,7 +42,7 @@ public class LocalListStorage extends ListStorage {
 
     @Override
     public ShoppingList loadList(Integer listID) {
-        ShoppingList loadedList = null;
+        ShoppingList loadedList;
         try {
             loadedList = ListStorageFragment.getDatabaseHelper().getShoppingListDao().queryForId(listID);
 
@@ -67,7 +67,10 @@ public class LocalListStorage extends ListStorage {
     @Override
     public Boolean saveList(ShoppingList list) {
         try {
-            //deleteList(list.getId());
+            // Update all Items first
+            for (Item item : list.getItems()) {
+                ListStorageFragment.getDatabaseHelper().getItemDao().update(item);
+            }
             ListStorageFragment.getDatabaseHelper().getShoppingListDao().update(list);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -97,7 +100,7 @@ public class LocalListStorage extends ListStorage {
     }
 
     private void deleteListItems(Integer listid) {
-        DeleteBuilder db = null;
+        DeleteBuilder db;
         try {
             db = ListStorageFragment.getDatabaseHelper().getItemDao().deleteBuilder();
             db.where().eq(Item.FOREIGN_SHOPPINGLIST_FIELD_NAME, listid); // Delete all items that belong to this list

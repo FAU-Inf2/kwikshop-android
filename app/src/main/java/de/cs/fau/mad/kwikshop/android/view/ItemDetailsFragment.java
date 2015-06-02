@@ -228,7 +228,6 @@ public class ItemDetailsFragment extends Fragment {
             autocompleteSuggestions.add(productname_text.getText().toString());
         }
 
-        shoppingList.updateItem(item);
         ListStorageFragment.getLocalListStorage().saveList(shoppingList);
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
 

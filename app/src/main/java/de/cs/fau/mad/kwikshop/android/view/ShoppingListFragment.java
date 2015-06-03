@@ -347,14 +347,11 @@ public class ShoppingListFragment extends Fragment {
         return items;
     }
 
-    //region Private Methods
-
     private void showToast(String text) {
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(getActivity(), text, duration);
         toast.show();
     }
-
 
     private ItemSortType getItemSortType() {
         // TODO: Get SortType from Spinner and sort accordingly

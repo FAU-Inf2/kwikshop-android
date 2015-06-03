@@ -1,8 +1,10 @@
 package de.cs.fau.mad.kwikshop.android.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
@@ -34,6 +37,7 @@ import de.cs.fau.mad.kwikshop.android.common.Unit;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
+import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveCancelActivity;
 import de.greenrobot.event.EventBus;
 
 public class ItemDetailsFragment extends Fragment {
@@ -42,6 +46,8 @@ public class ItemDetailsFragment extends Fragment {
     private static final String ARG_ITEMID = "item_id";
 
     private View rootView;
+
+    private ActionBar actionBar;
 
     private int listId;
     private int itemId;
@@ -53,6 +59,8 @@ public class ItemDetailsFragment extends Fragment {
     private int selectedUnitIndex = -1;
     private List<Group> groups;
     private int selectedGroupIndex = -1;
+
+
 
     //TODO: move to db (otherwise changes are lost when exiting app)
     private static ArrayList<String> autocompleteSuggestions = new ArrayList<>();
@@ -116,27 +124,9 @@ public class ItemDetailsFragment extends Fragment {
 
         MenuItem menuItem = menu.findItem(R.id.empty);
         menuItem.setVisible(false);
-        inflater.inflate(R.menu.item_details_menu, menu);
+
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_item_details_save:
-                if(productname_text.getText().length() > 0) {
-
-                    saveItem();
-                    getActivity().getSupportFragmentManager().popBackStack();
-
-                } else {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.error_empty_productname), Toast.LENGTH_LONG).show();
-                }
-                return true;
-            default:
-                return true;
-        }
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -147,6 +137,7 @@ public class ItemDetailsFragment extends Fragment {
             listId = getArguments().getInt(ARG_LISTID);
             itemId = getArguments().getInt(ARG_ITEMID);
         }
+        actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
         isNewItem = itemId == -1;
 
     }
@@ -159,7 +150,11 @@ public class ItemDetailsFragment extends Fragment {
         ButterKnife.inject(this, rootView);
 
         SetupUI();
-        setHasOptionsMenu(true);
+
+        // set actionbar with save and cancel buttons
+        setCustomActionBar();
+
+        EventBus.getDefault().register(this);
 
         // hide soft keys until users decides he wants to
         hideKeyboard(); //todo does not work
@@ -173,17 +168,50 @@ public class ItemDetailsFragment extends Fragment {
         // disable go back arrow
         ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        EventBus.getDefault().register(this);
 
         return rootView;
     }
+
+
 
     @Override
     public void onDetach() {
         super.onDetach();
     }
 
-    @Override
+    void setCustomActionBar() {
+
+        //show custom action bar
+        actionBar.setDisplayShowCustomEnabled(true);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.actionbar_save_cancel, null);
+        final View savedActionBarView = actionBar.getCustomView();
+        actionBar.setCustomView(view);
+
+        Button saveButton = (Button) actionBar.getCustomView().findViewById(R.id.button_save);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(productname_text.getText().length() > 0) {
+                    saveItem();
+                    actionBar.setCustomView(savedActionBarView);
+                    getActivity().getSupportFragmentManager().popBackStack();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_empty_productname), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        Button cancelButton = (Button) actionBar.getCustomView().findViewById(R.id.button_cancel);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionBar.setCustomView(savedActionBarView);
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+    }
+
+
     public void onDestroyView() {
         super.onDestroyView();
         EventBus.getDefault().unregister(this);

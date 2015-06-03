@@ -94,8 +94,8 @@ public class ShoppingList {
         this.vis = visibility;
     }
 
-    public Boolean save() {
-        return listStorage.saveList(this);
+    public void save() {
+        listStorage.saveList(this);
     }
 
     public Boolean delete() {

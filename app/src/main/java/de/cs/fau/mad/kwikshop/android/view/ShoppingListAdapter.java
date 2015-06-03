@@ -18,6 +18,7 @@ import cs.fau.mad.kwikshop_android.R;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
+import de.cs.fau.mad.kwikshop.android.util.AsyncTaskHelper;
 import de.cs.fau.mad.kwikshop.android.util.StringHelper;
 
 public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Integer> implements UndoAdapter {
@@ -184,7 +185,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         i1.setOrder(positionTwo);
         i2.setOrder(positionOne);
 
-        shoppingList.save();
+        new AsyncTaskHelper.ShoppingListSaveTask().execute(shoppingList);
 
         super.swapItems(positionOne, positionTwo);
     }

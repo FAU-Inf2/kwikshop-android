@@ -3,6 +3,7 @@ package de.cs.fau.mad.kwikshop.android.view;
 
 //import android.app.Fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,9 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -264,7 +268,16 @@ public class ShoppingListFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
 
+        super.onResume();
+
+        Window window = getActivity().getWindow();
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+    }
+    
     @Override
     public void onDestroyView() {
 

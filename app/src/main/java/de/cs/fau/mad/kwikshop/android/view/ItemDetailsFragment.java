@@ -12,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -156,9 +158,6 @@ public class ItemDetailsFragment extends Fragment {
 
         EventBus.getDefault().register(this);
 
-        // hide soft keys until users decides he wants to
-        hideKeyboard(); //todo does not work
-
         // set actionbar title
         if (isNewItem) {
             getActivity().setTitle(R.string.title_fragment_item_details);
@@ -172,7 +171,22 @@ public class ItemDetailsFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
 
+        super.onResume();
+
+        productname_text.requestFocus();
+
+        if (isNewItem) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(productname_text, InputMethodManager.SHOW_IMPLICIT);
+        } else {
+            Window window = getActivity().getWindow();
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
+
+    }
 
     @Override
     public void onDetach() {
@@ -191,7 +205,7 @@ public class ItemDetailsFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(productname_text.getText().length() > 0) {
+                if (productname_text.getText().length() > 0) {
                     saveItem();
                     getActivity().getSupportFragmentManager().popBackStackImmediate();
                     actionBar.setCustomView(savedActionBarView);
@@ -265,15 +279,6 @@ public class ItemDetailsFragment extends Fragment {
 
         ItemChangeType changeType = isNewItem ? ItemChangeType.Added : ItemChangeType.PropertiesModified;
         EventBus.getDefault().post(new ItemChangedEvent(changeType, shoppingList.getId(), item.getId()));
-    }
-
-    private void hideKeyboard() {
-        // Check if no view has focus:
-        View view = getActivity().getCurrentFocus();
-        if (view != null) {
-            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
     }
 
     private void SetupUI() {

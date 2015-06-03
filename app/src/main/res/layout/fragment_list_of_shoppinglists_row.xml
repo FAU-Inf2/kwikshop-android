@@ -6,6 +6,7 @@
     android:paddingTop="5dp"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
+    android:background="@android:color/transparent"
     >
 
     <TextView
@@ -29,8 +30,7 @@
         android:layout_below="@id/list_row_textView_Main"
         android:textColor="@color/secondary_text"
         android:layout_marginTop="-10dp"
-        android:layout_marginBottom="5dp"
-        />
+        android:layout_marginBottom="5dp" />
 
 
 </RelativeLayout>

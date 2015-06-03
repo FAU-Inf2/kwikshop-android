@@ -139,7 +139,7 @@ public class ShoppingListFragment extends Fragment {
 
 
             // Upper list for Items that are not yet bought
-            shoppingListAdapter = new ShoppingListAdapter(getActivity(), R.id.list_shoppingList,
+            shoppingListAdapter = new ShoppingListAdapter(getActivity(),
                     generateData(shoppingList, false),
                     shoppingList,
                     getItemSortType() == ItemSortType.GROUP);
@@ -186,7 +186,7 @@ public class ShoppingListFragment extends Fragment {
             // --- //
 
             // Lower list for Items that are already bought
-            shoppingListAdapterBought = new ShoppingListAdapter(getActivity(), R.id.list_shoppingListBought,
+            shoppingListAdapterBought = new ShoppingListAdapter(getActivity(),
                     generateData(shoppingList, true),
                     shoppingList,
                     getItemSortType() == ItemSortType.GROUP);

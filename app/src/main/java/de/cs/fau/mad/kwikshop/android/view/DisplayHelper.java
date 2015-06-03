@@ -43,7 +43,9 @@ public class DisplayHelper {
      */
     public String getDisplayName(Unit unit) {
 
-        if (StringHelper.isNullOrWhiteSpace(unit.getDisplayNameResourceName())) {
+        if (unit == null) {
+            return "";
+        } else if (StringHelper.isNullOrWhiteSpace(unit.getDisplayNameResourceName())) {
             return unit.getName();
         } else {
             return getStringByName(unit.getDisplayNameResourceName());
@@ -57,7 +59,9 @@ public class DisplayHelper {
      */
     public String getShortDisplayName(Unit unit) {
 
-        if (StringHelper.isNullOrWhiteSpace(unit.getShortDisplayNameResourceName())) {
+        if (unit == null) {
+            return "";
+        } else if (StringHelper.isNullOrWhiteSpace(unit.getShortDisplayNameResourceName())) {
             return getDisplayName(unit);
         } else {
             return getStringByName(unit.getShortDisplayNameResourceName());

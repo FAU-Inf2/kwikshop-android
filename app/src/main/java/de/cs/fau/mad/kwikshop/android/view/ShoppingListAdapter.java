@@ -12,21 +12,31 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAd
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import cs.fau.mad.kwikshop_android.R;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
 import de.cs.fau.mad.kwikshop.android.util.StringHelper;
 
-public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Integer> implements UndoAdapter{
+public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Integer> implements UndoAdapter {
 
-    ShoppingList shoppingList;
-    Context context;
-    DisplayHelper displayHelper;
+    private final ShoppingList shoppingList;
+    private final Context context;
+    private final DisplayHelper displayHelper;
     private final boolean groupItems;
 
-    public ShoppingListAdapter(Context context, int textViewResourceId,
-                               List<Integer> objects, ShoppingList shoppingList, boolean groupItems) {
+    /**
+     * Initializes a new instance of ShoppingListAdapter
+     *
+     * @param context      The adapter's context
+     * @param objects      The ids of the shopping list items to be displayed
+     * @param shoppingList The shopping list which's items to display
+     * @param groupItems   Group shopping list items by their group and display group headers
+     */
+    public ShoppingListAdapter(Context context, List<Integer> objects, ShoppingList shoppingList, boolean groupItems) {
+
         super(objects);
         this.shoppingList = shoppingList;
         this.context = context;
@@ -41,52 +51,55 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent){
+    public View getView(int position, View view, ViewGroup parent) {
 
+        ViewHolder viewHolder;
         if(view == null ){
             view = LayoutInflater.from(context).inflate(R.layout.fragment_shoppinglist_row, parent, false);
+            viewHolder = new ViewHolder(view);
+            view.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) view.getTag();
         }
-
 
         Item item = shoppingList.getItem(getItem(position));
 
 
-        // Fill TextViews
-        TextView shoppingListNameView = (TextView) view.findViewById(R.id.list_row_textView_Main);
-        shoppingListNameView.setText(item.getName());
+        // Fill Views
 
+        // Item name
+        viewHolder.textView_ShoppingListName.setText(item.getName());
+
+        // Comment
         String comment = item.getComment();
-        TextView commentView = (TextView) view.findViewById(R.id.list_row_textView_comment);
         if (StringHelper.isNullOrWhiteSpace(comment)) {
-            commentView.setVisibility(View.GONE);
+            viewHolder.textView_Comment.setVisibility(View.GONE);
         } else {
-            commentView.setVisibility(View.VISIBLE);
-            commentView.setText(comment);
+            viewHolder.textView_Comment.setVisibility(View.VISIBLE);
+            viewHolder.textView_Comment.setText(comment);
         }
 
+        // brand
         String brand = item.getBrand();
-        TextView brandView = (TextView) view.findViewById(R.id.list_row_textView_brand);
         if (StringHelper.isNullOrWhiteSpace(brand)) {
-            brandView.setVisibility(View.GONE);
+            viewHolder.textView_Brand.setVisibility(View.GONE);
         } else {
-            brandView.setVisibility(View.VISIBLE);
-            brandView.setText(brand);
+            viewHolder.textView_Brand.setVisibility(View.VISIBLE);
+            viewHolder.textView_Brand.setText(brand);
         }
 
-
+        // amount
         int amount = item.getAmount();
-        TextView amountView = (TextView) view.findViewById(R.id.list_row_textView_amount);
         if (amount <= 1) {
-            amountView.setVisibility(View.GONE);
-
+            viewHolder.textView_Amount.setVisibility(View.GONE);
         } else {
-            Unit unit = item.getUnit();
-            String unitStr = unit != null ? displayHelper.getShortDisplayName(unit) : "";
+            String unitStr = displayHelper.getShortDisplayName(item.getUnit());
 
-            amountView.setVisibility(View.VISIBLE);
-            amountView.setText(String.format("%d %s", amount, unitStr));
+            viewHolder.textView_Amount.setVisibility(View.VISIBLE);
+            viewHolder.textView_Amount.setText(String.format("%d %s", amount, unitStr));
         }
 
+        // group header
         //determine if we have to show the group header (above the item)
         //TODO: that's super ugly
         boolean showHeader = false;
@@ -105,25 +118,23 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             }
         }
 
-        View groupHeader = view.findViewById(R.id.group_header);
-        groupHeader.setVisibility(showHeader ? View.VISIBLE : View.GONE);
+        viewHolder.view_GroupHeader.setVisibility(showHeader ? View.VISIBLE : View.GONE);
         if (showHeader) {
-            TextView textView_GroupHeader = (TextView) view.findViewById(R.id.group_header_text);
             String text = displayHelper.getDisplayName(item.getGroup());
-            textView_GroupHeader.setText(text);
+            viewHolder.textView_GroupHeaderName.setText(text);
         }
 
 
         // Specific changes for bought Items
         if(item.isBought()) {
-            shoppingListNameView.setPaintFlags(shoppingListNameView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            shoppingListNameView.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
+            viewHolder.textView_ShoppingListName.setPaintFlags(viewHolder.textView_ShoppingListName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
 
             // Hide details - maybe allow the user to toggle this
-            commentView.setVisibility(View.GONE);
-            brandView.setVisibility(View.GONE);
-            amountView.setVisibility(View.GONE);
-            groupHeader.setVisibility(View.GONE);
+            viewHolder.textView_Comment.setVisibility(View.GONE);
+            viewHolder.textView_Brand.setVisibility(View.GONE);
+            viewHolder.textView_Amount.setVisibility(View.GONE);
+            viewHolder.view_GroupHeader.setVisibility(View.GONE);
         }
 
         return view;
@@ -177,4 +188,31 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         super.swapItems(positionOne, positionTwo);
     }
+
+
+    static class ViewHolder {
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
+
+        @InjectView(R.id.list_row_textView_Main)
+        TextView textView_ShoppingListName;
+
+        @InjectView(R.id.list_row_textView_comment)
+        TextView textView_Comment;
+
+        @InjectView(R.id.list_row_textView_brand)
+        TextView textView_Brand;
+
+        @InjectView(R.id.list_row_textView_amount)
+        TextView textView_Amount;
+
+        @InjectView(R.id.group_header)
+        View view_GroupHeader;
+
+        @InjectView(R.id.group_header_text)
+        TextView textView_GroupHeaderName;
+    }
+
 }

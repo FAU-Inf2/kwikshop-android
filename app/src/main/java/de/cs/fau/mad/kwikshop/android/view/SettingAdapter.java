@@ -2,6 +2,7 @@ package de.cs.fau.mad.kwikshop.android.view;
 
 import java.util.ArrayList;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,19 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import cs.fau.mad.kwikshop_android.R;
 
 
-public class SettingAdapter extends ArrayAdapter<String> {
+public class SettingAdapter extends ArrayAdapter<String>  {
 
     private ArrayList<String> setList;
     private int row;
     private Activity activity;
-    private String SETTINGS = "settings";
-    private String OPTION_ONE = "option_one";
+    private String OPTION_1 = "option_1";
+    private String OPTION_2 = "option_2";
 
     private TextView tvSetname;
     private TextView tvSetdesc;
@@ -51,41 +51,30 @@ public class SettingAdapter extends ArrayAdapter<String> {
         checkbox = (CheckBox) view.findViewById(R.id.setcheckbox);
 
 
-        if (setList.get(position).equals(OPTION_ONE)) {
+
+        if (setList.get(position).equals(OPTION_1)) {
 
             tvSetname.setText(R.string.settings_option_1_name);
             tvSetdesc.setText(R.string.settings_option_1_desc);
             checkbox.setVisibility(View.VISIBLE);
-
-            if (activity.getSharedPreferences(SETTINGS, 0).getBoolean(OPTION_ONE, true) == false) {
-                checkbox.setChecked(true);
-            } else
-                checkbox.setChecked(false);
-
-            checkbox.setOnCheckedChangeListener(
-                    new CompoundButton.OnCheckedChangeListener() {
-
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if (isChecked) {
-
-                                activity.getSharedPreferences(SETTINGS, 0).edit().putBoolean(OPTION_ONE, false).apply();
-
-                            } else {
-
-                                activity.getSharedPreferences(SETTINGS, 0).edit().putBoolean(OPTION_ONE, true).apply();
-
-                            }
-
-
-                        }
-                    }
-            );
         }
+
+        if (setList.get(position).equals(OPTION_2)) {
+
+            tvSetname.setText(R.string.settings_option_2_setlocale);
+            tvSetdesc.setText(R.string.settings_option_2_desc);
+            checkbox.setVisibility(View.INVISIBLE);
+        }
+
 
 
         return view;
     }
+
+
+
+
+
 
 
 }

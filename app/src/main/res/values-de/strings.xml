@@ -33,23 +33,23 @@
     <string name="itemdetails_comment">Kommentar</string>
     <string name="itemdetails_saved">Artikel gespeichert</string>
     <string name="items">Artikel</string>
-    <string name="magic"></string>
-    <string name="manual">Anleitung</string>
+    <string name="magic">magic</string>
+    <string name="manual">manuell</string>
     <string name="other">Sonstiges</string>
     <string name="overflow_action_menu_listofshoppinglists">Einkaufsliste</string>
     <string name="overflow_action_menu_settings">Eintstellung</string>
     <string name="save">Speichern</string>
     <string name="settings_option_1_desc">Beschreibung von Option 1</string>
-    <string name="settings_option_1_name"></string>
+    <string name="settings_option_1_name">Option1</string>
     <string name="shoppinglist_divider_textview">Einkaufswagen</string>
     <string name="sort_by">Sortieren nach</string>
     <string name="taptoundo">rückgängig machen</string>
-    <string name="title_activity_about"></string>
+    <string name="title_activity_about">About</string>
     <string name="title_activity_list_of_shopping_list">Einkaufslisten</string>
     <string name="title_activity_settings">Einstellung</string>
     <string name="title_activity_shopping_list">Einkaufsliste</string>
     <string name="title_activity_shopping_list_detail">Details </string>
-    <string name="title_default_list"></string>
+    <string name="title_default_list">Einkaufsliste 1</string>
     <string name="title_fragment_item_details">Neuer Artikel</string>
     <string name="unit_bag">Sack</string>
     <string name="unit_bottle">Flasche</string>
@@ -58,10 +58,15 @@
     <string name="unit_gram">gramm</string>
     <string name="unit_kilogram">Kilogramm</string>
     <string name="unit_litre">Liter</string>
-    <string name="unit_litre_short"></string>
+    <string name="unit_litre_short">l</string>
     <string name="unit_millilitre">Milliliter</string>
-    <string name="unit_millilitre_short"></string>
+    <string name="unit_millilitre_short">ml</string>
     <string name="unit_pack">Packung</string>
     <string name="unit_piece">Stück</string>
     <string name="unit_piece_short">st.</string>
+    <string name="overflow_action_menu_about">about</string>
+    <string name="unit_gram_short">g</string>
+    <string name="unit_kilogram_short" translatable="false">kg</string>
+    <string name="settings_option_2_setlocale">Region</string>
+    <string name="settings_option_2_desc">Sprache ändern</string>
 </resources>

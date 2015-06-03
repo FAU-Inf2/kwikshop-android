@@ -21,7 +21,8 @@
         android:layout_alignParentRight="true"
         android:selectAllOnFocus="true"
         android:text="SAMPLE TEXT"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:inputType="textCapSentences"/>
 
 
     <Button

@@ -86,7 +86,7 @@
 
 
     <!-- Other -->
-    <string name="hello_world" translatable="false">Hello world!</string>
+    <string name="hello_world">Hello world!</string>
     <string name="items">Items</string>
     <string name="error_empty_productname">Product name must not be empty</string>
     <string name="shoppinglist_divider_textview">Shopping cart</string>

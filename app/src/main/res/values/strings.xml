@@ -75,7 +75,8 @@
     <string name="magic">magic</string>
     <string name="sort_by">Sort by</string>
     <string-array name="sort_by_array">
-        <item>Magic</item>
+        <item>Manual</item>
+        <item>Group</item>
     </string-array>
     <string name="defaultItem">Touch to create a new item</string>
     <string name="ShoppingListItem">Shopping list item</string>
@@ -89,5 +90,6 @@
     <string name="shoppinglist_divider_textview">Shopping cart</string>
     <string name="group">Group</string>
     <string name="other">Other</string>
+    <string name="manual">Manual</string>
 
 </resources>

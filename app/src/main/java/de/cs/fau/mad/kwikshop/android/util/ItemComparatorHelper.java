@@ -16,6 +16,12 @@ public class ItemComparatorHelper implements Comparator<Integer> {
     private final ItemSortType comparatorType;
     private final DisplayHelper displayHelper;
 
+
+    /*
+        possible comparatorTypes:
+        MANUAL
+        GROUP
+     */
     public ItemComparatorHelper(ShoppingList shoppingList, DisplayHelper displayHelper, ItemSortType comparatorType) {
 
         if (shoppingList == null) {

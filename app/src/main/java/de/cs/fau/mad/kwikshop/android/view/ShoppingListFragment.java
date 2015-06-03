@@ -2,6 +2,7 @@ package de.cs.fau.mad.kwikshop.android.view;
 
 
 //import android.app.Fragment;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -59,6 +60,7 @@ public class ShoppingListFragment extends Fragment {
     private ListStorage listStorage;
     private ShoppingList shoppingList = null;
     private int listID;
+    private ItemSortType sortType = ItemSortType.MANUAL;
 
     private EditText textView_QuickAdd;
 
@@ -112,7 +114,7 @@ public class ShoppingListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // enable go back arrow
-        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         EventBus.getDefault().register(this);
 
@@ -163,7 +165,7 @@ public class ShoppingListFragment extends Fragment {
                     new AdapterView.OnItemLongClickListener() {
                         @Override
                         public boolean onItemLongClick(final AdapterView<?> parent, final View view,
-                                                final int position, final long id) {
+                                                       final int position, final long id) {
                             ScrollView sview = (ScrollView) getView().findViewById(R.id.shoppinglist_scrollview);
                             sview.requestDisallowInterceptTouchEvent(true);
                             shoppingListView.startDragging(position);
@@ -235,12 +237,12 @@ public class ShoppingListFragment extends Fragment {
             textView_QuickAdd.setFocusableInTouchMode(true);
             textView_QuickAdd.requestFocus();
 
-            textView_QuickAdd .setOnKeyListener(new View.OnKeyListener() {
+            textView_QuickAdd.setOnKeyListener(new View.OnKeyListener() {
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
                     // If the event is a key-down event on the "enter" button
                     if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                       addItem();
-                       return true;
+                        addItem();
+                        return true;
                     }
                     return false;
                 }
@@ -256,7 +258,7 @@ public class ShoppingListFragment extends Fragment {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             // Apply the adapter to the spinner
             spinner.setAdapter(adapter);
-            // TODO: Restore Spinner value from ShoppingList.sortType
+            spinner.setOnItemSelectedListener(new ShoppingListSortBySpinner());
         }
 
         return rootView;
@@ -272,8 +274,7 @@ public class ShoppingListFragment extends Fragment {
     }
 
 
-
-    public void addItem(){
+    public void addItem() {
 
         //adding empty items without a name is not supported
         if (!StringHelper.isNullOrWhiteSpace(textView_QuickAdd.getText())) {
@@ -312,6 +313,11 @@ public class ShoppingListFragment extends Fragment {
         }
     }
 
+    public void onEvent(ItemSortType sortType) {
+        this.sortType = sortType;
+        //TODO: sort here
+    }
+
     //endregion
 
 
@@ -334,11 +340,11 @@ public class ShoppingListFragment extends Fragment {
         int initOrder = 1;
 
         for (Item item : shoppingList.getItems()) {
-            if(item.isBought() == isBought) {
+            if (item.isBought() == isBought) {
                 items.add(item.getId());
 
                 // Set order if it is not yet set
-                if(item.getOrder() == -1)
+                if (item.getOrder() == -1)
                     item.setOrder(initOrder);
             }
             initOrder++;
@@ -354,8 +360,7 @@ public class ShoppingListFragment extends Fragment {
     }
 
     private ItemSortType getItemSortType() {
-        // TODO: Get SortType from Spinner and sort accordingly
-        return ItemSortType.GROUP;
+        return this.sortType;
     }
 
     //endregion

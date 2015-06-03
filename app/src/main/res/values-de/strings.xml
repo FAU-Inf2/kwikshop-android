@@ -66,7 +66,37 @@
     <string name="unit_piece_short">st.</string>
     <string name="overflow_action_menu_about">about</string>
     <string name="unit_gram_short">g</string>
-    <string name="unit_kilogram_short" translatable="false">kg</string>
+    <string name="unit_kilogram_short">kg</string>
     <string name="settings_option_2_setlocale">Region</string>
     <string name="settings_option_2_desc">Sprache ändern</string>
+    <string name="BuildInfo_Git_Commit"></string>
+    <string name="BuildInfo_Git_Branch">master</string>
+
+    <string-array name="measures">//TODO importing units from a library of units
+        <item>millimeters</item>
+        <item>centimeters</item>
+        <item>decimeters</item>
+        <item>meters</item>
+        <item>dekameters</item>
+        <item>hectometers</item>
+        <item>milliliters</item>
+        <item>centiliters</item>
+        <item>deciliters</item>
+        <item>liters</item>
+        <item>dekaliters</item>
+        <item>hectoliters</item>
+        <item>milligrams</item>
+        <item>centigrams</item>
+        <item>decigrams</item>
+        <item>grams</item>
+        <item>dekagrams</item>
+        <item>hectograms</item>
+        <item>kilograms</item>
+    </string-array>
+
+    <string-array name="sort_by_array">
+        <item>Manual</item>
+        <item>Group</item>
+    </string-array>
+
 </resources>

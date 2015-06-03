@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -68,9 +69,7 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         // focus test box
         textView_ShoppingListName.setText(viewModel.getName());
-        textView_ShoppingListName.setFocusable(true);
-        textView_ShoppingListName.setFocusableInTouchMode(true);
-        textView_ShoppingListName.requestFocus();
+
 
         //show keyboard
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -93,7 +92,21 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
         return rootView;
     }
 
+    @Override
+    public void onResume() {
 
+        super.onResume();
+
+        Window window = getActivity().getWindow();
+
+        if (viewModel.getIsNewList()) {
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            textView_ShoppingListName.requestFocus();
+        } else {
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
+
+    }
 
     @Override
     public void onDestroy() {

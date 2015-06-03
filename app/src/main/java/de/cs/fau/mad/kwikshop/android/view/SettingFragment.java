@@ -96,8 +96,8 @@ public class SettingFragment extends Fragment {
 
         if (setList.get(position).equals(OPTION_2)) {
 
-            final CharSequence[] localeSelectionNames = {"english", "deutsch", "português"};
-            final CharSequence[] localeIDs = {"en", "de", "pt"};
+            final CharSequence[] localeSelectionNames = {"english", "deutsch"};
+            final CharSequence[] localeIDs = {"en", "de"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.settings_option_2_setlocale);

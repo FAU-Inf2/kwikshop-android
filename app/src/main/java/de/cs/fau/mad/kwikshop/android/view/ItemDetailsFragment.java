@@ -193,8 +193,8 @@ public class ItemDetailsFragment extends Fragment {
             public void onClick(View v) {
                 if(productname_text.getText().length() > 0) {
                     saveItem();
+                    getActivity().getSupportFragmentManager().popBackStackImmediate();
                     actionBar.setCustomView(savedActionBarView);
-                    getActivity().getSupportFragmentManager().popBackStack();
                 } else {
                     Toast.makeText(getActivity(), getResources().getString(R.string.error_empty_productname), Toast.LENGTH_LONG).show();
                 }
@@ -206,7 +206,7 @@ public class ItemDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 actionBar.setCustomView(savedActionBarView);
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStackImmediate();
             }
         });
     }

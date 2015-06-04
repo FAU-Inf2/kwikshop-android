@@ -347,13 +347,13 @@ public class ShoppingListFragment extends Fragment {
     private void UpdateLists() {
         shoppingListAdapter.clear();
         shoppingListAdapter.addAll(generateData(listStorage.loadList(listID), false));
-        shoppingListAdapter.updateOrderOfList(listStorage.loadList(listID));
+        shoppingListAdapter.updateOrderOfList();
         shoppingListAdapter.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(shoppingListView);
 
         shoppingListAdapterBought.clear();
         shoppingListAdapterBought.addAll(generateData(listStorage.loadList(listID), true));
-        shoppingListAdapterBought.updateOrderOfList(listStorage.loadList(listID));
+        shoppingListAdapterBought.updateOrderOfList();
         shoppingListAdapterBought.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);
     }

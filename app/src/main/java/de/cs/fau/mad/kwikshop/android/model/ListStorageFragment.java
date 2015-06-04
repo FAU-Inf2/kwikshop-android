@@ -136,10 +136,10 @@ public class ListStorageFragment extends Fragment {
         try {
 
             //create local group storage and local unit storage
-            m_GroupStorage = new SimpleStorage<>(m_DatabaseHelper.getGroupDao());
+            m_GroupStorage = new GroupStorage(m_DatabaseHelper.getGroupDao());
             createGroupsInDatabase(activity, m_GroupStorage);
 
-            m_UnitStorage = new SimpleStorage<>(m_DatabaseHelper.getUnitDao());
+            m_UnitStorage = new UnitStorage(m_DatabaseHelper.getUnitDao());
             createUnitsInDatabase(activity, m_UnitStorage);
 
         } catch (SQLException e) {
@@ -157,7 +157,7 @@ public class ListStorageFragment extends Fragment {
             return;
         }
 
-        Unit[] units = new DefaultDataProvider(context).getDefaultUnits();
+        Unit[] units = new DefaultDataProvider(context).getPredefinedUnits();
         for (Unit u : units) {
             unitStorage.addItem(u);
         }
@@ -170,7 +170,7 @@ public class ListStorageFragment extends Fragment {
             return;
         }
 
-        Group[] defaultGroups = new DefaultDataProvider(context).getDefaultGroups();
+        Group[] defaultGroups = new DefaultDataProvider(context).getPredefinedGroups();
         for (Group g : defaultGroups) {
             groupStorage.addItem(g);
         }

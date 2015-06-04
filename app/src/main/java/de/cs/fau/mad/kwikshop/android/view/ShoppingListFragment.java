@@ -315,7 +315,7 @@ public class ShoppingListFragment extends Fragment {
 
     public void onEvent(ItemSortType sortType) {
         this.sortType = sortType;
-        //TODO: sort here
+        UpdateLists();
     }
 
     //endregion

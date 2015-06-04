@@ -9,9 +9,11 @@ import cs.fau.mad.kwikshop_android.R;
 import de.greenrobot.event.EventBus;
 
 public class ShoppingListSortBySpinner extends Activity implements AdapterView.OnItemSelectedListener{
+
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
         ItemSortType sortType;
+        //TODO: needs to be made localizable
         //make sure cases are listed in String.xml sort_by_array
         switch (parent.getItemAtPosition(pos).toString()){
             case "Manual": sortType = ItemSortType.MANUAL; break;

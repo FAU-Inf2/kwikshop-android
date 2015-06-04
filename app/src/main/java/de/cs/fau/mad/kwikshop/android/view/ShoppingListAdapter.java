@@ -27,7 +27,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     private final ShoppingList shoppingList;
     private final Context context;
     private final DisplayHelper displayHelper;
-    private final boolean groupItems;
+    private boolean groupItems;
+
 
     /**
      * Initializes a new instance of ShoppingListAdapter
@@ -46,6 +47,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         this.groupItems = groupItems;
 
     }
+
 
     @Override
     public long getItemId(int position) {
@@ -205,6 +207,11 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         super.swapItems(positionOne, positionTwo);
     }
 
+
+    public void setGroupItems(boolean value) {
+        this.groupItems = value;
+        notifyDataSetChanged();
+    }
 
     static class ViewHolder {
 

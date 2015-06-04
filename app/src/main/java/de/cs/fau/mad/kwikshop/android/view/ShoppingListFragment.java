@@ -32,6 +32,8 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedU
 import java.util.ArrayList;
 import java.util.Collections;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import cs.fau.mad.kwikshop_android.R;
 import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
@@ -62,8 +64,13 @@ public class ShoppingListFragment extends Fragment {
 
     private ShoppingListAdapter shoppingListAdapter;
     private ShoppingListAdapter shoppingListAdapterBought;
-    private DynamicListView shoppingListView;
-    private DynamicListView shoppingListViewBought;
+
+    @InjectView(R.id.list_shoppingList)
+    DynamicListView shoppingListView;
+
+    @InjectView(R.id.list_shoppingListBought)
+    DynamicListView shoppingListViewBought;
+
     private ListStorage listStorage;
     private SimpleStorage<Unit> unitStorage;
     private SimpleStorage<Group> groupStorage;
@@ -71,7 +78,17 @@ public class ShoppingListFragment extends Fragment {
     private int listID;
     private ItemSortType sortType = ItemSortType.MANUAL;
 
-    private EditText textView_QuickAdd;
+    @InjectView(R.id.textView_quickAdd)
+    EditText textView_QuickAdd;
+
+    @InjectView(R.id.spinner)
+    Spinner spinner_SortBy;
+
+    @InjectView(R.id.fab)
+    View floatingActionButton;
+
+    @InjectView(R.id.button_quickAdd)
+    View button_QuickAdd;
 
     //endregion
 
@@ -135,8 +152,9 @@ public class ShoppingListFragment extends Fragment {
 
 
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
-        shoppingListView = (DynamicListView) rootView.findViewById(R.id.list_shoppingList);
-        shoppingListViewBought = (DynamicListView) rootView.findViewById(R.id.list_shoppingListBought);
+        ButterKnife.inject(this, rootView);
+
+
 
         try {
             shoppingList = listStorage.loadList(listID);
@@ -171,15 +189,15 @@ public class ShoppingListFragment extends Fragment {
             );
 
             //Setting spinner adapter to sort by button
-            final Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
+
             // Create an ArrayAdapter using the string array and a default spinner layout
             final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                     R.array.sort_by_array, android.R.layout.simple_spinner_item);
             // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             // Apply the adapter to the spinner
-            spinner.setAdapter(adapter);
-            spinner.setOnItemSelectedListener(new ShoppingListSortBySpinner());
+            spinner_SortBy.setAdapter(adapter);
+            spinner_SortBy.setOnItemSelectedListener(new ShoppingListSortBySpinner());
 
 
             swipeUndoAdapter.setAbsListView(shoppingListView);
@@ -195,7 +213,7 @@ public class ShoppingListFragment extends Fragment {
                             sview.requestDisallowInterceptTouchEvent(true);
                             shoppingListView.startDragging(position);
                             //sets value of the Spinner to the first entry, in this case Manual
-                            spinner.setSelection(0);
+                            spinner_SortBy.setSelection(0);
                             return true;
                         }
                     }
@@ -237,8 +255,7 @@ public class ShoppingListFragment extends Fragment {
             justifyListViewHeightBasedOnChildren(shoppingListViewBought);
 
 
-            View fab = rootView.findViewById(R.id.fab);
-            fab.setOnClickListener(new View.OnClickListener() {
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Fragment newItemFragment = ItemDetailsFragment.newInstance(listID);
@@ -250,8 +267,7 @@ public class ShoppingListFragment extends Fragment {
             });
 
 
-            textView_QuickAdd = (EditText) rootView.findViewById(R.id.textView_quickAdd);
-            View button_QuickAdd = rootView.findViewById(R.id.button_quickAdd);
+
             button_QuickAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -344,7 +360,10 @@ public class ShoppingListFragment extends Fragment {
     public void onEvent(ItemSortType sortType) {
         this.sortType = sortType;
         //only sort the list if a automatic sorting is chosen
-        if (sortType != ItemSortType.MANUAL) {
+        if (sortType == ItemSortType.MANUAL) {
+            shoppingListAdapter.setGroupItems(false);
+            shoppingListAdapterBought.setGroupItems(false);
+        } else {
             UpdateLists();
         }
     }
@@ -355,12 +374,14 @@ public class ShoppingListFragment extends Fragment {
     //region Private Methods
 
     private void UpdateLists() {
+        shoppingListAdapter.setGroupItems(getItemSortType() == ItemSortType.GROUP);
         shoppingListAdapter.clear();
         shoppingListAdapter.addAll(generateData(listStorage.loadList(listID), false));
         shoppingListAdapter.updateOrderOfList();
         shoppingListAdapter.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(shoppingListView);
 
+        shoppingListAdapterBought.setGroupItems(getItemSortType() == ItemSortType.GROUP);
         shoppingListAdapterBought.clear();
         shoppingListAdapterBought.addAll(generateData(listStorage.loadList(listID), true));
         shoppingListAdapterBought.updateOrderOfList();

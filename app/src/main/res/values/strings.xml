@@ -68,6 +68,8 @@
     <string name="settings_option_3_desc">delete the history</string>
     <string name="settings_option_3_check_title">Delete history?</string>
     <string name="settings_option_3_check_text">Are you sure you want to delete the history of autocompletion?</string>
+    <string name="settings_option_3_error">Unfortunately an error occurred while deleting the history</string>
+    <string name="settings_option_3_success">Successfully deleted history</string>
 
     <!-- Overflow Action Menu -->
     <string name="overflow_action_menu_settings">settings</string>

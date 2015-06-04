@@ -1,6 +1,7 @@
 package de.cs.fau.mad.kwikshop.android.view;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -18,10 +19,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
 
 import cs.fau.mad.kwikshop_android.R;
+import de.cs.fau.mad.kwikshop.android.common.AutoCompletionData;
+import de.cs.fau.mad.kwikshop.android.model.DatabaseHelper;
+import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 
 
 public class SettingFragment extends Fragment {
@@ -76,7 +81,7 @@ public class SettingFragment extends Fragment {
                 changeLocalOption(position);
 
                 // delete history of autocompletion
-                deleteAutoCompletionHistory(position);
+                deleteAutoCompletionHistoryOption(position);
 
             }
         });
@@ -170,7 +175,7 @@ public class SettingFragment extends Fragment {
         }
     }
 
-    public void deleteAutoCompletionHistory(int position) {
+    public void deleteAutoCompletionHistoryOption(int position) {
         if (setList.get(position).equals(OPTION_3)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.settings_option_3_check_title);
@@ -178,6 +183,7 @@ public class SettingFragment extends Fragment {
             builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int position) {
                     // delete history of autocompletion
+                    deleteAutoCompletionHistory();
                 }
             });
             builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -190,6 +196,24 @@ public class SettingFragment extends Fragment {
             alert = builder.create();
             alert.show();
         }
+    }
+
+    private void deleteAutoCompletionHistory() {
+        Context context = getActivity().getBaseContext();
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SimpleStorage<AutoCompletionData> autoCompletionStorage = null;
+        try {
+            //create local autocompletion storage
+            autoCompletionStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(), getResources().getString(R.string.settings_option_3_error), Toast.LENGTH_LONG).show();
+            return;
+        }
+        // delete all AutoCompletionData
+        autoCompletionStorage.deleteAll();
+
+        Toast.makeText(getActivity(), getResources().getString(R.string.settings_option_3_success), Toast.LENGTH_LONG).show();
     }
 
 }

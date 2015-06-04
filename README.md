@@ -1,1 +1,1 @@
-# kwikshop-android [![Build Status](https://magnum.travis-ci.com/FAU-Inf2/quickshop-android.svg?token=zNkmK6K5ceFrCTSB6Tz3&branch=master)](https://magnum.travis-ci.com/FAU-Inf2/quickshop-android)
+# kwikshop-android [![Build Status](https://travis-ci.org/FAU-Inf2/kwikshop-android.svg?branch=master)](https://magnum.travis-ci.com/FAU-Inf2/kwikshop-android)

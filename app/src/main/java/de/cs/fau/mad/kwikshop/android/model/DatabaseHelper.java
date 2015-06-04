@@ -14,6 +14,7 @@ import android.util.Log;
 import java.sql.SQLException;
 
 import de.cs.fau.mad.kwikshop.android.common.AccountID;
+import de.cs.fau.mad.kwikshop.android.common.AutoCompletionData;
 import de.cs.fau.mad.kwikshop.android.common.CalendarEventDate;
 import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
@@ -23,9 +24,9 @@ import de.cs.fau.mad.kwikshop.android.common.Unit;
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
-    private static final String DATABASE_NAME = "quickshop.db";
+    private static final String DATABASE_NAME = "kwikshop.db";
 
-    private static final int DATABASE_VERSION = 4; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 5; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -45,6 +46,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private Dao<CalendarEventDate, Integer> calendarDao = null;
     private RuntimeExceptionDao<CalendarEventDate, Integer> calendarRuntimeDao = null;
 
+    private Dao<AutoCompletionData, Integer> autoCompletionDao = null;
+    private RuntimeExceptionDao<AutoCompletionData, Integer> autoCompletionRuntimeDao = null;
+
 
     public DatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -60,6 +64,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.createTable(connectionSource, Unit.class);
             TableUtils.createTable(connectionSource, Group.class);
             TableUtils.createTable(connectionSource, CalendarEventDate.class);
+            TableUtils.createTable(connectionSource, AutoCompletionData.class);
 
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
@@ -78,6 +83,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.dropTable(connectionSource, Unit.class, true);
             TableUtils.dropTable(connectionSource, Group.class, true);
             TableUtils.dropTable(connectionSource, CalendarEventDate.class, true);
+            TableUtils.dropTable(connectionSource, AutoCompletionData.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(db, connectionSource);
         } catch (SQLException e) {
@@ -171,6 +177,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         return calendarRuntimeDao;
     }
 
+    public Dao<AutoCompletionData, Integer> getAutoCompletionDao() throws SQLException{
+        if (autoCompletionDao == null) {
+            autoCompletionDao = getDao(AutoCompletionData.class);
+        }
+        return autoCompletionDao;
+    }
+
+    public RuntimeExceptionDao<AutoCompletionData, Integer> getAutoCompletionRuntimeDao () {
+        if (autoCompletionRuntimeDao == null) {
+            autoCompletionRuntimeDao = getRuntimeExceptionDao(AutoCompletionData.class);
+        }
+        return autoCompletionRuntimeDao;
+    }
+
     @Override
     public void close() {
         super.close();
@@ -191,5 +211,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
         calendarDao = null;
         calendarRuntimeDao = null;
+
+        autoCompletionDao = null;
+        autoCompletionRuntimeDao = null;
     }
 }

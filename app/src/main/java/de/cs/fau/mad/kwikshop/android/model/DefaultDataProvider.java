@@ -8,6 +8,9 @@ import de.cs.fau.mad.kwikshop.android.common.Unit;
 
 public class DefaultDataProvider {
 
+    private static final String PIECE = "piece";
+    private static final String OTHER = "Other";
+
     final Context context;
     static Unit[] defaultUnits;
     static Group[] defaultGroups;
@@ -23,20 +26,24 @@ public class DefaultDataProvider {
     }
 
 
-    public Unit[] getDefaultUnits() {
+    public static String getDefaultUnitName() {
+        return PIECE;
+    }
+
+    public Unit[] getPredefinedUnits() {
 
         if (defaultUnits == null) {
             defaultUnits = new Unit[]{
-                    getUnit("piece", R.string.unit_piece, R.string.unit_piece_short),
-                    getUnit("bag", R.string.unit_bag),
-                    getUnit("bottle", R.string.unit_bottle),
-                    getUnit("box", R.string.unit_box),
-                    getUnit("pack", R.string.unit_pack),
-                    getUnit("dozen", R.string.unit_dozen),
-                    getUnit("gram", R.string.unit_gram, R.string.unit_gram_short),
-                    getUnit("kilogram", R.string.unit_kilogram, R.string.unit_kilogram_short),
-                    getUnit("millilitre", R.string.unit_millilitre, R.string.unit_millilitre_short),
-                    getUnit("litre", R.string.unit_litre, R.string.unit_litre_short)
+                    newUnit(PIECE, R.string.unit_piece, R.string.unit_piece_short),
+                    newUnit("bag", R.string.unit_bag),
+                    newUnit("bottle", R.string.unit_bottle),
+                    newUnit("box", R.string.unit_box),
+                    newUnit("pack", R.string.unit_pack),
+                    newUnit("dozen", R.string.unit_dozen),
+                    newUnit("gram", R.string.unit_gram, R.string.unit_gram_short),
+                    newUnit("kilogram", R.string.unit_kilogram, R.string.unit_kilogram_short),
+                    newUnit("millilitre", R.string.unit_millilitre, R.string.unit_millilitre_short),
+                    newUnit("litre", R.string.unit_litre, R.string.unit_litre_short)
             };
         }
 
@@ -44,26 +51,30 @@ public class DefaultDataProvider {
 
     }
 
-    public Group[] getDefaultGroups() {
+    public static String getDefaultGroupName() {
+        return OTHER;
+    }
+
+    public Group[] getPredefinedGroups() {
 
         if (defaultGroups == null) {
             defaultGroups = new Group[]{
-                    getGroup("Coffee & Tea", R.string.group_CoffeeAndTea),
-                    getGroup("Health & Hygiene", R.string.group_healthAndHygiene),
-                    getGroup("Pet Supplies", R.string.group_petSupplies),
-                    getGroup("Household", R.string.group_household),
-                    getGroup("Bread and Pastries", R.string.group_breakPastries),
-                    getGroup("Beverages", R.string.group_beverages),
-                    getGroup("Sweets & Snacks", R.string.group_sweetsAndSnacks),
-                    getGroup("Baby Foods", R.string.group_babyFoods),
-                    getGroup("Pasta", R.string.group_pasta),
-                    getGroup("Milk & Cheese", R.string.group_dairy),
-                    getGroup("Fruits & Vegetables", R.string.group_fruitsAndVegetables),
-                    getGroup("Meat & Fish", R.string.group_meatAndFish),
-                    getGroup("Ingredients & Spices", R.string.group_ingredientsAndSpices),
-                    getGroup("Frozen & Convenience", R.string.group_frozenAndConvenience),
-                    getGroup("Tobacco", R.string.group_tobacco),
-                    getGroup("Other", R.string.group_Other)
+                    newGroup("Coffee & Tea", R.string.group_CoffeeAndTea),
+                    newGroup("Health & Hygiene", R.string.group_healthAndHygiene),
+                    newGroup("Pet Supplies", R.string.group_petSupplies),
+                    newGroup("Household", R.string.group_household),
+                    newGroup("Bread and Pastries", R.string.group_breakPastries),
+                    newGroup("Beverages", R.string.group_beverages),
+                    newGroup("Sweets & Snacks", R.string.group_sweetsAndSnacks),
+                    newGroup("Baby Foods", R.string.group_babyFoods),
+                    newGroup("Pasta", R.string.group_pasta),
+                    newGroup("Milk & Cheese", R.string.group_dairy),
+                    newGroup("Fruits & Vegetables", R.string.group_fruitsAndVegetables),
+                    newGroup("Meat & Fish", R.string.group_meatAndFish),
+                    newGroup("Ingredients & Spices", R.string.group_ingredientsAndSpices),
+                    newGroup("Frozen & Convenience", R.string.group_frozenAndConvenience),
+                    newGroup("Tobacco", R.string.group_tobacco),
+                    newGroup(OTHER, R.string.group_Other)
             };
         }
 
@@ -71,11 +82,11 @@ public class DefaultDataProvider {
     }
 
 
-    private Unit getUnit(String name, int displayNameResourceId) {
-        return getUnit(name, displayNameResourceId, -1);
+    private Unit newUnit(String name, int displayNameResourceId) {
+        return newUnit(name, displayNameResourceId, -1);
     }
 
-    private Unit getUnit(String name, int displayNameResourceId, int shortDisplayNameResourceId) {
+    private Unit newUnit(String name, int displayNameResourceId, int shortDisplayNameResourceId) {
 
         String displayNameResourceName = context.getResources().getResourceName(displayNameResourceId);
 
@@ -91,7 +102,7 @@ public class DefaultDataProvider {
         return unit;
     }
 
-    private Group getGroup(String name, int displayNameResourceId) {
+    private Group newGroup(String name, int displayNameResourceId) {
 
         String displayNameResourceName = context.getResources().getResourceName(displayNameResourceId);
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SimpleStorage<T> {
 
-    private final Dao<T, Integer> dao;
+    protected final Dao<T, Integer> dao;
 
     public SimpleStorage(Dao<T, Integer> dao) {
         if (dao == null) {
@@ -33,6 +33,11 @@ public class SimpleStorage<T> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public T getDefaultValue() {
+        return null;
     }
 
 }

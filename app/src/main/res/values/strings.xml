@@ -68,7 +68,7 @@
     <string name="settings_option_3_desc">delete the history</string>
 
     <!-- Overflow Action Menu -->
-    <string name="overflow_action_menu_settings">setting</string>
+    <string name="overflow_action_menu_settings">settings</string>
     <string name="overflow_action_menu_about">about</string>
     <string name="overflow_action_menu_listofshoppinglists">shopping lists</string>
 

@@ -22,6 +22,7 @@ public class SettingAdapter extends ArrayAdapter<String>  {
     private Activity activity;
     private String OPTION_1 = "option_1";
     private String OPTION_2 = "option_2";
+    private String OPTION_3 = "option_3";
 
     private TextView tvSetname;
     private TextView tvSetdesc;
@@ -66,7 +67,11 @@ public class SettingAdapter extends ArrayAdapter<String>  {
             checkbox.setVisibility(View.INVISIBLE);
         }
 
-
+        if (setList.get(position).equals(OPTION_3)) {
+            tvSetname.setText(R.string.settings_option_3_deleteHistory);
+            tvSetdesc.setText(R.string.settings_option_3_desc);
+            checkbox.setVisibility(View.INVISIBLE);
+        }
 
         return view;
     }

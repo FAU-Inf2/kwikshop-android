@@ -35,6 +35,14 @@ public class SimpleStorage<T> {
         }
     }
 
+    public void deleteAll() {
+        try {
+            List<T> items = dao.queryForAll();
+            dao.delete(items);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public T getDefaultValue() {
         return null;

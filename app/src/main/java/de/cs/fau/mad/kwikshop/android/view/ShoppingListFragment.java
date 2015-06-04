@@ -33,9 +33,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import cs.fau.mad.kwikshop_android.R;
+import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
+import de.cs.fau.mad.kwikshop.android.common.Unit;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
+import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
@@ -62,6 +65,8 @@ public class ShoppingListFragment extends Fragment {
     private DynamicListView shoppingListView;
     private DynamicListView shoppingListViewBought;
     private ListStorage listStorage;
+    private SimpleStorage<Unit> unitStorage;
+    private SimpleStorage<Group> groupStorage;
     private ShoppingList shoppingList = null;
     private int listID;
     private ItemSortType sortType = ItemSortType.MANUAL;
@@ -125,6 +130,9 @@ public class ShoppingListFragment extends Fragment {
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
         listStorage = ListStorageFragment.getLocalListStorage();
+        unitStorage = ListStorageFragment.getUnitStorage();
+        groupStorage = ListStorageFragment.getGroupStorage();
+
 
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         shoppingListView = (DynamicListView) rootView.findViewById(R.id.list_shoppingList);
@@ -299,6 +307,8 @@ public class ShoppingListFragment extends Fragment {
 
             Item newItem = new Item();
             newItem.setName(textView_QuickAdd.getText().toString());
+            newItem.setUnit(unitStorage.getDefaultValue());
+            newItem.setGroup(groupStorage.getDefaultValue());
 
             shoppingList.addItem(newItem);
 

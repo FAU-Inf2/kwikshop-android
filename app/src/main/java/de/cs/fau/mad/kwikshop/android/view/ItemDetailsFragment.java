@@ -19,6 +19,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
@@ -63,7 +65,6 @@ public class ItemDetailsFragment extends Fragment {
     private int selectedGroupIndex = -1;
 
 
-
     //TODO: move to db (otherwise changes are lost when exiting app)
     private static ArrayList<String> autocompleteSuggestions = new ArrayList<>();
 
@@ -86,6 +87,9 @@ public class ItemDetailsFragment extends Fragment {
 
     @InjectView(R.id.group_spinner)
     Spinner group_spinner;
+
+    @InjectView(R.id.highlight_checkBox)
+    CheckBox highlight_checkbox;
 
 
     /**
@@ -161,11 +165,11 @@ public class ItemDetailsFragment extends Fragment {
         // set actionbar title
         if (isNewItem) {
             getActivity().setTitle(R.string.title_fragment_item_details);
-        }else {
+        } else {
             getActivity().setTitle(productname_text.getText().toString());
         }
         // disable go back arrow
-        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
 
         return rootView;
@@ -206,6 +210,7 @@ public class ItemDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (productname_text.getText().length() > 0) {
+                    handleHighlight();
                     saveItem();
                     getActivity().getSupportFragmentManager().popBackStackImmediate();
                     actionBar.setCustomView(savedActionBarView);
@@ -279,6 +284,15 @@ public class ItemDetailsFragment extends Fragment {
 
         ItemChangeType changeType = isNewItem ? ItemChangeType.Added : ItemChangeType.PropertiesModified;
         EventBus.getDefault().post(new ItemChangedEvent(changeType, shoppingList.getId(), item.getId()));
+    }
+
+    //highlights the item, if checkbox is checked
+    private void handleHighlight(){
+        if(highlight_checkbox.isChecked()){
+            item.setHighlight(true);
+        }else{
+            item.setHighlight(false);
+        }
     }
 
     private void SetupUI() {
@@ -383,8 +397,25 @@ public class ItemDetailsFragment extends Fragment {
             int index = groups.indexOf(item.getGroup());
             group_spinner.setSelection(index);
         }
+
+        //check highlight_checkbox, if item is already highlighted
+        if(item.isHighlight()) highlight_checkbox.setChecked(true);
+        else highlight_checkbox.setChecked(false);
+
+/*
+        //Button that shows important if unhighlighted item should be highlighted
+        if(item.isHighlight()) highlightbutton.setText("Not important");
+        highlightbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                item.setHighlight(!item.isHighlight());
+                if(item.isHighlight()) highlightbutton.setText("Not important");
+                else highlightbutton.setText("Important");
+            }
+        });
+
+*/
+        }
+
+
     }
-
-
-
-}

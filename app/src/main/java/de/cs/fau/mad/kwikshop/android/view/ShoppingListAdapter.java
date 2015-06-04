@@ -1,6 +1,7 @@
 package de.cs.fau.mad.kwikshop.android.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -65,6 +66,11 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         Item item = shoppingList.getItem(getItem(position));
 
+
+        //if item is highlighted, set color to red
+        if(item.isHighlight()){
+            viewHolder.textView_ShoppingListName.setTextColor(Color.RED);
+        }
 
         // Fill Views
 

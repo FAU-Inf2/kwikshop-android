@@ -79,6 +79,14 @@
 
             </TableRow>
 
+            <CheckBox
+                android:layout_width="132dp"
+                android:layout_height="wrap_content"
+                android:text="Highlight"
+                android:id="@+id/highlight_checkBox"
+                android:layout_gravity="right"
+                android:checked="false" />
+
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

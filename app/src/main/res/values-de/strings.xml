@@ -96,6 +96,7 @@
     <string-array name="sort_by_array">
         <item>Manual</item>
         <item>Group</item>
+        <item>Alphabetically</item>
     </string-array>
 
 </resources>

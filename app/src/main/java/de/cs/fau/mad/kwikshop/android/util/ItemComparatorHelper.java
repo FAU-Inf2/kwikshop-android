@@ -47,7 +47,7 @@ public class ItemComparatorHelper implements Comparator<Integer> {
 
         switch(comparatorType) {
             case MANUAL:
-                //res = item1.getOrder() - item2.getOrder();
+                res = item1.getOrder() - item2.getOrder();
                 break;
             case GROUP:
 

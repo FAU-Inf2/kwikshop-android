@@ -155,6 +155,15 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         notifyDataSetChanged();
     }
 
+    public void updateOrderOfList(ShoppingList shoppingList){
+        int i = 0;
+        for(Integer item : this.getItems()){
+            shoppingList.getItem(item).setOrder(i);
+            i++;
+        }
+        new AsyncTaskHelper.ShoppingListSaveTask().execute(shoppingList);
+    }
+
     @Override
     public boolean hasStableIds() {
         return true;

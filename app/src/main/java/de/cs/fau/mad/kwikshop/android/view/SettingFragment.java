@@ -31,6 +31,7 @@ public class SettingFragment extends Fragment {
     private String OPTION_1 = "option_1";
     private String OPTION_2 = "option_2";
     private View rootView;
+    private AlertDialog alert;
 
     private ArrayList setList;
 
@@ -110,13 +111,21 @@ public class SettingFragment extends Fragment {
 
             });
 
-            AlertDialog alert = builder.create();
+            alert = builder.create();
             alert.show();
         }
 
     }
 
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if(alert != null)
+            alert.dismiss();
+
+    }
 
     public void setLocale(String lang) {
         Locale setLocale = new Locale(lang);

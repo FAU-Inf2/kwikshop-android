@@ -26,6 +26,7 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,10 +35,13 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cs.fau.mad.kwikshop_android.R;
+import de.cs.fau.mad.kwikshop.android.common.AutoCompletionData;
 import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
+import de.cs.fau.mad.kwikshop.android.model.DatabaseHelper;
+import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
@@ -64,9 +68,10 @@ public class ItemDetailsFragment extends Fragment {
     private List<Group> groups;
     private int selectedGroupIndex = -1;
 
+    private static SimpleStorage<AutoCompletionData> autoCompletionStorage;
+    private static DatabaseHelper databaseHelper;
 
-    //TODO: move to db (otherwise changes are lost when exiting app)
-    private static ArrayList<String> autocompleteSuggestions = new ArrayList<>();
+    private static ArrayList<String> autocompleteSuggestions = null;
 
     /* UI elements */
 
@@ -103,7 +108,7 @@ public class ItemDetailsFragment extends Fragment {
     }
 
     /**
-     * Creats a new instance of ItemDetailsFragment for the specified shopping list item
+     * Creates a new instance of ItemDetailsFragment for the specified shopping list item
      *
      * @param listID
      * @param itemID
@@ -154,6 +159,19 @@ public class ItemDetailsFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
         ButterKnife.inject(this, rootView);
+
+        // initialize db related variables if necessary
+        if(databaseHelper == null) {
+            Context context = getActivity().getBaseContext();
+            databaseHelper = new DatabaseHelper(context);
+        }
+        if (autoCompletionStorage == null)
+            try {
+                //create local autocompletion storage
+                autoCompletionStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
         SetupUI();
 
@@ -273,6 +291,7 @@ public class ItemDetailsFragment extends Fragment {
 
         if (!autocompleteSuggestions.contains(productname_text.getText().toString())) {
             autocompleteSuggestions.add(productname_text.getText().toString());
+            autoCompletionStorage.addItem(new AutoCompletionData(productname_text.getText().toString()));
         }
 
         if (isNewItem) {
@@ -308,6 +327,12 @@ public class ItemDetailsFragment extends Fragment {
         numberPicker.setDisplayedValues(nums);
 
         //wire up auto-complete for product name
+        List<AutoCompletionData> autoCompletionData = autoCompletionStorage.getItems();
+        autocompleteSuggestions = new ArrayList<String>(autoCompletionData.size());
+        for (AutoCompletionData data : autoCompletionData) {
+            autocompleteSuggestions.add(data.getText());
+        }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, autocompleteSuggestions);
         productname_text.setAdapter(adapter);
 
@@ -402,20 +427,5 @@ public class ItemDetailsFragment extends Fragment {
         if(item.isHighlight()) highlight_checkbox.setChecked(true);
         else highlight_checkbox.setChecked(false);
 
-/*
-        //Button that shows important if unhighlighted item should be highlighted
-        if(item.isHighlight()) highlightbutton.setText("Not important");
-        highlightbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                item.setHighlight(!item.isHighlight());
-                if(item.isHighlight()) highlightbutton.setText("Not important");
-                else highlightbutton.setText("Important");
-            }
-        });
 
-*/
-        }
-
-
-    }
+}

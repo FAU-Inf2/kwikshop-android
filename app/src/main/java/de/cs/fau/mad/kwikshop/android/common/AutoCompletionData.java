@@ -18,6 +18,15 @@ public class AutoCompletionData {
     @DatabaseField(canBeNull = false)
     private String text;
 
+
+    public AutoCompletionData() {
+        // Default no-arg constructor for generating Groups, required for ORMLite
+    }
+
+    public AutoCompletionData(String text) {
+        this.text = text;
+    }
+
     public int getId() {
         return id;
     }

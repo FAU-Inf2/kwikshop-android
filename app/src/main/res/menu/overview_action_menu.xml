@@ -12,20 +12,23 @@
 
         <menu>
 
+
+            <item android:id="@+id/action_listofshoppinglists"
+                  android:icon="@android:drawable/ic_menu_agenda"
+                  app:showAsAction="ifRoom"
+                  android:title="@string/overflow_action_menu_listofshoppinglists" />
+
             <item android:id="@+id/action_settings"
                   android:icon="@android:drawable/ic_menu_preferences"
                   app:showAsAction="ifRoom"
-                  android:title="settings" />
+                  android:title="@string/overflow_action_menu_settings" />
 
             <item android:id="@+id/action_about"
                   android:icon="@android:drawable/ic_menu_help"
                   app:showAsAction="ifRoom"
                   android:title="@string/overflow_action_menu_about" />
 
-            <item android:id="@+id/action_listofshoppinglists"
-                  android:icon="@android:drawable/ic_menu_agenda"
-                  app:showAsAction="ifRoom"
-                  android:title="@string/overflow_action_menu_listofshoppinglists" />
+
 
         </menu>
 

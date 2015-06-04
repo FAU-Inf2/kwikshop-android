@@ -1,6 +1,5 @@
 package de.cs.fau.mad.kwikshop.android.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
@@ -45,7 +43,6 @@ import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
-import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveCancelActivity;
 import de.greenrobot.event.EventBus;
 
 public class ItemDetailsFragment extends Fragment {
@@ -176,7 +173,7 @@ public class ItemDetailsFragment extends Fragment {
                 e.printStackTrace();
             }
 
-        SetupUI();
+        setupUI();
 
         // set actionbar with save and cancel buttons
         setCustomActionBar();
@@ -231,7 +228,6 @@ public class ItemDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (productname_text.getText().length() > 0) {
-                    handleHighlight();
                     saveItem();
                     getActivity().getSupportFragmentManager().popBackStackImmediate();
                     actionBar.setCustomView(savedActionBarView);
@@ -260,7 +256,7 @@ public class ItemDetailsFragment extends Fragment {
 
     public void onEvent(ItemChangedEvent event) {
         if (shoppingList.getId() == event.getShoppingListId() && event.getItemId() == item.getId()) {
-            SetupUI();
+            setupUI();
         }
     }
 
@@ -279,18 +275,19 @@ public class ItemDetailsFragment extends Fragment {
             Unit u = units.get(selectedUnitIndex);
             item.setUnit(u);
         } else {
-            item.setUnit(null);
+            item.setUnit(ListStorageFragment.getUnitStorage().getDefaultValue());
         }
 
         if (selectedGroupIndex >= 0) {
             Group g = groups.get(selectedGroupIndex);
             item.setGroup(g);
         } else {
-            item.setGroup(null);
+            item.setGroup(ListStorageFragment.getGroupStorage().getDefaultValue());
         }
 
         item.setBrand(brand_text.getText().toString());
         item.setComment(comment_text.getText().toString());
+        item.setHighlight(highlight_checkbox.isChecked());
 
         if (!autocompleteSuggestions.contains(productname_text.getText().toString())) {
             autocompleteSuggestions.add(productname_text.getText().toString());
@@ -308,16 +305,8 @@ public class ItemDetailsFragment extends Fragment {
         EventBus.getDefault().post(new ItemChangedEvent(changeType, shoppingList.getId(), item.getId()));
     }
 
-    //highlights the item, if checkbox is checked
-    private void handleHighlight(){
-        if(highlight_checkbox.isChecked()){
-            item.setHighlight(true);
-        }else{
-            item.setHighlight(false);
-        }
-    }
 
-    private void SetupUI() {
+    private void setupUI() {
 
         //populate number picker
         String[] nums = new String[1000];
@@ -393,9 +382,12 @@ public class ItemDetailsFragment extends Fragment {
             }
         });
 
-        if (!isNewItem && item.getUnit() != null) {
-            int index = units.indexOf(item.getUnit());
-            unit_spinner.setSelection(index);
+        Unit selectedUnit = isNewItem || item.getUnit() == null
+                ? ListStorageFragment.getUnitStorage().getDefaultValue()
+                : item.getUnit();
+
+        if (selectedUnit != null) {
+            unit_spinner.setSelection(units.indexOf(selectedUnit));
         }
 
         //get groups from the database and populate group spinner
@@ -421,16 +413,20 @@ public class ItemDetailsFragment extends Fragment {
         });
 
 
-        if (!isNewItem && item.getGroup() != null) {
-            int index = groups.indexOf(item.getGroup());
-            group_spinner.setSelection(index);
+        Group selectedGroup = isNewItem || item.getGroup() == null
+                ? ListStorageFragment.getGroupStorage().getDefaultValue()
+                : item.getGroup();
+
+        if (selectedGroup != null) {
+            group_spinner.setSelection(groups.indexOf(selectedGroup));
         }
 
         //check highlight_checkbox, if item is already highlighted
-        if (item.isHighlight())
+        if (!isNewItem && item.isHighlight()) {
             highlight_checkbox.setChecked(true);
-        else
+        } else {
             highlight_checkbox.setChecked(false);
+        }
     }
 
 }

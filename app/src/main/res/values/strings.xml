@@ -64,7 +64,8 @@
     <string name="settings_option_1_desc">Description of option 1</string>
     <string name="settings_option_2_setlocale">locale</string>
     <string name="settings_option_2_desc">change the language</string>
-
+    <string name="settings_option_3_deleteHistory">Autocompletion</string>
+    <string name="settings_option_3_desc">delete the history</string>
 
     <!-- Overflow Action Menu -->
     <string name="overflow_action_menu_settings">setting</string>

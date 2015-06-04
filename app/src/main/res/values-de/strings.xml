@@ -70,7 +70,8 @@
     <string name="unit_kilogram_short">kg</string>
     <string name="settings_option_2_setlocale">Region</string>
     <string name="settings_option_2_desc">Sprache ändern</string>
-
+    <string name="settings_option_3_deleteHistory">Autovervollständigung</string>
+    <string name="settings_option_3_desc">Verlauf löschen</string>
 
     <string-array name="measures">//TODO importing units from a library of units
         <item>millimeters</item>

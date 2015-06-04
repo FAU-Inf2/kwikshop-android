@@ -30,6 +30,7 @@ public class SettingFragment extends Fragment {
     private String SETTINGS = "settings";
     private String OPTION_1 = "option_1";
     private String OPTION_2 = "option_2";
+    private String OPTION_3 = "option_3";
     private View rootView;
     private AlertDialog alert;
 
@@ -84,6 +85,7 @@ public class SettingFragment extends Fragment {
         setList = new ArrayList<String>();
        // setList.add(OPTION_1);
         setList.add(OPTION_2);
+        setList.add(OPTION_3);
 
         SettingAdapter objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, setList);
         listView.setAdapter(objAdapter);

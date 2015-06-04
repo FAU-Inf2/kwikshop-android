@@ -47,18 +47,25 @@ public class ItemComparatorHelper implements Comparator<Integer> {
 
         switch(comparatorType) {
             case MANUAL:
-                res = item1.getOrder() - item2.getOrder();
+                //res = item1.getOrder() - item2.getOrder();
                 break;
             case GROUP:
 
                 int groupOrder = displayHelper.getDisplayName(item1.getGroup())
                         .compareTo(displayHelper.getDisplayName(item2.getGroup()));
 
-                //if groups are identical, sort by item order
-                res = groupOrder == 0
-                        ? item1.getOrder() - item2.getOrder()
-                        : groupOrder;
-                break;
+                //if groups are identical, sort alphabetically
+                res = groupOrder;
+                if(res != 0) break;
+
+
+            case ALPHABETICALLY:
+
+                int alphabetOrder = item1.getName().compareTo(item2.getName());
+
+                //if the items have the same name, sort by item order
+                res = alphabetOrder;
+                if(res != 0) break;
 
             default:
                 res = item1.getOrder() - item2.getOrder();

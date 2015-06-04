@@ -77,6 +77,7 @@
     <string-array name="sort_by_array">
         <item>Manual</item>
         <item>Group</item>
+        <item>Alphabetically</item>
     </string-array>
     <string name="defaultItem">Touch to create a new item</string>
     <string name="ShoppingListItem">Shopping list item</string>
@@ -91,5 +92,7 @@
     <string name="group">Group</string>
     <string name="other">Other</string>
     <string name="manual">Manual</string>
+    <string name="nothing">Nothing</string>
+    <string name="alphabetically">Alphabetically</string>
 
 </resources>

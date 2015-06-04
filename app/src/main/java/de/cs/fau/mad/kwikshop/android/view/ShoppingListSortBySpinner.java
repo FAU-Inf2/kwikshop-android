@@ -8,7 +8,7 @@ import android.widget.Toast;
 import cs.fau.mad.kwikshop_android.R;
 import de.greenrobot.event.EventBus;
 
-public class ShoppingListSortBySpinner extends Activity implements AdapterView.OnItemSelectedListener {
+public class ShoppingListSortBySpinner extends Activity implements AdapterView.OnItemSelectedListener{
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
         ItemSortType sortType;
@@ -16,6 +16,7 @@ public class ShoppingListSortBySpinner extends Activity implements AdapterView.O
         switch (parent.getItemAtPosition(pos).toString()){
             case "Manual": sortType = ItemSortType.MANUAL; break;
             case "Group": sortType = ItemSortType.GROUP; break;
+            case "Alphabetically": sortType = ItemSortType.ALPHABETICALLY; break;
             default: sortType = ItemSortType.MANUAL;
         }
 

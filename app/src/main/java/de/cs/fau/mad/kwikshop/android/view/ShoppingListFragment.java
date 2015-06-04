@@ -157,6 +157,19 @@ public class ShoppingListFragment extends Fragment {
                         }
                     }
             );
+
+            //Setting spinner adapter to sort by button
+            final Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
+            // Create an ArrayAdapter using the string array and a default spinner layout
+            final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.sort_by_array, android.R.layout.simple_spinner_item);
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Apply the adapter to the spinner
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(new ShoppingListSortBySpinner());
+
+
             swipeUndoAdapter.setAbsListView(shoppingListView);
             shoppingListView.setAdapter(swipeUndoAdapter);
             shoppingListView.enableSimpleSwipeUndo();
@@ -169,6 +182,8 @@ public class ShoppingListFragment extends Fragment {
                             ScrollView sview = (ScrollView) getView().findViewById(R.id.shoppinglist_scrollview);
                             sview.requestDisallowInterceptTouchEvent(true);
                             shoppingListView.startDragging(position);
+                            //sets value of the Spinner to the first entry, in this case Manual
+                            spinner.setSelection(0);
                             return true;
                         }
                     }
@@ -249,16 +264,6 @@ public class ShoppingListFragment extends Fragment {
             });
 
 
-            //Setting spinner adapter to sort by button
-            Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
-            // Create an ArrayAdapter using the string array and a default spinner layout
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                    R.array.sort_by_array, android.R.layout.simple_spinner_item);
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            // Apply the adapter to the spinner
-            spinner.setAdapter(adapter);
-            spinner.setOnItemSelectedListener(new ShoppingListSortBySpinner());
         }
 
         return rootView;
@@ -315,7 +320,10 @@ public class ShoppingListFragment extends Fragment {
 
     public void onEvent(ItemSortType sortType) {
         this.sortType = sortType;
-        UpdateLists();
+        //only sort the list if a automatic sorting is chosen
+        if (sortType != ItemSortType.MANUAL) {
+            UpdateLists();
+        }
     }
 
     //endregion

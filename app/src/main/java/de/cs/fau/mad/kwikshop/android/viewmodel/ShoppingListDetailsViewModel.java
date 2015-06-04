@@ -354,7 +354,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             values.put(CalendarContract.Events.CALENDAR_ID, calID);
             TimeZone defaultTimeZone = TimeZone.getDefault();
             values.put(CalendarContract.Events.EVENT_TIMEZONE, defaultTimeZone.getID());
-            values.put(CalendarContract.Events.DESCRIPTION, "http://quickshop");
+            values.put(CalendarContract.Events.DESCRIPTION, "http://kwikshop");
             Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
             shoppingList.getCalendarEventDate().setCalendarEventId((Long.parseLong(uri.getLastPathSegment())));
 
@@ -386,7 +386,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             values.put(CalendarContract.Events.DTSTART, startMillis);
             values.put(CalendarContract.Events.DTEND, endMillis);
             values.put(CalendarContract.Events.TITLE, shoppingList.getName());
-            values.put(CalendarContract.Events.DESCRIPTION, "http://quickshop");
+            values.put(CalendarContract.Events.DESCRIPTION, "http://kwikshop");
             Uri updateUri;
             updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, shoppingList.
                     getCalendarEventDate().getCalendarEventId());

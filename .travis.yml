@@ -5,8 +5,8 @@ android:
   - build-tools-21.1.2
 env:
   global:
-  - secure: JrOe+YWYjAlgH4N4YLyORz+TjFmCWZaoyRATAcxm5i6tF9Qfqc4/o16JOilIeZJohi9fyjys4IdNw4m+1jN2jpWMv0gBatL/fMjhpKuHTc1FhOZtze45qBXKOHtqID+ty+BxWCagwAW2k0n4eL0/H7Ht9VA25zivOk+wGl6M/a8=
-  - secure: PYl3aW0JbiwDYYeArlgnD9iEBS0Tqn4m4zA2tyB7wQ9dsrYZQNwAcxMurOGnqZQPocXEReyLW4GnjlnnlufvPYouAZhyibVw4S4pqLHmOJgldKQpR9dRdQudUh69ZTiu7aFriU/buOPMdHFVc+sImT5xL6SJ+Z9wsbVFhAM0B2E=
+  - secure: Dyk2AFOfmpQSRlyEfarfj+NRmBuXLopoUER7mFEv/SJZEyesF2GaeStIimEU/X0RTZfMlU2U0JpI++ZCTKGMhwcROBHpaqGQDXGdAYR8oHpDPKaZbiV5uxNjtncGdCwqAT2XBQA929oHkJHGdVgztHB/57283g9XBm8769r+n50=
+  - secure: T0UI6NKNDodAlE6Rn4/jIHDFxZpaXrjtU6sC8qXi6uv/o2GAOnilIMZZCwf5weX0hHmQG9Z0KFAUIiZWzk+mR9bh6Bi+XDSewfLWV1iBRgByFS6HOZBEqWe79ZD9pDyx7KD2V0IG0uIrDzOOGO/D5vvKGyS7HVYzh7c/oGQG2nU=
 before_install:
 - openssl aes-256-cbc -K $encrypted_c8103935a87e_key -iv $encrypted_c8103935a87e_iv
   -in keys.tar.enc -out keys.tar -d
@@ -14,7 +14,7 @@ before_install:
 - mv madfau.keystore app/
 script: "./gradlew assemble"
 after_success:
-- mv app/build/outputs/apk/app-release.apk quickshop-android-$TRAVIS_BRANCH-`git rev-parse
+- mv app/build/outputs/apk/app-release.apk kwikshop-android-$TRAVIS_BRANCH-`git rev-parse
   HEAD`.apk
-- curl -u $LOGIN -F "apk=@quickshop-android-$TRAVIS_BRANCH-`git rev-parse HEAD`.apk"
-  -F "project=quickshop-android" $URL
+- curl -u $LOGIN -F "apk=@kwikshop-android-$TRAVIS_BRANCH-`git rev-parse HEAD`.apk"
+  -F "project=kwikshop-android" $URL

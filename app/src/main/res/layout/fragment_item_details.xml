@@ -82,7 +82,7 @@
             <CheckBox
                 android:layout_width="132dp"
                 android:layout_height="wrap_content"
-                android:text="Highlight"
+                android:text="@string/highlight"
                 android:id="@+id/highlight_checkBox"
                 android:layout_gravity="right"
                 android:checked="false" />

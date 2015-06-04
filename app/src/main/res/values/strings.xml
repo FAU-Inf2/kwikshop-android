@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Kwik Shop</string>
 
 
@@ -19,9 +19,9 @@
 
 
     <!-- About screen-->
-    <string name="about_Branch_Title">Branch</string>
-    <string name="about_Commit_Title">Commit</string>
-    <string name="about_Version_Title">Version</string>
+    <string name="about_Branch_Title" translatable="false">Branch</string>
+    <string name="about_Commit_Title" translatable="false">Commit</string>
+    <string name="about_Version_Title" translatable="false">Version</string>
 
 
     <!-- List of Shopping Lists -->
@@ -61,6 +61,8 @@
     <!-- Settings -->
     <string name="settings_option_1_name">Option 1</string>
     <string name="settings_option_1_desc">Description of option 1</string>
+    <string name="settings_option_2_setlocale">locale</string>
+    <string name="settings_option_2_desc">change the language</string>
 
 
     <!-- Overflow Action Menu -->

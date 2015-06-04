@@ -2,28 +2,31 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-
-                android:padding="15dp" >
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp" >
 
     <TextView
         android:id="@+id/tvsetname"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:maxLines="1"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:textColor="@color/primary_text"
-        android:textSize="18sp"
-        android:textStyle="normal"/>
+        />
 
     <TextView
         android:id="@+id/tvsetdesc"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvsetname"
-        android:maxLines="2"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="15sp"
-        android:textStyle="normal" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Number of items"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@id/tvsetname"
+        android:textColor="@color/secondary_text"
+        android:layout_marginTop="-10dp"
+        android:layout_marginBottom="5dp" />
 
     <CheckBox
         android:id="@+id/setcheckbox"

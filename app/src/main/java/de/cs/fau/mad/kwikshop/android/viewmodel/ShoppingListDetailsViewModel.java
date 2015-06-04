@@ -57,7 +57,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     private final ViewLauncher viewLauncher;
 
     private int shoppingListId;
-    private boolean newShoppingList;
+    private boolean isNewShoppingList;
     private ShoppingList shoppingList;
 
     // backing fields for properties
@@ -104,7 +104,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
     public void initialize(int shoppingListId) {
         this.shoppingListId = shoppingListId;
-        this.newShoppingList = shoppingListId == -1;
+        this.isNewShoppingList = shoppingListId == -1;
 
         this.saveCommand = new Command() {
             @Override
@@ -196,6 +196,10 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         getSaveCommand().setCanExecute(getName() != null && getName().trim().length() > 0);
     }
 
+    public boolean getIsNewList() {
+        return isNewShoppingList;
+    }
+
 
     @Override
     public void finish() {
@@ -224,7 +228,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         this.saveCommand.setIsAvailable(true);
         this.cancelCommand.setIsAvailable(true);
 
-        if (newShoppingList) {
+        if (isNewShoppingList) {
 
             this.deleteCommand.setIsAvailable(false);
             this.editCalendarEventCommand.setIsAvailable(false);
@@ -254,7 +258,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
     private void saveCommandExecute() {
 
-        if (newShoppingList) {
+        if (isNewShoppingList) {
             this.shoppingListId = listStorage.createList();
             shoppingList = listStorage.loadList(shoppingListId);
         }
@@ -286,7 +290,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
     private void deleteCommandExecute() {
 
-        if (newShoppingList) {
+        if (isNewShoppingList) {
             throw new UnsupportedOperationException();
         }
 

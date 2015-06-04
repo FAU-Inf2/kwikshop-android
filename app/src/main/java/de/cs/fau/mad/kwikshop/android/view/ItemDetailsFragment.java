@@ -424,8 +424,10 @@ public class ItemDetailsFragment extends Fragment {
         }
 
         //check highlight_checkbox, if item is already highlighted
-        if(item.isHighlight()) highlight_checkbox.setChecked(true);
-        else highlight_checkbox.setChecked(false);
-
+        if (item.isHighlight())
+            highlight_checkbox.setChecked(true);
+        else
+            highlight_checkbox.setChecked(false);
+    }
 
 }

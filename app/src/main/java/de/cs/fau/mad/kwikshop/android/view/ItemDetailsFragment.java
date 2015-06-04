@@ -144,6 +144,9 @@ public class ItemDetailsFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
 
+        // calling onCreateOptionsMenu
+        setHasOptionsMenu(true);
+
         if (getArguments() != null) {
             listId = getArguments().getInt(ARG_LISTID);
             itemId = getArguments().getInt(ARG_ITEMID);

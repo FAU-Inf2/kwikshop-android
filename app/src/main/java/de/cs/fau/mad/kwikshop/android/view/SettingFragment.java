@@ -75,6 +75,9 @@ public class SettingFragment extends Fragment {
                 // local change
                 changeLocalOption(position);
 
+                // delete history of autocompletion
+                deleteAutoCompletionHistory(position);
+
             }
         });
 
@@ -167,5 +170,26 @@ public class SettingFragment extends Fragment {
         }
     }
 
+    public void deleteAutoCompletionHistory(int position) {
+        if (setList.get(position).equals(OPTION_3)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.settings_option_3_check_title);
+            builder.setMessage(R.string.settings_option_3_check_text);
+            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int position) {
+                    // delete history of autocompletion
+                }
+            });
+            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int position) {
+                    // don't delete history of autocompletion
+                    return;
+                }
+            });
+
+            alert = builder.create();
+            alert.show();
+        }
+    }
 
 }

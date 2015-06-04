@@ -72,6 +72,8 @@
     <string name="settings_option_2_desc">Sprache ändern</string>
     <string name="settings_option_3_deleteHistory">Autovervollständigung</string>
     <string name="settings_option_3_desc">Verlauf löschen</string>
+    <string name="settings_option_3_check_title">Verlauf löschen?</string>
+    <string name="settings_option_3_check_text">Sind Sie sicher, dass Sie den Verlauf der Autovervollständigung löschen möchten?</string>
 
     <string-array name="measures">//TODO importing units from a library of units
         <item>millimeters</item>

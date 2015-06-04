@@ -29,14 +29,18 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCa
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import cs.fau.mad.kwikshop_android.R;
+import de.cs.fau.mad.kwikshop.android.common.AutoCompletionData;
 import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
+import de.cs.fau.mad.kwikshop.android.model.DatabaseHelper;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
 import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
@@ -72,6 +76,10 @@ public class ShoppingListFragment extends Fragment {
     private ItemSortType sortType = ItemSortType.MANUAL;
 
     private EditText textView_QuickAdd;
+
+    private static SimpleStorage<AutoCompletionData> autoCompletionStorage;
+    private static DatabaseHelper databaseHelper;
+    private static ArrayList<String> autocompleteSuggestions = null;
 
     //endregion
 
@@ -275,6 +283,24 @@ public class ShoppingListFragment extends Fragment {
                 }
             });
 
+            //wire up auto-complete for product name
+            if(databaseHelper == null) {
+                Context context = getActivity().getBaseContext();
+                databaseHelper = new DatabaseHelper(context);
+            }
+            if (autoCompletionStorage == null)
+                try {
+                    //create local autocompletion storage
+                    autoCompletionStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            List<AutoCompletionData> autoCompletionData = autoCompletionStorage.getItems();
+            autocompleteSuggestions = new ArrayList<String>(autoCompletionData.size());
+            for (AutoCompletionData data : autoCompletionData) {
+                autocompleteSuggestions.add(data.getText());
+            }
 
         }
 
@@ -313,6 +339,11 @@ public class ShoppingListFragment extends Fragment {
             shoppingList.addItem(newItem);
 
             listStorage.saveList(shoppingList);
+
+            if (!autocompleteSuggestions.contains(textView_QuickAdd.getText().toString())) {
+                autocompleteSuggestions.add(textView_QuickAdd.getText().toString());
+                autoCompletionStorage.addItem(new AutoCompletionData(textView_QuickAdd.getText().toString()));
+            }
 
             EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
 

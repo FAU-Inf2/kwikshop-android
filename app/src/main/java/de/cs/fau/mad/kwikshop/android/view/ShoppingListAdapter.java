@@ -155,7 +155,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         notifyDataSetChanged();
     }
 
-    public void updateOrderOfList(ShoppingList shoppingList){
+    public void updateOrderOfList(){
         int i = 0;
         for(Integer item : this.getItems()){
             shoppingList.getItem(item).setOrder(i);

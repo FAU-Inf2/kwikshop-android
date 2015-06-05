@@ -35,12 +35,12 @@ public class SettingFragment extends Fragment {
     public static String  SETTINGS = "settings";
     public static String OPTION_1 = "locale";
     public static String OPTION_2 = "autocomplete";
+    public static CharSequence[] localeSelectionNames = {"default", "english", "german"};
+    public static CharSequence[] localeIds = {"default", "en", "de"};
 
     private View rootView;
     private AlertDialog alert;
-
     private ArrayList setList;
-
     private ListView listView;
 
 
@@ -81,7 +81,6 @@ public class SettingFragment extends Fragment {
         getActivity().setTitle(R.string.title_activity_settings);
 
         setList = new ArrayList<String>();
-       // setList.add(OPTION_1);
         setList.add(OPTION_1);
         setList.add(OPTION_2);
 
@@ -97,13 +96,10 @@ public class SettingFragment extends Fragment {
 
         if (setList.get(position).equals(OPTION_1)) {
 
-            final CharSequence[] localeSelectionNames = {"default", "english", "german"};
-            final CharSequence[] localeIds = {"default", "en", "de"};
-
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            int currentLocaleId = getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).getInt(OPTION_1, 0);
+            int currentLocaleIdIndex = getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).getInt(OPTION_1, 0);
             builder.setTitle(R.string.settings_option_2_setlocale);
-            builder.setSingleChoiceItems(localeSelectionNames, currentLocaleId, new DialogInterface.OnClickListener() {
+            builder.setSingleChoiceItems(localeSelectionNames, currentLocaleIdIndex, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 

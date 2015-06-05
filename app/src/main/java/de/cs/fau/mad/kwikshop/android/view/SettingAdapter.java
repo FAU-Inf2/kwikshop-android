@@ -20,9 +20,7 @@ public class SettingAdapter extends ArrayAdapter<String>  {
     private ArrayList<String> setList;
     private int row;
     private Activity activity;
-    private String OPTION_1 = "option_1";
-    private String OPTION_2 = "option_2";
-    private String OPTION_3 = "option_3";
+
 
     private TextView tvSetname;
     private TextView tvSetdesc;
@@ -52,22 +50,14 @@ public class SettingAdapter extends ArrayAdapter<String>  {
         checkbox = (CheckBox) view.findViewById(R.id.setcheckbox);
 
 
-
-        if (setList.get(position).equals(OPTION_1)) {
-
-            tvSetname.setText(R.string.settings_option_1_name);
-            tvSetdesc.setText(R.string.settings_option_1_desc);
-            checkbox.setVisibility(View.VISIBLE);
-        }
-
-        if (setList.get(position).equals(OPTION_2)) {
+        if (setList.get(position).equals(SettingFragment.OPTION_1)) {
 
             tvSetname.setText(R.string.settings_option_2_setlocale);
             tvSetdesc.setText(R.string.settings_option_2_desc);
             checkbox.setVisibility(View.INVISIBLE);
         }
 
-        if (setList.get(position).equals(OPTION_3)) {
+        if (setList.get(position).equals(SettingFragment.OPTION_2)) {
             tvSetname.setText(R.string.settings_option_3_deleteHistory);
             tvSetdesc.setText(R.string.settings_option_3_desc);
             checkbox.setVisibility(View.INVISIBLE);

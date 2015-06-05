@@ -8,7 +8,7 @@
         android:title="options"
         android:orderInCategory="101"
         app:showAsAction="always"
-        android:icon="@drawable/ic_action_overflow">
+        android:icon="@drawable/ic_menu_moreoverflow_normal_holo_dark">
 
         <menu>
 

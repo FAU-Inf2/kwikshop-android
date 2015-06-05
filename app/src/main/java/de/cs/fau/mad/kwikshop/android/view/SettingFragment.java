@@ -32,19 +32,17 @@ import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 public class SettingFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String SETTINGS = "settings";
-    private String OPTION_1 = "option_1";
-    private String OPTION_2 = "option_2";
-    private String OPTION_3 = "option_3";
+    public static String  SETTINGS = "settings";
+    public static String OPTION_1 = "locale";
+    public static String OPTION_2 = "autocomplete";
+
     private View rootView;
     private AlertDialog alert;
 
     private ArrayList setList;
 
     private ListView listView;
-    private TextView tvSetname;
-    private TextView tvSetdesc;
-    private CheckBox checkbox;
+
 
 
     public static SettingFragment newInstance(int sectionNumber) {
@@ -65,17 +63,9 @@ public class SettingFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_setting, container, false);
         listView = (ListView) rootView.findViewById(android.R.id.list);
 
-        tvSetname = (TextView) listView.findViewById(R.id.tvsetname);
-        tvSetdesc = (TextView) listView.findViewById(R.id.tvsetdesc);
-        checkbox = (CheckBox) listView.findViewById(R.id.setcheckbox);
-
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                // dummy option 1
-                dummyOption(position);
 
                 // local change
                 changeLocalOption(position);
@@ -92,8 +82,8 @@ public class SettingFragment extends Fragment {
 
         setList = new ArrayList<String>();
        // setList.add(OPTION_1);
+        setList.add(OPTION_1);
         setList.add(OPTION_2);
-        setList.add(OPTION_3);
 
         SettingAdapter objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, setList);
         listView.setAdapter(objAdapter);
@@ -105,18 +95,22 @@ public class SettingFragment extends Fragment {
 
     private void changeLocalOption(int position){
 
-        if (setList.get(position).equals(OPTION_2)) {
+        if (setList.get(position).equals(OPTION_1)) {
 
-            final CharSequence[] localeSelectionNames = {"english", "deutsch"};
-            final CharSequence[] localeIDs = {"en", "de"};
+            final CharSequence[] localeSelectionNames = {"default", "english", "german"};
+            final CharSequence[] localeIds = {"default", "en", "de"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            int currentLocaleId = getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).getInt(OPTION_1, 0);
             builder.setTitle(R.string.settings_option_2_setlocale);
-            builder.setSingleChoiceItems(localeSelectionNames, 0, new DialogInterface.OnClickListener() {
+            builder.setSingleChoiceItems(localeSelectionNames, currentLocaleId, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(getActivity(), "Test", Toast.LENGTH_LONG);
-                    setLocale(localeIDs[which].toString());
+
+                    if(!(localeIds[which].equals("default"))){
+                        setLocale(localeIds[which].toString());
+                        getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).edit().putInt(OPTION_1, which).apply();
+                    }
                 }
 
             });
@@ -149,34 +143,8 @@ public class SettingFragment extends Fragment {
     }
 
 
-    public void dummyOption(int position){
-
-        if (setList.get(position).equals(OPTION_1)) {
-
-
-            if (getActivity().getSharedPreferences(SETTINGS, 0).getBoolean(OPTION_1, true) == false) {
-                checkbox.setChecked(true);
-            } else
-                checkbox.setChecked(false);
-
-            checkbox.setOnCheckedChangeListener(
-                    new CompoundButton.OnCheckedChangeListener() {
-
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if (isChecked) {
-                                getActivity().getSharedPreferences(SETTINGS, 0).edit().putBoolean(OPTION_1, false).apply();
-                            } else {
-                                getActivity().getSharedPreferences(SETTINGS, 0).edit().putBoolean(OPTION_1, true).apply();
-                            }
-                        }
-                    }
-            );
-        }
-    }
-
     public void deleteAutoCompletionHistoryOption(int position) {
-        if (setList.get(position).equals(OPTION_3)) {
+        if (setList.get(position).equals(OPTION_2)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.settings_option_3_check_title);
             builder.setMessage(R.string.settings_option_3_check_text);

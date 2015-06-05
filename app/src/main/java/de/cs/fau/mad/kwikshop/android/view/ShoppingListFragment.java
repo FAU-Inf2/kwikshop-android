@@ -196,11 +196,22 @@ public class ShoppingListFragment extends Fragment {
                     }
             );
 
+
+            //fills the ArrayList with Strings according to language selected
+            String[] sortBy = new String[]{
+                    getActivity().getString(R.string.sortby_manual),
+                    getActivity().getString(R.string.sortby_group),
+                    getActivity().getString(R.string.sortby_alphabetically)
+            };
+            ArrayList<String> sortByValues = new ArrayList<>();
+            for(int i = 0; i < sortBy.length; i++){
+                sortByValues.add(i, sortBy[i]);
+            }
+
             //Setting spinner adapter to sort by button
 
             // Create an ArrayAdapter using the string array and a default spinner layout
-            final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                    R.array.sort_by_array, android.R.layout.simple_spinner_item);
+            final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sortByValues);
             // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             // Apply the adapter to the spinner

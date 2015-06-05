@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="sortby_manual">Manual</string>
+    <string name="sortby_group">Group</string>
+    <string name="sortby_alphabetically">Alphabetically</string>
+
+</resources>

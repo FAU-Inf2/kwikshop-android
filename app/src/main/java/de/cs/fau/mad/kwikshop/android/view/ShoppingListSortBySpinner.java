@@ -13,8 +13,7 @@ public class ShoppingListSortBySpinner extends Activity implements AdapterView.O
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
         ItemSortType sortType;
-        //TODO: needs to be made localizable
-        //make sure cases are listed in String.xml sort_by_array
+        //make sure cases match the order of the spinner, see sortbynames.xml and ShoppingListFragment.java
         switch (pos){
             case 0: sortType = ItemSortType.MANUAL; break;
             case 1: sortType = ItemSortType.GROUP; break;

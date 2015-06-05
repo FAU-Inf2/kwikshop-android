@@ -76,7 +76,9 @@
     <string name="settings_option_3_check_text">Sind Sie sicher, dass Sie den Verlauf der Autovervollständigung löschen möchten?</string>
     <string name="settings_option_3_error">Leider ist beim Löschen des Verlaufs ein Fehler aufgetreten</string>
     <string name="settings_option_3_success">Verlauf erfolgreich gelöscht</string>
-
+    <string name="sortby_manual">Manuell</string>
+    <string name="sortby_group">Kategorie</string>
+    <string name="sortby_alphabetically">Alphabetisch</string>
     <string-array name="measures">//TODO importing units from a library of units
         <item>millimeters</item>
         <item>centimeters</item>

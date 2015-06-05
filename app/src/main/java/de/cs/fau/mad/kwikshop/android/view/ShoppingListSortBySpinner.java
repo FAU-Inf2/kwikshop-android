@@ -15,10 +15,10 @@ public class ShoppingListSortBySpinner extends Activity implements AdapterView.O
         ItemSortType sortType;
         //TODO: needs to be made localizable
         //make sure cases are listed in String.xml sort_by_array
-        switch (parent.getItemAtPosition(pos).toString()){
-            case "Manual": sortType = ItemSortType.MANUAL; break;
-            case "Group": sortType = ItemSortType.GROUP; break;
-            case "Alphabetically": sortType = ItemSortType.ALPHABETICALLY; break;
+        switch (pos){
+            case 0: sortType = ItemSortType.MANUAL; break;
+            case 1: sortType = ItemSortType.GROUP; break;
+            case 2: sortType = ItemSortType.ALPHABETICALLY; break;
             default: sortType = ItemSortType.MANUAL;
         }
 

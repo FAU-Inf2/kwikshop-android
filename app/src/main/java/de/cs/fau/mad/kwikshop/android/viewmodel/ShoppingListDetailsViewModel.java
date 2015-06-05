@@ -349,7 +349,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             values.put(CalendarContract.Events.HAS_ALARM, true);
             values.put(CalendarContract.Events.DTSTART, startMillis);
             values.put(CalendarContract.Events.DTEND, endMillis);
-            values.put(CalendarContract.Events.TITLE, shoppingList.getName());
+            values.put(CalendarContract.Events.TITLE, "[Kwik Shop] " + shoppingList.getName());
             values.put(CalendarContract.Events.CALENDAR_ID, calID);
             TimeZone defaultTimeZone = TimeZone.getDefault();
             values.put(CalendarContract.Events.EVENT_TIMEZONE, defaultTimeZone.getID());
@@ -384,7 +384,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             ContentValues values = new ContentValues();
             values.put(CalendarContract.Events.DTSTART, startMillis);
             values.put(CalendarContract.Events.DTEND, endMillis);
-            values.put(CalendarContract.Events.TITLE, shoppingList.getName());
+            values.put(CalendarContract.Events.TITLE, "[Kwik Shop] " + shoppingList.getName());
             values.put(CalendarContract.Events.DESCRIPTION, "http://kwikshop.is.nice");
             Uri updateUri;
             updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, shoppingList.

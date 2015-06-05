@@ -257,7 +257,6 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     }
 
     private void saveCommandExecute() {
-
         if (isNewShoppingList) {
             this.shoppingListId = listStorage.createList();
             shoppingList = listStorage.loadList(shoppingListId);
@@ -279,7 +278,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         listStorage.saveList(shoppingList);
 
         EventBus.getDefault().post(new ShoppingListChangedEvent(shoppingList.getId(), ShoppingListChangeType.PropertiesModified));
-
+        viewLauncher.showShoppingList(shoppingListId);
         finish();
 
     }

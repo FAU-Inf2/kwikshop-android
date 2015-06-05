@@ -65,7 +65,7 @@
     <string name="unit_pack">Packung</string>
     <string name="unit_piece">Stück</string>
     <string name="unit_piece_short">st.</string>
-    <string name="overflow_action_menu_about">about</string>
+    <string name="overflow_action_menu_about">Über</string>
     <string name="unit_gram_short">g</string>
     <string name="unit_kilogram_short">kg</string>
     <string name="settings_option_2_setlocale">Region</string>

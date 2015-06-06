@@ -103,10 +103,9 @@ public class SettingFragment extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    if(!(localeIds[which].equals("default"))){
-                        setLocale(localeIds[which].toString());
-                        getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).edit().putInt(OPTION_1, which).apply();
-                    }
+                    setLocale(localeIds[which].toString());
+                    getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).edit().putInt(OPTION_1, which).apply();
+
                 }
 
             });

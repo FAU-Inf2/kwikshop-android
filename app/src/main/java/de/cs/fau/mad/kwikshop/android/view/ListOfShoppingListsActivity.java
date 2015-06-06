@@ -15,7 +15,7 @@ public class ListOfShoppingListsActivity extends BaseActivity {
 
         // home icon in actionbar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+        getSupportActionBar().setIcon(R.drawable.ic_home);
 
 
         if (savedInstanceState == null) {

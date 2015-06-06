@@ -4,8 +4,8 @@
     <color name="secondary_Color">#FFD54F</color>
 
     <color name="fab_Normal">#FFD54F</color>
-    <color name="fab_Pressed">#FFD54F</color>
-    <color name="fab_Ripple">#FFD54F</color>
+    <color name="fab_Pressed">#FFD668</color>
+    <color name="fab_Ripple">#FFBF00</color>
     <color name="text_icons">#FFFFFF</color>
     <color name="light_primary_color">#B2DFDB</color>
     <color name="accent_color">#7C4DFF</color>

@@ -127,7 +127,10 @@ public class SettingFragment extends Fragment {
     }
 
     public void setLocale(String lang) {
+
         Locale setLocale = new Locale(lang);
+        if(lang.equals("default"))
+            setLocale = Locale.getDefault();
         Resources res = getActivity().getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
         Configuration conf = res.getConfiguration();

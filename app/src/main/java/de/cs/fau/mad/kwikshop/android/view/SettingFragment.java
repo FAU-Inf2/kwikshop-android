@@ -136,6 +136,7 @@ public class SettingFragment extends Fragment {
         res.updateConfiguration(conf, dm);
         Intent refresh = new Intent(getActivity(), SettingActivity.class);
         getActivity().startActivity(refresh);
+        getActivity().finish();
     }
 
 

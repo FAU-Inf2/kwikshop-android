@@ -237,14 +237,24 @@ public class ItemDetailsFragment extends Fragment {
             }
         });
 
-        Button cancelButton = (Button) actionBar.getCustomView().findViewById(R.id.button_cancel);
+        Button cancelButton = (Button) actionBar.getCustomView().findViewById(R.id.button_remove);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 actionBar.setCustomView(savedActionBarView);
+                removeItemFromShoppingList();
                 getActivity().getSupportFragmentManager().popBackStackImmediate();
             }
         });
+    }
+
+    private void removeItemFromShoppingList() {
+
+        if(!isNewItem){
+            Toast.makeText(getActivity(),"Item removed",Toast.LENGTH_LONG);
+            shoppingList.removeItem(itemId);
+        }
+
     }
 
 

@@ -84,7 +84,7 @@ public class ShoppingListDetailActivity extends BaseActivity implements SaveCanc
     public View getCancelButton() {
 
         ActionBar actionBar = getSupportActionBar();
-        Button button = (Button) actionBar.getCustomView().findViewById(R.id.button_cancel);
+        Button button = (Button) actionBar.getCustomView().findViewById(R.id.button_remove);
         return button;
     }
 

@@ -13,6 +13,11 @@ public class ListOfShoppingListsActivity extends BaseActivity {
         // disable go back arrow
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
+        // home icon in actionbar
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+
+
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().add(R.id.content_frame, ListOfShoppingListsFragment.newInstance()).commit();

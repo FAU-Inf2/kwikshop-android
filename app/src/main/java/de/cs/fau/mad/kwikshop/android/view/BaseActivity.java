@@ -25,6 +25,7 @@ public class BaseActivity extends ActionBarActivity {
 
     public static FrameLayout frameLayout;
     public static boolean refreshed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,14 +69,14 @@ public class BaseActivity extends ActionBarActivity {
 
     public void setSavedLocale() {
 
+        if (refreshed) {
+            return;
+        }
+
+        refreshed = true;
+
         // get current locale index
         int currentLocaleIdIndex = getSharedPreferences(SettingFragment.SETTINGS, Context.MODE_PRIVATE).getInt(SettingFragment.OPTION_1, 0);
-
-        if(refreshed)
-            return;
-
-        if(currentLocaleIdIndex != 0)
-            refreshed = true; // save refreshed status to avoid endless loops
 
         Locale setLocale = new Locale(SettingFragment.localeIds[currentLocaleIdIndex].toString());
         Resources res = getResources();
@@ -83,6 +84,7 @@ public class BaseActivity extends ActionBarActivity {
         Configuration conf = res.getConfiguration();
         conf.locale = setLocale;
         res.updateConfiguration(conf, dm);
+
 
         // Activity must be restarted to set saved locale
         Intent refresh = new Intent(this, ListOfShoppingListsActivity.class);

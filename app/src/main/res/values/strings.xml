@@ -27,6 +27,7 @@
     <!-- List of Shopping Lists -->
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="remove">Remove</string>
     <string name="delete_shopping_list">Delete Shopping List</string>
 
 

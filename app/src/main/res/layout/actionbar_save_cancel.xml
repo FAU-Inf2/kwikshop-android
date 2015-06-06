@@ -7,9 +7,9 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cancel"
+        android:text="@string/remove"
         android:layout_alignParentLeft="true"
-        android:id="@+id/button_cancel"
+        android:id="@+id/button_remove"
         android:background="@color/light_primary_color"
         android:textColor="@color/dark_primary_color" />
 

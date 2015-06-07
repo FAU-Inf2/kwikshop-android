@@ -261,7 +261,6 @@ public class ShoppingListFragment extends Fragment {
             });
 
 
-
             button_QuickAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

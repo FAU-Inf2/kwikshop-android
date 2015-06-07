@@ -243,6 +243,7 @@ public class ShoppingListFragment extends Fragment {
                     }
             );
 
+
             shoppingListViewBought.setAdapter(shoppingListAdapterBought);
             shoppingListViewBought.enableDragAndDrop();
             justifyListViewHeightBasedOnChildren(shoppingListViewBought);

@@ -85,9 +85,6 @@ public class ShoppingListFragment extends Fragment {
     @InjectView(R.id.textView_quickAdd)
     EditText textView_QuickAdd;
 
-    @InjectView(R.id.spinner)
-    Spinner spinner_SortBy;
-
     @InjectView(R.id.fab)
     View floatingActionButton;
 
@@ -197,28 +194,6 @@ public class ShoppingListFragment extends Fragment {
             );
 
 
-            //fills the ArrayList with Strings according to language selected
-            String[] sortBy = new String[]{
-                    getActivity().getString(R.string.sortby_manual),
-                    getActivity().getString(R.string.sortby_group),
-                    getActivity().getString(R.string.sortby_alphabetically)
-            };
-            ArrayList<String> sortByValues = new ArrayList<>();
-            for(int i = 0; i < sortBy.length; i++){
-                sortByValues.add(i, sortBy[i]);
-            }
-
-            //Setting spinner adapter to sort by button
-
-            // Create an ArrayAdapter using the string array and a default spinner layout
-            final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sortByValues);
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            // Apply the adapter to the spinner
-            spinner_SortBy.setAdapter(adapter);
-            spinner_SortBy.setOnItemSelectedListener(new ShoppingListSortBySpinner());
-
-
             swipeUndoAdapter.setAbsListView(shoppingListView);
             shoppingListView.setAdapter(swipeUndoAdapter);
             shoppingListView.enableSimpleSwipeUndo();
@@ -232,7 +207,6 @@ public class ShoppingListFragment extends Fragment {
                             sview.requestDisallowInterceptTouchEvent(true);
                             shoppingListView.startDragging(position);
                             //sets value of the Spinner to the first entry, in this case Manual
-                            spinner_SortBy.setSelection(0);
                             return true;
                         }
                     }

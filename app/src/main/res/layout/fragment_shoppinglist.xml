@@ -13,39 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!--Sort-by Spinner-->
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="41dp"
-            android:background="@color/dark_primary_color">
-
-            <Spinner
-                android:id="@+id/spinner"
-                style="@android:style/Widget.Holo.Light.Spinner"
-                android:layout_width="97dp"
-                android:layout_height="match_parent"
-                android:spinnerMode="dropdown"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true" />
-
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_toLeftOf="@id/spinner"
-                android:layout_toStartOf="@id/spinner"
-                android:gravity="center_vertical"
-                android:maxHeight="26dp"
-                android:text="@string/sort_by"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/text_icons" />
-
-
-        </RelativeLayout>
-
         <!--Quick add bar-->
         <RelativeLayout
             android:id="@+id/quickAdd"

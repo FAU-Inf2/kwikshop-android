@@ -2,38 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/empty"
-        android:title="options"
-        android:orderInCategory="101"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_menu_moreoverflow_normal_holo_dark">
-
-        <menu>
-
-
-            <item android:id="@+id/action_listofshoppinglists"
-                android:icon="@android:drawable/ic_menu_agenda"
-                app:showAsAction="ifRoom"
-                android:title="@string/overflow_action_menu_listofshoppinglists" />
-
-            <item android:id="@+id/action_settings"
-                android:icon="@android:drawable/ic_menu_preferences"
-                app:showAsAction="ifRoom"
-                android:title="@string/overflow_action_menu_settings" />
-
-            <item android:id="@+id/action_about"
-                android:icon="@android:drawable/ic_menu_help"
-                app:showAsAction="ifRoom"
-                android:title="@string/overflow_action_menu_about" />
-
-
-
-        </menu>
-
-    </item>
-
-
 
     <item
         android:id="@+id/sortby_options_icon"

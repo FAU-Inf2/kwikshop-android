@@ -3,6 +3,11 @@ package de.cs.fau.mad.kwikshop.android.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import cs.fau.mad.kwikshop_android.R;
+import de.greenrobot.event.EventBus;
 
 public class ShoppingListActivity extends BaseActivity {
 
@@ -15,6 +20,25 @@ public class ShoppingListActivity extends BaseActivity {
         Intent intent = new Intent(context, ShoppingListActivity.class);
         intent.putExtra(SHOPPING_LIST_ID, (int) shoppingListId);
         return intent;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.shoppinglist_replacement_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+
+        ItemSortType type = null;
+        switch (item.getItemId()){
+            case R.id.sort_by_group_option: type = ItemSortType.GROUP; break;
+            case R.id.sort_by_alphabet_option: type = ItemSortType.ALPHABETICALLY; break;
+        }
+        if(type != null) EventBus.getDefault().post(type);
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

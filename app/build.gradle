@@ -32,6 +32,9 @@ android {
 
 dependencies {
 
+    //IMPORTANT: If you add dependencies here, you also need to mention
+    // the dependency in README.md
+
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
     //Google support libaries for older android version

@@ -6,6 +6,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+
+        //IMPORTANT: If you add dependencies here, you also need to mention
+        // the dependency in README.md
+
+
         classpath 'com.android.tools.build:gradle:1.1.0'
         classpath 'org.ajoberstar:gradle-git:1.1.0'
         classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
@@ -86,6 +91,3 @@ allprojects {
 license {
     header = file('license.txt')
 }
-
-
-

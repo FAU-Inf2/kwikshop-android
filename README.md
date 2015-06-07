@@ -12,9 +12,9 @@ It is currently developed as student project of the
 
 Acknowledgements
 ----------------
-The project makes use of several thrid-party libaries:
+The project makes use of several third-party libraries:
 
-- [Android Support Libary](http://developer.android.com/tools/support-library/index.html), 
+- [Android Support Library](http://developer.android.com/tools/support-library/index.html), 
   which is part of the Android Open Source Project
 - [ORMLite](http://ormlite.com/), licensed under the ISC license
 - [FloatingActionButton](https://github.com/makovkastar/FloatingActionButton),
@@ -29,7 +29,7 @@ The project makes use of several thrid-party libaries:
   Apache License, Version 2.0
 
 
-The build-process is based on gradle and uses the following thrird-party
+The build-process is based on gradle and uses the following third-party
 plugins (as well as the standard android build plugin)
 
 - [gradle-git](https://github.com/ajoberstar/gradle-git),

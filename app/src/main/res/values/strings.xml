@@ -108,4 +108,8 @@
     <string name="nothing">Nothing</string>
     <string name="alphabetically">Alphabetically</string>
 
+
+    <string name="githubLink">https://github.com/FAU-Inf2/kwikshop-android</string>
+    <string name="viewOnGitHub">View on GitHub</string>
+
 </resources>

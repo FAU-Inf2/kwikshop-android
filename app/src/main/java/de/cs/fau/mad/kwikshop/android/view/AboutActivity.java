@@ -3,12 +3,22 @@ package de.cs.fau.mad.kwikshop.android.view;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import cs.fau.mad.kwikshop_android.R;
 
 
 public class AboutActivity extends BaseActivity {
+
+    @InjectView(R.id.gitHubLink)
+    TextView textView_GitHubLink;
+
+    @InjectView(R.id.about_textView_Version)
+    TextView textView_Version;
 
 
     @Override
@@ -16,37 +26,23 @@ public class AboutActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        TextView versionView = (TextView) findViewById(R.id.about_textView_Version);
+        ButterKnife.inject(this);
+
+        // link to the app's GitHub page
+        String linkText = String.format("<a href=\"%s\">%s</a> ",
+                getResources().getString(R.string.githubLink),
+                getResources().getString(R.string.viewOnGitHub));
+        textView_GitHubLink.setText(Html.fromHtml(linkText));
+        textView_GitHubLink.setMovementMethod(LinkMovementMethod.getInstance());
+
+        // display version of package
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             String version = pInfo.versionName;
-            versionView.setText(version);
+            textView_Version.setText(version);
         } catch (PackageManager.NameNotFoundException e) {
         }
     }
 
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_about, menu);
-        return true;
-    }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-      */
 }

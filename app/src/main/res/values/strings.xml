@@ -114,15 +114,25 @@
     <string name="acknowledgements_Title">Acknowledgements</string>
     <string name="acknowledgements_Description">This application uses several thrid-party libaries:</string>
 
-
+    <!--
+    TODO: Writing this stuff as escaped HTML is super ugly, especially because it's duplicated information.
+    Perhaps we can somehow generate this during build
+    -->
     <string-array name="acknowledgements_Items">
-        <item>&lt;b>Android Support Library&lt;/b>, which is part of the Android Open Source Project</item>
-        <item>&lt;b>ORMLite&lt;/b>, licensed under the ISC license</item>
-        <item>&lt;b>FloatingActionButton&lt;/b>, licensed under the MIT License</item>
-        <item>&lt;b>EventBus&lt;/b>, licensed under the Apache License, Version 2.0</item>
-        <item>&lt;b>ListViewAnimations&lt;/b>, licensed under the Apache License, Version 2.0</item>
-        <item>&lt;b>Dagger&lt;/b>, licensed under the Apache License, Version 2.0</item>
-        <item>&lt;b>Butter Knife&lt;/b>, licensed under the Apache License, Version 2.0</item>
+        <item>&lt;b>Android Support Library&lt;/b>, which is part of the Android Open Source Project
+              &lt;br>&lt;a href="http://developer.android.com/tools/support-library/index.html">Project Site&lt;/a></item>
+        <item>&lt;b>ORMLite&lt;/b>, licensed under the ISC license
+              &lt;br>&lt;a href="http://ormlite.com/">Project Site&lt;/a></item>
+        <item>&lt;b>FloatingActionButton&lt;/b>, licensed under the MIT License
+              &lt;br>&lt;a href="https://github.com/makovkastar/FloatingActionButton">Project Site&lt;/a></item>
+        <item>&lt;b>EventBus&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a href="https://github.com/greenrobot/EventBus">Project Site&lt;/a></item>
+        <item>&lt;b>ListViewAnimations&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a href="https://github.com/nhaarman/ListViewAnimations">Project Site&lt;/a></item>
+        <item>&lt;b>Dagger&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a href="http://square.github.io/dagger/">Project Site&lt;/a></item>
+        <item>&lt;b>Butter Knife&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a href="http://jakewharton.github.io/butterknife/">Project Site&lt;/a></item>
     </string-array>
 
 </resources>

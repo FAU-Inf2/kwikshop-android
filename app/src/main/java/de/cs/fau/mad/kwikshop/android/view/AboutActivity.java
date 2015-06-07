@@ -59,6 +59,7 @@ public class AboutActivity extends BaseActivity {
             View view = layoutInflater.inflate(R.layout.activity_about_acknowledgements_item, null);
             TextView textView = (TextView) view.findViewById(R.id.textView);
             textView.setText(Html.fromHtml(item));
+            textView.setMovementMethod(LinkMovementMethod.getInstance());
             container.addView(view);
         }
 

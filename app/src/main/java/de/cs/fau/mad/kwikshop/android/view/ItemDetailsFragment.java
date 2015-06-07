@@ -132,6 +132,8 @@ public class ItemDetailsFragment extends Fragment {
 
         MenuItem menuItem = menu.findItem(R.id.empty);
         menuItem.setVisible(false);
+        MenuItem sortItem = menu.findItem(R.id.sortby_options_icon);
+        sortItem.setVisible(false);
 
     }
 

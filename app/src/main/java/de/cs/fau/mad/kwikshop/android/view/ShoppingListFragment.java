@@ -326,6 +326,30 @@ public class ShoppingListFragment extends Fragment {
 
     }
 
+    public Item parseAmount(Item item){
+
+        String input = item.getName();
+        String output = "";
+        String amount = "";
+        boolean numberFound = false;
+        for(int i = 0; i < input.length(); i++){
+            char c = input.charAt(i);
+            //only parses the first number found to amount
+            if(c > 47 && c < 58 && (numberFound == true || amount == "")){
+                amount = amount  + c;
+                numberFound = true;
+            }else{
+                output = output + c;
+                numberFound = false;
+            }
+        }
+        if(!StringHelper.isNullOrWhiteSpace(output)) {
+            if (amount != "") item.setAmount(Integer.parseInt(amount));
+            item.setName(output);
+        }
+        return item;
+    }
+
 
     public void addItem() {
 
@@ -334,6 +358,7 @@ public class ShoppingListFragment extends Fragment {
 
             Item newItem = new Item();
             newItem.setName(textView_QuickAdd.getText().toString());
+            newItem = parseAmount(newItem);
             newItem.setUnit(unitStorage.getDefaultValue());
             newItem.setGroup(groupStorage.getDefaultValue());
 

@@ -92,6 +92,10 @@
     <string name="ShoppingListItem">Shopping list item</string>
     <string name="title_default_list">Shopping List 1</string>
 
+    <string name="sortby_manual">Manual</string>
+    <string name="sortby_group">Group</string>
+    <string name="sortby_alphabetically">Alphabetically</string>
+
 
     <!-- Other -->
     <string name="hello_world">Hello world!</string>

@@ -5,6 +5,10 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -20,6 +24,8 @@ public class AboutActivity extends BaseActivity {
     @InjectView(R.id.about_textView_Version)
     TextView textView_Version;
 
+    @InjectView(R.id.container)
+    ViewGroup container;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,20 @@ public class AboutActivity extends BaseActivity {
             textView_Version.setText(version);
         } catch (PackageManager.NameNotFoundException e) {
         }
+
+
+        //display acknowledgements
+
+        LayoutInflater layoutInflater = getLayoutInflater();
+        String[] acknowledgements = getResources().getStringArray(R.array.acknowledgements_Items);
+        for (String item : acknowledgements) {
+
+            View view = layoutInflater.inflate(R.layout.activity_about_acknowledgements_item, null);
+            TextView textView = (TextView) view.findViewById(R.id.textView);
+            textView.setText(Html.fromHtml(item));
+            container.addView(view);
+        }
+
     }
 
 

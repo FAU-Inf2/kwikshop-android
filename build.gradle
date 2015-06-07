@@ -8,8 +8,8 @@ buildscript {
     dependencies {
 
         //IMPORTANT: If you add dependencies here, you also need to mention
-        // the dependency in README.md
-
+        // the dependency in README.md. If you want it to show up in the application's about screen
+        // you also need to add it to the string array acknowledgements_Items in values/strings.xml
 
         classpath 'com.android.tools.build:gradle:1.1.0'
         classpath 'org.ajoberstar:gradle-git:1.1.0'

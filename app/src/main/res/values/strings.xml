@@ -109,7 +109,20 @@
     <string name="alphabetically">Alphabetically</string>
 
 
-    <string name="githubLink">https://github.com/FAU-Inf2/kwikshop-android</string>
+    <string name="githubLink" translatable="false">https://github.com/FAU-Inf2/kwikshop-android</string>
     <string name="viewOnGitHub">View on GitHub</string>
+    <string name="acknowledgements_Title">Acknowledgements</string>
+    <string name="acknowledgements_Description">This application uses several thrid-party libaries:</string>
+
+
+    <string-array name="acknowledgements_Items">
+        <item>&lt;b>Android Support Library&lt;/b>, which is part of the Android Open Source Project</item>
+        <item>&lt;b>ORMLite&lt;/b>, licensed under the ISC license</item>
+        <item>&lt;b>FloatingActionButton&lt;/b>, licensed under the MIT License</item>
+        <item>&lt;b>EventBus&lt;/b>, licensed under the Apache License, Version 2.0</item>
+        <item>&lt;b>ListViewAnimations&lt;/b>, licensed under the Apache License, Version 2.0</item>
+        <item>&lt;b>Dagger&lt;/b>, licensed under the Apache License, Version 2.0</item>
+        <item>&lt;b>Butter Knife&lt;/b>, licensed under the Apache License, Version 2.0</item>
+    </string-array>
 
 </resources>

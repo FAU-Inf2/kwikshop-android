@@ -108,5 +108,6 @@
     </string-array>
 
     <string name="viewOnGitHub">Auf GitHub anzeigen</string>
+    <string name="alphabetically"></string>
 
 </resources>

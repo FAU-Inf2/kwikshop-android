@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,7 @@ import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
 import de.cs.fau.mad.kwikshop.android.model.DatabaseHelper;
+import de.cs.fau.mad.kwikshop.android.model.DefaultDataProvider;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
 import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
@@ -81,6 +83,7 @@ public class ShoppingListFragment extends Fragment {
     private ShoppingList shoppingList = null;
     private int listID;
     private ItemSortType sortType = ItemSortType.MANUAL;
+    private DefaultDataProvider dataProvider;
 
     @InjectView(R.id.textView_quickAdd)
     EditText textView_QuickAdd;
@@ -154,7 +157,7 @@ public class ShoppingListFragment extends Fragment {
         listStorage = ListStorageFragment.getLocalListStorage();
         unitStorage = ListStorageFragment.getUnitStorage();
         groupStorage = ListStorageFragment.getGroupStorage();
-
+        dataProvider = new DefaultDataProvider(getActivity());
 
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ButterKnife.inject(this, rootView);
@@ -326,23 +329,55 @@ public class ShoppingListFragment extends Fragment {
 
     }
 
-    public Item parseAmount(Item item){
+    public Item parseAmountAndUnit(Item item){
 
         String input = item.getName();
         String output = "";
         String amount = "";
-        boolean numberFound = false;
+        String thisCanBeUnitOrName= "";
+        boolean lastCharWasANumber = false;
+        boolean charWasReadAfterAmount = false;
         for(int i = 0; i < input.length(); i++){
             char c = input.charAt(i);
             //only parses the first number found to amount
-            if(c > 47 && c < 58 && (numberFound == true || amount == "")){
+            if(c > 47 && c < 58 && (lastCharWasANumber == true || amount == "")){
                 amount = amount  + c;
-                numberFound = true;
+                lastCharWasANumber = true;
+            }else if(lastCharWasANumber && c == ' '){
+                //ignore all white spaces between the amount and the next char
+            }else if(lastCharWasANumber || charWasReadAfterAmount && c != ' ') {
+                //String from amount to next whitespace, this should be unit or name
+                    thisCanBeUnitOrName = thisCanBeUnitOrName + c;
+                    lastCharWasANumber = false;
+                    charWasReadAfterAmount = true;
+            }else if(charWasReadAfterAmount && c ==' '){
+                //whitespace after possible unit
+                charWasReadAfterAmount = false;
             }else{
                 output = output + c;
-                numberFound = false;
+                lastCharWasANumber = false;
             }
         }
+
+
+        boolean unitMatchFound = false;
+        DisplayHelper displayHelper = new DisplayHelper(getActivity());
+        Unit [] units = dataProvider.getPredefinedUnits();
+
+        for(int i = 0; i < units.length; i++){
+            if(displayHelper.getDisplayName(units[i]).equalsIgnoreCase(thisCanBeUnitOrName) ||
+                    displayHelper.getShortDisplayName(units[i]).equalsIgnoreCase(thisCanBeUnitOrName)){
+                item.setUnit(units[i]);
+                unitMatchFound = true;
+            }
+        }
+
+
+        if(unitMatchFound == false){
+            //if no unit was found complete string has to be restored
+            output = thisCanBeUnitOrName + " " + output;
+        }
+
         if(!StringHelper.isNullOrWhiteSpace(output)) {
             if (amount != "") item.setAmount(Integer.parseInt(amount));
             item.setName(output);
@@ -358,8 +393,8 @@ public class ShoppingListFragment extends Fragment {
 
             Item newItem = new Item();
             newItem.setName(textView_QuickAdd.getText().toString());
-            newItem = parseAmount(newItem);
             newItem.setUnit(unitStorage.getDefaultValue());
+            newItem = parseAmountAndUnit(newItem);
             newItem.setGroup(groupStorage.getDefaultValue());
 
             shoppingList.addItem(newItem);

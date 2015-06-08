@@ -323,9 +323,16 @@ public class ItemDetailsFragment extends Fragment {
     private void setupUI() {
 
         //populate number picker
-        String[] nums = new String[1000];
-        for (int i = 0; i < nums.length; i++) {
-            nums[i] = Integer.toString(i + 1);
+       String[] nums = new String[1000];
+        String [] numsOnce = new String[]{
+          "1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
+                "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
+                "450", "500", "600", "700", "800", "900", "1000"
+        };
+
+        //setDisplayedValues length must be as long as range
+        for(int i = 0; i < nums.length; i++){
+            nums[i] = numsOnce[i%numsOnce.length];
         }
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(1000);

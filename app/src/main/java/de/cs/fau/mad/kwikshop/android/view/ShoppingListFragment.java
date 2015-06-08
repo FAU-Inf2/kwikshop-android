@@ -362,13 +362,13 @@ public class ShoppingListFragment extends Fragment {
 
         boolean unitMatchFound = false;
         DisplayHelper displayHelper = new DisplayHelper(getActivity());
-        Unit [] units = dataProvider.getPredefinedUnits();
-
-        for(int i = 0; i < units.length; i++){
-            if(displayHelper.getDisplayName(units[i]).equalsIgnoreCase(thisCanBeUnitOrName) ||
-                    displayHelper.getShortDisplayName(units[i]).equalsIgnoreCase(thisCanBeUnitOrName)){
-                item.setUnit(units[i]);
+        List<Unit> unitsList= ListStorageFragment.getUnitStorage().getItems();
+        for(Unit unit : unitsList){
+            if(displayHelper.getDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName) ||
+                    displayHelper.getShortDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName)){
+                item.setUnit(unit);
                 unitMatchFound = true;
+                break;
             }
         }
 

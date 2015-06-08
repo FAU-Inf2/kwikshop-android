@@ -220,6 +220,8 @@ public class ItemDetailsFragment extends Fragment {
     void setCustomActionBar() {
 
         //show custom action bar
+        actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+
         actionBar.setDisplayShowCustomEnabled(true);
         View view = getActivity().getLayoutInflater().inflate(R.layout.actionbar_save_cancel, null);
         final View savedActionBarView = actionBar.getCustomView();

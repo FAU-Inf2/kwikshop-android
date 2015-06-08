@@ -79,6 +79,7 @@
     <string name="sortby_manual">Manuell</string>
     <string name="sortby_group">Kategorie</string>
     <string name="sortby_alphabetically">Alphabetisch</string>
+    <string name="remove">Löschen</string>
     <string-array name="measures">//TODO importing units from a library of units
         <item>millimeters</item>
         <item>centimeters</item>

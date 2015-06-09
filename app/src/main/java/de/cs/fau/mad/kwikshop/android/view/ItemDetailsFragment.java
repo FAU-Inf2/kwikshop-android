@@ -17,9 +17,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -227,7 +227,7 @@ public class ItemDetailsFragment extends Fragment {
         final View savedActionBarView = actionBar.getCustomView();
         actionBar.setCustomView(view);
 
-        Button saveButton = (Button) actionBar.getCustomView().findViewById(R.id.button_save);
+        ImageButton saveButton = (ImageButton) actionBar.getCustomView().findViewById(R.id.button_save);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,7 +241,7 @@ public class ItemDetailsFragment extends Fragment {
             }
         });
 
-        Button cancelButton = (Button) actionBar.getCustomView().findViewById(R.id.button_remove);
+        ImageButton cancelButton = (ImageButton) actionBar.getCustomView().findViewById(R.id.button_remove);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

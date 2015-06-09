@@ -373,7 +373,7 @@ public class ShoppingListFragment extends Fragment {
         }
 
 
-        if(unitMatchFound == false){
+        if(unitMatchFound == false && thisCanBeUnitOrName != ""){
             //if no unit was found complete string has to be restored
             output = thisCanBeUnitOrName + " " + output;
         }

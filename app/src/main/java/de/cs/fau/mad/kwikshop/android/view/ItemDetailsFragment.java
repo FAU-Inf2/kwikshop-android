@@ -64,6 +64,7 @@ public class ItemDetailsFragment extends Fragment {
     private int selectedUnitIndex = -1;
     private List<Group> groups;
     private int selectedGroupIndex = -1;
+    private String[] numbersForThePicker;
 
     private static SimpleStorage<AutoCompletionData> autoCompletionStorage;
     private static DatabaseHelper databaseHelper;
@@ -282,7 +283,7 @@ public class ItemDetailsFragment extends Fragment {
         }
 
         item.setName(productname_text.getText().toString());
-        item.setAmount(numberPicker.getValue());
+        item.setAmount(Integer.parseInt(numbersForThePicker[numberPicker.getValue()-1]));
         item.setBrand(brand_text.getText().toString());
 
         if (selectedUnitIndex >= 0) {
@@ -323,21 +324,28 @@ public class ItemDetailsFragment extends Fragment {
     private void setupUI() {
 
         //populate number picker
-       String[] nums = new String[1000];
+       numbersForThePicker = new String[1000];
         String [] numsOnce = new String[]{
           "1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
                 "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
                 "450", "500", "600", "700", "800", "900", "1000"
         };
+        int [] intNumsOnce = new int[numsOnce.length];
+        for(int i = 0; i < intNumsOnce.length; i++){
+            intNumsOnce[i] = Integer.parseInt(numsOnce[i]);
+        }
+
+
+
 
         //setDisplayedValues length must be as long as range
-        for(int i = 0; i < nums.length; i++){
-            nums[i] = numsOnce[i%numsOnce.length];
+        for(int i = 0; i < numbersForThePicker.length; i++){
+            numbersForThePicker[i] = numsOnce[i%numsOnce.length];
         }
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(1000);
         numberPicker.setWrapSelectorWheel(false);
-        numberPicker.setDisplayedValues(nums);
+        numberPicker.setDisplayedValues(numbersForThePicker);
 
         //wire up auto-complete for product name
         List<AutoCompletionData> autoCompletionData = autoCompletionStorage.getItems();
@@ -361,9 +369,24 @@ public class ItemDetailsFragment extends Fragment {
         } else {
             item = shoppingList.getItem(itemId);
 
+            //thats not a pretty way to get it done, but the only one that came to my mind
+            int itemAmount = item.getAmount();
+            for(int i = 1; i < intNumsOnce.length; i++){
+                if(itemAmount > 1000) itemAmount = 1000;
+                if(intNumsOnce[i] == itemAmount){
+                    itemAmount = i+1;
+                    break;
+                }
+                if(intNumsOnce[i-1] < itemAmount && intNumsOnce[i+1] > itemAmount){
+                    //if amount is not in the spinner, the next lower value gets selected
+                    itemAmount = i+1;
+                    break;
+                }
+            }
+
             // Fill UI elements with data from Item
             productname_text.setText(item.getName());
-            numberPicker.setValue(item.getAmount());
+            numberPicker.setValue(itemAmount);
             brand_text.setText(item.getBrand());
             comment_text.setText(item.getComment());
         }

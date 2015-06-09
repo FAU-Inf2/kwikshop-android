@@ -39,6 +39,7 @@ import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
+import de.cs.fau.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.cs.fau.mad.kwikshop.android.model.DatabaseHelper;
 import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
@@ -71,10 +72,7 @@ public class ItemDetailsFragment extends Fragment {
     private String[] numbersForThePicker;
     private int numberPickerCalledWith;
 
-    private static SimpleStorage<AutoCompletionData> autoCompletionStorage;
-    private static DatabaseHelper databaseHelper;
-
-    private static ArrayList<String> autocompleteSuggestions = null;
+    private static AutoCompletionHelper autoCompletion;
 
     /* UI elements */
 
@@ -158,18 +156,9 @@ public class ItemDetailsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
         ButterKnife.inject(this, rootView);
 
-        // initialize db related variables if necessary
-        if(databaseHelper == null) {
-            Context context = getActivity().getBaseContext();
-            databaseHelper = new DatabaseHelper(context);
-        }
-        if (autoCompletionStorage == null)
-            try {
-                //create local autocompletion storage
-                autoCompletionStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        // initialize autoCompletion if necessary
+        if (autoCompletion == null)
+            autoCompletion = AutoCompletionHelper.getAutoCompletionHelper(getActivity().getBaseContext());
 
         setupUI();
 
@@ -304,10 +293,7 @@ public class ItemDetailsFragment extends Fragment {
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
 
-        if (!autocompleteSuggestions.contains(productname_text.getText().toString())) {
-            autocompleteSuggestions.add(productname_text.getText().toString());
-            autoCompletionStorage.addItem(new AutoCompletionData(productname_text.getText().toString()));
-        }
+        autoCompletion.offer(productname_text.getText().toString());
 
         if (isNewItem) {
             shoppingList.addItem(item);
@@ -364,14 +350,7 @@ public class ItemDetailsFragment extends Fragment {
         numberPicker.setDisplayedValues(numbersForThePicker);
 
         //wire up auto-complete for product name
-        List<AutoCompletionData> autoCompletionData = autoCompletionStorage.getItems();
-        autocompleteSuggestions = new ArrayList<String>(autoCompletionData.size());
-        for (AutoCompletionData data : autoCompletionData) {
-            autocompleteSuggestions.add(data.getText());
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, autocompleteSuggestions);
-        productname_text.setAdapter(adapter);
+        productname_text.setAdapter(autoCompletion.getAdapter(getActivity()));
 
         // load shopping list and item and set values in UI
         shoppingList = ListStorageFragment.getLocalListStorage().loadList(listId);

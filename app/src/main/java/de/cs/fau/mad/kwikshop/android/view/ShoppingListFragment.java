@@ -44,6 +44,7 @@ import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
+import de.cs.fau.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.cs.fau.mad.kwikshop.android.model.DatabaseHelper;
 import de.cs.fau.mad.kwikshop.android.model.DefaultDataProvider;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
@@ -96,9 +97,7 @@ public class ShoppingListFragment extends Fragment {
     @InjectView(R.id.button_quickAdd)
     View button_QuickAdd;
 
-    private static SimpleStorage<AutoCompletionData> autoCompletionStorage;
-    private static DatabaseHelper databaseHelper;
-    private static ArrayList<String> autocompleteSuggestions = null;
+    private static AutoCompletionHelper autoCompletion;
 
     //endregion
 
@@ -286,23 +285,8 @@ public class ShoppingListFragment extends Fragment {
             });
 
             //wire up auto-complete for product name
-            if(databaseHelper == null) {
-                Context context = getActivity().getBaseContext();
-                databaseHelper = new DatabaseHelper(context);
-            }
-            if (autoCompletionStorage == null)
-                try {
-                    //create local autocompletion storage
-                    autoCompletionStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-            List<AutoCompletionData> autoCompletionData = autoCompletionStorage.getItems();
-            autocompleteSuggestions = new ArrayList<String>(autoCompletionData.size());
-            for (AutoCompletionData data : autoCompletionData) {
-                autocompleteSuggestions.add(data.getText());
-            }
+            if (autoCompletion == null)
+                autoCompletion = AutoCompletionHelper.getAutoCompletionHelper(getActivity().getBaseContext());
 
         }
 
@@ -408,10 +392,7 @@ public class ShoppingListFragment extends Fragment {
 
                     listStorage.saveList(shoppingList);
 
-                    if (!autocompleteSuggestions.contains(newItem.getName())) {
-                        autocompleteSuggestions.add(newItem.getName());
-                        autoCompletionStorage.addItem(new AutoCompletionData(newItem.getName()));
-                    }
+                    autoCompletion.offer(newItem.getName());
 
                     EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
                     EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));

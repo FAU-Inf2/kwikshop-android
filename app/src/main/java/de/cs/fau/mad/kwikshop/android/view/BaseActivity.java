@@ -31,6 +31,7 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         setSavedLocale();
         frameLayout = (FrameLayout)findViewById(R.id.content_frame);
@@ -41,6 +42,13 @@ public class BaseActivity extends ActionBarActivity {
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         upArrow.setColorFilter(getResources().getColor(R.color.background_material_light), PorterDuff.Mode.SRC_ATOP);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
+        // disable go back arrow
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        // home icon in actionbar
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_home);
 
     }
 

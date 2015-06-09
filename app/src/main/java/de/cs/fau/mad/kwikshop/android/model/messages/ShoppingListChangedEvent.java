@@ -13,7 +13,7 @@ public class ShoppingListChangedEvent {
 
     //region Constructor
 
-    public ShoppingListChangedEvent(int listId, ShoppingListChangeType changeType) {
+    public ShoppingListChangedEvent(ShoppingListChangeType changeType, int listId) {
 
         this.m_ListId = listId;
         this.m_ChangeType = changeType;

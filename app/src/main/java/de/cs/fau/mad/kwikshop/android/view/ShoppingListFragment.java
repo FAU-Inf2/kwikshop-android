@@ -5,6 +5,7 @@ package de.cs.fau.mad.kwikshop.android.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
@@ -18,6 +19,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ScrollView;
@@ -43,12 +45,14 @@ import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
+import de.cs.fau.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.cs.fau.mad.kwikshop.android.model.DatabaseHelper;
 import de.cs.fau.mad.kwikshop.android.model.DefaultDataProvider;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
 import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.kwikshop.android.util.ItemComparatorHelper;
@@ -86,7 +90,7 @@ public class ShoppingListFragment extends Fragment {
     private DefaultDataProvider dataProvider;
 
     @InjectView(R.id.textView_quickAdd)
-    EditText textView_QuickAdd;
+    AutoCompleteTextView textView_QuickAdd;
 
     @InjectView(R.id.fab)
     View floatingActionButton;
@@ -94,9 +98,10 @@ public class ShoppingListFragment extends Fragment {
     @InjectView(R.id.button_quickAdd)
     View button_QuickAdd;
 
-    private static SimpleStorage<AutoCompletionData> autoCompletionStorage;
-    private static DatabaseHelper databaseHelper;
-    private static ArrayList<String> autocompleteSuggestions = null;
+    private static AutoCompletionHelper autoCompletion;
+
+
+    private boolean hasView = false;
 
     //endregion
 
@@ -147,8 +152,11 @@ public class ShoppingListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
+        hasView = true;
+
         // enable go back arrow
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         EventBus.getDefault().register(this);
 
@@ -189,9 +197,12 @@ public class ShoppingListFragment extends Fragment {
                     new OnDismissCallback() {
                         @Override
                         public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
+
                             for (int position : reverseSortedPositions) {
                                 shoppingListAdapter.removeByPosition(position);
-                                UpdateLists();
+                                if (hasView) {
+                                    UpdateLists();
+                                }
                             }
                         }
                     }
@@ -219,7 +230,6 @@ public class ShoppingListFragment extends Fragment {
             shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     // Open item details view
-
                     startActivity(ItemDetailsActivity.getIntent(getActivity(), listID, (int) id));
                 }
             });
@@ -285,23 +295,10 @@ public class ShoppingListFragment extends Fragment {
             });
 
             //wire up auto-complete for product name
-            if(databaseHelper == null) {
-                Context context = getActivity().getBaseContext();
-                databaseHelper = new DatabaseHelper(context);
-            }
-            if (autoCompletionStorage == null)
-                try {
-                    //create local autocompletion storage
-                    autoCompletionStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+            if (autoCompletion == null)
+                autoCompletion = AutoCompletionHelper.getAutoCompletionHelper(getActivity().getBaseContext());
 
-            List<AutoCompletionData> autoCompletionData = autoCompletionStorage.getItems();
-            autocompleteSuggestions = new ArrayList<String>(autoCompletionData.size());
-            for (AutoCompletionData data : autoCompletionData) {
-                autocompleteSuggestions.add(data.getText());
-            }
+            refreshQuickAddAutoCompletion();
 
         }
 
@@ -323,7 +320,7 @@ public class ShoppingListFragment extends Fragment {
 
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
-
+        hasView = false;
     }
 
     public Item parseAmountAndUnit(Item item){
@@ -372,7 +369,11 @@ public class ShoppingListFragment extends Fragment {
 
         if(unitMatchFound == false && thisCanBeUnitOrName != ""){
             //if no unit was found complete string has to be restored
-            output = thisCanBeUnitOrName + " " + output;
+            if(output != "") {
+                output = thisCanBeUnitOrName + " " + output;
+            }else{
+                output = thisCanBeUnitOrName;
+            }
         }
 
         if(!StringHelper.isNullOrWhiteSpace(output)) {
@@ -385,31 +386,50 @@ public class ShoppingListFragment extends Fragment {
 
     public void addItem() {
 
+
         //adding empty items without a name is not supported
         if (!StringHelper.isNullOrWhiteSpace(textView_QuickAdd.getText())) {
 
-            Item newItem = new Item();
-            newItem.setName(textView_QuickAdd.getText().toString());
-            newItem.setUnit(unitStorage.getDefaultValue());
-            newItem = parseAmountAndUnit(newItem);
-            newItem.setGroup(groupStorage.getDefaultValue());
+            AsyncTask task = new AsyncTask() {
 
-            shoppingList.addItem(newItem);
+                @Override
+                protected Object doInBackground(Object[] params) {
+                    Item newItem = new Item();
+                    newItem.setName(textView_QuickAdd.getText().toString());
+                    newItem.setUnit(unitStorage.getDefaultValue());
+                    newItem = parseAmountAndUnit(newItem);
+                    newItem.setGroup(groupStorage.getDefaultValue());
 
-            listStorage.saveList(shoppingList);
+                    shoppingList.addItem(newItem);
 
-            if (!autocompleteSuggestions.contains(textView_QuickAdd.getText().toString())) {
-                autocompleteSuggestions.add(textView_QuickAdd.getText().toString());
-                autoCompletionStorage.addItem(new AutoCompletionData(textView_QuickAdd.getText().toString()));
-            }
+                    listStorage.saveList(shoppingList);
 
-            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+                    autoCompletion.offer(newItem.getName());
+
+                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
+                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+
+                    return null;
+                }
+            };
+
+            task.execute(null);
 
             //reset quick add text
             textView_QuickAdd.setText("");
+
+            refreshQuickAddAutoCompletion();
+
         }
 
 
+    }
+
+    /**
+     * call this method to initialize or refresh the data used by QuickAdd's auto completion
+     */
+    private void refreshQuickAddAutoCompletion() {
+        textView_QuickAdd.setAdapter(autoCompletion.getAdapter(getActivity()));
     }
 
 
@@ -418,19 +438,19 @@ public class ShoppingListFragment extends Fragment {
 
     //region Event Handlers
 
-    public void onEvent(ShoppingListChangedEvent event) {
+    public void onEventMainThread(ShoppingListChangedEvent event) {
         if (event.getListId() == this.listID && this.shoppingListAdapter != null) {
             UpdateLists();
         }
     }
 
-    public void onEvent(ItemChangedEvent event) {
+    public void onEventMainThread(ItemChangedEvent event) {
         if (event.getShoppingListId() == this.listID && this.shoppingListAdapter != null) {
             UpdateLists();
         }
     }
 
-    public void onEvent(ItemSortType sortType) {
+    public void onEventMainThread(ItemSortType sortType) {
         this.sortType = sortType;
         //only sort the list if a automatic sorting is chosen
         if (sortType == ItemSortType.MANUAL) {

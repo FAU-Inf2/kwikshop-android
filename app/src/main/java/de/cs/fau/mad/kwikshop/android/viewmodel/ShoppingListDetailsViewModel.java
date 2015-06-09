@@ -222,7 +222,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         EventBus.getDefault().unregister(this);
     }
 
-    public void onEvent(CalendarEventDate eventDate) {
+    public void onEventMainThread(CalendarEventDate eventDate) {
         setCalendarEventDate(eventDate);
     }
 
@@ -286,7 +286,11 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
         listStorage.saveList(shoppingList);
 
-        EventBus.getDefault().post(new ShoppingListChangedEvent(shoppingList.getId(), ShoppingListChangeType.PropertiesModified));
+        ShoppingListChangeType changeType = isNewShoppingList
+                ? ShoppingListChangeType.Added
+                : ShoppingListChangeType.PropertiesModified;
+
+        EventBus.getDefault().post(new ShoppingListChangedEvent(changeType, shoppingList.getId()));
 
         // if we just created a shopping list, open it right away,
         // when a existing shopping list was edited, just close the current view and go back to
@@ -322,7 +326,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
                         }
 
                         listStorage.deleteList(shoppingListId);
-                        EventBus.getDefault().post(new ShoppingListChangedEvent(shoppingListId, ShoppingListChangeType.Deleted));
+                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.Deleted, shoppingListId));
                         finish();
                     }
                 },

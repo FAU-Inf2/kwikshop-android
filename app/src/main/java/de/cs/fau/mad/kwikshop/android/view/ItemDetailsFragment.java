@@ -1,6 +1,7 @@
 package de.cs.fau.mad.kwikshop.android.view;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -38,11 +39,14 @@ import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
+import de.cs.fau.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.cs.fau.mad.kwikshop.android.model.DatabaseHelper;
 import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
+import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangeType;
+import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveCancelActivity;
 import de.greenrobot.event.EventBus;
 
@@ -68,10 +72,7 @@ public class ItemDetailsFragment extends Fragment {
     private String[] numbersForThePicker;
     private int numberPickerCalledWith;
 
-    private static SimpleStorage<AutoCompletionData> autoCompletionStorage;
-    private static DatabaseHelper databaseHelper;
-
-    private static ArrayList<String> autocompleteSuggestions = null;
+    private static AutoCompletionHelper autoCompletion;
 
     /* UI elements */
 
@@ -155,18 +156,9 @@ public class ItemDetailsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
         ButterKnife.inject(this, rootView);
 
-        // initialize db related variables if necessary
-        if(databaseHelper == null) {
-            Context context = getActivity().getBaseContext();
-            databaseHelper = new DatabaseHelper(context);
-        }
-        if (autoCompletionStorage == null)
-            try {
-                //create local autocompletion storage
-                autoCompletionStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        // initialize autoCompletion if necessary
+        if (autoCompletion == null)
+            autoCompletion = AutoCompletionHelper.getAutoCompletionHelper(getActivity().getBaseContext());
 
         setupUI();
 
@@ -181,8 +173,6 @@ public class ItemDetailsFragment extends Fragment {
         } else {
             getActivity().setTitle(productname_text.getText().toString());
         }
-        // disable go back arrow
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
 
         return rootView;
@@ -247,6 +237,9 @@ public class ItemDetailsFragment extends Fragment {
         if(!isNewItem){
             Toast.makeText(getActivity(),"Item removed",Toast.LENGTH_LONG);
             shoppingList.removeItem(itemId);
+
+            EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, listId));
+            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, listId, itemId));
         }
 
     }
@@ -258,7 +251,7 @@ public class ItemDetailsFragment extends Fragment {
     }
 
 
-    public void onEvent(ItemChangedEvent event) {
+    public void onEventMainThread(ItemChangedEvent event) {
         if (shoppingList.getId() == event.getShoppingListId() && event.getItemId() == item.getId()) {
             setupUI();
         }
@@ -266,6 +259,7 @@ public class ItemDetailsFragment extends Fragment {
 
 
     private void saveItem() {
+
 
         if (isNewItem) {
             item = new Item();
@@ -297,20 +291,36 @@ public class ItemDetailsFragment extends Fragment {
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
 
-        if (!autocompleteSuggestions.contains(productname_text.getText().toString())) {
-            autocompleteSuggestions.add(productname_text.getText().toString());
-            autoCompletionStorage.addItem(new AutoCompletionData(productname_text.getText().toString()));
-        }
+        autoCompletion.offer(productname_text.getText().toString());
 
         if (isNewItem) {
             shoppingList.addItem(item);
         }
 
-        ListStorageFragment.getLocalListStorage().saveList(shoppingList);
+
+        AsyncTask task = new AsyncTask() {
+
+            @Override
+            protected Object doInBackground(Object[] params) {
+
+                ListStorageFragment.getLocalListStorage().saveList(shoppingList);
+
+                ItemChangeType itemChangeType = isNewItem
+                        ? ItemChangeType.Added
+                        : ItemChangeType.PropertiesModified;
+                EventBus.getDefault().post(new ItemChangedEvent(itemChangeType, shoppingList.getId(), item.getId()));
+
+                if (isNewItem) {
+                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
+                }
+                return null;
+            }
+        };
+        task.execute();
+
+
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
 
-        ItemChangeType changeType = isNewItem ? ItemChangeType.Added : ItemChangeType.PropertiesModified;
-        EventBus.getDefault().post(new ItemChangedEvent(changeType, shoppingList.getId(), item.getId()));
     }
 
 
@@ -338,14 +348,7 @@ public class ItemDetailsFragment extends Fragment {
         numberPicker.setDisplayedValues(numbersForThePicker);
 
         //wire up auto-complete for product name
-        List<AutoCompletionData> autoCompletionData = autoCompletionStorage.getItems();
-        autocompleteSuggestions = new ArrayList<String>(autoCompletionData.size());
-        for (AutoCompletionData data : autoCompletionData) {
-            autocompleteSuggestions.add(data.getText());
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, autocompleteSuggestions);
-        productname_text.setAdapter(adapter);
+        productname_text.setAdapter(autoCompletion.getAdapter(getActivity()));
 
         // load shopping list and item and set values in UI
         shoppingList = ListStorageFragment.getLocalListStorage().loadList(listId);

@@ -97,7 +97,7 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         return listener;
     }
 
-    public void onEvent(ShoppingListChangedEvent ev) {
+    public void onEventMainThread(ShoppingListChangedEvent ev) {
 
         //TODO: only update list entries that were changed, instead of recreating the entire list
         setShoppingLists(new ObservableArrayList<>(listStorage.getAllLists()));

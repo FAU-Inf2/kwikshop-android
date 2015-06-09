@@ -1,6 +1,7 @@
 package de.cs.fau.mad.kwikshop.android.view;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -272,6 +273,7 @@ public class ItemDetailsFragment extends Fragment {
 
     private void saveItem() {
 
+
         if (isNewItem) {
             item = new Item();
         }
@@ -311,18 +313,29 @@ public class ItemDetailsFragment extends Fragment {
             shoppingList.addItem(item);
         }
 
-        ListStorageFragment.getLocalListStorage().saveList(shoppingList);
+
+        AsyncTask task = new AsyncTask() {
+
+            @Override
+            protected Object doInBackground(Object[] params) {
+
+                ListStorageFragment.getLocalListStorage().saveList(shoppingList);
+
+                ItemChangeType itemChangeType = isNewItem
+                        ? ItemChangeType.Added
+                        : ItemChangeType.PropertiesModified;
+                EventBus.getDefault().post(new ItemChangedEvent(itemChangeType, shoppingList.getId(), item.getId()));
+
+                if (isNewItem) {
+                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
+                }
+                return null;
+            }
+        };
+        task.execute();
+
+
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
-
-        ItemChangeType itemChangeType = isNewItem
-                ? ItemChangeType.Added
-                : ItemChangeType.PropertiesModified;
-        EventBus.getDefault().post(new ItemChangedEvent(itemChangeType, shoppingList.getId(), item.getId()));
-
-        if (isNewItem) {
-            EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-        }
-
 
     }
 

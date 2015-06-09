@@ -64,7 +64,9 @@ public class ItemDetailsFragment extends Fragment {
     private int selectedUnitIndex = -1;
     private List<Group> groups;
     private int selectedGroupIndex = -1;
+
     private String[] numbersForThePicker;
+    private int numberPickerCalledWith;
 
     private static SimpleStorage<AutoCompletionData> autoCompletionStorage;
     private static DatabaseHelper databaseHelper;
@@ -270,7 +272,11 @@ public class ItemDetailsFragment extends Fragment {
         }
 
         item.setName(productname_text.getText().toString());
-        item.setAmount(Integer.parseInt(numbersForThePicker[numberPicker.getValue()-1]));
+        if(numberPickerCalledWith != numberPicker.getValue()){
+            //only set amount if it got changed, so values written by parser which are not listed
+            //in the numberPicker don't get overwritten
+            item.setAmount(Integer.parseInt(numbersForThePicker[numberPicker.getValue()-1]));
+        }
         item.setBrand(brand_text.getText().toString());
 
         if (selectedUnitIndex >= 0) {
@@ -322,9 +328,6 @@ public class ItemDetailsFragment extends Fragment {
             intNumsOnce[i] = Integer.parseInt(numsOnce[i]);
         }
 
-
-
-
         //setDisplayedValues length must be as long as range
         for(int i = 0; i < numbersForThePicker.length; i++){
             numbersForThePicker[i] = numsOnce[i%numsOnce.length];
@@ -357,6 +360,7 @@ public class ItemDetailsFragment extends Fragment {
             item = shoppingList.getItem(itemId);
 
             //thats not a pretty way to get it done, but the only one that came to my mind
+            //numberPicker.setValue(index) sets the picker to the index + numberPicker.minValue()
             int itemAmount = item.getAmount();
             for(int i = 1; i < intNumsOnce.length; i++){
                 if(itemAmount > 1000) itemAmount = 1000;
@@ -377,6 +381,7 @@ public class ItemDetailsFragment extends Fragment {
             brand_text.setText(item.getBrand());
             comment_text.setText(item.getComment());
         }
+        numberPickerCalledWith = numberPicker.getValue();
 
         //populate unit picker with units from database
         DisplayHelper displayHelper = new DisplayHelper(getActivity());

@@ -263,7 +263,7 @@ public class ItemDetailsFragment extends Fragment {
     }
 
 
-    public void onEvent(ItemChangedEvent event) {
+    public void onEventMainThread(ItemChangedEvent event) {
         if (shoppingList.getId() == event.getShoppingListId() && event.getItemId() == item.getId()) {
             setupUI();
         }

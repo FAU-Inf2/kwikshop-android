@@ -222,7 +222,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         EventBus.getDefault().unregister(this);
     }
 
-    public void onEvent(CalendarEventDate eventDate) {
+    public void onEventMainThread(CalendarEventDate eventDate) {
         setCalendarEventDate(eventDate);
     }
 

@@ -5,6 +5,7 @@ package de.cs.fau.mad.kwikshop.android.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
@@ -389,26 +390,37 @@ public class ShoppingListFragment extends Fragment {
 
     public void addItem() {
 
+
         //adding empty items without a name is not supported
         if (!StringHelper.isNullOrWhiteSpace(textView_QuickAdd.getText())) {
 
-            Item newItem = new Item();
-            newItem.setName(textView_QuickAdd.getText().toString());
-            newItem.setUnit(unitStorage.getDefaultValue());
-            newItem = parseAmountAndUnit(newItem);
-            newItem.setGroup(groupStorage.getDefaultValue());
+            AsyncTask task = new AsyncTask() {
 
-            shoppingList.addItem(newItem);
+                @Override
+                protected Object doInBackground(Object[] params) {
+                    Item newItem = new Item();
+                    newItem.setName(textView_QuickAdd.getText().toString());
+                    newItem.setUnit(unitStorage.getDefaultValue());
+                    newItem = parseAmountAndUnit(newItem);
+                    newItem.setGroup(groupStorage.getDefaultValue());
 
-            listStorage.saveList(shoppingList);
+                    shoppingList.addItem(newItem);
 
-            if (!autocompleteSuggestions.contains(newItem.getName())) {
-                autocompleteSuggestions.add(newItem.getName());
-                autoCompletionStorage.addItem(new AutoCompletionData(newItem.getName()));
-            }
+                    listStorage.saveList(shoppingList);
 
-            EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+                    if (!autocompleteSuggestions.contains(newItem.getName())) {
+                        autocompleteSuggestions.add(newItem.getName());
+                        autoCompletionStorage.addItem(new AutoCompletionData(newItem.getName()));
+                    }
+
+                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
+                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+
+                    return null;
+                }
+            };
+
+            task.execute(null);
 
             //reset quick add text
             textView_QuickAdd.setText("");
@@ -423,19 +435,19 @@ public class ShoppingListFragment extends Fragment {
 
     //region Event Handlers
 
-    public void onEvent(ShoppingListChangedEvent event) {
+    public void onEventMainThread(ShoppingListChangedEvent event) {
         if (event.getListId() == this.listID && this.shoppingListAdapter != null) {
             UpdateLists();
         }
     }
 
-    public void onEvent(ItemChangedEvent event) {
+    public void onEventMainThread(ItemChangedEvent event) {
         if (event.getShoppingListId() == this.listID && this.shoppingListAdapter != null) {
             UpdateLists();
         }
     }
 
-    public void onEvent(ItemSortType sortType) {
+    public void onEventMainThread(ItemSortType sortType) {
         this.sortType = sortType;
         //only sort the list if a automatic sorting is chosen
         if (sortType == ItemSortType.MANUAL) {

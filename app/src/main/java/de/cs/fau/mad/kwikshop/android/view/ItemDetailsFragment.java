@@ -43,6 +43,7 @@ import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
+import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveCancelActivity;
 import de.greenrobot.event.EventBus;
 
 public class ItemDetailsFragment extends Fragment {
@@ -52,7 +53,6 @@ public class ItemDetailsFragment extends Fragment {
 
     private View rootView;
 
-    private ActionBar actionBar;
 
     private int listId;
     private int itemId;
@@ -128,15 +128,6 @@ public class ItemDetailsFragment extends Fragment {
     }
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        MenuItem menuItem = menu.findItem(R.id.empty);
-        menuItem.setVisible(false);
-        MenuItem sortItem = menu.findItem(R.id.sortby_options_icon);
-        sortItem.setVisible(false);
-
-    }
 
 
     @Override
@@ -151,7 +142,6 @@ public class ItemDetailsFragment extends Fragment {
             listId = getArguments().getInt(ARG_LISTID);
             itemId = getArguments().getInt(ARG_ITEMID);
         }
-        actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
         isNewItem = itemId == -1;
 
     }
@@ -218,39 +208,36 @@ public class ItemDetailsFragment extends Fragment {
         super.onDetach();
     }
 
-    void setCustomActionBar() {
+    private void setCustomActionBar() {
 
-        //show custom action bar
-        actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        if (getActivity() instanceof SaveCancelActivity) {
+            SaveCancelActivity parent = (SaveCancelActivity) getActivity();
 
-        actionBar.setDisplayShowCustomEnabled(true);
-        View view = getActivity().getLayoutInflater().inflate(R.layout.actionbar_save_cancel, null);
-        final View savedActionBarView = actionBar.getCustomView();
-        actionBar.setCustomView(view);
-
-        ImageButton saveButton = (ImageButton) actionBar.getCustomView().findViewById(R.id.button_save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (productname_text.getText().length() > 0) {
-                    saveItem();
-                    getActivity().getSupportFragmentManager().popBackStackImmediate();
-                    actionBar.setCustomView(savedActionBarView);
-                } else {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.error_empty_productname), Toast.LENGTH_LONG).show();
+            View saveButton = parent.getSaveButton();
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (productname_text.getText().length() > 0) {
+                        saveItem();
+                        getActivity().finish();
+                    } else {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.error_empty_productname), Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
-        });
+            });
 
-        ImageButton cancelButton = (ImageButton) actionBar.getCustomView().findViewById(R.id.button_remove);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionBar.setCustomView(savedActionBarView);
-                removeItemFromShoppingList();
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
-            }
-        });
+            View delete = parent.getCancelButton();
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeItemFromShoppingList();
+                    getActivity().finish();
+                }
+            });
+
+        }
+
+
     }
 
     private void removeItemFromShoppingList() {

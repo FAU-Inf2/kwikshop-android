@@ -218,9 +218,8 @@ public class ShoppingListFragment extends Fragment {
             shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     // Open item details view
-                    getFragmentManager().beginTransaction().replace(BaseActivity.frameLayout.getId(), ItemDetailsFragment.newInstance(listID, (int) id))
-                            .addToBackStack(null).commit();
-                    //return true;
+
+                    startActivity(ItemDetailsActivity.getIntent(getActivity(), listID, (int) id));
                 }
             });
 
@@ -255,11 +254,7 @@ public class ShoppingListFragment extends Fragment {
             floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Fragment newItemFragment = ItemDetailsFragment.newInstance(listID);
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(BaseActivity.frameLayout.getId(), newItemFragment)
-                            .addToBackStack(null).commit();
+                    startActivity(ItemDetailsActivity.getIntent(getActivity(), listID));
                 }
             });
 

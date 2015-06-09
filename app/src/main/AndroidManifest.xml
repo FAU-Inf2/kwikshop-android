@@ -44,6 +44,15 @@
                 android:value="de.cs.fau.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
         </activity>
         <activity
+            android:name="de.cs.fau.mad.kwikshop.android.view.ItemDetailsActivity"
+            android:label="@string/title_activity_shopping_list_detail"
+            android:parentActivityName="de.cs.fau.mad.kwikshop.android.view.ShoppingListActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.cs.fau.mad.kwikshop.android.view.ShoppingListActivity" />
+        </activity>
+        <activity
             android:name="de.cs.fau.mad.kwikshop.android.view.ShoppingListActivity"
             android:label="@string/title_activity_shopping_list"
             android:parentActivityName="de.cs.fau.mad.kwikshop.android.view.ListOfShoppingListsActivity" >

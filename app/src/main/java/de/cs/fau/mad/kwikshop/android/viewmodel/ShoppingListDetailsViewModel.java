@@ -278,7 +278,15 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         listStorage.saveList(shoppingList);
 
         EventBus.getDefault().post(new ShoppingListChangedEvent(shoppingList.getId(), ShoppingListChangeType.PropertiesModified));
-        viewLauncher.showShoppingList(shoppingListId);
+
+        // if we just created a shopping list, open it right away,
+        // when a existing shopping list was edited, just close the current view and go back to
+        // whatever the previous screen was
+        if (isNewShoppingList) {
+            viewLauncher.showShoppingList(shoppingListId);
+        }
+
+
         finish();
 
     }

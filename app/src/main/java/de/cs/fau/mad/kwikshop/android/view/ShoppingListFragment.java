@@ -99,6 +99,9 @@ public class ShoppingListFragment extends Fragment {
 
     private static AutoCompletionHelper autoCompletion;
 
+
+    private boolean hasView = false;
+
     //endregion
 
 
@@ -148,6 +151,9 @@ public class ShoppingListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
+        hasView = true;
+
         // enable go back arrow
         ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -190,9 +196,12 @@ public class ShoppingListFragment extends Fragment {
                     new OnDismissCallback() {
                         @Override
                         public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
+
                             for (int position : reverseSortedPositions) {
                                 shoppingListAdapter.removeByPosition(position);
-                                UpdateLists();
+                                if (hasView) {
+                                    UpdateLists();
+                                }
                             }
                         }
                     }
@@ -308,7 +317,7 @@ public class ShoppingListFragment extends Fragment {
 
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
-
+        hasView = false;
     }
 
     public Item parseAmountAndUnit(Item item){

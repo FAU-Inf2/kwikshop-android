@@ -35,7 +35,7 @@ public class SettingFragment extends Fragment {
     public static String  SETTINGS = "settings";
     public static String OPTION_1 = "locale";
     public static String OPTION_2 = "autocomplete";
-    public static CharSequence[] localeSelectionNames = {"default", "english", "german", "portuguese"};
+    public static CharSequence[] localeSelectionNames = {"default", "English", "German", "Portuguese"};
     public static CharSequence[] localeIds = {"default", "en", "de", "pt"};
 
     private View rootView;

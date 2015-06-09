@@ -402,9 +402,9 @@ public class ShoppingListFragment extends Fragment {
 
             listStorage.saveList(shoppingList);
 
-            if (!autocompleteSuggestions.contains(textView_QuickAdd.getText().toString())) {
-                autocompleteSuggestions.add(textView_QuickAdd.getText().toString());
-                autoCompletionStorage.addItem(new AutoCompletionData(textView_QuickAdd.getText().toString()));
+            if (!autocompleteSuggestions.contains(newItem.getName())) {
+                autocompleteSuggestions.add(newItem.getName());
+                autoCompletionStorage.addItem(new AutoCompletionData(newItem.getName()));
             }
 
             EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));

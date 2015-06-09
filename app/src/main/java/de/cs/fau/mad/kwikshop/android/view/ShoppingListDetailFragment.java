@@ -29,9 +29,6 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
     @InjectView(R.id.textView_ShoppingListName)
     TextView textView_ShoppingListName;
 
-    @InjectView(R.id.button_delete)
-    View button_Delete;
-
     @InjectView(R.id.create_calendar_event)
     View button_CreateCalendarEvent;
 
@@ -75,7 +72,6 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         //set up binding between view and view model
-        bindButton(button_Delete, viewModel.getDeleteCommand());
         bindButton(button_CreateCalendarEvent, viewModel.getCreateCalendarEventCommand());
         bindButton(button_EditCalendarEvent, viewModel.getEditCalendarEventCommand());
 
@@ -84,7 +80,7 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
             SaveCancelActivity saveCancelActivity = (SaveCancelActivity) activity;
 
             bindButton(saveCancelActivity.getSaveButton(), viewModel.getSaveCommand());
-            bindButton(saveCancelActivity.getCancelButton(), viewModel.getCancelCommand());
+            bindButton(saveCancelActivity.getCancelButton(), viewModel.getDeleteCommand());
         }
 
         viewModel.addListener(this);

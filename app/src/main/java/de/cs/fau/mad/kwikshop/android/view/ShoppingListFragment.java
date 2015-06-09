@@ -407,7 +407,7 @@ public class ShoppingListFragment extends Fragment {
                 autoCompletionStorage.addItem(new AutoCompletionData(textView_QuickAdd.getText().toString()));
             }
 
-            EventBus.getDefault().post(new ShoppingListChangedEvent(shoppingList.getId(), ShoppingListChangeType.ItemsAdded));
+            EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
             EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
 
             //reset quick add text

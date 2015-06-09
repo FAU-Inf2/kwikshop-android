@@ -250,7 +250,7 @@ public class ItemDetailsFragment extends Fragment {
             Toast.makeText(getActivity(),"Item removed",Toast.LENGTH_LONG);
             shoppingList.removeItem(itemId);
 
-            EventBus.getDefault().post(new ShoppingListChangedEvent(listId, ShoppingListChangeType.ItemsRemoved));
+            EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, listId));
             EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, listId, itemId));
         }
 
@@ -320,7 +320,7 @@ public class ItemDetailsFragment extends Fragment {
         EventBus.getDefault().post(new ItemChangedEvent(itemChangeType, shoppingList.getId(), item.getId()));
 
         if (isNewItem) {
-            EventBus.getDefault().post(new ShoppingListChangedEvent(shoppingList.getId(), ShoppingListChangeType.ItemsAdded));
+            EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
         }
 
 

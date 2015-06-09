@@ -76,7 +76,7 @@ public class ShoppingListDetailActivity extends BaseActivity implements SaveCanc
     @Override
     public View getSaveButton() {
         ActionBar actionBar = getSupportActionBar();
-        Button button = (Button) actionBar.getCustomView().findViewById(R.id.button_save);
+        View button = actionBar.getCustomView().findViewById(R.id.button_save);
         return button;
     }
 
@@ -84,7 +84,7 @@ public class ShoppingListDetailActivity extends BaseActivity implements SaveCanc
     public View getCancelButton() {
 
         ActionBar actionBar = getSupportActionBar();
-        Button button = (Button) actionBar.getCustomView().findViewById(R.id.button_remove);
+        View button = actionBar.getCustomView().findViewById(R.id.button_remove);
         return button;
     }
 

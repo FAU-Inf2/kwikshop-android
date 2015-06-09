@@ -1,7 +1,6 @@
 package de.cs.fau.mad.kwikshop.android.model;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.widget.ArrayAdapter;
 

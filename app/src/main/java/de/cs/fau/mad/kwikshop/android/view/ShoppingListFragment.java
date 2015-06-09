@@ -156,7 +156,7 @@ public class ShoppingListFragment extends Fragment {
         hasView = true;
 
         // enable go back arrow
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         EventBus.getDefault().register(this);
 

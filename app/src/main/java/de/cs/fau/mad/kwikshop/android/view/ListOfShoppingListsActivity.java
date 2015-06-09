@@ -10,13 +10,6 @@ public class ListOfShoppingListsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // disable go back arrow
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-        // home icon in actionbar
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setIcon(R.drawable.ic_home);
-
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();

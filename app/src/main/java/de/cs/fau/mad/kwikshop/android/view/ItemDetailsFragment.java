@@ -173,8 +173,6 @@ public class ItemDetailsFragment extends Fragment {
         } else {
             getActivity().setTitle(productname_text.getText().toString());
         }
-        // disable go back arrow
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
 
         return rootView;

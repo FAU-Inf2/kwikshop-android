@@ -28,7 +28,7 @@
     <string name="group_tobacco">Tabaco</string>
     <string name="hello_world">Hello World</string>
     <string name="highlight">Ressaltar</string>
-    <string name="itemdeleted">Movido para o carro de compras</string>
+    <string name="itemdeleted">Item comprado</string>
     <string name="itemdetails_amount">Quantidade</string>
     <string name="itemdetails_brand">Marca</string>
     <string name="itemdetails_comment">Comentário</string>

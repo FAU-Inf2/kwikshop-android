@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ScrollView;
@@ -89,7 +90,7 @@ public class ShoppingListFragment extends Fragment {
     private DefaultDataProvider dataProvider;
 
     @InjectView(R.id.textView_quickAdd)
-    EditText textView_QuickAdd;
+    AutoCompleteTextView textView_QuickAdd;
 
     @InjectView(R.id.fab)
     View floatingActionButton;
@@ -288,6 +289,8 @@ public class ShoppingListFragment extends Fragment {
             if (autoCompletion == null)
                 autoCompletion = AutoCompletionHelper.getAutoCompletionHelper(getActivity().getBaseContext());
 
+            refreshQuickAddAutoCompletion();
+
         }
 
         return rootView;
@@ -405,9 +408,19 @@ public class ShoppingListFragment extends Fragment {
 
             //reset quick add text
             textView_QuickAdd.setText("");
+
+            refreshQuickAddAutoCompletion();
+
         }
 
 
+    }
+
+    /**
+     * call this method to initialize or refresh the data used by QuickAdd's auto completion
+     */
+    private void refreshQuickAddAutoCompletion() {
+        textView_QuickAdd.setAdapter(autoCompletion.getAdapter(getActivity()));
     }
 
 

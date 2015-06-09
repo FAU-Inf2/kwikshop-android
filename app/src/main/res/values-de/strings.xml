@@ -28,7 +28,7 @@
     <string name="group_tobacco">Tabak</string>
     <string name="hello_world">Hello World</string>
     <string name="highlight">Hervorheben</string>
-    <string name="itemdeleted">Zum Einkaufswagen hinzugefügt</string>
+    <string name="itemdeleted">Artikel gekauft</string>
     <string name="itemdetails_amount">Menge</string>
     <string name="itemdetails_brand">Marke</string>
     <string name="itemdetails_comment">Kommentar</string>
@@ -44,7 +44,7 @@
     <string name="settings_option_1_name">Option1</string>
     <string name="shoppinglist_divider_textview">Einkaufswagen</string>
     <string name="sort_by">Sortieren nach</string>
-    <string name="taptoundo">rückgängig machen</string>
+    <string name="taptoundo">zurück<!--rückgängig machen--></string>
     <string name="title_activity_about">Über</string>
     <string name="title_activity_list_of_shopping_list">Einkaufslisten</string>
     <string name="title_activity_settings">Einstellungen</string>

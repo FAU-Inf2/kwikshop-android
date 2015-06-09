@@ -133,6 +133,7 @@ public class ShoppingList {
                 return item;
             }
         }
+        //TODO: returning null is a bad idea
         return null;
     }
 }

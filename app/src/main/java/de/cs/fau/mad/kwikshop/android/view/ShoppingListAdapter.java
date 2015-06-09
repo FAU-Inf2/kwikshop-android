@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 
+import java.util.Collection;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -19,12 +20,15 @@ import cs.fau.mad.kwikshop_android.R;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
+import de.cs.fau.mad.kwikshop.android.model.ListStorage;
 import de.cs.fau.mad.kwikshop.android.util.AsyncTaskHelper;
 import de.cs.fau.mad.kwikshop.android.util.StringHelper;
 
 public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Integer> implements UndoAdapter {
 
-    private final ShoppingList shoppingList;
+    private ShoppingList shoppingList;
+    private final ListStorage listStorage;
+    private final int listId;
     private final Context context;
     private final DisplayHelper displayHelper;
     private boolean groupItems;
@@ -38,11 +42,25 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
      * @param shoppingList The shopping list which's items to display
      * @param groupItems   Group shopping list items by their group and display group headers
      */
-    public ShoppingListAdapter(Context context, List<Integer> objects, ShoppingList shoppingList, boolean groupItems) {
+    public ShoppingListAdapter(Context context, List<Integer> objects, ListStorage listStorage, int listId, boolean groupItems) {
 
         super(objects);
-        this.shoppingList = shoppingList;
+
+        if (context == null) {
+            throw new IllegalArgumentException("'context' must not be null");
+        }
+
+        if (objects == null) {
+            throw new IllegalArgumentException("'objects' must not be null");
+        }
+
+        if (listStorage == null) {
+            throw new IllegalArgumentException("'listStorage' must not be null");
+        }
+
         this.context = context;
+        this.listStorage = listStorage;
+        this.listId = listId;
         this.displayHelper = new DisplayHelper(context);
         this.groupItems = groupItems;
 
@@ -66,7 +84,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        Item item = shoppingList.getItem(getItem(position));
+        Item item = getShoppingList().getItem(getItem(position));
 
 
         //if item is highlighted, set color to red
@@ -116,7 +134,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             if (position == 0) {
                 showHeader = true;
             } else if (position > 0) {
-                Item previousItem = shoppingList.getItem(getItem(position - 1));
+                Item previousItem = getShoppingList().getItem(getItem(position - 1));
                 if (item.getGroup() == null && previousItem == null) {
                     showHeader = false;
                 } else if (item.getGroup() != null) {
@@ -150,6 +168,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     }
 
     public void removeByPosition(int position) { // 'remove from this list'
+        ShoppingList shoppingList = getShoppingList();
+
         Item item = shoppingList.getItem(getItem(position));
 
         if(item.isBought()) {
@@ -164,12 +184,14 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     }
 
     public void updateOrderOfList(){
+
+        ShoppingList list = listStorage.loadList(listId);
         int i = 0;
         for(Integer item : this.getItems()){
-            shoppingList.getItem(item).setOrder(i);
+            list.getItem(item).setOrder(i);
             i++;
         }
-        new AsyncTaskHelper.ShoppingListSaveTask().execute(shoppingList);
+        new AsyncTaskHelper.ShoppingListSaveTask().execute(list);
     }
 
     @Override
@@ -197,6 +219,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     // Used by drag and drop
     @Override
     public void swapItems(final int positionOne, final int positionTwo) {
+        ShoppingList shoppingList = getShoppingList();
+
         Item i1 = shoppingList.getItem(getItem(positionOne));
         Item i2 = shoppingList.getItem(getItem(positionTwo));
         i1.setOrder(positionTwo);
@@ -212,6 +236,29 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         this.groupItems = value;
         notifyDataSetChanged();
     }
+
+
+    @Override
+    public synchronized void clear() {
+        this.shoppingList = null;
+        super.clear();
+    }
+
+    @Override
+    public synchronized boolean addAll(@NonNull Collection<? extends Integer> collection) {
+        this.shoppingList = null;
+        return super.addAll(collection);
+    }
+
+    private synchronized ShoppingList getShoppingList() {
+
+        if (shoppingList == null) {
+            shoppingList = listStorage.loadList(listId);
+        }
+
+        return shoppingList;
+    }
+
 
     static class ViewHolder {
 

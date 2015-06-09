@@ -181,7 +181,8 @@ public class ShoppingListFragment extends Fragment {
             // Upper list for Items that are not yet bought
             shoppingListAdapter = new ShoppingListAdapter(getActivity(),
                     generateData(shoppingList, false),
-                    shoppingList,
+                    listStorage,
+                    listID,
                     getItemSortType() == ItemSortType.GROUP);
 
             SimpleSwipeUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
@@ -230,7 +231,8 @@ public class ShoppingListFragment extends Fragment {
             // Lower list for Items that are already bought
             shoppingListAdapterBought = new ShoppingListAdapter(getActivity(),
                     generateData(shoppingList, true),
-                    shoppingList,
+                    listStorage,
+                    listID,
                     getItemSortType() == ItemSortType.GROUP);
 
             shoppingListViewBought.enableSwipeToDismiss(

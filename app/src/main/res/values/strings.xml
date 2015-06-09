@@ -135,4 +135,9 @@
               &lt;br>&lt;a href="http://jakewharton.github.io/butterknife/">Project Site&lt;/a></item>
     </string-array>
 
+
+    <!--Shopping list details -->
+    <string name="deleteShoppingList_DialogTitle">Delete Shopping List?</string>
+    <string name="deleteShoppingList_DialogText">Are you sure you want to delete the shopping list?</string>
+
 </resources>

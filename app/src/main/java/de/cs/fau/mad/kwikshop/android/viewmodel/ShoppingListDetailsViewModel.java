@@ -14,12 +14,15 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 
+import cs.fau.mad.kwikshop_android.R;
 import de.cs.fau.mad.kwikshop.android.common.CalendarEventDate;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.kwikshop.android.viewmodel.common.Command;
+import de.cs.fau.mad.kwikshop.android.viewmodel.common.NullCommand;
+import de.cs.fau.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.cs.fau.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
@@ -55,6 +58,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     private final Context context;
     private final ListStorage listStorage;
     private final ViewLauncher viewLauncher;
+    private final ResourceProvider resourceProvider;
 
     private int shoppingListId;
     private boolean isNewShoppingList;
@@ -77,6 +81,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
      */
     @Inject
     public ShoppingListDetailsViewModel(final Context context, final ViewLauncher viewLauncher,
+                                        final ResourceProvider resourceProvider,
                                         final ListStorage listStorage) {
 
         if (context == null) {
@@ -87,14 +92,18 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
         }
 
+        if (resourceProvider == null) {
+            throw new IllegalArgumentException("'resourceProvider' must not be null");
+        }
+
         if (listStorage == null) {
             throw new IllegalArgumentException("'listStorage' must not be null");
         }
 
         this.context = context;
         this.viewLauncher = viewLauncher;
+        this.resourceProvider = resourceProvider;
         this.listStorage = listStorage;
-
 
     }
 
@@ -301,14 +310,23 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             throw new UnsupportedOperationException();
         }
 
-        if (shoppingList.getCalendarEventDate().getCalendarEventId() != -1) {
-            deleteCalendarEventCommandExecute();
-        }
+        viewLauncher.showYesNoDialog(
+                resourceProvider.getString(R.string.deleteShoppingList_DialogTitle),
+                resourceProvider.getString(R.string.deleteShoppingList_DialogText),
+                new Command() {
+                    @Override
+                    public void execute(Object parameter) {
 
-        listStorage.deleteList(this.shoppingListId);
-        EventBus.getDefault().post(new ShoppingListChangedEvent(this.shoppingListId, ShoppingListChangeType.Deleted));
-        finish();
+                        if (shoppingList.getCalendarEventDate().getCalendarEventId() != -1) {
+                            deleteCalendarEventCommandExecute();
+                        }
 
+                        listStorage.deleteList(shoppingListId);
+                        EventBus.getDefault().post(new ShoppingListChangedEvent(shoppingListId, ShoppingListChangeType.Deleted));
+                        finish();
+                    }
+                },
+                NullCommand.Instance);
     }
 
     private void editCalendarEventCommandExecute() {

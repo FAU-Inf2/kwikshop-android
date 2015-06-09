@@ -9,4 +9,6 @@ public interface ViewLauncher {
     void showShoppingList(int shoppingListId);
 
     void showDatePicker(int year, int month, int day, int hour, int minute);
+
+    void showYesNoDialog(String title, String message, Command positiveCommand, Command negativeCommand);
 }

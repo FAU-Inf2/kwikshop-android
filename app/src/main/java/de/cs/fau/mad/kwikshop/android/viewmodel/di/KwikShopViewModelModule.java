@@ -7,9 +7,11 @@ import dagger.Module;
 import dagger.Provides;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
+import de.cs.fau.mad.kwikshop.android.view.DefaultResourceProvider;
 import de.cs.fau.mad.kwikshop.android.view.DefaultViewLauncher;
 import de.cs.fau.mad.kwikshop.android.viewmodel.ListOfShoppingListsViewModel;
 import de.cs.fau.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
+import de.cs.fau.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.cs.fau.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 
 @Module(injects = {ListOfShoppingListsViewModel.class, ShoppingListDetailsViewModel.class})
@@ -39,5 +41,10 @@ public class KwikShopViewModelModule {
     @Provides
     public Context provideContext() {
         return currentActivity;
+    }
+
+    @Provides
+    public ResourceProvider provideResourceProvider(Context context) {
+        return new DefaultResourceProvider(context);
     }
 }

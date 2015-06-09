@@ -1,9 +1,13 @@
 package de.cs.fau.mad.kwikshop.android.view;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import cs.fau.mad.kwikshop_android.R;
+import de.cs.fau.mad.kwikshop.android.viewmodel.common.Command;
 import de.cs.fau.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 
 public class DefaultViewLauncher implements ViewLauncher {
@@ -51,5 +55,32 @@ public class DefaultViewLauncher implements ViewLauncher {
         newFragment.setArguments(args);
         newFragment.show(activity.getFragmentManager(), "datePicker");
 
+    }
+
+    @Override
+    public void showYesNoDialog(String title, String message, final Command positiveCommand, final Command negativeCommand) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+
+                if (positiveCommand.getCanExecute()) {
+                    positiveCommand.execute(null);
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+                if (negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(null);
+                }
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

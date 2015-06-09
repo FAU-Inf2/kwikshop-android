@@ -21,8 +21,11 @@ import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
+import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
+import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.util.AsyncTaskHelper;
 import de.cs.fau.mad.kwikshop.android.util.StringHelper;
+import de.greenrobot.event.EventBus;
 
 public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Integer> implements UndoAdapter {
 
@@ -177,6 +180,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         } else {
             item.setBought(true);
         }
+
+        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
+
 
         shoppingList.save();
         super.remove(position);

@@ -49,6 +49,7 @@ import de.cs.fau.mad.kwikshop.android.model.ListStorage;
 import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.kwikshop.android.util.ItemComparatorHelper;
@@ -219,7 +220,6 @@ public class ShoppingListFragment extends Fragment {
             shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     // Open item details view
-
                     startActivity(ItemDetailsActivity.getIntent(getActivity(), listID, (int) id));
                 }
             });
@@ -407,6 +407,7 @@ public class ShoppingListFragment extends Fragment {
                 autoCompletionStorage.addItem(new AutoCompletionData(textView_QuickAdd.getText().toString()));
             }
 
+            EventBus.getDefault().post(new ShoppingListChangedEvent(shoppingList.getId(), ShoppingListChangeType.ItemsAdded));
             EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
 
             //reset quick add text

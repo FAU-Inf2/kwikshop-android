@@ -43,6 +43,8 @@ import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
+import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangeType;
+import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveCancelActivity;
 import de.greenrobot.event.EventBus;
 
@@ -247,6 +249,9 @@ public class ItemDetailsFragment extends Fragment {
         if(!isNewItem){
             Toast.makeText(getActivity(),"Item removed",Toast.LENGTH_LONG);
             shoppingList.removeItem(itemId);
+
+            EventBus.getDefault().post(new ShoppingListChangedEvent(listId, ShoppingListChangeType.ItemsRemoved));
+            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, listId, itemId));
         }
 
     }
@@ -309,8 +314,16 @@ public class ItemDetailsFragment extends Fragment {
         ListStorageFragment.getLocalListStorage().saveList(shoppingList);
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
 
-        ItemChangeType changeType = isNewItem ? ItemChangeType.Added : ItemChangeType.PropertiesModified;
-        EventBus.getDefault().post(new ItemChangedEvent(changeType, shoppingList.getId(), item.getId()));
+        ItemChangeType itemChangeType = isNewItem
+                ? ItemChangeType.Added
+                : ItemChangeType.PropertiesModified;
+        EventBus.getDefault().post(new ItemChangedEvent(itemChangeType, shoppingList.getId(), item.getId()));
+
+        if (isNewItem) {
+            EventBus.getDefault().post(new ShoppingListChangedEvent(shoppingList.getId(), ShoppingListChangeType.ItemsAdded));
+        }
+
+
     }
 
 

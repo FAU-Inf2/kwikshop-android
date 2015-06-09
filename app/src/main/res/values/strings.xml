@@ -79,7 +79,8 @@
 
 
     <!-- Shopping list -->
-    <string name="itemdeleted">Moved to shopping cart</string>
+    <!--<string name="itemdeleted">Moved to shopping cart</string> -->
+    <string name="itemdeleted">item bought</string>
     <string name="taptoundo">Undo</string>
     <string name="magic">magic</string>
     <string name="sort_by">Sort by</string>

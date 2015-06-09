@@ -110,5 +110,7 @@
 
     <string name="viewOnGitHub">Auf GitHub anzeigen</string>
     <string name="alphabetically"></string>
+    <string name="deleteShoppingList_DialogTitle">Einkaufsliste löschen?</string>
+    <string name="deleteShoppingList_DialogText">Sind Sie sicher, dass sie die Einkaufsliste löschen möchten?</string>
 
 </resources>

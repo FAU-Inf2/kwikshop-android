@@ -3,15 +3,12 @@ package de.cs.fau.mad.kwikshop.android.view;
 
 //import android.app.Fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +16,10 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.Toast;
 import android.support.v4.app.Fragment;
 
@@ -35,7 +28,6 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCa
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,13 +35,11 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cs.fau.mad.kwikshop_android.R;
-import de.cs.fau.mad.kwikshop.android.common.AutoCompletionData;
 import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
 import de.cs.fau.mad.kwikshop.android.model.AutoCompletionHelper;
-import de.cs.fau.mad.kwikshop.android.model.DatabaseHelper;
 import de.cs.fau.mad.kwikshop.android.model.DefaultDataProvider;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
 import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
@@ -105,7 +95,7 @@ public class ShoppingListFragment extends Fragment {
 
     private static AutoCompletionHelper autoCompletion;
 
-
+    private View rootView;
     private boolean hasView = false;
 
     //endregion
@@ -132,23 +122,30 @@ public class ShoppingListFragment extends Fragment {
         if (getArguments() != null) {
             listID = getArguments().getInt(ARG_LISTID);
         }
-        disableFloatingButtonWhileSoftKeyboardIsShown();
+
     }
+
+
+
 
     private void disableFloatingButtonWhileSoftKeyboardIsShown() {
 
         final View activityRootView = BaseActivity.frameLayout;
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
             @Override
             public void onGlobalLayout() {
+
+                Log.d("ShFrag","Im the listener");
                 Rect r = new Rect();
                 //r will be populated with the coordinates of your view that area still visible.
                 activityRootView.getWindowVisibleDisplayFrame(r);
                 int heightDiff = activityRootView.getRootView().getHeight() - (r.bottom - r.top);
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                if (heightDiff > 100)  // if more than 100 pixels, its probably a keyboard...
                     floatingActionButton.setVisibility(View.INVISIBLE);
-                } else
+                 else
                     floatingActionButton.setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -192,7 +189,7 @@ public class ShoppingListFragment extends Fragment {
         groupStorage = ListStorageFragment.getGroupStorage();
         dataProvider = new DefaultDataProvider(getActivity());
 
-        View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
+        rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ButterKnife.inject(this, rootView);
 
 
@@ -328,6 +325,8 @@ public class ShoppingListFragment extends Fragment {
             refreshQuickAddAutoCompletion();
 
         }
+
+        disableFloatingButtonWhileSoftKeyboardIsShown();
 
         return rootView;
     }

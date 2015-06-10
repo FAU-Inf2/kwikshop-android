@@ -69,11 +69,13 @@ public class ShoppingListFragment extends Fragment {
 
     private static final String ARG_LISTID = "list_id";
 
+
     //endregion
 
 
     //region Fields
 
+    private final Object lock = new Object();
 
     private ShoppingListAdapter shoppingListAdapter;
     private ShoppingListAdapter shoppingListAdapterBought;
@@ -308,12 +310,14 @@ public class ShoppingListFragment extends Fragment {
 
             textView_QuickAdd.setOnKeyListener(new View.OnKeyListener() {
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    // If the event is a key-down event on the "enter" button
-                    if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                        addItem();
-                        return true;
+                    synchronized (lock) {
+                        // If the event is a key-down event on the "enter" button
+                        if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                            addItem();
+                            return true;
+                        }
+                        return false;
                     }
-                    return false;
                 }
             });
 
@@ -409,42 +413,46 @@ public class ShoppingListFragment extends Fragment {
 
     public void addItem() {
 
+        synchronized (lock) {
+            final String name = textView_QuickAdd.getText().toString();
 
-        //adding empty items without a name is not supported
-        if (!StringHelper.isNullOrWhiteSpace(textView_QuickAdd.getText())) {
+            //adding empty items without a name is not supported
+            if (!StringHelper.isNullOrWhiteSpace(name)) {
 
-            AsyncTask task = new AsyncTask() {
 
-                @Override
-                protected Object doInBackground(Object[] params) {
-                    Item newItem = new Item();
-                    newItem.setName(textView_QuickAdd.getText().toString());
-                    newItem.setUnit(unitStorage.getDefaultValue());
-                    newItem = parseAmountAndUnit(newItem);
-                    newItem.setGroup(groupStorage.getDefaultValue());
+                //reset quick add text
+                textView_QuickAdd.setText("");
 
-                    shoppingList.addItem(newItem);
+                AsyncTask task = new AsyncTask() {
 
-                    listStorage.saveList(shoppingList);
+                    @Override
+                    protected Object doInBackground(Object[] params) {
+                        Item newItem = new Item();
+                        newItem.setName(name);
+                        newItem.setUnit(unitStorage.getDefaultValue());
+                        newItem = parseAmountAndUnit(newItem);
+                        newItem.setGroup(groupStorage.getDefaultValue());
 
-                    autoCompletion.offer(newItem.getName());
+                        shoppingList.addItem(newItem);
 
-                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+                        listStorage.saveList(shoppingList);
 
-                    return null;
-                }
-            };
+                        autoCompletion.offer(newItem.getName());
 
-            task.execute(null);
+                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
+                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
 
-            //reset quick add text
-            textView_QuickAdd.setText("");
+                        return null;
+                    }
+                };
 
-            refreshQuickAddAutoCompletion();
+                task.execute(null);
 
+
+                refreshQuickAddAutoCompletion();
+
+            }
         }
-
 
     }
 

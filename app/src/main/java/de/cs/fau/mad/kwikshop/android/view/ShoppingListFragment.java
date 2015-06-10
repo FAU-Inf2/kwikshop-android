@@ -432,6 +432,7 @@ public class ShoppingListFragment extends Fragment {
                         newItem = parseAmountAndUnit(newItem);
                         newItem.setGroup(groupStorage.getDefaultValue());
 
+                        shoppingList = listStorage.loadList(listID); // Reload the ShoppingList - needed if Items were edited / removed
                         shoppingList.addItem(newItem);
 
                         listStorage.saveList(shoppingList);
@@ -445,7 +446,7 @@ public class ShoppingListFragment extends Fragment {
                     }
                 };
 
-                task.execute(null);
+                task.execute();
 
 
                 refreshQuickAddAutoCompletion();

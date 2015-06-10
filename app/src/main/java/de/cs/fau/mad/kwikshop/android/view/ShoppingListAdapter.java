@@ -188,8 +188,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
     }
 
-    public void updateOrderOfList(){
-
+    public void updateOrderOfList() {
         ShoppingList list = listStorage.loadList(listId);
         int i = 0;
         for(Integer item : this.getItems()){

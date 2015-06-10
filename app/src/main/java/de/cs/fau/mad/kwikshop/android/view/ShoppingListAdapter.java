@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
@@ -165,6 +166,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_Brand.setVisibility(View.GONE);
             viewHolder.textView_Amount.setVisibility(View.GONE);
             viewHolder.view_GroupHeader.setVisibility(View.GONE);
+            viewHolder.imageView_delete.setVisibility(View.VISIBLE);
         }
 
         return view;
@@ -288,6 +290,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         @InjectView(R.id.group_header_text)
         TextView textView_GroupHeaderName;
+
+        @InjectView(R.id.list_row_imageView_delete)
+        ImageView imageView_delete;
     }
 
 }

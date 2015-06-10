@@ -5,15 +5,18 @@ package de.cs.fau.mad.kwikshop.android.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -127,6 +130,26 @@ public class ShoppingListFragment extends Fragment {
         if (getArguments() != null) {
             listID = getArguments().getInt(ARG_LISTID);
         }
+        disableFloatingButtonWhileSoftKeyboardIsShown();
+    }
+
+    private void disableFloatingButtonWhileSoftKeyboardIsShown() {
+
+        final View activityRootView = BaseActivity.frameLayout;
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                //r will be populated with the coordinates of your view that area still visible.
+                activityRootView.getWindowVisibleDisplayFrame(r);
+                int heightDiff = activityRootView.getRootView().getHeight() - (r.bottom - r.top);
+                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                    floatingActionButton.setVisibility(View.INVISIBLE);
+                } else
+                    floatingActionButton.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
     public void justifyListViewHeightBasedOnChildren(DynamicListView listView) {

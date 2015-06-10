@@ -181,12 +181,11 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             item.setBought(true);
         }
 
-        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
-
-
         shoppingList.save();
         super.remove(position);
         notifyDataSetChanged();
+
+        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
     }
 
     public void updateOrderOfList(){

@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -135,8 +136,6 @@ public class ShoppingListFragment extends Fragment {
 
             @Override
             public void onGlobalLayout() {
-
-                Log.d("ShFrag","Im the listener");
                 Rect r = new Rect();
                 //r will be populated with the coordinates of your view that area still visible.
                 activityRootView.getWindowVisibleDisplayFrame(r);
@@ -301,6 +300,14 @@ public class ShoppingListFragment extends Fragment {
                 }
             });
 
+            // remove item from bought list
+            shoppingListViewBought.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+                    deleteItem(getItemFromShoppingListAdapter(adapter, position));
+                }
+            });
+
 
             textView_QuickAdd.setFocusableInTouchMode(true);
             textView_QuickAdd.requestFocus();
@@ -407,6 +414,38 @@ public class ShoppingListFragment extends Fragment {
             item.setName(output);
         }
         return item;
+
+
+    }
+
+
+    public void deleteItem(final Item deleteItem){
+
+        synchronized (lock) {
+
+                AsyncTask task = new AsyncTask() {
+
+                    @Override
+                    protected Object doInBackground(Object[] params) {
+
+                        shoppingList.removeItem(deleteItem.getId());
+
+                        listStorage.saveList(shoppingList);
+
+                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, shoppingList.getId()));
+                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, shoppingList.getId(), deleteItem.getId()));
+
+                        return null;
+                    }
+                };
+
+                task.execute(null);
+
+
+                UpdateLists();
+
+            }
+
     }
 
 
@@ -495,6 +534,9 @@ public class ShoppingListFragment extends Fragment {
 
 
     //region Private Methods
+    private Item getItemFromShoppingListAdapter(AdapterView adapter, int position){
+        return  (shoppingList.getItem((int) adapter.getItemIdAtPosition(position)));
+    }
 
     private void UpdateLists() {
         shoppingListAdapter.setGroupItems(getItemSortType() == ItemSortType.GROUP);

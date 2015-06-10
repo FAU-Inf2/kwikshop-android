@@ -231,7 +231,7 @@ public class ItemDetailsFragment extends Fragment {
     private void removeItemFromShoppingList() {
 
         if(!isNewItem){
-            Toast.makeText(getActivity(),"Item removed",Toast.LENGTH_LONG);
+
             shoppingList.removeItem(itemId);
 
             EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, listId));

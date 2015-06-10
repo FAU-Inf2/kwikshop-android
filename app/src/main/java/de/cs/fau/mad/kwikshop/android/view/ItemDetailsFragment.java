@@ -203,6 +203,7 @@ public class ItemDetailsFragment extends Fragment {
     private void setCustomActionBar() {
 
         if (getActivity() instanceof SaveCancelActivity) {
+
             SaveCancelActivity parent = (SaveCancelActivity) getActivity();
 
             View saveButton = parent.getSaveButton();
@@ -219,13 +220,18 @@ public class ItemDetailsFragment extends Fragment {
             });
 
             View delete = parent.getCancelButton();
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    removeItemFromShoppingList();
-                    getActivity().finish();
-                }
-            });
+
+            if (isNewItem) {
+                delete.setVisibility(View.GONE);
+            } else {
+                delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeItemFromShoppingList();
+                        getActivity().finish();
+                    }
+                });
+            }
 
         }
 

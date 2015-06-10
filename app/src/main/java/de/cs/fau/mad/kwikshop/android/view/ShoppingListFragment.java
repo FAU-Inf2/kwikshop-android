@@ -432,7 +432,6 @@ public class ShoppingListFragment extends Fragment {
                         newItem = parseAmountAndUnit(newItem);
                         newItem.setGroup(groupStorage.getDefaultValue());
 
-                        shoppingList = listStorage.loadList(listID); // Reload the ShoppingList - needed if Items were edited / removed
                         shoppingList.addItem(newItem);
 
                         listStorage.saveList(shoppingList);
@@ -498,16 +497,18 @@ public class ShoppingListFragment extends Fragment {
     //region Private Methods
 
     private void UpdateLists() {
+        shoppingList = listStorage.loadList(listID); // Reload the ShoppingList - needed if Items were edited / removed
+
         shoppingListAdapter.setGroupItems(getItemSortType() == ItemSortType.GROUP);
         shoppingListAdapter.clear();
-        shoppingListAdapter.addAll(generateData(listStorage.loadList(listID), false));
+        shoppingListAdapter.addAll(generateData(shoppingList, false));
         shoppingListAdapter.updateOrderOfList();
         shoppingListAdapter.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(shoppingListView);
 
         shoppingListAdapterBought.setGroupItems(getItemSortType() == ItemSortType.GROUP);
         shoppingListAdapterBought.clear();
-        shoppingListAdapterBought.addAll(generateData(listStorage.loadList(listID), true));
+        shoppingListAdapterBought.addAll(generateData(shoppingList, true));
         shoppingListAdapterBought.updateOrderOfList();
         shoppingListAdapterBought.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);

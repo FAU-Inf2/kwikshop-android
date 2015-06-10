@@ -5,12 +5,12 @@ import android.view.View;
 /**
  * Interface for activities offering activity-wide save/cancel buttons
  */
-public interface SaveCancelActivity {
+public interface SaveDeleteActivity {
 
 
     View getSaveButton();
 
-    View getCancelButton();
+    View getDeleteButton();
 
 
 

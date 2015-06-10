@@ -437,12 +437,19 @@ public class ShoppingListFragment extends Fragment {
 
                         return null;
                     }
+
+                    @Override
+                    protected void onPostExecute(Object o) {
+                        super.onPostExecute(o);
+                        UpdateLists();
+                    }
+
                 };
 
                 task.execute(null);
 
 
-                UpdateLists();
+
 
             }
 
@@ -463,6 +470,7 @@ public class ShoppingListFragment extends Fragment {
 
                 AsyncTask task = new AsyncTask() {
 
+
                     @Override
                     protected Object doInBackground(Object[] params) {
                         Item newItem = new Item();
@@ -481,6 +489,7 @@ public class ShoppingListFragment extends Fragment {
                         EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
 
                         return null;
+
                     }
                 };
 

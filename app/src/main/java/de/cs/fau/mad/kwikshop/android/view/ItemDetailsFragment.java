@@ -4,12 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -20,12 +15,10 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,20 +27,17 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cs.fau.mad.kwikshop_android.R;
-import de.cs.fau.mad.kwikshop.android.common.AutoCompletionData;
 import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
 import de.cs.fau.mad.kwikshop.android.model.AutoCompletionHelper;
-import de.cs.fau.mad.kwikshop.android.model.DatabaseHelper;
-import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
-import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveCancelActivity;
+import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.greenrobot.event.EventBus;
 
 public class ItemDetailsFragment extends Fragment {
@@ -202,8 +192,9 @@ public class ItemDetailsFragment extends Fragment {
 
     private void setCustomActionBar() {
 
-        if (getActivity() instanceof SaveCancelActivity) {
-            SaveCancelActivity parent = (SaveCancelActivity) getActivity();
+        if (getActivity() instanceof SaveDeleteActivity) {
+
+            SaveDeleteActivity parent = (SaveDeleteActivity) getActivity();
 
             View saveButton = parent.getSaveButton();
             saveButton.setOnClickListener(new View.OnClickListener() {
@@ -218,14 +209,19 @@ public class ItemDetailsFragment extends Fragment {
                 }
             });
 
-            View delete = parent.getCancelButton();
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    removeItemFromShoppingList();
-                    getActivity().finish();
-                }
-            });
+            View delete = parent.getDeleteButton();
+
+            if (isNewItem) {
+                delete.setVisibility(View.GONE);
+            } else {
+                delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeItemFromShoppingList();
+                        getActivity().finish();
+                    }
+                });
+            }
 
         }
 

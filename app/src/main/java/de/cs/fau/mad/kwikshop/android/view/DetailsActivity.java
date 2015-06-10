@@ -5,9 +5,9 @@ import android.view.Menu;
 import android.view.View;
 
 import cs.fau.mad.kwikshop_android.R;
-import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveCancelActivity;
+import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 
-public class DetailsActivity extends BaseActivity implements SaveCancelActivity {
+public class DetailsActivity extends BaseActivity implements SaveDeleteActivity {
 
     public static final String EXTRA_SHOPPINGLISTID = "extra_ShoppingListId";
 
@@ -42,7 +42,7 @@ public class DetailsActivity extends BaseActivity implements SaveCancelActivity 
     }
 
     @Override
-    public View getCancelButton() {
+    public View getDeleteButton() {
 
         ActionBar actionBar = getSupportActionBar();
         View button = actionBar.getCustomView().findViewById(R.id.button_remove);

@@ -16,7 +16,7 @@ import butterknife.OnTextChanged;
 import cs.fau.mad.kwikshop_android.R;
 import dagger.ObjectGraph;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
-import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveCancelActivity;
+import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.cs.fau.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
 import de.cs.fau.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 
@@ -76,11 +76,11 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
         bindButton(button_EditCalendarEvent, viewModel.getEditCalendarEventCommand());
 
         Activity activity = getActivity();
-        if (activity instanceof SaveCancelActivity) {
-            SaveCancelActivity saveCancelActivity = (SaveCancelActivity) activity;
+        if (activity instanceof SaveDeleteActivity) {
+            SaveDeleteActivity saveCancelActivity = (SaveDeleteActivity) activity;
 
             bindButton(saveCancelActivity.getSaveButton(), viewModel.getSaveCommand());
-            bindButton(saveCancelActivity.getCancelButton(), viewModel.getDeleteCommand());
+            bindButton(saveCancelActivity.getDeleteButton(), viewModel.getDeleteCommand());
         }
 
         viewModel.addListener(this);

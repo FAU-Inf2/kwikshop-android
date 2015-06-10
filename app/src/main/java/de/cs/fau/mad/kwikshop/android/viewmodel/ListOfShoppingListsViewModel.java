@@ -1,5 +1,8 @@
 package de.cs.fau.mad.kwikshop.android.viewmodel;
 
+import android.os.AsyncTask;
+
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -7,6 +10,8 @@ import javax.inject.Inject;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
+import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListLoadedEvent;
+import de.cs.fau.mad.kwikshop.android.viewmodel.common.LoadShoppingListTask;
 import de.cs.fau.mad.kwikshop.android.viewmodel.common.Command;
 import de.cs.fau.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.cs.fau.mad.kwikshop.android.viewmodel.common.ViewLauncher;
@@ -18,45 +23,57 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
     // listener interface
     public interface Listener extends ViewModelBase.Listener {
 
-        void onShoppingListsChanged(final List<ShoppingList> newValue);
+        void onShoppingListsChanged(final ObservableArrayList<ShoppingList, Integer> oldValue,
+                                    final ObservableArrayList<ShoppingList, Integer> newValue);
     }
 
     // infrastructure references
-    private final ViewLauncher viewLauchner;
+    private final ViewLauncher viewLauncher;
     private final ListStorage listStorage;
+    private final EventBus privateBus = EventBus.builder().build();
+
 
     private Listener listener;
 
     // backing fields for properties
-    private ObservableArrayList<ShoppingList> shoppingLists;
+    private ObservableArrayList<ShoppingList, Integer> shoppingLists;
     private final Command addShoppingListCommand = new Command<Object>() {
         @Override
         public void execute(Object parameter) {
-            viewLauchner.showAddShoppingListView();
+            viewLauncher.showAddShoppingListView();
         }
     };
     private final Command<Integer> selectShoppingListCommand = new Command<Integer>() {
         @Override
         public void execute(Integer shoppingListId) {
-            viewLauchner.showShoppingList(shoppingListId);
+            viewLauncher.showShoppingList(shoppingListId);
         }
     };
     private final Command selectShoppingListDetailsCommand = new Command<Integer>() {
         @Override
         public void execute(Integer shoppingListId) {
-            viewLauchner.showShoppingListDetailsView(shoppingListId);
+            viewLauncher.showShoppingListDetailsView(shoppingListId);
         }
     };
+
 
     @Inject
     public ListOfShoppingListsViewModel(ViewLauncher viewLauncher, ListStorage listStorage) {
 
-        this.viewLauchner = viewLauncher;
+        this.viewLauncher = viewLauncher;
         this.listStorage = listStorage;
 
-        setShoppingLists(new ObservableArrayList<ShoppingList>(listStorage.getAllLists()));
+        setShoppingLists(new ObservableArrayList<>(new ObservableArrayList.IdExtractor<ShoppingList, Integer>() {
+            @Override
+            public Integer getId(ShoppingList object) {
+                return object.getId();
+            }
+        }));
 
         EventBus.getDefault().register(this);
+        privateBus.register(this);
+
+        new LoadShoppingListTask(listStorage, privateBus).execute();
     }
 
 
@@ -67,15 +84,16 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
 
     // Getters / Setters
 
-    public ObservableArrayList<ShoppingList> getShoppingLists() {
+    public ObservableArrayList<ShoppingList, Integer> getShoppingLists() {
         return this.shoppingLists;
     }
 
-    private void setShoppingLists(final ObservableArrayList<ShoppingList> value) {
+    private void setShoppingLists(final ObservableArrayList<ShoppingList, Integer> value) {
         if (value != shoppingLists) {
+            ObservableArrayList<ShoppingList, Integer> oldValue = this.shoppingLists;
             this.shoppingLists = value;
             if (listener != null) {
-                listener.onShoppingListsChanged(value);
+                listener.onShoppingListsChanged(oldValue, value);
             }
         }
     }
@@ -99,8 +117,22 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
 
     public void onEventMainThread(ShoppingListChangedEvent ev) {
 
-        //TODO: only update list entries that were changed, instead of recreating the entire list
-        setShoppingLists(new ObservableArrayList<>(listStorage.getAllLists()));
+        switch (ev.getChangeType()) {
+
+            case Deleted:
+                shoppingLists.removeById(ev.getListId());
+                break;
+
+            case PropertiesModified:
+            case ItemsAdded:
+            case ItemsRemoved:
+            case Added:
+                loadShoppingListAsync(ev.getListId());
+                break;
+
+            default:
+                break;
+        }
     }
 
     @Override
@@ -108,4 +140,28 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         EventBus.getDefault().unregister(this);
         super.finish();
     }
+
+
+    private void loadShoppingListAsync(int id) {
+
+        AsyncTask<Object, Object, Collection<ShoppingList>> task = new LoadShoppingListTask(listStorage, privateBus, id);
+        task.execute();
+    }
+
+    public void onEventMainThread(ShoppingListLoadedEvent event) {
+
+        ShoppingList loadedList = event.getShoppingList();
+
+        synchronized (this) {
+
+            int index = shoppingLists.indexOfById(loadedList.getId());
+            if (index >= 0) {
+                shoppingLists.set(index, loadedList);
+            } else {
+                shoppingLists.add(loadedList);
+            }
+        }
+
+    }
+
 }

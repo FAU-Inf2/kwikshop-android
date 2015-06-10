@@ -15,7 +15,7 @@ import de.cs.fau.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 /**
  * ListAdapter for displaying the list of shopping lists
  */
-public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList> {
+public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList> implements ObservableArrayList.Listener<ShoppingList> {
 
 
     //region Constants
@@ -28,14 +28,14 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
     //region Fields
 
     private final Activity parentActivity;
-    private final ObservableArrayList<ShoppingList> lists;
+    private final ObservableArrayList<ShoppingList, Integer> lists;
 
     //endregion
 
 
     //region Constructor
 
-    public ListOfShoppingListsListRowAdapter(Activity parentActivity, ObservableArrayList<ShoppingList> lists) {
+    public ListOfShoppingListsListRowAdapter(Activity parentActivity, ObservableArrayList<ShoppingList, Integer> lists) {
 
         super(parentActivity, R.layout.fragment_list_of_shoppinglists_row, lists);
 
@@ -49,8 +49,7 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
 
         this.parentActivity = parentActivity;
         this.lists = lists;
-
-        //TODO: subscribe to events from observable list
+        this.lists.setListener(this);
     }
 
     //endregion
@@ -97,5 +96,20 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
 
     //endregion
 
+
+    @Override
+    public void onItemAdded(ShoppingList newItem) {
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemRemoved(ShoppingList removedItem) {
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemModified(ShoppingList modifiedItem) {
+        notifyDataSetChanged();
+    }
 
 }

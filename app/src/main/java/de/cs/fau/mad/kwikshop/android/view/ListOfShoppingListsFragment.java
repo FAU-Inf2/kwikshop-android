@@ -16,6 +16,7 @@ import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
 import de.cs.fau.mad.kwikshop.android.viewmodel.ListOfShoppingListsViewModel;
+import de.cs.fau.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.cs.fau.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 
 /**
@@ -31,6 +32,8 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
     View floatingActionButton;
 
     private ListOfShoppingListsViewModel viewModel;
+    private ListOfShoppingListsListRowAdapter listAdapter;
+
 
     public static ListOfShoppingListsFragment newInstance() {
 
@@ -61,7 +64,7 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
 
 
         // create adapter for list
-        ListOfShoppingListsListRowAdapter listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists());
+        listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists());
         listView_ShoppingLists.setAdapter(listAdapter);
 
         // bind view to view model
@@ -79,9 +82,12 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
 
 
     @Override
-    public void onShoppingListsChanged(List<ShoppingList> newValue) {
+    public void onShoppingListsChanged(final ObservableArrayList<ShoppingList, Integer> oldValue,
+                                       final ObservableArrayList<ShoppingList, Integer> newValue) {
 
-        listView_ShoppingLists.setAdapter(new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists()));
+        oldValue.replaceListener(listAdapter, null);
+        listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists());
+        listView_ShoppingLists.setAdapter(listAdapter);
     }
 
     @Override

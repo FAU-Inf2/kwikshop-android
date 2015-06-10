@@ -13,8 +13,14 @@ import java.util.ListIterator;
  *
  * @param <T> The type of items the list holds
  */
-public class ObservableArrayList<T> extends ArrayList<T> {
+public class ObservableArrayList<T, K> extends ArrayList<T> {
 
+
+    public interface IdExtractor<T, K> {
+
+        public K getId(T object);
+
+    }
 
     /**
      * Listener interface for observers to implement
@@ -37,23 +43,44 @@ public class ObservableArrayList<T> extends ArrayList<T> {
          */
         void onItemRemoved(T removedItem);
 
+        void onItemModified(T modifiedItem);
+
     }
 
 
-    Listener<T> listener;           //current listener
+    private final IdExtractor<T, K> idExtractor;
+    private Listener<T> listener;           //current listener
 
 
-    public ObservableArrayList() {
+    public ObservableArrayList(IdExtractor<T, K> idExtractor) {
         super();
+
+        if (idExtractor == null) {
+            throw new IllegalArgumentException("'idExtractor' must not be null");
+        }
+
+        this.idExtractor = idExtractor;
     }
 
-    public ObservableArrayList(Collection<? extends T> c) {
+    public ObservableArrayList(IdExtractor<T, K> idExtractor, Collection<? extends T> c) {
         super(c);
+
+        if (idExtractor == null) {
+            throw new IllegalArgumentException("'idExtractor' must not be null");
+        }
+
+        this.idExtractor = idExtractor;
     }
 
 
     public void setListener(final Listener<T> value) {
         this.listener = value;
+    }
+
+    public void replaceListener(final Listener<T> toReplace, final Listener<T> newListener) {
+        if (this.listener == toReplace) {
+            this.listener = newListener;
+        }
     }
 
     @Override
@@ -173,6 +200,7 @@ public class ObservableArrayList<T> extends ArrayList<T> {
         return success;
     }
 
+
     @Override
     public boolean removeAll(@NonNull Collection<?> collection) {
         throw new UnsupportedOperationException();
@@ -194,6 +222,55 @@ public class ObservableArrayList<T> extends ArrayList<T> {
     }
 
 
+    public void notifyItemModifiedById(K id) {
+        T item = getById(id);
+        if (item != null) {
+            notifyItemModified(item);
+        }
+    }
+
+    public void notifyItemModified(T modifiedItem) {
+        if (listener != null) {
+            listener.onItemModified(modifiedItem);
+        }
+    }
+
+    public boolean removeById(K id) {
+        T toRemove = getById(id);
+
+        if (toRemove == null) {
+            return false;
+        } else {
+            return remove(toRemove);
+        }
+    }
+
+
+    public T getById(K id) {
+
+        //TODO: optimize this (perhaps using a HashMap of Ids)
+
+        for (T item : this) {
+            if (idExtractor.getId(item).equals(id)) {
+                return item;
+            }
+        }
+
+        return null;
+    }
+
+    public int indexOfById(K id) {
+        T item = getById(id);
+        if (item == null) {
+            return -1;
+        } else {
+            return indexOf(item);
+        }
+    }
+
+    public boolean containsById(K id) {
+        return getById(id) != null;
+    }
 
     private class ReadonlyListIteratorWrapper implements ListIterator<T> {
 

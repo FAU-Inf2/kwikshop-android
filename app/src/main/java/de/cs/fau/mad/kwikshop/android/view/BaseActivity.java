@@ -13,7 +13,6 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -56,7 +55,7 @@ public class BaseActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.overview_action_menu, menu);
+        getMenuInflater().inflate(R.menu.overflow_action_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

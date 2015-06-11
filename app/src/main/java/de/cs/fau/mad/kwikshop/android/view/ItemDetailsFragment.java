@@ -33,6 +33,7 @@ import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
 import de.cs.fau.mad.kwikshop.android.model.AutoCompletionHelper;
+import de.cs.fau.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
@@ -252,6 +253,13 @@ public class ItemDetailsFragment extends Fragment {
     public void onEventMainThread(ItemChangedEvent event) {
         if (shoppingList.getId() == event.getShoppingListId() && event.getItemId() == item.getId()) {
             setupUI();
+        }
+    }
+
+    public void onEvent(AutoCompletionHistoryDeletedEvent event){
+        if (autoCompletion != null) {
+            productname_text.setAdapter(autoCompletion.getNameAdapter(getActivity()));
+            brand_text.setAdapter(autoCompletion.getBrandAdapter(getActivity()));
         }
     }
 

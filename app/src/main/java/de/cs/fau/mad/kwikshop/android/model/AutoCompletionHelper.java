@@ -10,6 +10,8 @@ import java.util.List;
 
 import de.cs.fau.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.cs.fau.mad.kwikshop.android.common.AutoCompletionData;
+import de.cs.fau.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
+import de.greenrobot.event.EventBus;
 
 public class AutoCompletionHelper{
     private SimpleStorage<AutoCompletionData> autoCompletionNameStorage;
@@ -106,13 +108,12 @@ public class AutoCompletionHelper{
         }
     }
 
-    /**
-     * call this method after auto completion history was deleted
-     */
-    public void reloadFromDatabase() {
+    //public void onEvent(AutoCompletionHistoryDeletedEvent event) {
+    public void reloadFromDatabase(){
         if (instance == null)
             return;
         initializeSuggestionArrays();
+        EventBus.getDefault().post(new AutoCompletionHistoryDeletedEvent());
     }
 
 }

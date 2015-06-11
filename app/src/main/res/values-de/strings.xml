@@ -113,4 +113,25 @@
     <string name="deleteShoppingList_DialogTitle">Einkaufsliste löschen?</string>
     <string name="deleteShoppingList_DialogText">Sind Sie sicher, dass sie die Einkaufsliste löschen möchten?</string>
 
+
+
+    <!--Example list -->
+    <string name="descr_my_first_shopping_list">Meine erste Einkaufsliste</string>
+    <string name="descr_apple">Apfel</string>
+    <string name="descr_spaghettis">Spaghetti</string>
+    <string name="descr_already_bought">Dieser Gegenstand wurde bereits gekauft</string>
+    <string name="descr_toilet_paper">Toilettenpapier</string>
+    <string name="descr_sweets">Süßigkeiten</string>
+    <string name="descr_coke">Cola</string>
+
+    <string name="descr_quickadd">Schreibe in die Box um Gegenstände hinzuzufügen</string>
+    <string name="descr_drag_and_drop1">Drücke ein bisschen länger und bewege</string>
+    <string name="descr_drag_and_drop2">den Gegestand um deine Liste zu sortieren</string>
+    <string name="descr_fab1">Du kannst Gegenstände mit Details</string>
+    <string name="descr_fab2">durch den Knopf unten rechts hinzufügen</string>
+    <string name="descr_details1">Zum Beispiel kannst du wichtige Gegenstände</string>
+    <string name="descr_details2">wie Toilettenpapier hervorheben</string>
+    <string name="descr_swipe">Wische über einen Gegenstand um ihn als gekauft zu markieren</string>
+
+
 </resources>

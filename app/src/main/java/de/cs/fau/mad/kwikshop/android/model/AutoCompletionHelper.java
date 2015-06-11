@@ -108,7 +108,6 @@ public class AutoCompletionHelper{
         }
     }
 
-    //public void onEvent(AutoCompletionHistoryDeletedEvent event) {
     public void reloadFromDatabase(){
         if (instance == null)
             return;

@@ -136,14 +136,17 @@ public class ShoppingListFragment extends Fragment {
 
             @Override
             public void onGlobalLayout() {
-                Rect r = new Rect();
-
                 //r will be populated with the coordinates of your view that area still visible.
+                Rect r = new Rect();
                 activityRootView.getWindowVisibleDisplayFrame(r);
 
-                double actualHeight = r.bottom - r.top;
-                double height = activityRootView.getRootView().getHeight();
-                if (actualHeight < 0.5 * height) {  // less than half of the view is visible, its probably a keyboard...
+                int screenHeight = activityRootView.getRootView().getHeight();
+
+                // r.bottom is the position above soft keypad or device button.
+                // if keypad is shown, the r.bottom is smaller than that before.
+                int keypadHeight = screenHeight - r.bottom;
+
+                if (keypadHeight > screenHeight * 0.15) {
                     //hide right away (fade out animation looks weird if the keyboard is showing up at the same moment)
                     floatingActionButton.setVisibility(View.GONE);
                     floatingActionButton.hide();

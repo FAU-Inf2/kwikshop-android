@@ -34,6 +34,10 @@ public class AutoCompletionHelper{
             e.printStackTrace();
         }
 
+        initializeSuggestionArrays();
+    }
+
+    private void initializeSuggestionArrays() {
         List<AutoCompletionData> autoCompletionNameData = autoCompletionNameStorage.getItems();
         autocompleteNameSuggestions = new ArrayList<String>(autoCompletionNameData.size());
         for (AutoCompletionData data : autoCompletionNameData) {
@@ -101,4 +105,14 @@ public class AutoCompletionHelper{
             storage.addItem(text);
         }
     }
+
+    /**
+     * call this method after auto completion history was deleted
+     */
+    public void reloadFromDatabase() {
+        if (instance == null)
+            return;
+        initializeSuggestionArrays();
+    }
+
 }

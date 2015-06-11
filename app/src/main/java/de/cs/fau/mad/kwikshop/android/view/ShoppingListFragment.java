@@ -22,6 +22,7 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 import android.support.v4.app.Fragment;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
@@ -88,7 +89,7 @@ public class ShoppingListFragment extends Fragment {
     MultiAutoCompleteTextView textView_QuickAdd;
 
     @InjectView(R.id.fab)
-    View floatingActionButton;
+    FloatingActionButton floatingActionButton;
 
     @InjectView(R.id.button_quickAdd)
     View button_QuickAdd;
@@ -142,11 +143,15 @@ public class ShoppingListFragment extends Fragment {
 
                 double actualHeight = r.bottom - r.top;
                 double height = activityRootView.getRootView().getHeight();
-                if (actualHeight < 0.5 * height)  // less than half of the view is visible, its probably a keyboard...
-                    floatingActionButton.setVisibility(View.INVISIBLE);
-                 else
+                if (actualHeight < 0.5 * height) {  // less than half of the view is visible, its probably a keyboard...
+                    //hide right away (fade out animation looks weird if the keyboard is showing up at the same moment)
+                    floatingActionButton.setVisibility(View.GONE);
+                    floatingActionButton.hide();
+                } else {
+                    //make visible so ew can see the fade in animation
                     floatingActionButton.setVisibility(View.VISIBLE);
-
+                    floatingActionButton.show();
+                }
             }
         });
 

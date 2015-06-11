@@ -102,6 +102,14 @@ public class AutoCompletionHelper{
         if (null == text || text.isEmpty())
             return;
 
+        if (text.charAt(text.length() - 1) == ' ') {
+            int i;
+            for (i = 1; i < text.length(); i++) {
+                if (text.charAt(text.length() - 1) != ' ') break;
+            }
+            text = text.substring(0, text.length() - i);
+        }
+
         if(!list.contains(text)){
             list.add(text);
             storage.addItem(text);

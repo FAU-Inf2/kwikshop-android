@@ -14,6 +14,7 @@ import android.util.Log;
 import java.sql.SQLException;
 
 import de.cs.fau.mad.kwikshop.android.common.AccountID;
+import de.cs.fau.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.cs.fau.mad.kwikshop.android.common.AutoCompletionData;
 import de.cs.fau.mad.kwikshop.android.common.CalendarEventDate;
 import de.cs.fau.mad.kwikshop.android.common.Group;
@@ -26,7 +27,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
     private static final String DATABASE_NAME = "kwikshop.db";
 
-    private static final int DATABASE_VERSION = 5; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 6; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -49,6 +50,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private Dao<AutoCompletionData, Integer> autoCompletionDao = null;
     private RuntimeExceptionDao<AutoCompletionData, Integer> autoCompletionRuntimeDao = null;
 
+    private Dao<AutoCompletionBrandData, Integer> autoCompletionBrandDao = null;
+    private RuntimeExceptionDao<AutoCompletionBrandData, Integer> autoCompletionBrandRuntimeDao = null;
 
     public DatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -65,6 +68,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.createTable(connectionSource, Group.class);
             TableUtils.createTable(connectionSource, CalendarEventDate.class);
             TableUtils.createTable(connectionSource, AutoCompletionData.class);
+            TableUtils.createTable(connectionSource, AutoCompletionBrandData.class);
 
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
@@ -84,6 +88,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.dropTable(connectionSource, Group.class, true);
             TableUtils.dropTable(connectionSource, CalendarEventDate.class, true);
             TableUtils.dropTable(connectionSource, AutoCompletionData.class, true);
+            TableUtils.dropTable(connectionSource, AutoCompletionBrandData.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(db, connectionSource);
         } catch (SQLException e) {
@@ -191,6 +196,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         return autoCompletionRuntimeDao;
     }
 
+    public Dao<AutoCompletionBrandData, Integer> getAutoCompletionBrandDao() throws SQLException{
+        if (autoCompletionBrandDao == null) {
+            autoCompletionBrandDao = getDao(AutoCompletionBrandData.class);
+        }
+        return autoCompletionBrandDao;
+    }
+
+    public RuntimeExceptionDao<AutoCompletionBrandData, Integer> getAutoCompletionBrandRuntimeDao () {
+        if (autoCompletionBrandRuntimeDao == null) {
+            autoCompletionBrandRuntimeDao = getRuntimeExceptionDao(AutoCompletionBrandData.class);
+        }
+        return autoCompletionBrandRuntimeDao;
+    }
+
     @Override
     public void close() {
         super.close();
@@ -214,5 +233,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
         autoCompletionDao = null;
         autoCompletionRuntimeDao = null;
+
+        autoCompletionBrandDao = null;
+        autoCompletionBrandRuntimeDao = null;
     }
 }

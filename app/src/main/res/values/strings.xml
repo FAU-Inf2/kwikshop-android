@@ -141,4 +141,22 @@
     <string name="deleteShoppingList_DialogTitle">Delete shopping list?</string>
     <string name="deleteShoppingList_DialogText">Are you sure you want to delete the shopping list?</string>
 
+    <!--Example list -->
+    <string name="descr_my_first_shopping_list">My first shopping list</string>
+    <string name="descr_apple">Apple</string>
+    <string name="descr_spaghettis">Spaghettis</string>
+    <string name="descr_already_bought">This item is already bought</string>
+    <string name="descr_toilet_paper">Toilet paper</string>
+    <string name="descr_sweets">Sweets</string>
+    <string name="descr_coke">Coke</string>
+
+    <string name="descr_quickadd">Type in the box above to add items</string>
+    <string name="descr_drag_and_drop1">Click a bit longer and then move your item</string>
+    <string name="descr_drag_and_drop2">to sort your list as you want</string>
+    <string name="descr_fab1">You can add detailed items</string>
+    <string name="descr_fab2">with the button down right</string>
+    <string name="descr_details1">For example you can highlight</string>
+    <string name="descr_details2">important items like toilet paper</string>
+    <string name="descr_swipe">Swipe items to mark them as bought</string>
+
 </resources>

@@ -12,7 +12,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.NumberPicker;
@@ -37,6 +37,7 @@ import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
+import de.cs.fau.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.cs.fau.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.greenrobot.event.EventBus;
 
@@ -67,7 +68,7 @@ public class ItemDetailsFragment extends Fragment {
     /* UI elements */
 
     @InjectView(R.id.productname_text)
-    AutoCompleteTextView productname_text;
+    MultiAutoCompleteTextView productname_text;
 
     @InjectView(R.id.numberPicker)
     NumberPicker numberPicker;
@@ -345,6 +346,7 @@ public class ItemDetailsFragment extends Fragment {
 
         //wire up auto-complete for product name
         productname_text.setAdapter(autoCompletion.getAdapter(getActivity()));
+        productname_text.setTokenizer(new SpaceTokenizer());
 
         // load shopping list and item and set values in UI
         shoppingList = ListStorageFragment.getLocalListStorage().loadList(listId);

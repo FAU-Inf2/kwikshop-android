@@ -17,7 +17,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ScrollView;
@@ -49,6 +49,7 @@ import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
+import de.cs.fau.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.cs.fau.mad.kwikshop.android.util.ItemComparatorHelper;
 import de.cs.fau.mad.kwikshop.android.util.StringHelper;
 import de.greenrobot.event.EventBus;
@@ -86,7 +87,7 @@ public class ShoppingListFragment extends Fragment {
     private DefaultDataProvider dataProvider;
 
     @InjectView(R.id.textView_quickAdd)
-    AutoCompleteTextView textView_QuickAdd;
+    MultiAutoCompleteTextView textView_QuickAdd;
 
     @InjectView(R.id.fab)
     View floatingActionButton;
@@ -324,6 +325,7 @@ public class ShoppingListFragment extends Fragment {
                     }
                 }
             });
+            textView_QuickAdd.setTokenizer(new SpaceTokenizer());
 
             //wire up auto-complete for product name
             if (autoCompletion == null)

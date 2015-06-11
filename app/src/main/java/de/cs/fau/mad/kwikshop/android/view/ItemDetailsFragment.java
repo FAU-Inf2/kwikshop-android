@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -77,7 +78,7 @@ public class ItemDetailsFragment extends Fragment {
     Spinner unit_spinner;
 
     @InjectView(R.id.brand_text)
-    EditText brand_text;
+    AutoCompleteTextView brand_text;
 
     @InjectView(R.id.comment_text)
     EditText comment_text;
@@ -289,6 +290,7 @@ public class ItemDetailsFragment extends Fragment {
         item.setHighlight(highlight_checkbox.isChecked());
 
         autoCompletion.offerName(productname_text.getText().toString());
+        autoCompletion.offerBrand(brand_text.getText().toString());
 
         if (isNewItem) {
             shoppingList.addItem(item);
@@ -344,9 +346,10 @@ public class ItemDetailsFragment extends Fragment {
         numberPicker.setWrapSelectorWheel(false);
         numberPicker.setDisplayedValues(numbersForThePicker);
 
-        //wire up auto-complete for product name
+        //wire up auto-complete for product name and brand
         productname_text.setAdapter(autoCompletion.getNameAdapter(getActivity()));
         productname_text.setTokenizer(new SpaceTokenizer());
+        brand_text.setAdapter(autoCompletion.getBrandAdapter(getActivity()));
 
         // load shopping list and item and set values in UI
         shoppingList = ListStorageFragment.getLocalListStorage().loadList(listId);

@@ -32,10 +32,10 @@ import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 public class SettingFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    public static String  SETTINGS = "settings";
+    public static String SETTINGS = "settings";
     public static String OPTION_1 = "locale";
     public static String OPTION_2 = "autocomplete";
-    public static CharSequence[] localeSelectionNames = {"default", "English", "German", "Portuguese"};
+    public static CharSequence[] localeSelectionNames = {"Default", "English", "German", "Portuguese"};
     public static CharSequence[] localeIds = {"default", "en", "de", "pt"};
 
     private View rootView;

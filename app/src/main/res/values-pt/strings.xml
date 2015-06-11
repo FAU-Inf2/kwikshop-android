@@ -80,4 +80,22 @@
     <string name="unit_pack">pacote</string>
     <string name="unit_piece">pedaço</string>
     <string name="unit_piece_short">pc</string>
+    <string name="deleteShoppingList_DialogText">Tem certeza que deseja deletar a lista de compras?</string>
+    <string name="deleteShoppingList_DialogTitle">Deletar a lista de compras?</string>
+    <string name="descr_already_bought">O item já foi comprado</string>
+    <string name="descr_apple">Maçã</string>
+    <string name="descr_coke">Coca</string>
+    <string name="descr_details1">Por exemplo você pode ressaltar</string>
+    <string name="descr_details2">itens importantes como papel higiênico</string>
+    <string name="descr_drag_and_drop1">Click por mais tempo e então mova seu item </string>
+    <string name="descr_drag_and_drop2">para ordenar a lista da sua forma</string>
+    <string name="descr_fab1">Você pode adicionar detalhe aos itens</string>
+    <string name="descr_fab2">com o botão a direita abaixo</string>
+    <string name="descr_my_first_shopping_list">Minha primeira lista de compras</string>
+    <string name="descr_quickadd">Escreva na caixa acima para adicionar itens</string>
+    <string name="descr_spaghettis">Spaghetti</string>
+    <string name="descr_sweets">Doces</string>
+    <string name="descr_swipe">Swipe os itens para marcar como comprados</string>
+    <string name="descr_toilet_paper">Papel higiênico</string>
+    <string name="viewOnGitHub">Veja no GitHub</string>
 </resources>

@@ -63,10 +63,10 @@
     <!-- Settings -->
     <string name="settings_option_1_name">Option 1</string>
     <string name="settings_option_1_desc">Description of option 1</string>
-    <string name="settings_option_2_setlocale">locale</string>
-    <string name="settings_option_2_desc">change the language</string>
+    <string name="settings_option_2_setlocale">Locale</string>
+    <string name="settings_option_2_desc">Change the language</string>
     <string name="settings_option_3_deleteHistory">Autocompletion</string>
-    <string name="settings_option_3_desc">delete the history</string>
+    <string name="settings_option_3_desc">Delete the history</string>
     <string name="settings_option_3_check_title">Delete history?</string>
     <string name="settings_option_3_check_text">Are you sure you want to delete the history of autocompletion?</string>
     <string name="settings_option_3_error">Unfortunately an error occurred while deleting the history</string>
@@ -91,7 +91,7 @@
     </string-array>
     <string name="defaultItem">Touch to create a new item</string>
     <string name="ShoppingListItem">Shopping list item</string>
-    <string name="title_default_list">Shopping List 1</string>
+    <string name="title_default_list">Shopping list 1</string>
 
     <string name="sortby_manual">Manual</string>
     <string name="sortby_group">Group</string>
@@ -113,7 +113,7 @@
     <string name="githubLink" translatable="false">https://github.com/FAU-Inf2/kwikshop-android</string>
     <string name="viewOnGitHub">View on GitHub</string>
     <string name="acknowledgements_Title">Acknowledgements</string>
-    <string name="acknowledgements_Description">This application uses several thrid-party libaries:</string>
+    <string name="acknowledgements_Description">This application uses several third-party libraries:</string>
 
     <!--
     TODO: Writing this stuff as escaped HTML is super ugly, especially because it's duplicated information.
@@ -138,7 +138,7 @@
 
 
     <!--Shopping list details -->
-    <string name="deleteShoppingList_DialogTitle">Delete Shopping List?</string>
+    <string name="deleteShoppingList_DialogTitle">Delete shopping list?</string>
     <string name="deleteShoppingList_DialogText">Are you sure you want to delete the shopping list?</string>
 
 </resources>

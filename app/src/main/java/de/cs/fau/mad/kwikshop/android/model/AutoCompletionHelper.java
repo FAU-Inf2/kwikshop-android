@@ -93,6 +93,9 @@ public class AutoCompletionHelper{
     }
 
     private void offer(String text, ArrayList<String> list, SimpleStorage storage) {
+        if (null == text || text.isEmpty())
+            return;
+
         if(!list.contains(text)){
             list.add(text);
             storage.addItem(text);

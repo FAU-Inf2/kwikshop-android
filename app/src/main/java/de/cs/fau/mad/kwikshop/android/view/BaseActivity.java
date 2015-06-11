@@ -102,6 +102,7 @@ public class BaseActivity extends ActionBarActivity {
 
         // Activity must be restarted to set saved locale
         Intent refresh = new Intent(this, ListOfShoppingListsActivity.class);
+        finish();
         startActivity(refresh);
     }
 

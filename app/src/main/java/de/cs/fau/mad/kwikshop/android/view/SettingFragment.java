@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import cs.fau.mad.kwikshop_android.R;
+import de.cs.fau.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.cs.fau.mad.kwikshop.android.common.AutoCompletionData;
 import de.cs.fau.mad.kwikshop.android.model.DatabaseHelper;
 import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
@@ -168,17 +169,20 @@ public class SettingFragment extends Fragment {
     private void deleteAutoCompletionHistory() {
         Context context = getActivity().getBaseContext();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        SimpleStorage<AutoCompletionData> autoCompletionStorage = null;
+        SimpleStorage<AutoCompletionData> autoCompletionNameStorage = null;
+        SimpleStorage<AutoCompletionBrandData> autoCompletionBrandStorage = null;
         try {
             //create local autocompletion storage
-            autoCompletionStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
+            autoCompletionNameStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
+            autoCompletionBrandStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionBrandDao());
         } catch (SQLException e) {
             e.printStackTrace();
             Toast.makeText(getActivity(), getResources().getString(R.string.settings_option_3_error), Toast.LENGTH_LONG).show();
             return;
         }
         // delete all AutoCompletionData
-        autoCompletionStorage.deleteAll();
+        autoCompletionNameStorage.deleteAll();
+        autoCompletionBrandStorage.deleteAll();
 
         Toast.makeText(getActivity(), getResources().getString(R.string.settings_option_3_success), Toast.LENGTH_LONG).show();
     }

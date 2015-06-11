@@ -8,13 +8,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.cs.fau.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.cs.fau.mad.kwikshop.android.common.AutoCompletionData;
 
 public class AutoCompletionHelper{
-    private SimpleStorage<AutoCompletionData> autoCompletionStorage;
+    private SimpleStorage<AutoCompletionData> autoCompletionNameStorage;
+    private SimpleStorage<AutoCompletionBrandData> autoCompletionBrandStorage;
     private DatabaseHelper databaseHelper;
 
-    private ArrayList<String> autocompleteSuggestions = null;
+    private ArrayList<String> autocompleteNameSuggestions = null;
+    private ArrayList<String> autocompleteBrandSuggestions = null;
 
     private static AutoCompletionHelper instance = null; //singleton
 
@@ -25,14 +28,22 @@ public class AutoCompletionHelper{
         databaseHelper = new DatabaseHelper(context);
         try {
             //create local autocompletion storage
-            autoCompletionStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
+            autoCompletionNameStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
+            autoCompletionBrandStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionBrandDao());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        List<AutoCompletionData> autoCompletionData = autoCompletionStorage.getItems();
-        autocompleteSuggestions = new ArrayList<String>(autoCompletionData.size());
-        for (AutoCompletionData data : autoCompletionData) {
-            autocompleteSuggestions.add(data.getText());
+
+        List<AutoCompletionData> autoCompletionNameData = autoCompletionNameStorage.getItems();
+        autocompleteNameSuggestions = new ArrayList<String>(autoCompletionNameData.size());
+        for (AutoCompletionData data : autoCompletionNameData) {
+            autocompleteNameSuggestions.add(data.getName());
+        }
+
+        List<AutoCompletionBrandData> autoCompletionBrandData = autoCompletionBrandStorage.getItems();
+        autocompleteBrandSuggestions = new ArrayList<String>(autoCompletionBrandData.size());
+        for (AutoCompletionBrandData data : autoCompletionBrandData) {
+            autocompleteBrandSuggestions.add(data.getName());
         }
     }
 
@@ -44,21 +55,47 @@ public class AutoCompletionHelper{
     }
 
     /**
-     * Gets a ArrayAdapter which can be used in setAdapter-method of a AutoCompleteTextView
+     * Gets a ArrayAdapter which can be used in setAdapter-method of a AutoCompleteTextView,
+     * where an item name is auto completed
      * @param activity the current Activity
      */
-    public ArrayAdapter<String> getAdapter(Activity activity) {
-        return new ArrayAdapter<String>(activity, android.R.layout.simple_dropdown_item_1line, autocompleteSuggestions);
+    public ArrayAdapter<String> getNameAdapter(Activity activity) {
+        return getAdapter(activity, autocompleteNameSuggestions);
     }
 
     /**
-     * Offers a text for further autocompletion queries. If this text is already stored due to
-     * previous calls, nothing happens. Otherwise the text is stored.
+     * Gets a ArrayAdapter which can be used in setAdapter-method of a AutoCompleteTextView,
+     * where an brand is auto completed
+     * @param activity the current Activity
      */
-    public void offer(String text) {
-        if (!autocompleteSuggestions.contains(text)) {
-            autocompleteSuggestions.add(text);
-            autoCompletionStorage.addItem(new AutoCompletionData(text));
+    public ArrayAdapter<String> getBrandAdapter(Activity activity) {
+        return getAdapter(activity, autocompleteBrandSuggestions);
+    }
+
+    private ArrayAdapter<String> getAdapter(Activity activity, ArrayList<String> list) {
+        return new ArrayAdapter<String>(activity, android.R.layout.simple_dropdown_item_1line, list);
+    }
+
+    /**
+     * Offers a text for further autocompletion queries of item names. If this text is already
+     * stored due to previous calls, nothing happens. Otherwise the text is stored.
+     */
+    public void offerName(String name) {
+        offer(name, autocompleteNameSuggestions, autoCompletionNameStorage);
+    }
+
+    /**
+     * Offers a text for further autocompletion queries of brands. If this text is already
+     * stored due to previous calls, nothing happens. Otherwise the text is stored.
+     */
+    public void offerBrand(String brand) {
+        offer(brand, autocompleteBrandSuggestions, autoCompletionBrandStorage);
+    }
+
+    private void offer(String text, ArrayList<String> list, SimpleStorage storage) {
+        if(!list.contains(text)){
+            list.add(text);
+            storage.addItem(text);
         }
     }
 }

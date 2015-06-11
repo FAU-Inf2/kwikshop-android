@@ -8,7 +8,6 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -483,7 +481,7 @@ public class ShoppingListFragment extends Fragment {
 
                         listStorage.saveList(shoppingList);
 
-                        autoCompletion.offer(newItem.getName());
+                        autoCompletion.offerName(newItem.getName());
 
                         EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
                         EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
@@ -507,7 +505,7 @@ public class ShoppingListFragment extends Fragment {
      * call this method to initialize or refresh the data used by QuickAdd's auto completion
      */
     private void refreshQuickAddAutoCompletion() {
-        textView_QuickAdd.setAdapter(autoCompletion.getAdapter(getActivity()));
+        textView_QuickAdd.setAdapter(autoCompletion.getNameAdapter(getActivity()));
     }
 
 

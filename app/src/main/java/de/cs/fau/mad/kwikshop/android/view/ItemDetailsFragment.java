@@ -288,7 +288,7 @@ public class ItemDetailsFragment extends Fragment {
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
 
-        autoCompletion.offer(productname_text.getText().toString());
+        autoCompletion.offerName(productname_text.getText().toString());
 
         if (isNewItem) {
             shoppingList.addItem(item);
@@ -345,7 +345,7 @@ public class ItemDetailsFragment extends Fragment {
         numberPicker.setDisplayedValues(numbersForThePicker);
 
         //wire up auto-complete for product name
-        productname_text.setAdapter(autoCompletion.getAdapter(getActivity()));
+        productname_text.setAdapter(autoCompletion.getNameAdapter(getActivity()));
         productname_text.setTokenizer(new SpaceTokenizer());
 
         // load shopping list and item and set values in UI

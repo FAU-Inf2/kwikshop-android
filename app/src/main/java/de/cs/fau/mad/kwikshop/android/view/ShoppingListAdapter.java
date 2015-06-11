@@ -94,6 +94,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         //if item is highlighted, set color to red
         if(item.isHighlight()){
             viewHolder.textView_ShoppingListName.setTextColor(Color.RED);
+        } else {
+            viewHolder.textView_ShoppingListName.setTextColor(context.getResources().getColor(R.color.primary_text));
         }
 
         // Fill Views

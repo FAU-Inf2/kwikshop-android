@@ -136,10 +136,13 @@ public class ShoppingListFragment extends Fragment {
             @Override
             public void onGlobalLayout() {
                 Rect r = new Rect();
+
                 //r will be populated with the coordinates of your view that area still visible.
                 activityRootView.getWindowVisibleDisplayFrame(r);
-                int heightDiff = activityRootView.getRootView().getHeight() - (r.bottom - r.top);
-                if (heightDiff > 100)  // if more than 100 pixels, its probably a keyboard...
+
+                double actualHeight = r.bottom - r.top;
+                double height = activityRootView.getRootView().getHeight();
+                if (actualHeight < 0.5 * height)  // less than half of the view is visible, its probably a keyboard...
                     floatingActionButton.setVisibility(View.INVISIBLE);
                  else
                     floatingActionButton.setVisibility(View.VISIBLE);

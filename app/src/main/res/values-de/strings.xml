@@ -52,9 +52,9 @@
     <string name="title_activity_shopping_list_detail">Details </string>
     <string name="title_default_list">Einkaufsliste 1</string>
     <string name="title_fragment_item_details">Neuer Artikel</string>
-    <string name="unit_bag">Sack</string>
-    <string name="unit_bottle">Flasche</string>
-    <string name="unit_box">Kiste</string>
+    <string name="unit_bag">Säcke</string>
+    <string name="unit_bottle">Flaschen</string>
+    <string name="unit_box">Kisten</string>
     <string name="unit_dozen">Dutzend </string>
     <string name="unit_gram">Gramm</string>
     <string name="unit_kilogram">Kilogramm</string>
@@ -62,7 +62,7 @@
     <string name="unit_litre_short">l</string>
     <string name="unit_millilitre">Milliliter</string>
     <string name="unit_millilitre_short">ml</string>
-    <string name="unit_pack">Packung</string>
+    <string name="unit_pack">Packungen</string>
     <string name="unit_piece">Stück</string>
     <string name="unit_piece_short">St.</string>
     <string name="overflow_action_menu_about">Über</string>

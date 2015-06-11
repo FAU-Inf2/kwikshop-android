@@ -11,22 +11,22 @@
 
     -->
 
-    <string name="unit_piece">piece</string>
+    <string name="unit_piece">pieces</string>
     <string name="unit_piece_short">pc</string>
-    <string name="unit_bag">bag</string>
-    <string name="unit_bottle">bottle</string>
-    <string name="unit_box">box</string>
-    <string name="unit_pack">pack</string>
+    <string name="unit_bag">bags</string>
+    <string name="unit_bottle">bottles</string>
+    <string name="unit_box">boxes</string>
+    <string name="unit_pack">packs</string>
     <string name="unit_dozen">dozen</string>
 
-    <string name="unit_gram">gram</string>
+    <string name="unit_gram">grams</string>
     <string name="unit_gram_short">g</string>
-    <string name="unit_kilogram">kilogram</string>
+    <string name="unit_kilogram">kilograms</string>
     <string name="unit_kilogram_short">kg</string>
 
-    <string name="unit_millilitre">millilitre</string>
+    <string name="unit_millilitre">millilitres</string>
     <string name="unit_millilitre_short">ml</string>
-    <string name="unit_litre">litre</string>
+    <string name="unit_litre">litres</string>
     <string name="unit_litre_short">l</string>
 
 </resources>

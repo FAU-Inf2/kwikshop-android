@@ -13,25 +13,25 @@ public class AutoCompletionData {
     private int id;
 
     /**
-     * the text that was entered by a user
+     * the item name that was entered by a user
      */
     @DatabaseField(canBeNull = false)
-    private String text;
+    private String name;
 
 
     public AutoCompletionData() {
         // Default no-arg constructor for generating Groups, required for ORMLite
     }
 
-    public AutoCompletionData(String text) {
-        this.text = text;
+    public AutoCompletionData(String name) {
+        this.name = name;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getText(){
-        return text;
+    public String getName(){
+        return name;
     }
 }

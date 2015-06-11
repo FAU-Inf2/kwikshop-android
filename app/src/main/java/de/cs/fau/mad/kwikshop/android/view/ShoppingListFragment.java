@@ -446,9 +446,7 @@ public class ShoppingListFragment extends Fragment {
 
                 };
 
-                task.execute(null);
-
-
+                task.execute();
 
 
             }

@@ -95,6 +95,10 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         Item item = getShoppingList().getItem(getItem(position));
 
+        if(!item.isBought()){
+            viewHolder.textView_ShoppingListName.setPaintFlags(0);
+            viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_Medium);
+        }
 
         //if item is highlighted, set color to red
         if(item.isHighlight()){
@@ -181,9 +185,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                     deleteItem(position);
                 }
             });
-        }else{
-            viewHolder.textView_ShoppingListName.setPaintFlags(0);
-            viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_Medium);
         }
 
         return view;

@@ -44,7 +44,7 @@
     <string name="settings_option_1_name">Option1</string>
     <string name="shoppinglist_divider_textview">Einkaufswagen</string>
     <string name="sort_by">Sortieren nach</string>
-    <string name="taptoundo">zurück<!--rückgängig machen--></string>
+    <string name="taptoundo">ZURÜCK<!--rückgängig machen--></string>
     <string name="title_activity_about">Über</string>
     <string name="title_activity_list_of_shopping_list">Einkaufslisten</string>
     <string name="title_activity_settings">Einstellungen</string>
@@ -124,13 +124,14 @@
     <string name="descr_sweets">Süßigkeiten</string>
     <string name="descr_coke">Cola</string>
 
-    <string name="descr_quickadd">Schreibe in die Box um Gegenstände hinzuzufügen</string>
+    <string name="descr_quickadd1">Schreibe in die Box um Gegenstände</string>
+    <string name="descr_quickadd2">hinzuzufügen</string>
     <string name="descr_drag_and_drop1">Drücke ein bisschen länger und bewege</string>
     <string name="descr_drag_and_drop2">den Gegenstand um deine Liste zu sortieren</string>
     <string name="descr_fab1">Du kannst Gegenstände mit Details</string>
     <string name="descr_fab2">durch den Knopf unten rechts hinzufügen</string>
-    <string name="descr_details1">Zum Beispiel kannst du wichtige Gegenstände</string>
-    <string name="descr_details2">wie Toilettenpapier hervorheben</string>
+    <string name="descr_details1">Zum Beispiel kannst du wichtige</string>
+    <string name="descr_details2">Gegenstände wie diesen hervorheben</string>
     <string name="descr_swipe1">Wische über einen Gegenstand</string>
     <string name="descr_swipe2">um ihn als gekauft zu markieren</string>
 

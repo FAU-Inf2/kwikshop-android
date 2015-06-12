@@ -95,7 +95,8 @@
     <string name="descr_quickadd">Escreva na caixa acima para adicionar itens</string>
     <string name="descr_spaghettis">Spaghetti</string>
     <string name="descr_sweets">Doces</string>
-    <string name="descr_swipe">Swipe os itens para marcar como comprados</string>
+    <string name="descr_swipe1">Swipe os itens para marcar como comprados</string>
+    <string name="descr_swipe2"></string>
     <string name="descr_toilet_paper">Papel higiênico</string>
     <string name="viewOnGitHub">Veja no GitHub</string>
 </resources>

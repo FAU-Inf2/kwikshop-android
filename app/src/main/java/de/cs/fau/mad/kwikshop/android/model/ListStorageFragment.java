@@ -111,7 +111,8 @@ public class ListStorageFragment extends Fragment {
 
             Item i6 = new Item();
             i6.setName(context.getString(R.string.descr_coke));
-            i6.setBrand(context.getString(R.string.descr_swipe));
+            i6.setBrand(context.getString(R.string.descr_swipe1));
+            i6.setComment(context.getString(R.string.descr_swipe2));
             i6.setAmount(5);
             list.addItem(i6);
 

@@ -3,6 +3,7 @@ package de.cs.fau.mad.kwikshop.android.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,8 @@ import de.cs.fau.mad.kwikshop.android.common.Unit;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangeType;
+import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.kwikshop.android.util.AsyncTaskHelper;
 import de.cs.fau.mad.kwikshop.android.util.StringHelper;
 import de.greenrobot.event.EventBus;
@@ -36,6 +39,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     private final Context context;
     private final DisplayHelper displayHelper;
     private boolean groupItems;
+
+    private Object lock; // Lock from ShoppingListFragment, used to delete Items
 
 
     /**
@@ -77,7 +82,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(final int position, View view, ViewGroup parent) {
 
         ViewHolder viewHolder;
         if(view == null ){
@@ -168,7 +173,14 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_Brand.setVisibility(View.GONE);
             viewHolder.textView_Amount.setVisibility(View.GONE);
             viewHolder.view_GroupHeader.setVisibility(View.GONE);
+
             viewHolder.imageView_delete.setVisibility(View.VISIBLE);
+            viewHolder.imageView_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteItem(position);
+                }
+            });
         }else{
             viewHolder.textView_ShoppingListName.setPaintFlags(0);
             viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_Medium);
@@ -246,6 +258,39 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     public void setGroupItems(boolean value) {
         this.groupItems = value;
         notifyDataSetChanged();
+    }
+
+    // Needed for deleteItem
+    public void setLock(Object lock) {
+        this.lock = lock;
+    }
+
+    private void deleteItem(final int position) {
+
+        synchronized (lock) {
+            final Item deleteItem = shoppingList.getItem(getItem(position));
+
+            AsyncTask task = new AsyncTask() {
+
+                @Override
+                protected Object doInBackground(Object[] params) {
+
+                    shoppingList.removeItem(deleteItem.getId());
+
+                    listStorage.saveList(shoppingList);
+
+                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, shoppingList.getId()));
+                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, shoppingList.getId(), deleteItem.getId()));
+
+                    return null;
+                }
+
+            };
+
+            task.execute();
+
+
+        }
     }
 
 

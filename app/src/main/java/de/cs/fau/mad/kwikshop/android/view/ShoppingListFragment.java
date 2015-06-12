@@ -281,6 +281,8 @@ public class ShoppingListFragment extends Fragment {
                     listID,
                     getItemSortType() == ItemSortType.GROUP);
 
+            shoppingListAdapterBought.setLock(lock); // Needed to synchronize deleteItem
+
             shoppingListViewBought.enableSwipeToDismiss(
                     new OnDismissCallback() {
                         @Override
@@ -352,16 +354,6 @@ public class ShoppingListFragment extends Fragment {
                     return true;
                 }
             });
-
-
-            // remove item from bought list
-            shoppingListViewBought.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                    deleteItem(getItemFromShoppingListAdapter(adapter, position));
-                }
-            });
-
 
             textView_QuickAdd.setFocusableInTouchMode(true);
             textView_QuickAdd.requestFocus();

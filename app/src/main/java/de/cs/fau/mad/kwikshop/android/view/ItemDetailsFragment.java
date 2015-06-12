@@ -241,6 +241,7 @@ public class ItemDetailsFragment extends Fragment {
             EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, listId, itemId));
         }
 
+        hideKeyboard();
     }
 
 
@@ -328,6 +329,15 @@ public class ItemDetailsFragment extends Fragment {
 
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
 
+        hideKeyboard();
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 

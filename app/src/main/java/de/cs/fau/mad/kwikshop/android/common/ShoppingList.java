@@ -27,6 +27,9 @@ public class ShoppingList {
     @DatabaseField
     private String name;
 
+    @DatabaseField
+    private int sortTypeInt;
+
     /**
      * Date of an Event for Calendar Usage
      */
@@ -72,6 +75,14 @@ public class ShoppingList {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getSortTypeInt(){
+        return this.sortTypeInt;
+    }
+
+    public void setSortTypeInt(int sortTypeInt){
+        this.sortTypeInt = sortTypeInt;
     }
 
     public CalendarEventDate getCalendarEventDate() {

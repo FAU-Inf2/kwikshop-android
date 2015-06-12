@@ -84,6 +84,7 @@ public class ShoppingListFragment extends Fragment {
     private ShoppingList shoppingList = null;
     private int listID;
     private ItemSortType sortType = ItemSortType.MANUAL;
+    private int sortTypeInt = 0;
     private DefaultDataProvider dataProvider;
 
     @InjectView(R.id.textView_quickAdd)
@@ -214,6 +215,12 @@ public class ShoppingListFragment extends Fragment {
             // set title for actionbar
             getActivity().setTitle(shoppingList.getName());
 
+            sortTypeInt = shoppingList.getSortTypeInt();
+            switch (sortTypeInt){
+                case 1: sortType = ItemSortType.GROUP;break;
+                case 2: sortType = ItemSortType.ALPHABETICALLY; break;
+                default: sortType = ItemSortType.MANUAL;
+            }
 
             // Upper list for Items that are not yet bought
             shoppingListAdapter = new ShoppingListAdapter(getActivity(),
@@ -273,6 +280,8 @@ public class ShoppingListFragment extends Fragment {
                     listStorage,
                     listID,
                     getItemSortType() == ItemSortType.GROUP);
+
+            shoppingListAdapterBought.setLock(lock); // Needed to synchronize deleteItem
 
             shoppingListViewBought.enableSwipeToDismiss(
                     new OnDismissCallback() {
@@ -345,16 +354,6 @@ public class ShoppingListFragment extends Fragment {
                     return true;
                 }
             });
-
-
-            // remove item from bought list
-            shoppingListViewBought.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                    deleteItem(getItemFromShoppingListAdapter(adapter, position));
-                }
-            });
-
 
             textView_QuickAdd.setFocusableInTouchMode(true);
             textView_QuickAdd.requestFocus();
@@ -578,9 +577,13 @@ public class ShoppingListFragment extends Fragment {
         this.sortType = sortType;
         //only sort the list if a automatic sorting is chosen
         if (sortType == ItemSortType.MANUAL) {
+            shoppingList.setSortTypeInt(0);
             shoppingListAdapter.setGroupItems(false);
             shoppingListAdapterBought.setGroupItems(false);
         } else {
+            if(sortType == ItemSortType.GROUP) shoppingList.setSortTypeInt(1);
+            if(sortType == ItemSortType.ALPHABETICALLY) shoppingList.setSortTypeInt(2);
+            listStorage.saveList(shoppingList);
             UpdateLists();
         }
     }

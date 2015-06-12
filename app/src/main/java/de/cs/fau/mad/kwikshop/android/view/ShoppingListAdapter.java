@@ -169,6 +169,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_Amount.setVisibility(View.GONE);
             viewHolder.view_GroupHeader.setVisibility(View.GONE);
             viewHolder.imageView_delete.setVisibility(View.VISIBLE);
+        }else{
+            viewHolder.textView_ShoppingListName.setPaintFlags(0);
+            viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_Medium);
         }
 
         return view;

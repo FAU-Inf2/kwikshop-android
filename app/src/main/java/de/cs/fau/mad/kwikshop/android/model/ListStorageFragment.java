@@ -116,7 +116,8 @@ public class ListStorageFragment extends Fragment {
 
             Item i1 = new Item();
             i1.setName(context.getString(R.string.descr_apple));
-            i1.setComment(context.getString(R.string.descr_quickadd));
+            i1.setBrand(context.getString(R.string.descr_quickadd1));
+            i1.setComment(context.getString(R.string.descr_quickadd2));
             i1.setGroup(defaultGroup);
             list.addItem(i1);
 

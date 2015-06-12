@@ -92,11 +92,12 @@
     <string name="descr_fab1">Você pode adicionar detalhe aos itens</string>
     <string name="descr_fab2">com o botão a direita abaixo</string>
     <string name="descr_my_first_shopping_list">Minha primeira lista de compras</string>
-    <string name="descr_quickadd">Escreva na caixa acima para adicionar itens</string>
+    <string name="descr_quickadd1">Escreva na caixa acima para adicionar itens</string>
+    <string name="descr_quickadd2"></string>
     <string name="descr_spaghettis">Spaghetti</string>
     <string name="descr_sweets">Doces</string>
-    <string name="descr_swipe1">Swipe os itens para marcar como comprados</string>
-    <string name="descr_swipe2"></string>
+    <string name="descr_swipe1">Swipe os itens para marcar como</string>
+    <string name="descr_swipe2">comprados</string>
     <string name="descr_toilet_paper">Papel higiênico</string>
     <string name="viewOnGitHub">Veja no GitHub</string>
 </resources>

@@ -157,6 +157,7 @@
     <string name="descr_fab2">with the button down right</string>
     <string name="descr_details1">For example you can highlight</string>
     <string name="descr_details2">important items like toilet paper</string>
-    <string name="descr_swipe">Swipe items to mark them as bought</string>
+    <string name="descr_swipe1">Swipe items to mark them as bought</string>
+    <string name="descr_swipe2"></string>
 
 </resources>

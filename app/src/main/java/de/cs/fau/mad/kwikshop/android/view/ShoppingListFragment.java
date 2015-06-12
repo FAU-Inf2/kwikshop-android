@@ -128,8 +128,6 @@ public class ShoppingListFragment extends Fragment {
     }
 
 
-
-
     private void disableFloatingButtonWhileSoftKeyboardIsShown() {
 
         final View activityRootView = BaseActivity.frameLayout;
@@ -201,7 +199,6 @@ public class ShoppingListFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ButterKnife.inject(this, rootView);
-
 
 
         try {
@@ -307,9 +304,48 @@ public class ShoppingListFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     addItem();
-
                 }
             });
+
+            button_QuickAdd.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    //todo: this is just copy paste from addItem() with returning the id
+
+                    final String name = textView_QuickAdd.getText().toString();
+                    //adding empty items without a name is not supported
+                    long id = -1;
+                    if (!StringHelper.isNullOrWhiteSpace(name)) {
+
+
+                        //reset quick add text
+                        textView_QuickAdd.setText("");
+
+                        Item newItem = new Item();
+                        newItem.setName(name);
+                        newItem.setUnit(unitStorage.getDefaultValue());
+                        newItem = parseAmountAndUnit(newItem);
+                        newItem.setGroup(groupStorage.getDefaultValue());
+
+                        shoppingList.addItem(newItem);
+                        id = newItem.getId();
+                        listStorage.saveList(shoppingList);
+
+                        autoCompletion.offerName(newItem.getName());
+
+                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
+                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+
+                        refreshQuickAddAutoCompletion();
+
+                    }
+                    //this starts the new activity, if we want it to only open item details
+                    // when a text is inserted, move it to the if case above
+                    startActivity(ItemDetailsActivity.getIntent(getActivity(), listID, (int) id));
+                    return true;
+                }
+            });
+
 
             // remove item from bought list
             shoppingListViewBought.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -359,7 +395,7 @@ public class ShoppingListFragment extends Fragment {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
     }
-    
+
     @Override
     public void onDestroyView() {
 
@@ -368,31 +404,31 @@ public class ShoppingListFragment extends Fragment {
         hasView = false;
     }
 
-    public Item parseAmountAndUnit(Item item){
+    public Item parseAmountAndUnit(Item item) {
 
         String input = item.getName();
         String output = "";
         String amount = "";
-        String thisCanBeUnitOrName= "";
+        String thisCanBeUnitOrName = "";
         boolean lastCharWasANumber = false;
         boolean charWasReadAfterAmount = false;
-        for(int i = 0; i < input.length(); i++){
+        for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             //only parses the first number found to amount
-            if(c > 47 && c < 58 && (lastCharWasANumber == true || amount == "")){
-                amount = amount  + c;
+            if (c > 47 && c < 58 && (lastCharWasANumber == true || amount == "")) {
+                amount = amount + c;
                 lastCharWasANumber = true;
-            }else if(lastCharWasANumber && c == ' '){
+            } else if (lastCharWasANumber && c == ' ') {
                 //ignore all white spaces between the amount and the next char
-            }else if(lastCharWasANumber || charWasReadAfterAmount && c != ' ') {
+            } else if (lastCharWasANumber || charWasReadAfterAmount && c != ' ') {
                 //String from amount to next whitespace, this should be unit or name
-                    thisCanBeUnitOrName = thisCanBeUnitOrName + c;
-                    lastCharWasANumber = false;
-                    charWasReadAfterAmount = true;
-            }else if(charWasReadAfterAmount && c ==' '){
+                thisCanBeUnitOrName = thisCanBeUnitOrName + c;
+                lastCharWasANumber = false;
+                charWasReadAfterAmount = true;
+            } else if (charWasReadAfterAmount && c == ' ') {
                 //whitespace after possible unit
                 charWasReadAfterAmount = false;
-            }else{
+            } else {
                 output = output + c;
                 lastCharWasANumber = false;
             }
@@ -401,10 +437,10 @@ public class ShoppingListFragment extends Fragment {
 
         boolean unitMatchFound = false;
         DisplayHelper displayHelper = new DisplayHelper(getActivity());
-        List<Unit> unitsList= ListStorageFragment.getUnitStorage().getItems();
-        for(Unit unit : unitsList){
-            if(displayHelper.getDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName) ||
-                    displayHelper.getShortDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName)){
+        List<Unit> unitsList = ListStorageFragment.getUnitStorage().getItems();
+        for (Unit unit : unitsList) {
+            if (displayHelper.getDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName) ||
+                    displayHelper.getShortDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName)) {
                 item.setUnit(unit);
                 unitMatchFound = true;
                 break;
@@ -412,16 +448,16 @@ public class ShoppingListFragment extends Fragment {
         }
 
 
-        if(unitMatchFound == false && thisCanBeUnitOrName != ""){
+        if (unitMatchFound == false && thisCanBeUnitOrName != "") {
             //if no unit was found complete string has to be restored
-            if(output != "") {
+            if (output != "") {
                 output = thisCanBeUnitOrName + " " + output;
-            }else{
+            } else {
                 output = thisCanBeUnitOrName;
             }
         }
 
-        if(!StringHelper.isNullOrWhiteSpace(output)) {
+        if (!StringHelper.isNullOrWhiteSpace(output)) {
             if (amount != "") item.setAmount(Integer.parseInt(amount));
             item.setName(output);
         }
@@ -431,37 +467,37 @@ public class ShoppingListFragment extends Fragment {
     }
 
 
-    public void deleteItem(final Item deleteItem){
+    public void deleteItem(final Item deleteItem) {
 
         synchronized (lock) {
 
-                AsyncTask task = new AsyncTask() {
+            AsyncTask task = new AsyncTask() {
 
-                    @Override
-                    protected Object doInBackground(Object[] params) {
+                @Override
+                protected Object doInBackground(Object[] params) {
 
-                        shoppingList.removeItem(deleteItem.getId());
+                    shoppingList.removeItem(deleteItem.getId());
 
-                        listStorage.saveList(shoppingList);
+                    listStorage.saveList(shoppingList);
 
-                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, shoppingList.getId()));
-                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, shoppingList.getId(), deleteItem.getId()));
+                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, shoppingList.getId()));
+                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, shoppingList.getId(), deleteItem.getId()));
 
-                        return null;
-                    }
+                    return null;
+                }
 
-                    @Override
-                    protected void onPostExecute(Object o) {
-                        super.onPostExecute(o);
-                        UpdateLists();
-                    }
+                @Override
+                protected void onPostExecute(Object o) {
+                    super.onPostExecute(o);
+                    UpdateLists();
+                }
 
-                };
+            };
 
-                task.execute();
+            task.execute();
 
 
-            }
+        }
 
     }
 
@@ -559,8 +595,8 @@ public class ShoppingListFragment extends Fragment {
 
 
     //region Private Methods
-    private Item getItemFromShoppingListAdapter(AdapterView adapter, int position){
-        return  (shoppingList.getItem((int) adapter.getItemIdAtPosition(position)));
+    private Item getItemFromShoppingListAdapter(AdapterView adapter, int position) {
+        return (shoppingList.getItem((int) adapter.getItemIdAtPosition(position)));
     }
 
     private void UpdateLists() {

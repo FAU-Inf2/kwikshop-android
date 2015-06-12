@@ -89,10 +89,15 @@ public class BaseActivity extends ActionBarActivity {
 
         refreshed = true;
 
+        Locale setLocale;
+
         // get current locale index
         int currentLocaleIdIndex = getSharedPreferences(SettingFragment.SETTINGS, Context.MODE_PRIVATE).getInt(SettingFragment.OPTION_1, 0);
+        setLocale = new Locale(SettingFragment.localeIds[currentLocaleIdIndex].toString());
 
-        Locale setLocale = new Locale(SettingFragment.localeIds[currentLocaleIdIndex].toString());
+        if(currentLocaleIdIndex == 0) // default
+            setLocale = Locale.getDefault();
+
         Resources res = getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
         Configuration conf = res.getConfiguration();

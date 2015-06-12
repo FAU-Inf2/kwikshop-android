@@ -13,6 +13,7 @@ import de.cs.fau.mad.kwikshop.android.common.Group;
 import de.cs.fau.mad.kwikshop.android.common.Item;
 import de.cs.fau.mad.kwikshop.android.common.ShoppingList;
 import de.cs.fau.mad.kwikshop.android.common.Unit;
+import de.cs.fau.mad.kwikshop.android.view.DisplayHelper;
 
 public class ListStorageFragment extends Fragment {
 
@@ -91,54 +92,6 @@ public class ListStorageFragment extends Fragment {
         // Create ListStorage
         m_LocalListStorage = new LocalListStorage();
 
-        // TODO: Remove this - Creates a test list
-        if(m_LocalListStorage.getAllLists().size() == 0) {
-            int m = m_LocalListStorage.createList();
-            ShoppingList list = m_LocalListStorage.loadList(m);
-            list.setName(context.getString(R.string.descr_my_first_shopping_list));
-
-
-            Item i1 = new Item();
-            i1.setName(context.getString(R.string.descr_apple));
-            i1.setComment(context.getString(R.string.descr_quickadd));
-            list.addItem(i1);
-
-            Item i5 = new Item();
-            i5.setName(context.getString(R.string.descr_sweets));
-            i5.setBrand(context.getString(R.string.descr_drag_and_drop1));
-            i5.setComment(context.getString(R.string.descr_drag_and_drop2));
-            list.addItem(i5);
-
-            Item i6 = new Item();
-            i6.setName(context.getString(R.string.descr_coke));
-            i6.setBrand(context.getString(R.string.descr_swipe1));
-            i6.setComment(context.getString(R.string.descr_swipe2));
-            i6.setAmount(5);
-            list.addItem(i6);
-
-
-            Item i3 = new Item();
-            i3.setName(context.getString(R.string.descr_spaghettis));
-            i3.setBrand(context.getString(R.string.descr_fab1));
-            i3.setComment(context.getString(R.string.descr_fab2));
-            i3.setAmount(3);
-            list.addItem(i3);
-
-            Item i4 = new Item();
-            i4.setName(context.getString(R.string.descr_toilet_paper));
-            i4.setBrand(context.getString(R.string.descr_details1));
-            i4.setComment(context.getString(R.string.descr_details2));
-            i4.setHighlight(true);
-            list.addItem(i4);
-
-            Item i2 = new Item();
-            i2.setName(context.getString(R.string.descr_already_bought));
-            i2.setBought(true);
-            list.addItem(i2);
-
-
-            list.save();
-        }
 
         try {
 
@@ -152,6 +105,63 @@ public class ListStorageFragment extends Fragment {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        if(m_LocalListStorage.getAllLists().size() == 0) {
+            int m = m_LocalListStorage.createList();
+            ShoppingList list = m_LocalListStorage.loadList(m);
+            list.setName(context.getString(R.string.descr_my_first_shopping_list));
+
+            Group defaultGroup = m_GroupStorage.getDefaultValue();
+
+
+            Item i1 = new Item();
+            i1.setName(context.getString(R.string.descr_apple));
+            i1.setComment(context.getString(R.string.descr_quickadd));
+            i1.setGroup(defaultGroup);
+            list.addItem(i1);
+
+            Item i5 = new Item();
+            i5.setName(context.getString(R.string.descr_sweets));
+            i5.setBrand(context.getString(R.string.descr_drag_and_drop1));
+            i5.setComment(context.getString(R.string.descr_drag_and_drop2));
+            i5.setGroup(defaultGroup);
+            list.addItem(i5);
+
+            Item i6 = new Item();
+            i6.setName(context.getString(R.string.descr_coke));
+            i6.setBrand(context.getString(R.string.descr_swipe1));
+            i6.setComment(context.getString(R.string.descr_swipe2));
+            i6.setAmount(5);
+            i6.setGroup(defaultGroup);
+            list.addItem(i6);
+
+
+            Item i3 = new Item();
+            i3.setName(context.getString(R.string.descr_spaghettis));
+            i3.setBrand(context.getString(R.string.descr_fab1));
+            i3.setComment(context.getString(R.string.descr_fab2));
+            i3.setAmount(3);
+            i3.setGroup(defaultGroup);
+            list.addItem(i3);
+
+            Item i4 = new Item();
+            i4.setName(context.getString(R.string.descr_toilet_paper));
+            i4.setBrand(context.getString(R.string.descr_details1));
+            i4.setComment(context.getString(R.string.descr_details2));
+            i4.setHighlight(true);
+            i4.setGroup(defaultGroup);
+            list.addItem(i4);
+
+            Item i2 = new Item();
+            i2.setName(context.getString(R.string.descr_already_bought));
+            i2.setBought(true);
+            i2.setGroup(defaultGroup);
+            list.addItem(i2);
+
+
+            list.save();
+        }
+
     }
 
     //endregion

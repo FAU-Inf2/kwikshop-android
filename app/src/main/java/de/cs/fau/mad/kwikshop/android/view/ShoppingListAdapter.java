@@ -96,7 +96,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         Item item = getShoppingList().getItem(getItem(position));
 
         if(!item.isBought()){
-            viewHolder.textView_ShoppingListName.setPaintFlags(0);
+            viewHolder.textView_ShoppingListName.setPaintFlags(viewHolder.textView_ShoppingListName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
             viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_Medium);
         }
 

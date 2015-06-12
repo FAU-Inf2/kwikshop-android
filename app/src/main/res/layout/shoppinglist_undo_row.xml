@@ -60,6 +60,7 @@
         android:paddingRight="8dp"
         android:text="@string/taptoundo"
         android:textColor="@android:color/white"
+        android:textAllCaps="false"
         android:textSize="16sp" />
 
 </LinearLayout>

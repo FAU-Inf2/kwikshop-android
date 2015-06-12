@@ -83,7 +83,7 @@
     <!-- Shopping list -->
     <!--<string name="itemdeleted">Moved to shopping cart</string> -->
     <string name="itemdeleted">Item bought</string>
-    <string name="taptoundo">Undo</string>
+    <string name="taptoundo">UNDO</string>
     <string name="magic">magic</string>
     <string name="sort_by">Sort by</string>
     <string-array name="sort_by_array">

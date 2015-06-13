@@ -9,6 +9,8 @@ It is currently developed as student project of the
 
 [![Build Status](https://travis-ci.org/FAU-Inf2/kwikshop-android.svg?branch=master)](https://magnum.travis-ci.com/FAU-Inf2/kwikshop-android)
 
+The latest release of Kwik Shop is available in the [Play Store](https://play.google.com/store/apps/details?id=de.cs.fau.mad.kwikshop_android) 
+
 
 Acknowledgements
 ----------------

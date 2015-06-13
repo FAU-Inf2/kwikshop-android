@@ -25,6 +25,7 @@ import de.cs.fau.mad.kwikshop.android.common.Unit;
 import de.cs.fau.mad.kwikshop.android.model.ListStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.cs.fau.mad.kwikshop.android.model.messages.ItemDeleteEvent;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.kwikshop.android.util.AsyncTaskHelper;
@@ -182,7 +183,13 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.imageView_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    deleteItem(position);
+                    Integer itemID;
+                    try {
+                        itemID = getItem(position);
+                    } catch (IndexOutOfBoundsException e) {
+                        return;
+                    }
+                    EventBus.getDefault().post(new ItemDeleteEvent(listId, itemID));
                 }
             });
         }
@@ -260,40 +267,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         this.groupItems = value;
         notifyDataSetChanged();
     }
-
-    // Needed for deleteItem
-    public void setLock(Object lock) {
-        this.lock = lock;
-    }
-
-    private void deleteItem(final int position) {
-
-        synchronized (lock) {
-            final Item deleteItem = shoppingList.getItem(getItem(position));
-
-            AsyncTask task = new AsyncTask() {
-
-                @Override
-                protected Object doInBackground(Object[] params) {
-
-                    shoppingList.removeItem(deleteItem.getId());
-
-                    listStorage.saveList(shoppingList);
-
-                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, shoppingList.getId()));
-                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, shoppingList.getId(), deleteItem.getId()));
-
-                    return null;
-                }
-
-            };
-
-            task.execute();
-
-
-        }
-    }
-
 
     @Override
     public synchronized void clear() {

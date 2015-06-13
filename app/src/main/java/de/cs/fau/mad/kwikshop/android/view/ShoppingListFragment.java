@@ -46,6 +46,7 @@ import de.cs.fau.mad.kwikshop.android.model.SimpleStorage;
 import de.cs.fau.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.cs.fau.mad.kwikshop.android.model.messages.ItemDeleteEvent;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.cs.fau.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.cs.fau.mad.kwikshop.android.model.ListStorageFragment;
@@ -281,8 +282,6 @@ public class ShoppingListFragment extends Fragment {
                     listID,
                     getItemSortType() == ItemSortType.GROUP);
 
-            shoppingListAdapterBought.setLock(lock); // Needed to synchronize deleteItem
-
             shoppingListViewBought.enableSwipeToDismiss(
                     new OnDismissCallback() {
                         @Override
@@ -307,7 +306,6 @@ public class ShoppingListFragment extends Fragment {
                     startActivity(ItemDetailsActivity.getIntent(getActivity(), listID));
                 }
             });
-
 
             button_QuickAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -469,6 +467,8 @@ public class ShoppingListFragment extends Fragment {
     public void deleteItem(final Item deleteItem) {
 
         synchronized (lock) {
+            if(deleteItem == null)
+                return;
 
             AsyncTask task = new AsyncTask() {
 
@@ -585,6 +585,12 @@ public class ShoppingListFragment extends Fragment {
             if(sortType == ItemSortType.ALPHABETICALLY) shoppingList.setSortTypeInt(2);
             listStorage.saveList(shoppingList);
             UpdateLists();
+        }
+    }
+
+    public void onEventMainThread(ItemDeleteEvent event) {
+        if (event.getShoppingListId() == this.listID) {
+            deleteItem(shoppingList.getItem(event.getItemId()));
         }
     }
 

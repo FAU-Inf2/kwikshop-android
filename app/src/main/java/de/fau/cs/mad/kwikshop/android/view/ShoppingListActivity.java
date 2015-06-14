@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import cs.fau.mad.kwikshop_android.R;
+import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
 import de.greenrobot.event.EventBus;
 
 public class ShoppingListActivity extends BaseActivity {
@@ -39,6 +40,12 @@ public class ShoppingListActivity extends BaseActivity {
         switch (item.getItemId()){
             case R.id.sort_by_group_option: type = ItemSortType.GROUP; break;
             case R.id.sort_by_alphabet_option: type = ItemSortType.ALPHABETICALLY; break;
+            case R.id.action_move_all_to_shopping_cart:
+                EventBus.getDefault().post(MoveAllItemsEvent.moveAllToBoughtEvent);
+                break;
+            case R.id.action_move_all_from_shopping_cart:
+                EventBus.getDefault().post(MoveAllItemsEvent.moveAllFromBoughtEvent);
+                break;
         }
         if(type != null) EventBus.getDefault().post(type);
 

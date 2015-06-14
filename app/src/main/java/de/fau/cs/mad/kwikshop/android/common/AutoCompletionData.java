@@ -53,4 +53,25 @@ public class AutoCompletionData {
     public void setGroup(Group group) {
         this.group = group;
     }
+
+    /**
+     * Comparison, if another object is the same as this object.
+     * Two AutoCompletionDatas are considered the same, if the name is identical
+     */
+    @Override
+    public boolean equals(Object obj){
+        if (obj == null)
+            return false;
+        if (this == obj)
+            return true;
+        if (obj.getClass() != this.getClass())
+            return false;
+        AutoCompletionData autoCompletionData = (AutoCompletionData)obj;
+        return this.name.equals(autoCompletionData.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }
 }

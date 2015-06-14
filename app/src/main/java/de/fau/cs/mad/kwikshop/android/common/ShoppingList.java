@@ -134,6 +134,10 @@ public class ShoppingList {
         removeItem(item.getId());
     }
 
+    public int size() {
+        return items.size();
+    }
+
     public Collection<Item> getItems() {
         return Collections.unmodifiableCollection(this.items);
     }

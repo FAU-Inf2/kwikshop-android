@@ -6,10 +6,12 @@ import android.widget.ArrayAdapter;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
+import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.greenrobot.event.EventBus;
 
@@ -20,6 +22,7 @@ public class AutoCompletionHelper{
 
     private ArrayList<String> autocompleteNameSuggestions = null;
     private ArrayList<String> autocompleteBrandSuggestions = null;
+    private HashMap<String, Group> autoGroup = null;
 
     private static AutoCompletionHelper instance = null; //singleton
 
@@ -36,14 +39,18 @@ public class AutoCompletionHelper{
             e.printStackTrace();
         }
 
-        initializeSuggestionArrays();
+        initializeSuggestionCollections();
     }
 
-    private void initializeSuggestionArrays() {
+    private void initializeSuggestionCollections() {
         List<AutoCompletionData> autoCompletionNameData = autoCompletionNameStorage.getItems();
         autocompleteNameSuggestions = new ArrayList<String>(autoCompletionNameData.size());
+        autoGroup = new HashMap<>();
         for (AutoCompletionData data : autoCompletionNameData) {
             autocompleteNameSuggestions.add(data.getName());
+            if(data.getGroup() != null){
+                autoGroup.put(data.getName(), data.getGroup());
+            }
         }
 
         List<AutoCompletionBrandData> autoCompletionBrandData = autoCompletionBrandStorage.getItems();
@@ -119,7 +126,7 @@ public class AutoCompletionHelper{
     public void reloadFromDatabase(){
         if (instance == null)
             return;
-        initializeSuggestionArrays();
+        initializeSuggestionCollections();
         EventBus.getDefault().post(new AutoCompletionHistoryDeletedEvent());
     }
 

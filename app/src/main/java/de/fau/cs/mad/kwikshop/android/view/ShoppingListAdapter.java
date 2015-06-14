@@ -211,41 +211,36 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
     }
 
-    public void moveAllToBought() {
+    private void moveAllItems(boolean boughtStatus) {
         ShoppingList shoppingList = getShoppingList();
         int length = getItems().size();
 
+        Item item = null;
         for (int position = length - 1; position >= 0; position--) {
-            Item item = shoppingList.getItem(getItem(position));
-            if (item.isBought())
+            /*Item*/ item = shoppingList.getItem(getItem(position));
+            if (item.isBought() == boughtStatus)
                 continue;
 
-            item.setBought(true);
+            item.setBought(boughtStatus);
 
             shoppingList.save();
             super.remove(position);
             notifyDataSetChanged();
 
-            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
+            //TODO as soon as only the modified item gets reloaded, the "//" before the next line must be removed
+            //EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
         }
+        //TODO as soon as only the modified item gets reloaded, the next two lines should be removed
+        if (item != null)
+            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
+    }
+
+    public void moveAllToBought() {
+        moveAllItems(true);
     }
 
     public void moveAllFromBought() {
-        ShoppingList shoppingList = getShoppingList();
-        int length = getItems().size();
-        for (int position = length - 1; position >= 0; position--) {
-            Item item = shoppingList.getItem(getItem(position));
-            if (!item.isBought())
-                continue;
-
-            item.setBought(false);
-
-            shoppingList.save();
-            super.remove(position);
-            notifyDataSetChanged();
-
-            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
-        }
+        moveAllItems(false);
     }
 
     public void updateOrderOfList() {

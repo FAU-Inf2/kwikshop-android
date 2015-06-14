@@ -39,6 +39,8 @@
     <string name="other">Sonstiges</string>
     <string name="overflow_action_menu_listofshoppinglists">Einkaufslisten</string>
     <string name="overflow_action_menu_settings">Einstellungen</string>
+    <string name="overflow_action_menu_move_all_to_shopping_cart">Alles zum Einkaufswagen hinzufügen</string>
+    <string name="overflow_action_menu_move_all_from_shopping_cart">Alles vom Einkaufswagen entfernen</string>
     <string name="save">Speichern</string>
     <string name="settings_option_1_desc">Beschreibung von Option 1</string>
     <string name="settings_option_1_name">Option1</string>

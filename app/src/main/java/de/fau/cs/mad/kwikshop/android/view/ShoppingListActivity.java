@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.AndroidCharacter;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -25,7 +26,10 @@ public class ShoppingListActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.shoppinglist_replacement_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.shoppinglist_item_movement_menu, menu);
+        //menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.overflow_action_menu_move_all_to_shopping_cart);
+        // TODO: change this. We should not jump over the onCreateOptionsMenu method of BaseActivity
+        return onCreateOptionsMenuSuper(menu);
     }
 
     @Override

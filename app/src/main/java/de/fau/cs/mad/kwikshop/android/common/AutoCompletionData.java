@@ -18,6 +18,12 @@ public class AutoCompletionData {
     @DatabaseField(canBeNull = false)
     private String name;
 
+    /**
+     * the group that was set the last time for that item
+     */
+    @DatabaseField(foreign = true)
+    private Group group;
+
 
     public AutoCompletionData() {
         // Default no-arg constructor for generating Groups, required for ORMLite
@@ -27,11 +33,24 @@ public class AutoCompletionData {
         this.name = name;
     }
 
+    public AutoCompletionData(String name, Group group) {
+        this.name = name;
+        this.group = group;
+    }
+
     public int getId() {
         return id;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

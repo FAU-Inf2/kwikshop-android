@@ -298,7 +298,7 @@ public class ItemDetailsFragment extends Fragment {
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
 
-        autoCompletion.offerName(productname_text.getText().toString());
+        autoCompletion.offerNameAndGroup(productname_text.getText().toString(), item.getGroup());
         autoCompletion.offerBrand(brand_text.getText().toString());
 
         if (isNewItem) {

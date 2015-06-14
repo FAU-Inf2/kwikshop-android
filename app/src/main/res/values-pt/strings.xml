@@ -100,4 +100,7 @@
     <string name="descr_swipe2">comprados</string>
     <string name="descr_toilet_paper">Papel higiênico</string>
     <string name="viewOnGitHub">Veja no GitHub</string>
+    <string name="overflow_action_menu_move_all_from_shopping_cart">Marcar nenhum como comprado</string>
+    <string name="overflow_action_menu_move_all_to_shopping_cart">Marcar todos como comprados</string>
+    <string name="remove">Deletar</string>
 </resources>

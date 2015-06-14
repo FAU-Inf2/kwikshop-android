@@ -47,6 +47,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDelete
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemDeleteEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
@@ -586,6 +587,29 @@ public class ShoppingListFragment extends Fragment {
             listStorage.saveList(shoppingList);
             UpdateLists();
         }
+    }
+
+    public void onEventMainThread(MoveAllItemsEvent event) {
+        /*if (shoppingList == null)
+            return;
+
+        for (Item item : shoppingList.getItems()) {
+            if (item.isBought() && event.isMoveAllFromBought()) {
+
+            }
+        }*/
+
+        if (event.isMoveAllToBought()) {
+            if (shoppingListAdapter == null)
+                return;
+            shoppingListAdapter.moveAllToBought();
+        } else {
+            if (shoppingListAdapterBought == null)
+                return;
+            shoppingListAdapterBought.moveAllFromBought();
+        }
+
+        //asdf;
     }
 
     public void onEventMainThread(ItemDeleteEvent event) {

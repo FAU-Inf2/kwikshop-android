@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import fau.cs.mad.kwikshop_android.R;
+import fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
 import de.greenrobot.event.EventBus;
 

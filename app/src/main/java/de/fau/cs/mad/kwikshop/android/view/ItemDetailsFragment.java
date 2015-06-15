@@ -248,6 +248,10 @@ public class ItemDetailsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
+
+        Window window = getActivity().getWindow();
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
     }
 
 

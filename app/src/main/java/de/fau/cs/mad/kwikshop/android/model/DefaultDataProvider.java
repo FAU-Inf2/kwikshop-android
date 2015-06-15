@@ -2,7 +2,7 @@ package de.fau.cs.mad.kwikshop.android.model;
 
 import android.content.Context;
 
-import fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 

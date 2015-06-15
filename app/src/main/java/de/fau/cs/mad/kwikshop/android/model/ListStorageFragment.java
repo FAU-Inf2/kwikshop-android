@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentManager;
 
 import java.sql.SQLException;
 
-import fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;

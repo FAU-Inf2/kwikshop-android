@@ -13,7 +13,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnTextChanged;
-import fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.R;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;

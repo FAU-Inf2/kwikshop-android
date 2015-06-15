@@ -8,7 +8,7 @@ import android.widget.ListView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.R;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;

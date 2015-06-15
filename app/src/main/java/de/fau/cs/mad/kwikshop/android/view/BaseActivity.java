@@ -16,7 +16,7 @@ import android.widget.FrameLayout;
 
 import java.util.Locale;
 
-import fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.R;
 
 /**
  * BaseActivity: all activities have to inherit

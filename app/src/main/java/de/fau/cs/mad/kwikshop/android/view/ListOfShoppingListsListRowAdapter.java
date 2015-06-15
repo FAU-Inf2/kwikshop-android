@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import cs.fau.mad.kwikshop_android.R;
+import fau.cs.mad.kwikshop_android.R;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 

@@ -3,11 +3,10 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.AndroidCharacter;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import cs.fau.mad.kwikshop_android.R;
+import fau.cs.mad.kwikshop_android.R;
 import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
 import de.greenrobot.event.EventBus;
 

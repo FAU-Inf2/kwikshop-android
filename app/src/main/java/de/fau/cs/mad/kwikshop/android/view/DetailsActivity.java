@@ -4,7 +4,7 @@ import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.View;
 
-import cs.fau.mad.kwikshop_android.R;
+import fau.cs.mad.kwikshop_android.R;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 
 public class DetailsActivity extends BaseActivity implements SaveDeleteActivity {

@@ -2,7 +2,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 import android.os.Bundle;
 
-import cs.fau.mad.kwikshop_android.R;
+import fau.cs.mad.kwikshop_android.R;
 
 public class ListOfShoppingListsActivity extends BaseActivity {
 

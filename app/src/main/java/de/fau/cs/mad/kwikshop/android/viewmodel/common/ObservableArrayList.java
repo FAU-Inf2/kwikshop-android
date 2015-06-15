@@ -272,6 +272,18 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
         return getById(id) != null;
     }
 
+    public T setOrAddById(T item) {
+        K id = idExtractor.getId(item);
+        if(containsById(id)) {
+            int index = indexOfById(id);
+            return set(index, item);
+        } else {
+            add(item);
+            return item;
+        }
+
+    }
+
     private class ReadonlyListIteratorWrapper implements ListIterator<T> {
 
         private ListIterator<T> wrappedIterator;

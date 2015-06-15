@@ -82,4 +82,14 @@ public class DefaultViewLauncher implements ViewLauncher {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+    @Override
+    public void showItemDetailsView(int shoppingListId) {
+        //TODO
+    }
+
+    @Override
+    public void showItemDetailsView(int shoppingListId, int itemId) {
+        //TODO
+    }
 }

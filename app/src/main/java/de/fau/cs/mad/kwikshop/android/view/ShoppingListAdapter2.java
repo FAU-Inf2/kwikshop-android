@@ -220,7 +220,7 @@ public class ShoppingListAdapter2 extends com.nhaarman.listviewanimations.ArrayA
         Item i1 = items.get(positionOne);
         Item i2 = items.get(positionTwo);
 
-        shoppingListViewModel.swapItems(i1, i2);
+        shoppingListViewModel.swapItems(i1.getId(), i2.getId());
 
         super.swapItems(positionOne, positionTwo);
     }

@@ -473,6 +473,7 @@ public class ShoppingListFragment extends Fragment {
 
                         listStorage.saveList(shoppingList);
 
+                        //IMPORTANT
                         autoCompletion.offerName(newItem.getName());
 
                         EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));

@@ -12,6 +12,7 @@ import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
+import de.fau.cs.mad.kwikshop.android.model.ItemParser;
 import de.fau.cs.mad.kwikshop.android.model.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
@@ -27,6 +28,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.LoadItemTask;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.LoadShoppingListTask;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.SaveItemTask;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
@@ -56,6 +58,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<Group> groupStorage;
     private final DefaultDataProvider defaultDataProvider;
+    private final ItemParser itemParser;
     private EventBus privateBus = EventBus.builder().build();
 
     private int shoppingListId;
@@ -94,7 +97,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     @Inject
     public ShoppingListViewModel(ViewLauncher viewLauncher, ListStorage listStorage,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
-                                 DefaultDataProvider defaultDataProvider) {
+                                 DefaultDataProvider defaultDataProvider, ItemParser itemParser) {
 
         if(viewLauncher == null) {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
@@ -111,12 +114,16 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(defaultDataProvider == null) {
             throw new IllegalArgumentException("'defaultDataProvider' must not be null");
         }
+        if(itemParser == null) {
+            throw new IllegalArgumentException("'itemParser' must not be null");
+        }
 
         this.viewLauncher = viewLauncher;
         this.listStorage = listStorage;
         this.unitStorage = unitStorage;
         this.groupStorage = groupStorage;
         this.defaultDataProvider = defaultDataProvider;
+        this.itemParser = itemParser;
     }
 
     public void initialize(int shoppingListId) {
@@ -198,8 +205,24 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     }
 
 
-    public void swapItems(Item item1, Item item2) {
-        //TODO
+    public void swapItems(final int id1, final int id2) {
+
+        if(items.containsById(id1) && items.containsById(id2)) {
+
+            int position1 = items.indexOfById(id1);
+            int position2 = items.indexOfById(id2);
+
+            Item item1 = items.remove(position1);
+            Item item2 = items.remove(position2);
+
+            items.add(position1, item2);
+            items.add(position2, item2);
+
+            item1.setOrder(position2);
+            item2.setOrder(position1);
+
+            new SaveItemTask(listStorage, shoppingListId, item1, item2).execute();
+        }
     }
 
 
@@ -348,12 +371,57 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     }
 
     private void deleteItemCommandExecute(int id) {
-        //TODO
+        final Item item = items.getById(id);
+
+        if(item != null) {
+            new AsyncTask<Object, Object, Object>() {
+                @Override
+                protected Object doInBackground(Object... params) {
+
+                    ShoppingList shoppingList = listStorage.loadList(shoppingListId);
+                    shoppingList.removeItem(item);
+                    shoppingList.save();
+                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingListId, item.getId()));
+                    return null;
+
+                }
+
+            }.execute();
+        }
     }
 
     private void quickAddCommandExecute() {
         ensureIsInitialized();
-        //TODO
+
+
+        final String text = getQuickAddText();
+        //reset quick add text
+        setQuickAddText("");
+
+        new AsyncTask() {
+
+            @Override
+            protected Object doInBackground(Object[] params) {
+
+                Item newItem = new Item();
+                newItem.setName(text);
+                newItem.setUnit(unitStorage.getDefaultValue());
+                newItem = itemParser.parseAmountAndUnit(newItem);
+                newItem.setGroup(groupStorage.getDefaultValue());
+
+                ShoppingList shoppingList = listStorage.loadList(shoppingListId);
+                shoppingList.addItem(newItem);
+
+                listStorage.saveList(shoppingList);
+
+                EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
+                EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+
+                return null;
+            }
+        }.execute();
+
+
     }
 
     private void addItemCommandExecute() {
@@ -381,11 +449,13 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
             items.removeById(id);
             boughtItems.setOrAddById(item);
+            boughtItems.notifyItemModifiedById(id);
 
         } else {
 
             boughtItems.removeById(id);
             items.setOrAddById(item);
+            boughtItems.notifyItemModifiedById(id);
 
         }
     }

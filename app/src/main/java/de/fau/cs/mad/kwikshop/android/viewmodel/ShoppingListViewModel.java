@@ -2,18 +2,27 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import android.os.AsyncTask;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
 import de.fau.cs.mad.kwikshop.android.model.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemLoadedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
+import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.LoadItemTask;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.LoadShoppingListTask;
@@ -36,6 +45,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
         void onQuickAddTextChanged();
 
+        void onItemSortTypeChanged();
     }
 
 
@@ -43,6 +53,9 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
     private final ViewLauncher viewLauncher;
     private final ListStorage listStorage;
+    private final SimpleStorage<Unit> unitStorage;
+    private final SimpleStorage<Group> groupStorage;
+    private final DefaultDataProvider defaultDataProvider;
     private EventBus privateBus = EventBus.builder().build();
 
     private int shoppingListId;
@@ -51,7 +64,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     private final ObservableArrayList<Item, Integer> items = new ObservableArrayList<Item, Integer>(new ItemIdExtractor());
     private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<Item, Integer>(new ItemIdExtractor());
     private String quickAddText = "";
-
+    private ItemSortType itemSortType;
 
     private final Command addItemCommand = new Command() {
         @Override
@@ -79,7 +92,9 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
 
     @Inject
-    public ShoppingListViewModel(ViewLauncher viewLauncher, ListStorage listStorage) {
+    public ShoppingListViewModel(ViewLauncher viewLauncher, ListStorage listStorage,
+                                 SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
+                                 DefaultDataProvider defaultDataProvider) {
 
         if(viewLauncher == null) {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
@@ -87,9 +102,21 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(listStorage == null) {
             throw new IllegalArgumentException("'listStorage' must not be null");
         }
+        if(unitStorage == null) {
+            throw new IllegalArgumentException("'unitStorage' must not be null");
+        }
+        if(groupStorage == null) {
+            throw new IllegalArgumentException("'groupStorage' must not be null");
+        }
+        if(defaultDataProvider == null) {
+            throw new IllegalArgumentException("'defaultDataProvider' must not be null");
+        }
 
         this.viewLauncher = viewLauncher;
         this.listStorage = listStorage;
+        this.unitStorage = unitStorage;
+        this.groupStorage = groupStorage;
+        this.defaultDataProvider = defaultDataProvider;
     }
 
     public void initialize(int shoppingListId) {
@@ -131,6 +158,21 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
             quickAddCommand.setCanExecute(!StringHelper.isNullOrWhiteSpace(quickAddText));
             if(listener != null) {
                 listener.onQuickAddTextChanged();
+            }
+        }
+    }
+
+
+    public ItemSortType getItemSortType() {
+        return this.itemSortType;
+    }
+
+    public void setItemSortType(ItemSortType value) {
+        if(value != itemSortType) {
+            itemSortType = value;
+
+            if(listener != null) {
+                listener.onItemSortTypeChanged();
             }
         }
     }
@@ -238,6 +280,26 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         }
     }
 
+    public void onEventBackgroundThread(MoveAllItemsEvent event) {
+
+        boolean isBoughtNew = event.isMoveAllToBought();
+        ShoppingList list = listStorage.loadList(shoppingListId);
+
+        List<Item> changedItems = new LinkedList<>();
+
+        for(Item item : list.getItems()) {
+            if(item.isBought() != isBoughtNew) {
+                item.setBought(isBoughtNew);
+                changedItems.add(item);
+            }
+        }
+        list.save();
+
+        for(Item item : changedItems) {
+            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingListId, item.getId()));
+        }
+
+    }
 
     @Override
     protected Listener getListener() {
@@ -305,7 +367,6 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
             throw new UnsupportedOperationException("You need to call initialized before view model can perform commands");
         }
     }
-
 
     private void updateItem(Item item) {
 

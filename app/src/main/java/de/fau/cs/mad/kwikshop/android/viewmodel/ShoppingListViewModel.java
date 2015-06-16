@@ -198,6 +198,11 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     }
 
 
+    public void swapItems(Item item1, Item item2) {
+        //TODO
+    }
+
+
     public void onEventMainThread(ShoppingListLoadedEvent event) {
 
         ShoppingList shoppingList = event.getShoppingList();

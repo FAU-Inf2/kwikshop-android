@@ -240,7 +240,7 @@ public class ShoppingListFragment
                         Command<Integer> command = viewModel.getToggleIsBoughtCommand();
                         for (int position : reverseSortedPositions) {
                             if (command.getCanExecute()) {
-                                Item item = viewModel.getItems().get(position);
+                                Item item = viewModel.getBoughtItems().get(position);
                                 command.execute(item.getId());
                             }
                         }
@@ -302,6 +302,7 @@ public class ShoppingListFragment
     public void onDestroyView() {
 
         super.onDestroyView();
+        viewModel.onDestroyView();
         EventBus.getDefault().unregister(this);
     }
 

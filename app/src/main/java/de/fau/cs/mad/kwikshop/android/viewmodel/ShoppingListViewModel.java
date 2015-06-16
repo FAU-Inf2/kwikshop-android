@@ -9,7 +9,9 @@ import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.common.*;
 import de.fau.cs.mad.kwikshop.android.model.*;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
+import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
+import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.greenrobot.event.EventBus;
@@ -62,6 +64,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<Group> groupStorage;
     private final ItemParser itemParser;
+    protected final DisplayHelper displayHelper;
     private EventBus privateBus = EventBus.builder().build();
 
     private int shoppingListId;
@@ -102,7 +105,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     @Inject
     public ShoppingListViewModel(ViewLauncher viewLauncher, ListStorage listStorage,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
-                                 ItemParser itemParser) {
+                                 ItemParser itemParser, DisplayHelper displayHelper) {
 
         if(viewLauncher == null) {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
@@ -119,12 +122,16 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(itemParser == null) {
             throw new IllegalArgumentException("'itemParser' must not be null");
         }
+        if(displayHelper == null) {
+            throw new IllegalArgumentException("'displayHelper' must not be null");
+        }
 
         this.viewLauncher = viewLauncher;
         this.listStorage = listStorage;
         this.unitStorage = unitStorage;
         this.groupStorage = groupStorage;
         this.itemParser = itemParser;
+        this.displayHelper = displayHelper;
     }
 
 
@@ -204,7 +211,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     public void setItemSortType(ItemSortType value) {
         if(value != itemSortType) {
             itemSortType = value;
-
+            Collections.sort(getItems(), new ItemComparator(displayHelper, value));
             listener.onItemSortTypeChanged();
         }
     }
@@ -251,20 +258,19 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     public void swapItems(final int id1, final int id2) {
 
         if(items.containsById(id1) && items.containsById(id2)) {
-
-            int position1 = items.indexOfById(id1);
-            int position2 = items.indexOfById(id2);
-
-            Item item1 = items.remove(position1);
-            Item item2 = items.remove(position2);
-
-            items.add(position1, item2);
-            items.add(position2, item2);
-
-            item1.setOrder(position2);
-            item2.setOrder(position1);
-
-            new SaveItemTask(listStorage, shoppingListId, item1, item2).execute();
+            //TODO
+//            //let's assume the two items are next to each other in the list
+//
+//            int position1 = items.indexOfById(id1);
+//            int position2 = items.indexOfById(id2);
+//
+//            Item item1 = items.get(position1);
+//            Item item2 = items.get(position2);
+//
+//            item1.setOrder(position2);
+//            item2.setOrder(position1);
+//
+//            new SaveItemTask(listStorage, shoppingListId, item1, item2).execute();
         }
     }
 
@@ -398,6 +404,11 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
     }
 
+    @SuppressWarnings("unused")
+    public void onEventMainThread(ItemSortType sortType) {
+        setItemSortType(sortType);
+    }
+
 
     @Override
     protected Listener getListener() {
@@ -412,9 +423,9 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
 
     private void toggleIsBoughtCommandExecute(final int id) {
-        final Item item = items.getById(id);
+        Item item = items.getById(id);
         if(item == null) {
-            boughtItems.getById(id);
+            item = boughtItems.getById(id);
         }
 
         if(item != null) {
@@ -424,25 +435,23 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         }
     }
 
-    private void deleteItemCommandExecute(int id) {
-        final Item item = items.getById(id);
+    private void deleteItemCommandExecute(final int id) {
 
-        if(item != null) {
-            new AsyncTask<Object, Object, Object>() {
-                @Override
-                protected Object doInBackground(Object... params) {
+        new AsyncTask<Object, Object, Object>() {
+            @Override
+            protected Object doInBackground(Object... params) {
 
-                    ShoppingList shoppingList = listStorage.loadList(shoppingListId);
-                    if(shoppingList.removeItem(item)) {
-                        shoppingList.save();
-                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, shoppingListId));
-                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, shoppingListId, item.getId()));
-                    }
-                    return null;
+                ShoppingList shoppingList = listStorage.loadList(shoppingListId);
+                if(shoppingList.removeItem(id)) {
+                    shoppingList.save();
+                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, shoppingListId));
+                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, shoppingListId, id));
                 }
+                return null;
+            }
 
-            }.execute();
-        }
+        }.execute();
+
     }
 
     private synchronized void quickAddCommandExecute() {
@@ -466,7 +475,6 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                     newItem.setUnit(unitStorage.getDefaultValue());
                     newItem = itemParser.parseAmountAndUnit(newItem);
                     newItem.setGroup(groupStorage.getDefaultValue());
-
 
                     ShoppingList shoppingList = listStorage.loadList(shoppingListId);
                     shoppingList.addItem(newItem);

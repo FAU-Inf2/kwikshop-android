@@ -306,6 +306,8 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
     private class ReadonlyListIteratorWrapper implements ListIterator<T> {
 
         private ListIterator<T> wrappedIterator;
+        private T current;
+        private int index = -1;
 
         public ReadonlyListIteratorWrapper(ListIterator<T> wrappedIterator) {
             this.wrappedIterator = wrappedIterator;
@@ -331,7 +333,9 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
 
         @Override
         public T next() {
-            return wrappedIterator.next();
+            index++;
+            current = wrappedIterator.next();
+            return current;
         }
 
         @Override
@@ -358,9 +362,7 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
 
         @Override
         public void set(T object) {
-            //no supported as we're not able to fire the right event without a specialized
-            // iterator implementation
-            throw new UnsupportedOperationException();
+            ObservableArrayList.this.set(index, object);
         }
     }
 

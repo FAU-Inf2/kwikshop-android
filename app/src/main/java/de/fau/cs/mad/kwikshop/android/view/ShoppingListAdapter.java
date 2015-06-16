@@ -185,6 +185,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                     }
                 }
             });
+        } else {
+            viewHolder.imageView_delete.setVisibility(View.GONE);
+            viewHolder.imageView_delete.setOnClickListener(null);
         }
 
         return view;

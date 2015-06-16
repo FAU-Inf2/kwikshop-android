@@ -92,7 +92,7 @@ public class DefaultViewLauncher implements ViewLauncher {
 
     @Override
     public void showItemDetailsView(int shoppingListId, int itemId) {
-        Intent intent = ItemDetailsActivity.getIntent(activity, shoppingListId);
+        Intent intent = ItemDetailsActivity.getIntent(activity, shoppingListId, itemId);
         activity.startActivity(intent);
     }
 }

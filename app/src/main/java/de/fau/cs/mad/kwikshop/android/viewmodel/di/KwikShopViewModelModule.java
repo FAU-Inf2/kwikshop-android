@@ -25,7 +25,9 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
             ShoppingListDetailsViewModel.class,
             DisplayHelper.class,
             ShoppingListViewModel.class
-        })
+        },
+        library = true)
+@SuppressWarnings("unused")
 public class KwikShopViewModelModule {
 
     private final Activity currentActivity;

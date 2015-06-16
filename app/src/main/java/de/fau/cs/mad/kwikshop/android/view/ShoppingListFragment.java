@@ -189,7 +189,7 @@ public class ShoppingListFragment
         viewModel.getItems().addListener(this);
         viewModel.getBoughtItems().addListener(this);
 
-        ShoppingListAdapter2 shoppingListAdapter = new ShoppingListAdapter2(getActivity(), viewModel,
+        ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);
         shoppingListView.setAdapter(shoppingListAdapter);
 
@@ -248,7 +248,7 @@ public class ShoppingListFragment
                 });
 
 
-        shoppingListViewBought.setAdapter(new ShoppingListAdapter2(getActivity(), viewModel, viewModel.getBoughtItems(), displayHelper));
+        shoppingListViewBought.setAdapter(new ShoppingListAdapter(getActivity(), viewModel, viewModel.getBoughtItems(), displayHelper));
         shoppingListViewBought.enableDragAndDrop();
 
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);

@@ -61,7 +61,6 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     private final ListStorage listStorage;
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<Group> groupStorage;
-    private final DefaultDataProvider defaultDataProvider;
     private final ItemParser itemParser;
     private EventBus privateBus = EventBus.builder().build();
 
@@ -70,8 +69,8 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     private final List<Listener> listeners = new ArrayList<>();
     private final Listener listener = new CompositeListener();
 
-    private final ObservableArrayList<Item, Integer> items = new ObservableArrayList<Item, Integer>(new ItemIdExtractor());
-    private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<Item, Integer>(new ItemIdExtractor());
+    private final ObservableArrayList<Item, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
+    private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
     private String quickAddText = "";
     private ItemSortType itemSortType = ItemSortType.MANUAL;
 
@@ -103,7 +102,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     @Inject
     public ShoppingListViewModel(ViewLauncher viewLauncher, ListStorage listStorage,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
-                                 DefaultDataProvider defaultDataProvider, ItemParser itemParser) {
+                                 ItemParser itemParser) {
 
         if(viewLauncher == null) {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
@@ -117,9 +116,6 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(groupStorage == null) {
             throw new IllegalArgumentException("'groupStorage' must not be null");
         }
-        if(defaultDataProvider == null) {
-            throw new IllegalArgumentException("'defaultDataProvider' must not be null");
-        }
         if(itemParser == null) {
             throw new IllegalArgumentException("'itemParser' must not be null");
         }
@@ -128,7 +124,6 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         this.listStorage = listStorage;
         this.unitStorage = unitStorage;
         this.groupStorage = groupStorage;
-        this.defaultDataProvider = defaultDataProvider;
         this.itemParser = itemParser;
     }
 
@@ -273,7 +268,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         }
     }
 
-
+    @SuppressWarnings("unused")
     public void onEventMainThread(ShoppingListLoadedEvent event) {
 
         //on the main thread, update the displayed shopping list after is has been (re-) loaded
@@ -304,6 +299,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         }
     }
 
+    @SuppressWarnings("unused")
     public void onEventMainThread(ItemLoadedEvent event) {
 
         // on the main thread, update an displayed item after it has been loaded
@@ -314,6 +310,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
     }
 
+    @SuppressWarnings("unused")
     public void onEventMainThread(ShoppingListChangedEvent event) {
 
         if(event.getListId() == this.shoppingListId) {
@@ -324,6 +321,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         }
     }
 
+    @SuppressWarnings("unused")
     public void onEventBackgroundThread(ShoppingListChangedEvent event) {
 
         if(event.getListId() == this.shoppingListId) {
@@ -338,6 +336,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         }
     }
 
+    @SuppressWarnings("unused")
     public void onEventBackgroundThread(ItemChangedEvent event) {
 
         if(event.getShoppingListId() == this.shoppingListId) {
@@ -357,6 +356,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         }
     }
 
+    @SuppressWarnings("unused")
     public void onEventMainThread(ItemChangedEvent event) {
 
         if(event.getShoppingListId() == this.shoppingListId) {
@@ -376,6 +376,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         }
     }
 
+    @SuppressWarnings("unused")
     public void onEventBackgroundThread(MoveAllItemsEvent event) {
 
         boolean isBoughtNew = event.isMoveAllToBought();
@@ -453,10 +454,10 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         setQuickAddText("");
 
 
-        new AsyncTask() {
+        new AsyncTask<Void, Void, Void>() {
 
             @Override
-            protected Object doInBackground(Object[] params) {
+            protected Void doInBackground(Void[] params) {
 
                 if(!StringHelper.isNullOrWhiteSpace(text)) {
 

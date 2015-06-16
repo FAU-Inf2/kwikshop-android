@@ -12,77 +12,71 @@ import android.widget.TextView;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 
-import java.util.Collection;
-import java.util.List;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.model.ListStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemDeleteEvent;
-import de.fau.cs.mad.kwikshop.android.util.AsyncTaskHelper;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
-import de.greenrobot.event.EventBus;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 
-public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Integer> implements UndoAdapter {
 
-    private ShoppingList shoppingList;
-    private final ListStorage listStorage;
-    private final int listId;
+/**
+ * TODO: This name is temporary. This adapter is intended to replace existing ShoppingListAdapter once it's finished
+ */
+public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Item> implements UndoAdapter , ObservableArrayList.Listener<Item> {
+
     private final Context context;
+    private final ShoppingListViewModel shoppingListViewModel;
+    private final ObservableArrayList<Item, Integer> items;
     private final DisplayHelper displayHelper;
-    private boolean groupItems;
-
-    private Object lock; // Lock from ShoppingListFragment, used to delete Items
-
 
     /**
      * Initializes a new instance of ShoppingListAdapter
      *
-     * @param context      The adapter's context
-     * @param objects      The ids of the shopping list items to be displayed
-     * @param shoppingList The shopping list which's items to display
-     * @param groupItems   Group shopping list items by their group and display group headers
      */
-    public ShoppingListAdapter(Context context, List<Integer> objects, ListStorage listStorage, int listId, boolean groupItems) {
+    public ShoppingListAdapter(Context context, ShoppingListViewModel shoppingListViewModel, ObservableArrayList<Item, Integer> items,
+                               DisplayHelper displayHelper) {
 
-        super(objects);
+        super(items);
 
-        if (context == null) {
+        if(context == null) {
             throw new IllegalArgumentException("'context' must not be null");
         }
 
-        if (objects == null) {
-            throw new IllegalArgumentException("'objects' must not be null");
+        if (shoppingListViewModel == null) {
+            throw new IllegalArgumentException("'shoppingListViewModel' must not be null");
         }
 
-        if (listStorage == null) {
-            throw new IllegalArgumentException("'listStorage' must not be null");
+        if (items == null) {
+            throw new IllegalArgumentException("'items' must not be null");
+        }
+
+        if(displayHelper == null) {
+            throw new IllegalArgumentException("'displayHelper' must not be null");
         }
 
         this.context = context;
-        this.listStorage = listStorage;
-        this.listId = listId;
-        this.displayHelper = new DisplayHelper(context);
-        this.groupItems = groupItems;
+        this.shoppingListViewModel = shoppingListViewModel;
+        this.items = items;
+        this.displayHelper = displayHelper;
 
+        items.addListener(this);
     }
 
 
     @Override
     public long getItemId(int position) {
-        return getItem(position);
+        return items.get(position).getId();
     }
+
 
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
 
         ViewHolder viewHolder;
-        if(view == null ){
+        if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.fragment_shoppinglist_row, parent, false);
             viewHolder = new ViewHolder(view);
             view.setTag(viewHolder);
@@ -90,15 +84,15 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        Item item = getShoppingList().getItem(getItem(position));
+        Item item = items.get(position);
 
-        if(!item.isBought()){
+        if (!item.isBought()) {
             viewHolder.textView_ShoppingListName.setPaintFlags(viewHolder.textView_ShoppingListName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
             viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_Medium);
         }
 
         //if item is highlighted, set color to red
-        if(item.isHighlight()){
+        if (item.isHighlight()) {
             viewHolder.textView_ShoppingListName.setTextColor(Color.RED);
         } else {
             viewHolder.textView_ShoppingListName.setTextColor(context.getResources().getColor(R.color.primary_text));
@@ -142,11 +136,11 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         //determine if we have to show the group header (above the item)
         //TODO: that's super ugly
         boolean showHeader = false;
-        if (groupItems && !item.isBought()) {
+        if (shoppingListViewModel.getItemSortType() == ItemSortType.GROUP && !item.isBought()) {
             if (position == 0) {
                 showHeader = true;
             } else if (position > 0) {
-                Item previousItem = getShoppingList().getItem(getItem(position - 1));
+                Item previousItem = items.get(position - 1);
                 if (item.getGroup() == null && previousItem == null) {
                     showHeader = false;
                 } else if (item.getGroup() != null) {
@@ -165,7 +159,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
 
         // Specific changes for bought Items
-        if(item.isBought()) {
+        if (item.isBought()) {
             viewHolder.textView_ShoppingListName.setPaintFlags(viewHolder.textView_ShoppingListName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
 
@@ -179,13 +173,16 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.imageView_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Integer itemID;
+                    Integer itemId;
                     try {
-                        itemID = getItem(position);
+                        itemId = items.get(position).getId();
                     } catch (IndexOutOfBoundsException e) {
                         return;
                     }
-                    EventBus.getDefault().post(new ItemDeleteEvent(listId, itemID));
+                    Command<Integer> deleteCommand = shoppingListViewModel.getDeleteItemCommand();
+                    if(deleteCommand.getCanExecute()) {
+                        deleteCommand.execute(itemId);
+                    }
                 }
             });
         }
@@ -193,70 +190,11 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         return view;
     }
 
-    public void removeByPosition(int position) { // 'remove from this list'
-        ShoppingList shoppingList = getShoppingList();
-
-        Item item = shoppingList.getItem(getItem(position));
-
-        if(item.isBought()) {
-            item.setBought(false);
-        } else {
-            item.setBought(true);
-        }
-
-        shoppingList.save();
-        super.remove(position);
-        notifyDataSetChanged();
-
-        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
-    }
-
-    private void moveAllItems(boolean boughtStatus) {
-        ShoppingList shoppingList = getShoppingList();
-        int length = getItems().size();
-
-        Item item = null;
-        for (int position = length - 1; position >= 0; position--) {
-            /*Item*/ item = shoppingList.getItem(getItem(position));
-            if (item.isBought() == boughtStatus)
-                continue;
-
-            item.setBought(boughtStatus);
-
-            shoppingList.save();
-            super.remove(position);
-            notifyDataSetChanged();
-
-            //TODO as soon as only the modified item gets reloaded, the "//" before the next line must be removed
-            //EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
-        }
-        //TODO as soon as only the modified item gets reloaded, the next two lines should be removed
-        if (item != null)
-            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingList.getId(), item.getId()));
-    }
-
-    public void moveAllToBought() {
-        moveAllItems(true);
-    }
-
-    public void moveAllFromBought() {
-        moveAllItems(false);
-    }
-
-    public void updateOrderOfList() {
-        ShoppingList list = listStorage.loadList(listId);
-        int i = 0;
-        for(Integer item : this.getItems()){
-            list.getItem(item).setOrder(i);
-            i++;
-        }
-        new AsyncTaskHelper.ShoppingListSaveTask().execute(list);
-    }
-
     @Override
     public boolean hasStableIds() {
         return true;
     }
+
 
     @NonNull
     @Override
@@ -278,43 +216,28 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     // Used by drag and drop
     @Override
     public void swapItems(final int positionOne, final int positionTwo) {
-        ShoppingList shoppingList = getShoppingList();
 
-        Item i1 = shoppingList.getItem(getItem(positionOne));
-        Item i2 = shoppingList.getItem(getItem(positionTwo));
-        i1.setOrder(positionTwo);
-        i2.setOrder(positionOne);
+        Item i1 = items.get(positionOne);
+        Item i2 = items.get(positionTwo);
 
-        new AsyncTaskHelper.ShoppingListSaveTask().execute(shoppingList);
+        shoppingListViewModel.swapItems(i1.getId(), i2.getId());
 
         super.swapItems(positionOne, positionTwo);
     }
 
-
-    public void setGroupItems(boolean value) {
-        this.groupItems = value;
+    @Override
+    public void onItemAdded(Item newItem) {
         notifyDataSetChanged();
     }
 
     @Override
-    public synchronized void clear() {
-        this.shoppingList = null;
-        super.clear();
+    public void onItemRemoved(Item removedItem) {
+        notifyDataSetChanged();
     }
 
     @Override
-    public synchronized boolean addAll(@NonNull Collection<? extends Integer> collection) {
-        this.shoppingList = null;
-        return super.addAll(collection);
-    }
-
-    private synchronized ShoppingList getShoppingList() {
-
-        if (shoppingList == null) {
-            shoppingList = listStorage.loadList(listId);
-        }
-
-        return shoppingList;
+    public void onItemModified(Item modifiedItem) {
+        notifyDataSetChanged();
     }
 
 

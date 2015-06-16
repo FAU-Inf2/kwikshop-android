@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 
-import java.util.List;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
@@ -27,7 +25,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 /**
  * TODO: This name is temporary. This adapter is intended to replace existing ShoppingListAdapter once it's finished
  */
-public class ShoppingListAdapter2 extends com.nhaarman.listviewanimations.ArrayAdapter<Item> implements UndoAdapter {
+public class ShoppingListAdapter2 extends com.nhaarman.listviewanimations.ArrayAdapter<Item> implements UndoAdapter , ObservableArrayList.Listener<Item> {
 
     private final Context context;
     private final ShoppingListViewModel shoppingListViewModel;
@@ -63,6 +61,8 @@ public class ShoppingListAdapter2 extends com.nhaarman.listviewanimations.ArrayA
         this.shoppingListViewModel = shoppingListViewModel;
         this.items = items;
         this.displayHelper = displayHelper;
+
+        items.addListener(this);
     }
 
 
@@ -223,6 +223,21 @@ public class ShoppingListAdapter2 extends com.nhaarman.listviewanimations.ArrayA
         shoppingListViewModel.swapItems(i1.getId(), i2.getId());
 
         super.swapItems(positionOne, positionTwo);
+    }
+
+    @Override
+    public void onItemAdded(Item newItem) {
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemRemoved(Item removedItem) {
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemModified(Item modifiedItem) {
+        notifyDataSetChanged();
     }
 
 

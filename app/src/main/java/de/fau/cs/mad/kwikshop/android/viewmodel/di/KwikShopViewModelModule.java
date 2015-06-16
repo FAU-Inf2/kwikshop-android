@@ -16,10 +16,16 @@ import de.fau.cs.mad.kwikshop.android.view.DefaultViewLauncher;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfShoppingListsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 
-@Module(injects = {ListOfShoppingListsViewModel.class, ShoppingListDetailsViewModel.class})
+@Module(injects = {
+            ListOfShoppingListsViewModel.class,
+            ShoppingListDetailsViewModel.class,
+            DisplayHelper.class,
+            ShoppingListViewModel.class
+        })
 public class KwikShopViewModelModule {
 
     private final Activity currentActivity;
@@ -53,23 +59,23 @@ public class KwikShopViewModelModule {
         return new DefaultResourceProvider(context);
     }
 
-//    @Provides
-//    public SimpleStorage<Unit> provideUnitStorage() {
-//        return ListStorageFragment.getUnitStorage();
-//    }
-//
-//    @Provides
-//    public SimpleStorage<Group> provideGroupStorage() {
-//        return ListStorageFragment.getGroupStorage();
-//    }
-//
-//    @Provides
-//    public DefaultDataProvider provideDefaultDataProvider(Context context) {
-//        return new DefaultDataProvider(context);
-//    }
+    @Provides
+    public SimpleStorage<Unit> provideUnitStorage() {
+        return ListStorageFragment.getUnitStorage();
+    }
 
-//    @Provides
-//    public DisplayHelper provideDisplayHelper(Context context) {
-//        return new DisplayHelper(context);
-//    }
+    @Provides
+    public SimpleStorage<Group> provideGroupStorage() {
+        return ListStorageFragment.getGroupStorage();
+    }
+
+    @Provides
+    public DefaultDataProvider provideDefaultDataProvider(Context context) {
+        return new DefaultDataProvider(context);
+    }
+
+    @Provides
+    public DisplayHelper provideDisplayHelper(Context context) {
+        return new DisplayHelper(context);
+    }
 }

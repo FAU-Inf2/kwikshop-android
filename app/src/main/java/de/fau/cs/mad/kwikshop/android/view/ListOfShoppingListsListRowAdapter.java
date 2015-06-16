@@ -49,7 +49,7 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
 
         this.parentActivity = parentActivity;
         this.lists = lists;
-        this.lists.setListener(this);
+        this.lists.addListener(this);
     }
 
     //endregion

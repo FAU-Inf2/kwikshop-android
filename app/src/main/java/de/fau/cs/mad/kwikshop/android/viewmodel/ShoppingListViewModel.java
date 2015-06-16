@@ -2,52 +2,56 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import android.os.AsyncTask;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import javax.inject.Inject;
 
-import de.fau.cs.mad.kwikshop.android.common.Group;
-import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
-import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
-import de.fau.cs.mad.kwikshop.android.model.ItemParser;
-import de.fau.cs.mad.kwikshop.android.model.ListStorage;
-import de.fau.cs.mad.kwikshop.android.model.SimpleStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemLoadedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListLoadedEvent;
+import de.fau.cs.mad.kwikshop.android.common.*;
+import de.fau.cs.mad.kwikshop.android.model.*;
+import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.LoadItemTask;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.LoadShoppingListTask;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.SaveItemTask;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.greenrobot.event.EventBus;
 
 public class ShoppingListViewModel extends ShoppingListViewModelBase {
-
-
-    private static class ItemIdExtractor implements ObservableArrayList.IdExtractor<Item, Integer> {
-
-        @Override
-        public Integer getId(Item object) {
-            return object.getId();
-        }
-    }
 
     public interface Listener extends ShoppingListViewModelBase.Listener {
 
         void onQuickAddTextChanged();
 
         void onItemSortTypeChanged();
+    }
+
+    private class CompositeListener implements Listener {
+
+        @Override
+        public void onQuickAddTextChanged() {
+            for(Listener listener : listeners) {
+                listener.onQuickAddTextChanged();
+            }
+        }
+
+        @Override
+        public void onItemSortTypeChanged() {
+            for(Listener listener : listeners) {
+                listener.onItemSortTypeChanged();
+            }
+        }
+
+        @Override
+        public void onNameChanged(String value) {
+            for(Listener listener : listeners) {
+                listener.onNameChanged(value);
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            for(Listener listener : listeners) {
+                listener.onFinish();
+            }
+        }
     }
 
 
@@ -63,11 +67,13 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
     private int shoppingListId;
 
-    private Listener listener;
+    private final List<Listener> listeners = new ArrayList<>();
+    private final Listener listener = new CompositeListener();
+
     private final ObservableArrayList<Item, Integer> items = new ObservableArrayList<Item, Integer>(new ItemIdExtractor());
     private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<Item, Integer>(new ItemIdExtractor());
     private String quickAddText = "";
-    private ItemSortType itemSortType;
+    private ItemSortType itemSortType = ItemSortType.MANUAL;
 
     private final Command addItemCommand = new Command() {
         @Override
@@ -126,7 +132,13 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         this.itemParser = itemParser;
     }
 
+
+    /**
+     * Initializes the view model. You need to call this before an instance can be used
+     * @param shoppingListId The id of the shopping list to be displayed by the view model
+     */
     public void initialize(int shoppingListId) {
+
         if(!initialized) {
             this.shoppingListId = shoppingListId;
             privateBus.register(this);
@@ -139,23 +151,39 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     }
 
 
-    public void setListener(Listener listener) {
-        this.listener = listener;
+    /**
+     * Adds a listener to be notified when changes in the view model occcur
+     */
+    public void addListener(Listener listener) {
+        this.listeners.add(listener);
     }
 
+    /**
+     * Gets the shopping list items that have not yet been bought
+     */
     public ObservableArrayList<Item, Integer> getItems() {
         return items;
     }
 
+    /**
+     * Gets the shopping list items that have already been bought
+     */
     public ObservableArrayList<Item, Integer> getBoughtItems() {
         return boughtItems;
     }
 
+    /**
+     * Gets the current value for the quick-add text field
+     */
     public String getQuickAddText() {
         return quickAddText;
     }
 
+    /**
+     * Sets the value of the quick-add text field
+     */
     public void setQuickAddText(String value) {
+
         if(value == null) {
             value = "";
         }
@@ -163,48 +191,68 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(!value.equals(quickAddText)) {
             quickAddText = value;
             quickAddCommand.setCanExecute(!StringHelper.isNullOrWhiteSpace(quickAddText));
-            if(listener != null) {
-                listener.onQuickAddTextChanged();
-            }
+
+            listener.onQuickAddTextChanged();
         }
     }
 
-
+    /**
+     * Gets how items are supposed to be sorted for the current shopping list
+     */
     public ItemSortType getItemSortType() {
         return this.itemSortType;
     }
 
+    /**
+     * Sets how items are supposed to be sorted for the current shopping list
+     */
     public void setItemSortType(ItemSortType value) {
         if(value != itemSortType) {
             itemSortType = value;
 
-            if(listener != null) {
-                listener.onItemSortTypeChanged();
-            }
+            listener.onItemSortTypeChanged();
         }
     }
 
+    /**
+     * Gets the command to be executed when the view's add button is pressed
+     */
     public Command getAddItemCommand() {
         return addItemCommand;
     }
 
+    /**
+     * Gets the command to be executed when the view's quick-add button is pressed
+     */
     public Command getQuickAddCommand() {
         return quickAddCommand;
     }
 
+    /**
+     * Gets the command to be executed when a shopping list item in the view is selected
+     */
     public Command<Integer> getSelectItemCommand() {
         return selectItemCommand;
     }
 
+    /**
+     * Gets the command to be executed when a item in the view is swiped
+     */
     public Command<Integer> getToggleIsBoughtCommand() {
         return  toggleIsBoughtCommand;
     }
 
+    /**
+     * Gets the command to be executed when an item's delete-button is pressed
+     */
     public Command<Integer> getDeleteItemCommand() {
         return deleteItemCommand;
     }
 
 
+    /**
+     * Swaps the positions of the specified items in the shopping list
+     */
     public void swapItems(final int id1, final int id2) {
 
         if(items.containsById(id1) && items.containsById(id2)) {
@@ -228,8 +276,25 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
     public void onEventMainThread(ShoppingListLoadedEvent event) {
 
+        //on the main thread, update the displayed shopping list after is has been (re-) loaded
+
         ShoppingList shoppingList = event.getShoppingList();
+
         if(shoppingList.getId() == this.shoppingListId) {
+
+            int  sortTypeInt = shoppingList.getSortTypeInt();
+            switch (sortTypeInt){
+                case 1:
+                    setItemSortType(ItemSortType.GROUP);
+                    break;
+                case 2:
+                    setItemSortType(ItemSortType.ALPHABETICALLY);
+                    break;
+                default:
+                    setItemSortType(ItemSortType.MANUAL);
+                    break;
+            }
+
 
             this.setName(shoppingList.getName());
 
@@ -241,33 +306,34 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
     public void onEventMainThread(ItemLoadedEvent event) {
 
+        // on the main thread, update an displayed item after it has been loaded
+
         if(event.getShoppingListId() == this.shoppingListId) {
             updateItem(event.getItem());
         }
 
     }
 
+    public void onEventMainThread(ShoppingListChangedEvent event) {
+
+        if(event.getListId() == this.shoppingListId) {
+
+            if(event.getChangeType() == ShoppingListChangeType.Deleted) {
+                finish();
+            }
+        }
+    }
+
     public void onEventBackgroundThread(ShoppingListChangedEvent event) {
 
         if(event.getListId() == this.shoppingListId) {
 
-            switch (event.getChangeType()) {
-
-                case PropertiesModified:
-                case ItemsAdded:
-                case ItemsRemoved:
-                    new LoadShoppingListTask(listStorage, privateBus, shoppingListId).execute();
-                    break;
-
-                case Deleted:
-                    finish();
-                    break;
-
-                case Added:
-                    //ignore (should not happen anyways)
-                    break;
+            if(event.getChangeType() == ShoppingListChangeType.PropertiesModified) {
+                new LoadShoppingListTask(listStorage, privateBus, shoppingListId).execute();
 
             }
+
+            //other change types should already be covered by other event handlers
 
         }
     }
@@ -284,6 +350,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                     break;
 
                 case  Deleted:
+                    // ignore (handled on background thread)
                     break;
 
             }
@@ -298,6 +365,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
                 case  Added:
                 case PropertiesModified:
+                    // ignore (handled on background thread)
                     break;
                 case  Deleted:
                     items.removeById(event.getItemId());
@@ -329,6 +397,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
     }
 
+
     @Override
     protected Listener getListener() {
         return this.listener;
@@ -347,26 +416,10 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
             boughtItems.getById(id);
         }
 
-        item.setBought(!item.isBought());
-
         if(item != null) {
 
-            new AsyncTask<Object, Object, Object>() {
-                @Override
-                protected Object doInBackground(Object... params) {
-
-                    ShoppingList shoppingList = listStorage.loadList(shoppingListId);
-                    shoppingList.removeItem(item);
-                    shoppingList.addItem(item);
-
-                    shoppingList.save();
-
-                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingListId, id));
-                    return null;
-                }
-
-            }.execute();
-
+            item.setBought(!item.isBought());
+            new SaveItemTask(listStorage, shoppingListId, item).execute();
         }
     }
 
@@ -379,44 +432,49 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                 protected Object doInBackground(Object... params) {
 
                     ShoppingList shoppingList = listStorage.loadList(shoppingListId);
-                    shoppingList.removeItem(item);
-                    shoppingList.save();
-                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingListId, item.getId()));
+                    if(shoppingList.removeItem(item)) {
+                        shoppingList.save();
+                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, shoppingListId));
+                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, shoppingListId, item.getId()));
+                    }
                     return null;
-
                 }
 
             }.execute();
         }
     }
 
-    private void quickAddCommandExecute() {
-        ensureIsInitialized();
+    private synchronized void quickAddCommandExecute() {
 
+        ensureIsInitialized();
 
         final String text = getQuickAddText();
         //reset quick add text
         setQuickAddText("");
+
 
         new AsyncTask() {
 
             @Override
             protected Object doInBackground(Object[] params) {
 
-                Item newItem = new Item();
-                newItem.setName(text);
-                newItem.setUnit(unitStorage.getDefaultValue());
-                newItem = itemParser.parseAmountAndUnit(newItem);
-                newItem.setGroup(groupStorage.getDefaultValue());
+                if(!StringHelper.isNullOrWhiteSpace(text)) {
 
-                ShoppingList shoppingList = listStorage.loadList(shoppingListId);
-                shoppingList.addItem(newItem);
+                    Item newItem = new Item();
+                    newItem.setName(text);
+                    newItem.setUnit(unitStorage.getDefaultValue());
+                    newItem = itemParser.parseAmountAndUnit(newItem);
+                    newItem.setGroup(groupStorage.getDefaultValue());
 
-                listStorage.saveList(shoppingList);
 
-                EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-                EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+                    ShoppingList shoppingList = listStorage.loadList(shoppingListId);
+                    shoppingList.addItem(newItem);
 
+                    listStorage.saveList(shoppingList);
+
+                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
+                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+                }
                 return null;
             }
         }.execute();

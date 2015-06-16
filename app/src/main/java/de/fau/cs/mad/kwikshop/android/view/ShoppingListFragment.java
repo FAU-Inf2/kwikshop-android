@@ -3,9 +3,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 //import android.app.Fragment;
 
-import android.content.Intent;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.KeyEvent;
@@ -18,9 +16,8 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ListAdapter;
-import android.widget.ScrollView;
-import android.widget.Toast;
 import android.support.v4.app.Fragment;
+import android.widget.ScrollView;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
@@ -28,42 +25,31 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCa
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.*;
+import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.Group;
-import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
-import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
-import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
-import de.fau.cs.mad.kwikshop.android.model.ItemParser;
-import de.fau.cs.mad.kwikshop.android.model.ListStorage;
-import de.fau.cs.mad.kwikshop.android.model.SimpleStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemDeleteEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
+import de.fau.cs.mad.kwikshop.android.common.*;
+import de.fau.cs.mad.kwikshop.android.model.*;
+import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
-import de.fau.cs.mad.kwikshop.android.util.ItemComparatorHelper;
-import de.fau.cs.mad.kwikshop.android.util.StringHelper;
+import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
+import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
+import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 import de.greenrobot.event.EventBus;
 
 
-public class ShoppingListFragment extends Fragment {
+public class ShoppingListFragment
+        extends Fragment
+        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Item> {
 
     //region Constants
 
     private static final String ARG_LISTID = "list_id";
-
 
     //endregion
 
@@ -71,26 +57,20 @@ public class ShoppingListFragment extends Fragment {
     //region Fields
 
     private final Object lock = new Object();
+    private int listID = -1;
 
-    private ShoppingListAdapter shoppingListAdapter;
-    private ShoppingListAdapter shoppingListAdapterBought;
+    private static AutoCompletionHelper autoCompletion;
+
+    private View rootView;
+
+    private ShoppingListViewModel viewModel;
+    private DisplayHelper displayHelper;
 
     @InjectView(R.id.list_shoppingList)
     DynamicListView shoppingListView;
 
     @InjectView(R.id.list_shoppingListBought)
     DynamicListView shoppingListViewBought;
-
-    private ListStorage listStorage;
-    private SimpleStorage<Unit> unitStorage;
-    private SimpleStorage<Group> groupStorage;
-    private ShoppingList shoppingList = null;
-    private int listID = -1;
-    private ItemSortType sortType = ItemSortType.MANUAL;
-    private int sortTypeInt = 0;
-    private DefaultDataProvider dataProvider;
-    private ItemParser itemParser;
-
 
     @InjectView(R.id.textView_quickAdd)
     MultiAutoCompleteTextView textView_QuickAdd;
@@ -101,10 +81,11 @@ public class ShoppingListFragment extends Fragment {
     @InjectView(R.id.button_quickAdd)
     View button_QuickAdd;
 
-    private static AutoCompletionHelper autoCompletion;
+    @InjectView(R.id.shoppinglist_scrollview)
+    ScrollView scrollView;
 
-    private View rootView;
-    private boolean hasView = false;
+    private boolean updatingViewModel;
+
 
     //endregion
 
@@ -132,7 +113,6 @@ public class ShoppingListFragment extends Fragment {
         }
 
     }
-
 
     private void disableFloatingButtonWhileSoftKeyboardIsShown() {
 
@@ -188,201 +168,120 @@ public class ShoppingListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
-        hasView = true;
-
-        // enable go back arrow
-        //((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         EventBus.getDefault().register(this);
 
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
-        listStorage = ListStorageFragment.getLocalListStorage();
-        unitStorage = ListStorageFragment.getUnitStorage();
-        groupStorage = ListStorageFragment.getGroupStorage();
-        dataProvider = new DefaultDataProvider(getActivity());
-        itemParser = new ItemParser(unitStorage, new DisplayHelper(getActivity()));
-
         rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ButterKnife.inject(this, rootView);
 
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
 
-        try {
-            shoppingList = listStorage.loadList(listID);
-        } catch (IllegalArgumentException ex) { //TODO: we should probably introduce our own exception types
-            showToast(ex.getMessage());
-            Intent intent = new Intent(getActivity(), ShoppingListActivity.class);
-            startActivity(intent);
-            getActivity().finish();
-        }
+        displayHelper = objectGraph.get(DisplayHelper.class);
 
-        if (shoppingList != null) {
+        viewModel = objectGraph.get(ShoppingListViewModel.class);
+        viewModel.initialize(this.listID);
 
-            // set title for actionbar
-            getActivity().setTitle(shoppingList.getName());
 
-            sortTypeInt = shoppingList.getSortTypeInt();
-            switch (sortTypeInt){
-                case 1: sortType = ItemSortType.GROUP;break;
-                case 2: sortType = ItemSortType.ALPHABETICALLY; break;
-                default: sortType = ItemSortType.MANUAL;
+        getActivity().setTitle(viewModel.getName());
+
+        viewModel.addListener(this);
+        viewModel.getItems().addListener(this);
+        viewModel.getBoughtItems().addListener(this);
+
+        ShoppingListAdapter2 shoppingListAdapter = new ShoppingListAdapter2(getActivity(), viewModel,
+                viewModel.getItems(), displayHelper);
+        shoppingListView.setAdapter(shoppingListAdapter);
+
+        new ListViewItemCommandBinding(ListViewItemCommandBinding.ListViewItemCommandType.Click,
+                shoppingListView,
+                viewModel.getSelectItemCommand());
+
+        SimpleSwipeUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
+                new OnDismissCallback() {
+                    @Override
+                    public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
+                        Command<Integer> command = viewModel.getToggleIsBoughtCommand();
+                        for (int position : reverseSortedPositions) {
+
+                            if (command.getCanExecute()) {
+                                Item item = viewModel.getItems().get(position);
+                                command.execute(item.getId());
+                            }
+                        }
+                    }
+                });
+
+        swipeUndoAdapter.setAbsListView(shoppingListView);
+        shoppingListView.setAdapter(swipeUndoAdapter);
+        shoppingListView.enableSimpleSwipeUndo();
+        shoppingListView.enableDragAndDrop();
+
+        shoppingListView.setOnItemLongClickListener(
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(final AdapterView<?> parent, final View view,
+                                                   final int position, final long id) {
+                        scrollView.requestDisallowInterceptTouchEvent(true);
+                        shoppingListView.startDragging(position);
+                        //sets value of the Spinner to the first entry, in this case Manual
+                        return true;
+                    }
+                }
+        );
+
+        justifyListViewHeightBasedOnChildren(shoppingListView);
+
+
+        shoppingListViewBought.enableSwipeToDismiss(
+                new OnDismissCallback() {
+                    @Override
+                    public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
+                        Command<Integer> command = viewModel.getToggleIsBoughtCommand();
+                        for (int position : reverseSortedPositions) {
+                            if (command.getCanExecute()) {
+                                Item item = viewModel.getItems().get(position);
+                                command.execute(item.getId());
+                            }
+                        }
+                    }
+                });
+
+
+        shoppingListViewBought.setAdapter(new ShoppingListAdapter2(getActivity(), viewModel, viewModel.getBoughtItems(), displayHelper));
+        shoppingListViewBought.enableDragAndDrop();
+
+        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
+
+
+        new ButtonBinding(floatingActionButton, viewModel.getAddItemCommand(), false);
+        new ButtonBinding(button_QuickAdd, viewModel.getQuickAddCommand());
+
+        //TODO: quick add long click
+
+        textView_QuickAdd.setFocusableInTouchMode(true);
+        textView_QuickAdd.requestFocus();
+
+        textView_QuickAdd.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                synchronized (viewModel) {
+                    // If the event is a key-down event on the "enter" button
+                    if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                        viewModel.getQuickAddCommand().execute(null);
+                        return true;
+                    }
+                    return false;
+                }
             }
+        });
+        textView_QuickAdd.setTokenizer(new SpaceTokenizer());
 
-            // Upper list for Items that are not yet bought
-            shoppingListAdapter = new ShoppingListAdapter(getActivity(),
-                    generateData(shoppingList, false),
-                    listStorage,
-                    listID,
-                    getItemSortType() == ItemSortType.GROUP);
-
-            SimpleSwipeUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
-                    new OnDismissCallback() {
-                        @Override
-                        public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
-
-                            for (int position : reverseSortedPositions) {
-                                shoppingListAdapter.removeByPosition(position);
-                                if (hasView) {
-                                    UpdateLists();
-                                }
-                            }
-                        }
-                    }
-            );
-
-
-            swipeUndoAdapter.setAbsListView(shoppingListView);
-            shoppingListView.setAdapter(swipeUndoAdapter);
-            shoppingListView.enableSimpleSwipeUndo();
-            shoppingListView.enableDragAndDrop();
-            shoppingListView.setOnItemLongClickListener(
-                    new AdapterView.OnItemLongClickListener() {
-                        @Override
-                        public boolean onItemLongClick(final AdapterView<?> parent, final View view,
-                                                       final int position, final long id) {
-                            ScrollView sview = (ScrollView) getView().findViewById(R.id.shoppinglist_scrollview);
-                            sview.requestDisallowInterceptTouchEvent(true);
-                            shoppingListView.startDragging(position);
-                            //sets value of the Spinner to the first entry, in this case Manual
-                            return true;
-                        }
-                    }
-            );
-
-            shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    // Open item details view
-                    startActivity(ItemDetailsActivity.getIntent(getActivity(), listID, (int) id));
-                }
-            });
-
-            justifyListViewHeightBasedOnChildren(shoppingListView);
-
-            // --- //
-
-            // Lower list for Items that are already bought
-            shoppingListAdapterBought = new ShoppingListAdapter(getActivity(),
-                    generateData(shoppingList, true),
-                    listStorage,
-                    listID,
-                    getItemSortType() == ItemSortType.GROUP);
-
-            shoppingListViewBought.enableSwipeToDismiss(
-                    new OnDismissCallback() {
-                        @Override
-                        public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
-                            for (int position : reverseSortedPositions) {
-                                shoppingListAdapterBought.removeByPosition(position);
-                                UpdateLists();
-                            }
-                        }
-                    }
-            );
-
-
-            shoppingListViewBought.setAdapter(shoppingListAdapterBought);
-            shoppingListViewBought.enableDragAndDrop();
-            justifyListViewHeightBasedOnChildren(shoppingListViewBought);
-
-
-            floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(ItemDetailsActivity.getIntent(getActivity(), listID));
-                }
-            });
-
-            button_QuickAdd.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    addItem();
-                }
-            });
-
-            button_QuickAdd.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    //todo: this is just copy paste from addItem() with returning the id
-
-                    final String name = textView_QuickAdd.getText().toString();
-                    //adding empty items without a name is not supported
-                    long id = -1;
-                    if (!StringHelper.isNullOrWhiteSpace(name)) {
-
-
-                        //reset quick add text
-                        textView_QuickAdd.setText("");
-
-                        Item newItem = new Item();
-                        newItem.setName(name);
-                        newItem.setUnit(unitStorage.getDefaultValue());
-                        newItem = itemParser.parseAmountAndUnit(newItem);
-                        newItem.setGroup(groupStorage.getDefaultValue());
-
-                        shoppingList.addItem(newItem);
-                        id = newItem.getId();
-                        listStorage.saveList(shoppingList);
-
-                        autoCompletion.offerName(newItem.getName());
-
-                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
-
-                        refreshQuickAddAutoCompletion();
-
-                    }
-                    //this starts the new activity, if we want it to only open item details
-                    // when a text is inserted, move it to the if case above
-                    startActivity(ItemDetailsActivity.getIntent(getActivity(), listID, (int) id));
-                    return true;
-                }
-            });
-
-            textView_QuickAdd.setFocusableInTouchMode(true);
-            textView_QuickAdd.requestFocus();
-
-            textView_QuickAdd.setOnKeyListener(new View.OnKeyListener() {
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    synchronized (lock) {
-                        // If the event is a key-down event on the "enter" button
-                        if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                            addItem();
-                            return true;
-                        }
-                        return false;
-                    }
-                }
-            });
-            textView_QuickAdd.setTokenizer(new SpaceTokenizer());
-
-            //wire up auto-complete for product name
-            if (autoCompletion == null)
-                autoCompletion = AutoCompletionHelper.getAutoCompletionHelper(getActivity().getBaseContext());
-
-            refreshQuickAddAutoCompletion();
-
+        //wire up auto-complete for product name
+        if (autoCompletion == null) {
+            autoCompletion = AutoCompletionHelper.getAutoCompletionHelper(getActivity().getBaseContext());
         }
+
+        refreshQuickAddAutoCompletion();
 
         disableFloatingButtonWhileSoftKeyboardIsShown();
 
@@ -404,95 +303,8 @@ public class ShoppingListFragment extends Fragment {
 
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
-        hasView = false;
     }
 
-
-
-    public void deleteItem(final Item deleteItem) {
-
-        synchronized (lock) {
-            if(deleteItem == null)
-                return;
-
-            AsyncTask task = new AsyncTask() {
-
-                @Override
-                protected Object doInBackground(Object[] params) {
-
-                    shoppingList.removeItem(deleteItem.getId());
-
-                    listStorage.saveList(shoppingList);
-
-                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, shoppingList.getId()));
-                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, shoppingList.getId(), deleteItem.getId()));
-
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(Object o) {
-                    super.onPostExecute(o);
-                    UpdateLists();
-                }
-
-            };
-
-            task.execute();
-
-
-        }
-
-    }
-
-
-    public void addItem() {
-
-        synchronized (lock) {
-            final String name = textView_QuickAdd.getText().toString();
-
-            //adding empty items without a name is not supported
-            if (!StringHelper.isNullOrWhiteSpace(name)) {
-
-
-                //reset quick add text
-                textView_QuickAdd.setText("");
-
-                AsyncTask task = new AsyncTask() {
-
-
-                    @Override
-                    protected Object doInBackground(Object[] params) {
-                        Item newItem = new Item();
-                        newItem.setName(name);
-                        newItem.setUnit(unitStorage.getDefaultValue());
-                        newItem = itemParser.parseAmountAndUnit(newItem);
-                        newItem.setGroup(groupStorage.getDefaultValue());
-
-                        shoppingList.addItem(newItem);
-
-                        listStorage.saveList(shoppingList);
-
-                        //IMPORTANT
-                        autoCompletion.offerName(newItem.getName());
-
-                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
-
-                        return null;
-
-                    }
-                };
-
-                task.execute();
-
-
-                refreshQuickAddAutoCompletion();
-
-            }
-        }
-
-    }
 
     /**
      * call this method to initialize or refresh the data used by QuickAdd's auto completion
@@ -507,60 +319,8 @@ public class ShoppingListFragment extends Fragment {
 
     //region Event Handlers
 
-    public void onEventMainThread(ShoppingListChangedEvent event) {
-        if (event.getListId() == this.listID && this.shoppingListAdapter != null) {
-            UpdateLists();
-        }
-    }
-
-    public void onEventMainThread(ItemChangedEvent event) {
-        if (event.getShoppingListId() == this.listID && this.shoppingListAdapter != null) {
-            UpdateLists();
-        }
-    }
-
     public void onEventMainThread(ItemSortType sortType) {
-        this.sortType = sortType;
-        //only sort the list if a automatic sorting is chosen
-        if (sortType == ItemSortType.MANUAL) {
-            shoppingList.setSortTypeInt(0);
-            shoppingListAdapter.setGroupItems(false);
-            shoppingListAdapterBought.setGroupItems(false);
-        } else {
-            if(sortType == ItemSortType.GROUP) shoppingList.setSortTypeInt(1);
-            if(sortType == ItemSortType.ALPHABETICALLY) shoppingList.setSortTypeInt(2);
-            listStorage.saveList(shoppingList);
-            UpdateLists();
-        }
-    }
-
-    public void onEventMainThread(MoveAllItemsEvent event) {
-        /*if (shoppingList == null)
-            return;
-
-        for (Item item : shoppingList.getItems()) {
-            if (item.isBought() && event.isMoveAllFromBought()) {
-
-            }
-        }*/
-
-        if (event.isMoveAllToBought()) {
-            if (shoppingListAdapter == null)
-                return;
-            shoppingListAdapter.moveAllToBought();
-        } else {
-            if (shoppingListAdapterBought == null)
-                return;
-            shoppingListAdapterBought.moveAllFromBought();
-        }
-
-        //asdf;
-    }
-
-    public void onEventMainThread(ItemDeleteEvent event) {
-        if (event.getShoppingListId() == this.listID) {
-            deleteItem(shoppingList.getItem(event.getItemId()));
-        }
+        viewModel.setItemSortType(sortType);
     }
 
     public void onEvent(AutoCompletionHistoryDeletedEvent event) {
@@ -572,56 +332,64 @@ public class ShoppingListFragment extends Fragment {
     //endregion
 
 
-    //region Private Methods
-    private Item getItemFromShoppingListAdapter(AdapterView adapter, int position) {
-        return (shoppingList.getItem((int) adapter.getItemIdAtPosition(position)));
+    @OnTextChanged(R.id.textView_quickAdd)
+    public void textView_ShoppingListName_OnTextChanged(CharSequence s) {
+
+        synchronized (viewModel) {
+            //send updated value for shopping list name to the view model
+            updatingViewModel = true;
+            viewModel.setQuickAddText(s != null ? s.toString() : "");
+            updatingViewModel = false;
+        }
     }
 
-    private void UpdateLists() {
-        shoppingList = listStorage.loadList(listID); // Reload the ShoppingList - needed if Items were edited / removed
 
-        shoppingListAdapter.setGroupItems(getItemSortType() == ItemSortType.GROUP);
-        shoppingListAdapter.clear();
-        shoppingListAdapter.addAll(generateData(shoppingList, false));
-        shoppingListAdapter.updateOrderOfList();
-        shoppingListAdapter.notifyDataSetChanged();
+    //region Private Methods
+
+    //Listener
+
+    @Override
+    public void onQuickAddTextChanged() {
+        if (!updatingViewModel) {
+            this.textView_QuickAdd.setText(viewModel.getQuickAddText());
+        }
+    }
+
+    @Override
+    public void onItemSortTypeChanged() {
+
+    }
+
+    @Override
+    public void onNameChanged(String value) {
+        // set title for actionbar
+        getActivity().setTitle(viewModel.getName());
+    }
+
+    @Override
+    public void onFinish() {
+
+    }
+
+
+    @Override
+    public void onItemAdded(Item newItem) {
         justifyListViewHeightBasedOnChildren(shoppingListView);
-
-        shoppingListAdapterBought.setGroupItems(getItemSortType() == ItemSortType.GROUP);
-        shoppingListAdapterBought.clear();
-        shoppingListAdapterBought.addAll(generateData(shoppingList, true));
-        shoppingListAdapterBought.updateOrderOfList();
-        shoppingListAdapterBought.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);
     }
 
-    private ArrayList<Integer> generateData(ShoppingList shoppingList, boolean isBought) {
-        ArrayList<Integer> items = new ArrayList<>();
-        int initOrder = 1;
-
-        for (Item item : shoppingList.getItems()) {
-            if (item.isBought() == isBought) {
-                items.add(item.getId());
-
-                // Set order if it is not yet set
-                if (item.getOrder() == -1)
-                    item.setOrder(initOrder);
-            }
-            initOrder++;
-        }
-        Collections.sort(items, new ItemComparatorHelper(shoppingList, new DisplayHelper(getActivity()), getItemSortType()));
-        return items;
+    @Override
+    public void onItemRemoved(Item removedItem) {
+        justifyListViewHeightBasedOnChildren(shoppingListView);
+        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
     }
 
-    private void showToast(String text) {
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(getActivity(), text, duration);
-        toast.show();
+    @Override
+    public void onItemModified(Item modifiedItem) {
+        justifyListViewHeightBasedOnChildren(shoppingListView);
+        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
     }
 
-    private ItemSortType getItemSortType() {
-        return this.sortType;
-    }
 
     //endregion
 

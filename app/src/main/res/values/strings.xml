@@ -8,7 +8,8 @@
     <string name="title_activity_shopping_list">Shopping list</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_shopping_list_detail">Shopping List Detail</string>
-
+    <string name="title_activity_list_of_recipes">List of Recipes</string>
+    <string name="title_activity_recipe_detail">Recipe Detail</string>
     <!-- Fragment Label -->
     <string name="title_fragment_item_details">Create new item</string>
 
@@ -167,7 +168,7 @@
     <string name="recipes">Recipes</string>
     <string name="deleteRecipe_DialogTitle">Delete recipe</string>
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
-
+    <string name="overflow_action_menu_recipes">Recipes</string>
 
 
 </resources>

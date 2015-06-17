@@ -15,6 +15,9 @@
             <item android:id="@+id/action_listofshoppinglists"
                   app:showAsAction="ifRoom"
                   android:title="@string/overflow_action_menu_listofshoppinglists" />
+            <item android:id="@+id/action_listofrecipes"
+                app:showAsAction="ifRoom"
+                android:title="@string/overflow_action_menu_recipes" />
             <item android:id="@+id/action_settings"
                   app:showAsAction="ifRoom"
                   android:title="@string/overflow_action_menu_settings" />

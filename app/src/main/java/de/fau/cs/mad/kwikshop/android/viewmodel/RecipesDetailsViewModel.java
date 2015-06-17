@@ -94,7 +94,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
         initialize(-1);
     }
 
-    public void initialize(int recipetId) {
+    public void initialize(int recipeId) {
         this.recipeId = recipeId;
         this.isNewRecipe = recipeId == -1;
 
@@ -192,7 +192,6 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
             setName(recipe.getName());
         }
 
-        EventBus.getDefault().register(this);
     }
 
     private void saveCommandExecute() {

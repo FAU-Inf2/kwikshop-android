@@ -8,6 +8,8 @@ public class Item {
 
     public static final String FOREIGN_SHOPPINGLIST_FIELD_NAME = "shoppingList";
 
+    public static final String FOREIGN_RECIPE_FIELD_NAME = "recipe";
+
     // TODO: we might want to change the annotation to generatedId = true
     @DatabaseField(generatedId = true)
     private int id;
@@ -46,6 +48,9 @@ public class Item {
      */
     @DatabaseField(foreign = true, columnName = FOREIGN_SHOPPINGLIST_FIELD_NAME)
     private ShoppingList shoppingList;
+
+    @DatabaseField(foreign = true, columnName = FOREIGN_RECIPE_FIELD_NAME)
+    private Recipe recipe;
 
     public Item() {
         // Default no-arg constructor for generating Items, required for ORMLite

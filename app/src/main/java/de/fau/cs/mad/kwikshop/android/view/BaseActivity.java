@@ -81,7 +81,9 @@ public class BaseActivity extends ActionBarActivity {
             case android.R.id.home:
                  NavUtils.navigateUpFromSameTask(this);
                 return true;
-
+            case R.id.action_listofrecipes:
+                startActivity(new Intent(this, ListOfRecipesActivity.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

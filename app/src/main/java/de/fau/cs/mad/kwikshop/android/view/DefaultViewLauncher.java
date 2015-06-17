@@ -41,6 +41,20 @@ public class DefaultViewLauncher implements ViewLauncher {
         activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId));
     }
 
+    @Override
+    public void showAddRecipeView(){
+        //todo
+    }
+
+    @Override
+    public void showRecipeDetailsView(int recipeId) {
+        //todo
+     }
+
+    @Override
+    public void showRecipe(int recipeId) {
+        //todo
+    }
 
     public void showDatePicker(int year, int month, int day, int hour, int minute) {
 

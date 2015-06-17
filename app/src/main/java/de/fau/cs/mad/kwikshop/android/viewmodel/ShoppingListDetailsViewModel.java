@@ -77,7 +77,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
     /**
      * Initializes a new instance of ShoppingListDetailsViewModel for the specified shopping list
-     * (will modify the shopping lsit on save)
+     * (will modify the shopping list on save)
      */
     @Inject
     public ShoppingListDetailsViewModel(final Context context, final ViewLauncher viewLauncher,

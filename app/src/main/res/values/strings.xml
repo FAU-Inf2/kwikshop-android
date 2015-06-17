@@ -165,6 +165,9 @@
 
     <!--Recipes-->
     <string name="recipes">Recipes</string>
+    <string name="deleteRecipe_DialogTitle">Delete recipe</string>
+    <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
+
 
 
 </resources>

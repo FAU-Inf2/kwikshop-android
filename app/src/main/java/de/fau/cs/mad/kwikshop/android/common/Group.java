@@ -68,4 +68,12 @@ public class Group {
     return other.getId() == this.getId() && other.getName().equals(this.getName());
   }
 
+  @Override
+  public String toString() {
+    if (name == null) {
+      return "null";
+    }
+    return name.toString();
+  }
+
 }

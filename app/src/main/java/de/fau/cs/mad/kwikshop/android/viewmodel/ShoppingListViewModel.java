@@ -484,7 +484,12 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                     newItem.setName(text);
                     newItem.setUnit(unitStorage.getDefaultValue());
                     newItem = itemParser.parseAmountAndUnit(newItem);
-                    newItem.setGroup(groupStorage.getDefaultValue());
+                    Group group = AutoCompletionHelper.getInstance().getGroup(AutoCompletionHelper.removeSpacesAtEndOfWord(text));
+                    if (group == null) {
+                        newItem.setGroup(groupStorage.getDefaultValue());
+                    } else {
+                        newItem.setGroup(group);
+                    }
 
                     ShoppingList shoppingList = listStorage.loadList(shoppingListId);
                     shoppingList.addItem(newItem);

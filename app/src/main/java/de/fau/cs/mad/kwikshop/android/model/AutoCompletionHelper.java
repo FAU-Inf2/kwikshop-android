@@ -113,28 +113,52 @@ public class AutoCompletionHelper{
     public void offerNameAndGroup(String name, Group group){
         name = removeSpacesAtEndOfWord(name);
         if (autoGroup.containsKey(name)){
-            addGroupToItem(name, group);
+            updateGroupForName(name, group);
             return;
         }
         putNameAndGroupIntoStorageAndArray(name, group);
     }
 
-    private void addGroupToItem(String itemName, Group group) {
-        //if (!autocompleteNameSuggestions.contains(itemName))
-        //    return;
-        autoGroup.put(itemName, group);
-        autoCompletionNameStorage.getItems().get(autoCompletionNameStorage.getItems().indexOf(new AutoCompletionData(itemName))).setGroup(group);
+    private void putNameAndGroupIntoStorageAndArray(String name, Group group) {
+        if (!autocompleteNameSuggestions.contains(name)){
+            autocompleteNameSuggestions.add(name);
+            if (group == null) {
+                autoCompletionNameStorage.addItem(new AutoCompletionData(name));
+                return;
+            } else {
+                autoGroup.put(name, group);
+                autoCompletionNameStorage.addItem(new AutoCompletionData(name, group));
+                return;
+            }
+        }
+
+        if (group == null) {
+            return;
+        }
+
+        if (autoGroup.containsKey(name)) {
+            updateGroupForName(name, group);
+        } else {
+            addGroupForName(name, group);
+        }
     }
 
-    private void putNameAndGroupIntoStorageAndArray(String name, Group group) {
-        if(!autocompleteNameSuggestions.contains(name)){
-            autocompleteNameSuggestions.add(name);
-            AutoCompletionData data = (group == null ? new AutoCompletionData(name) : new AutoCompletionData(name, group));
-            autoCompletionNameStorage.addItem(data);
+    private void addGroupForName(String name, Group group) {
+        autoGroup.put(name, group);
+        for (AutoCompletionData data : autoCompletionNameStorage.getItems()) {
+            if (data.getName().equals(name)) {
+                data.setGroup(group);
+                autoCompletionNameStorage.updateItem(data);
+                return;
+            }
         }
-        if (!autoGroup.containsKey(name)) {
-            autoGroup.put(name, group);
+    }
+
+    private void updateGroupForName(String name, Group group) {
+        if (autoGroup.get(name).equals(group)) {
+            return; // current group for that item name already stored
         }
+        addGroupForName(name, group);
     }
 
     /**
@@ -144,7 +168,6 @@ public class AutoCompletionHelper{
     public void offerBrand(String brand) {
         //offer(brand, autocompleteBrandSuggestions, autoCompletionBrandStorage);
         brand = removeSpacesAtEndOfWord(brand);
-
         if(!autocompleteBrandSuggestions.contains(brand)){
             autocompleteBrandSuggestions.add(brand);
             autoCompletionBrandStorage.addItem(new AutoCompletionBrandData(brand));

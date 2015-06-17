@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentManager;
 
 import java.sql.SQLException;
 
-import cs.fau.mad.kwikshop_android.R;
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
@@ -30,6 +30,7 @@ public class ListStorageFragment extends Fragment {
     private static SimpleStorage<Unit> m_UnitStorage;
     private static ListStorageFragment m_ListStorageFragment;
     private static DatabaseHelper m_DatabaseHelper;
+    private static RecipeStorage m_RecipeStorage;
 
     //endregion
 
@@ -67,6 +68,8 @@ public class ListStorageFragment extends Fragment {
         return m_ListStorageFragment;
     }
 
+    public static RecipeStorage getLocalRecipeStorage(){ return m_RecipeStorage;}
+
     public void SetupLocalListStorageFragment(FragmentActivity activity) {
         FragmentManager fm = activity.getSupportFragmentManager();
         Context context = activity.getBaseContext();
@@ -87,6 +90,9 @@ public class ListStorageFragment extends Fragment {
                     m_ListStorageFragment, ListStorageFragment.TAG_LISTSTORAGE)
                     .commit();
         }
+
+        if(m_RecipeStorage == null)
+            m_RecipeStorage = new RecipeStorage();
 
         // Create ListStorage
         m_LocalListStorage = new LocalListStorage();

@@ -8,7 +8,7 @@ import android.widget.ListView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import cs.fau.mad.kwikshop_android.R;
+import de.fau.cs.mad.kwikshop.android.R;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
@@ -83,7 +83,7 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
     public void onShoppingListsChanged(final ObservableArrayList<ShoppingList, Integer> oldValue,
                                        final ObservableArrayList<ShoppingList, Integer> newValue) {
 
-        oldValue.replaceListener(listAdapter, null);
+        oldValue.removeListener(listAdapter);
         listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists());
         listView_ShoppingLists.setAdapter(listAdapter);
     }

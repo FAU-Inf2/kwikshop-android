@@ -138,4 +138,8 @@
     <string name="descr_swipe2">um ihn als gekauft zu markieren</string>
 
 
+    <!-- Recipes -->
+    <string name="recipes">Rezepte</string>
+
+
 </resources>

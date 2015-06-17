@@ -14,7 +14,7 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 
-import cs.fau.mad.kwikshop_android.R;
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.ListStorage;
@@ -77,7 +77,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
     /**
      * Initializes a new instance of ShoppingListDetailsViewModel for the specified shopping list
-     * (will modify the shopping lsit on save)
+     * (will modify the shopping list on save)
      */
     @Inject
     public ShoppingListDetailsViewModel(final Context context, final ViewLauncher viewLauncher,

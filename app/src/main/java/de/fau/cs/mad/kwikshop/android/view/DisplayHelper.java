@@ -2,16 +2,19 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 import android.content.Context;
 
-import cs.fau.mad.kwikshop_android.R;
+import javax.inject.Inject;
+
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 
+//TODO: Might make sense to move this to the viewmodel package
 public class DisplayHelper {
 
     private final Context context;
 
-
+    @Inject
     public DisplayHelper(Context context) {
 
         if (context == null) {

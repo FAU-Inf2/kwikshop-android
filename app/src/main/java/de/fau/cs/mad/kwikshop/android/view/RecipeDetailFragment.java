@@ -13,37 +13,29 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnTextChanged;
-import de.fau.cs.mad.kwikshop.android.R;
 import dagger.ObjectGraph;
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
-import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.RecipesDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 
-public class ShoppingListDetailFragment extends FragmentWithViewModel implements ShoppingListDetailsViewModel.Listener {
+public class RecipeDetailFragment extends FragmentWithViewModel implements RecipesDetailsViewModel.Listener {
 
 
-    public static final String EXTRA_SHOPPINGLISTID = "extra_ShoppingListId";
+    public static final String EXTRA_RECIPEID = "extra_RecipeId";
 
 
-    @InjectView(R.id.textView_ShoppingListName)
-    TextView textView_ShoppingListName;
+    @InjectView(R.id.textView_RecipeName)
+    TextView textView_RecipeName;
 
-    @InjectView(R.id.create_calendar_event)
-    View button_CreateCalendarEvent;
-
-    @InjectView(R.id.edit_calendar_event)
-    View button_EditCalendarEvent;
-
-    private ShoppingListDetailsViewModel viewModel;
+    private RecipesDetailsViewModel viewModel;
     private boolean updatingViewModel = false;
 
 
-    public static ShoppingListDetailFragment newInstance() {
-        ShoppingListDetailFragment fragment = new ShoppingListDetailFragment();
-        return fragment;
+    public static RecipeDetailFragment newInstance() {
+        return new RecipeDetailFragment();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,25 +47,21 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
-        viewModel = objectGraph.get(ShoppingListDetailsViewModel.class);
+        viewModel = objectGraph.get(RecipesDetailsViewModel.class);
         initializeViewModel();
 
-        View rootView = inflater.inflate(R.layout.activity_shopping_list_detail, container, false);
+        View rootView = inflater.inflate(R.layout.activity_recipe_detail, container, false);
         ButterKnife.inject(this, rootView);
 
 
-
-
         // focus test box
-        textView_ShoppingListName.setText(viewModel.getName());
+        textView_RecipeName.setText(viewModel.getName());
 
 
         //show keyboard
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         //set up binding between view and view model
-        bindButton(button_CreateCalendarEvent, viewModel.getCreateCalendarEventCommand());
-        bindButton(button_EditCalendarEvent, viewModel.getEditCalendarEventCommand());
 
         Activity activity = getActivity();
         if (activity instanceof SaveDeleteActivity) {
@@ -95,9 +83,9 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         Window window = getActivity().getWindow();
 
-        if (viewModel.getIsNewList()) {
+        if (viewModel.getIsNewRecipe()) {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-            textView_ShoppingListName.requestFocus();
+            textView_RecipeName.requestFocus();
         } else {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         }
@@ -115,19 +103,19 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
     public void onNameChanged(String value) {
         //update name changed in the view model in the view
         if (!updatingViewModel) {
-            textView_ShoppingListName.setText(viewModel.getName());
+            textView_RecipeName.setText(viewModel.getName());
         }
     }
 
     @Override
     public void onFinish() {
-        textView_ShoppingListName.setText("");
+        textView_RecipeName.setText("");
         getActivity().finish();
     }
 
 
-    @OnTextChanged(R.id.textView_ShoppingListName)
-    public void textView_ShoppingListName_OnTextChanged(CharSequence s) {
+    @OnTextChanged(R.id.textView_RecipeName)
+    public void textView_Recipe_OnTextChanged(CharSequence s) {
 
         //send updated value for shopping list name to the view model
         updatingViewModel = true;
@@ -140,9 +128,9 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         Intent intent = getActivity().getIntent();
 
-        if (intent.hasExtra(EXTRA_SHOPPINGLISTID)) {
-            int shoppingListId = ((Long) intent.getExtras().get(EXTRA_SHOPPINGLISTID)).intValue();
-            viewModel.initialize(shoppingListId);
+        if (intent.hasExtra(EXTRA_RECIPEID)) {
+            int recipeId = ((Long) intent.getExtras().get(EXTRA_RECIPEID)).intValue();
+            viewModel.initialize(recipeId);
         } else {
             viewModel.initialize();
         }

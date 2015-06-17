@@ -9,18 +9,15 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 
-/**
- * ListAdapter for displaying the list of shopping lists
- */
-public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList> implements ObservableArrayList.Listener<ShoppingList> {
+public class ListOfRecipesRowAdapter extends ArrayAdapter<Recipe> implements ObservableArrayList.Listener<Recipe> {
 
 
     //region Constants
 
-    private static final int LAYOUT_ID = R.layout.fragment_list_of_shoppinglists_row;
+    private static final int LAYOUT_ID = R.layout.fragment_list_of_recipes_row;
 
     //endregion
 
@@ -28,28 +25,28 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
     //region Fields
 
     private final Activity parentActivity;
-    private final ObservableArrayList<ShoppingList, Integer> lists;
+    private final ObservableArrayList<Recipe, Integer> recipes;
 
     //endregion
 
 
     //region Constructor
 
-    public ListOfShoppingListsListRowAdapter(Activity parentActivity, ObservableArrayList<ShoppingList, Integer> lists) {
+    public ListOfRecipesRowAdapter(Activity parentActivity, ObservableArrayList<Recipe, Integer> recipes) {
 
-        super(parentActivity, R.layout.fragment_list_of_shoppinglists_row, lists);
+        super(parentActivity, LAYOUT_ID, recipes);
 
         if(parentActivity == null) {
             throw new IllegalArgumentException("'parentActivity' must not be null");
         }
 
-        if (lists == null) {
-            throw new IllegalArgumentException("'lists' must not be null");
+        if (recipes == null) {
+            throw new IllegalArgumentException("'recipes' must not be null");
         }
 
         this.parentActivity = parentActivity;
-        this.lists = lists;
-        this.lists.addListener(this);
+        this.recipes = recipes;
+        this.recipes.addListener(this);
     }
 
     //endregion
@@ -58,7 +55,7 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
     public View getView(int position, View view, ViewGroup parent) {
 
         //get the appropriate shopping list
-        ShoppingList list = lists.get(position);
+        Recipe recipe = recipes.get(position);
 
         //if view is null, inflate a new one
         if (view == null) {
@@ -69,11 +66,8 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
         }
 
         //display the list's name and number of items in the list
-        TextView shoppingListNameView = (TextView) view.findViewById(R.id.list_row_textView_Main);
-        shoppingListNameView.setText(list.getName());
-
-        TextView itemCountView = (TextView) view.findViewById(R.id.list_row_textView_Secondary);
-        itemCountView.setText(list.getItems().size() + " " + parentActivity.getString(R.string.items));
+        TextView recipeNameView = (TextView) view.findViewById(R.id.list_row_textView_recipe_Main);
+        recipeNameView.setText(recipe.getName());
 
         return view;
     }
@@ -81,7 +75,7 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
 
     @Override
     public long getItemId(int position) {
-        return lists.get(position).getId();
+        return recipes.get(position).getId();
     }
 
     //region Private Methods
@@ -98,17 +92,17 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
 
 
     @Override
-    public void onItemAdded(ShoppingList newItem) {
+    public void onItemAdded(Recipe newItem) {
         notifyDataSetChanged();
     }
 
     @Override
-    public void onItemRemoved(ShoppingList removedItem) {
+    public void onItemRemoved(Recipe removedItem) {
         notifyDataSetChanged();
     }
 
     @Override
-    public void onItemModified(ShoppingList modifiedItem) {
+    public void onItemModified(Recipe modifiedItem) {
         notifyDataSetChanged();
     }
 

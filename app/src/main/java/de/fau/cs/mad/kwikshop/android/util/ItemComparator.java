@@ -7,39 +7,25 @@ import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
 
-public class ItemComparatorHelper implements Comparator<Integer> {
+public class ItemComparator implements Comparator<Item> {
 
-    private final ShoppingList shoppingList;
     private final ItemSortType comparatorType;
     private final DisplayHelper displayHelper;
 
 
-    /*
-        possible comparatorTypes:
-        MANUAL
-        GROUP
-     */
-    public ItemComparatorHelper(ShoppingList shoppingList, DisplayHelper displayHelper, ItemSortType comparatorType) {
-
-        if (shoppingList == null) {
-            throw new IllegalArgumentException("'shoppingList' must not be null");
-        }
+    public ItemComparator(DisplayHelper displayHelper, ItemSortType comparatorType) {
 
         if (displayHelper == null) {
             throw new IllegalArgumentException("'displayHelper' must not be null");
         }
 
-        this.shoppingList = shoppingList;
         this.comparatorType = comparatorType;
         this.displayHelper = displayHelper;
     }
 
     @Override
-    public int compare(Integer i1, Integer i2)
+    public int compare(Item item1, Item item2)
     {
-        Item item1 = shoppingList.getItem(i1);
-        Item item2 = shoppingList.getItem(i2);
-
         int res = 0;
 
         switch(comparatorType) {

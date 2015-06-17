@@ -117,7 +117,7 @@ public class ShoppingList {
         this.items.add(item);
     }
 
-    public void removeItem(int id) {
+    public boolean removeItem(int id) {
         Iterator<Item> iterator = items.iterator(); // TODO: again: I hope a normal Iterator instead of a ListIterator is fine for everyone
 
         while (iterator.hasNext()) {
@@ -125,13 +125,14 @@ public class ShoppingList {
             if (currentItem.getId() == id) {
                 items.remove(currentItem);
                 listStorage.deleteItem(id);
-                return;
+                return true;
             }
         }
+        return false;
     }
 
-    public void removeItem(Item item) {
-        removeItem(item.getId());
+    public boolean removeItem(Item item) {
+        return removeItem(item.getId());
     }
 
     public int size() {

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -27,7 +28,7 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
      *
      * @param <T> The type of items the list being observed contains
      */
-    public interface Listener<T> {
+    public static interface Listener<T> {
 
         /**
          * Called after an item has been added to the list
@@ -48,9 +49,59 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
     }
 
 
-    private final IdExtractor<T, K> idExtractor;
-    private Listener<T> listener;           //current listener
+    private class CompositeListener<T> implements ObservableArrayList.Listener<T> {
 
+        @Override
+        public void onItemAdded(T newItem) {
+
+            synchronized (ObservableArrayList.this) {
+
+                if (!enableEvents) {
+                    return;
+                }
+
+                for (Listener l : listeners) {
+                    l.onItemAdded(newItem);
+                }
+            }
+
+        }
+
+        @Override
+        public void onItemRemoved(T removedItem) {
+
+            synchronized (ObservableArrayList.this) {
+
+                if (!enableEvents) {
+                    return;
+                }
+
+                for (Listener l : listeners) {
+                    l.onItemRemoved(removedItem);
+                }
+            }
+        }
+
+        @Override
+        public void onItemModified(T modifiedItem) {
+
+            synchronized (ObservableArrayList.this) {
+
+                if (!enableEvents) {
+                    return;
+                }
+
+                for (Listener l : listeners) {
+                    l.onItemModified(modifiedItem);
+                }
+            }
+        }
+    }
+
+    private final IdExtractor<T, K> idExtractor;
+    private final List<Listener<T>> listeners = new LinkedList<Listener<T>>();
+    private final Listener<T> listener = new CompositeListener<>();
+    private boolean enableEvents = true;
 
     public ObservableArrayList(IdExtractor<T, K> idExtractor) {
         super();
@@ -73,28 +124,24 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
     }
 
 
-    public void setListener(final Listener<T> value) {
-        this.listener = value;
+    public void addListener(final Listener<T> value) {
+        this.listeners.add(value);
     }
 
-    public void replaceListener(final Listener<T> toReplace, final Listener<T> newListener) {
-        if (this.listener == toReplace) {
-            this.listener = newListener;
-        }
+    public void removeListener(final Listener<T> toRemove) {
+        listeners.remove(toRemove);
     }
 
     @Override
     public void add(int location, T object) {
         super.add(location, object);
-        if (listener != null) {
-            listener.onItemAdded(object);
-        }
+        listener.onItemAdded(object);
     }
 
     @Override
     public boolean add(T object) {
         boolean success = super.add(object);
-        if (success && listener != null) {
+        if (success) {
             listener.onItemAdded(object);
         }
         return success;
@@ -103,7 +150,7 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
     @Override
     public boolean addAll(int location, Collection<? extends T> collection) {
         boolean success = super.addAll(location, collection);
-        if (success && listener != null) {
+        if (success) {
             for (T item : collection) {
                 listener.onItemAdded(item);
             }
@@ -114,7 +161,7 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
     @Override
     public boolean addAll(Collection<? extends T> collection) {
         boolean success = super.addAll(collection);
-        if (success && listener != null) {
+        if (success) {
             for (T item : collection) {
                 listener.onItemAdded(item);
             }
@@ -124,14 +171,11 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
 
     @Override
     public void clear() {
-        if (listener != null) {
-            List<T> allItems = new ArrayList<>(this);
-            super.clear();
-            for (T item : allItems) {
-                listener.onItemRemoved(item);
-            }
-        } else {
-            super.clear();
+
+        List<T> allItems = new ArrayList<>(this);
+        super.clear();
+        for (T item : allItems) {
+            listener.onItemRemoved(item);
         }
     }
 
@@ -179,16 +223,16 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
     @Override
     public T remove(int location) {
         T removedItem = super.remove(location);
-        if (listener != null) {
-            listener.onItemRemoved(removedItem);
-        }
+
+        listener.onItemRemoved(removedItem);
+
         return removedItem;
     }
 
     @Override
     public boolean remove(Object object) {
         boolean success = super.remove(object);
-        if (success && listener != null) {
+        if (success) {
             try {
                 listener.onItemRemoved((T) object);
             } catch (ClassCastException ex) {
@@ -214,10 +258,10 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
     @Override
     public T set(int location, T object) {
         T oldItem = super.set(location, object);
-        if (listener != null) {
-            listener.onItemRemoved(oldItem);
-            listener.onItemAdded(object);
-        }
+
+        listener.onItemRemoved(oldItem);
+        listener.onItemAdded(object);
+
         return oldItem;
     }
 
@@ -230,9 +274,9 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
     }
 
     public void notifyItemModified(T modifiedItem) {
-        if (listener != null) {
-            listener.onItemModified(modifiedItem);
-        }
+
+        listener.onItemModified(modifiedItem);
+
     }
 
     public boolean removeById(K id) {
@@ -272,9 +316,31 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
         return getById(id) != null;
     }
 
+    public T setOrAddById(T item) {
+        K id = idExtractor.getId(item);
+        if (containsById(id)) {
+            int index = indexOfById(id);
+            return set(index, item);
+        } else {
+            add(item);
+            return item;
+        }
+
+    }
+
+    public synchronized void enableEvents() {
+        enableEvents = true;
+    }
+
+    public synchronized void disableEvents() {
+           enableEvents = false;
+    }
+
     private class ReadonlyListIteratorWrapper implements ListIterator<T> {
 
         private ListIterator<T> wrappedIterator;
+        private T current;
+        private int index = -1;
 
         public ReadonlyListIteratorWrapper(ListIterator<T> wrappedIterator) {
             this.wrappedIterator = wrappedIterator;
@@ -283,9 +349,9 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
         @Override
         public void add(T object) {
             wrappedIterator.add(object);
-            if (listener != null) {
-                listener.onItemAdded(object);
-            }
+
+            listener.onItemAdded(object);
+
         }
 
         @Override
@@ -300,7 +366,9 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
 
         @Override
         public T next() {
-            return wrappedIterator.next();
+            index++;
+            current = wrappedIterator.next();
+            return current;
         }
 
         @Override
@@ -327,9 +395,7 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
 
         @Override
         public void set(T object) {
-            //no supported as we're not able to fire the right event without a specialized
-            // iterator implementation
-            throw new UnsupportedOperationException();
+            ObservableArrayList.this.set(index, object);
         }
     }
 

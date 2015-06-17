@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -41,6 +42,20 @@ public class DefaultViewLauncher implements ViewLauncher {
         activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId));
     }
 
+    @Override
+    public void showAddRecipeView(){
+        activity.startActivity(RecipeDetailActivity.getIntent(activity));
+    }
+
+    @Override
+    public void showRecipeDetailsView(int recipeId) {
+        activity.startActivity(RecipeDetailActivity.getIntent(activity, recipeId));
+     }
+
+    @Override
+    public void showRecipe(int recipeId) {
+        activity.startActivity(RecipeDetailActivity.getIntent(activity, recipeId));
+    }
 
     public void showDatePicker(int year, int month, int day, int hour, int minute) {
 
@@ -81,5 +96,17 @@ public class DefaultViewLauncher implements ViewLauncher {
 
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    public void showItemDetailsView(int shoppingListId) {
+        Intent intent = ItemDetailsActivity.getIntent(activity, shoppingListId);
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public void showItemDetailsView(int shoppingListId, int itemId) {
+        Intent intent = ItemDetailsActivity.getIntent(activity, shoppingListId, itemId);
+        activity.startActivity(intent);
     }
 }

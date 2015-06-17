@@ -4,13 +4,14 @@ import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.View;
 
-import cs.fau.mad.kwikshop_android.R;
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 
 public class DetailsActivity extends BaseActivity implements SaveDeleteActivity {
 
     public static final String EXTRA_SHOPPINGLISTID = "extra_ShoppingListId";
 
+    public static final String EXTRA_RECIPEID = "extra_RecipeId";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

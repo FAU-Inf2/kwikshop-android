@@ -2,6 +2,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -11,18 +12,13 @@ import de.fau.cs.mad.kwikshop.android.model.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListLoadedEvent;
 import de.greenrobot.event.EventBus;
 
-public class LoadShoppingListTask extends AsyncTask<Object, Object, Collection<ShoppingList>> {
+public class LoadShoppingListTask extends AsyncTask<Integer, Object, Collection<ShoppingList>> {
 
     private ListStorage listStorage;
     private EventBus resultBus;
-    private int shoppingListId;
-    private final boolean loadAll;
+
 
     public LoadShoppingListTask(ListStorage listStorage, EventBus resultBus) {
-        this(listStorage, resultBus, -1);
-    }
-
-    public LoadShoppingListTask(ListStorage listStorage, EventBus resultBus, int shoppingListId) {
 
         if (listStorage == null) {
             throw new IllegalArgumentException("'listStorage' must not be null");
@@ -34,15 +30,14 @@ public class LoadShoppingListTask extends AsyncTask<Object, Object, Collection<S
 
         this.listStorage = listStorage;
         this.resultBus = resultBus;
-        this.shoppingListId = shoppingListId;
-        this.loadAll = shoppingListId == -1;
     }
 
 
     @Override
-    protected Collection<ShoppingList> doInBackground(Object... params) {
+    protected Collection<ShoppingList> doInBackground(Integer... params) {
 
-        if (loadAll) {
+        //load all lists
+        if (params.length == 0) {
 
             List<ShoppingList> lists = listStorage.getAllLists();
             for (ShoppingList list : lists) {
@@ -50,11 +45,17 @@ public class LoadShoppingListTask extends AsyncTask<Object, Object, Collection<S
             }
             return lists;
 
+        //load specified lists
         } else {
 
-            ShoppingList list = listStorage.loadList(shoppingListId);
-            resultBus.post(new ShoppingListLoadedEvent(list));
-            return Arrays.asList(list);
+            List<ShoppingList> result = new ArrayList<>();
+            for (int listId : params) {
+
+                ShoppingList list = listStorage.loadList(listId);
+                resultBus.post(new ShoppingListLoadedEvent(list));
+                result.add(list);
+            }
+            return result;
         }
     }
 

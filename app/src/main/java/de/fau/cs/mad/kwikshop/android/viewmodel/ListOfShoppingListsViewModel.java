@@ -143,8 +143,7 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
 
     private void loadShoppingListAsync(int id) {
 
-        AsyncTask<Object, Object, Collection<ShoppingList>> task = new LoadShoppingListTask(listStorage, privateBus, id);
-        task.execute();
+        new LoadShoppingListTask(listStorage, privateBus).execute(id);
     }
 
     public void onEventMainThread(ShoppingListLoadedEvent event) {

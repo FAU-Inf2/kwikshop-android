@@ -146,7 +146,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
             privateBus.register(this);
             EventBus.getDefault().register(this);
 
-            new LoadShoppingListTask(this.listStorage, privateBus, this.shoppingListId).execute();
+            new LoadShoppingListTask(this.listStorage, privateBus).execute(this.shoppingListId);
 
             initialized = true;
         }
@@ -338,7 +338,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(event.getListId() == this.shoppingListId) {
 
             if(event.getChangeType() == ShoppingListChangeType.PropertiesModified) {
-                new LoadShoppingListTask(listStorage, privateBus, shoppingListId).execute();
+                new LoadShoppingListTask(listStorage, privateBus).execute(shoppingListId);
 
             }
 

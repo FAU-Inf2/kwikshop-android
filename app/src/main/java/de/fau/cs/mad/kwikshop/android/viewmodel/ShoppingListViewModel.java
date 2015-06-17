@@ -263,7 +263,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         item1.setOrder(position2);
         item2.setOrder(position1);
 
-        new SaveItemTask(listStorage, shoppingListId, item1, item2).execute();
+        new SaveItemTask(listStorage, shoppingListId).execute(item1, item2);
     }
 
 
@@ -275,7 +275,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         item1.setOrder(position2);
         item2.setOrder(position1);
 
-        new SaveItemTask(listStorage, shoppingListId, item1, item2).execute();
+        new SaveItemTask(listStorage, shoppingListId).execute(item1, item2);
     }
 
 
@@ -438,7 +438,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(item != null) {
 
             item.setBought(!item.isBought());
-            new SaveItemTask(listStorage, shoppingListId, item).execute();
+            new SaveItemTask(listStorage, shoppingListId).execute(item);
         }
     }
 

@@ -14,31 +14,26 @@ import de.greenrobot.event.EventBus;
 /**
  * Task for saving one or more items into shopping list
  */
-public class SaveItemTask extends AsyncTask<Void, Void, Void> {
+public class SaveItemTask extends AsyncTask<Item, Void, Void> {
 
     private final ListStorage listStorage;
     private final int shoppingListId;
-    private final Item[] items;
 
 
-    public SaveItemTask(ListStorage listStorage, int shoppingListId, Item... items) {
+    public SaveItemTask(ListStorage listStorage, int shoppingListId) {
 
         if (listStorage == null) {
             throw new IllegalArgumentException("'listStorage' must not be null");
         }
 
-        if(items == null) {
-            throw  new IllegalArgumentException("'items' must not be null");
-        }
 
         this.listStorage = listStorage;
         this.shoppingListId = shoppingListId;
-        this.items = items;
     }
 
 
     @Override
-    protected Void doInBackground(Void[] params) {
+    protected Void doInBackground(Item[] items) {
 
         if(items.length > 0) {
             ShoppingList list = listStorage.loadList(shoppingListId);

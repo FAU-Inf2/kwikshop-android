@@ -18,7 +18,6 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipesDetailsViewModel;
-import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 
 public class RecipeDetailFragment extends FragmentWithViewModel implements RecipesDetailsViewModel.Listener {

@@ -7,15 +7,11 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.LoadRecipeTask;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.LoadShoppingListTask;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewModelBase;

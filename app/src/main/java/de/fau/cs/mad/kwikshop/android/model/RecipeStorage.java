@@ -9,7 +9,6 @@ import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 
 public class RecipeStorage {
 

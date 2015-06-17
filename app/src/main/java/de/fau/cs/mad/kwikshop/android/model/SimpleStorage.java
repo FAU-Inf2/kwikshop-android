@@ -35,6 +35,15 @@ public class SimpleStorage<T> {
         }
     }
 
+    public void updateItem(T item) {
+        try {
+            dao.update(item);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
     public void deleteAll() {
         try {
             List<T> items = dao.queryForAll();

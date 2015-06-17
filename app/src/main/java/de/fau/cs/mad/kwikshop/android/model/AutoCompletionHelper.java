@@ -68,6 +68,14 @@ public class AutoCompletionHelper{
     }
 
     /**
+     * Gets the instance of AutoCompletionHelper, if it was already created (via getAutoCompletionHelper)
+     * @return the instance of AutoCompletionHelper, or null if it doesn't exist
+     */
+    public static AutoCompletionHelper getInstance() {
+        return instance;
+    }
+
+    /**
      * Gets a ArrayAdapter which can be used in setAdapter-method of a AutoCompleteTextView,
      * where an item name is auto completed
      * @param activity the current Activity

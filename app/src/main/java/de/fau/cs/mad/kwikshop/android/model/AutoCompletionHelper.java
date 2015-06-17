@@ -148,16 +148,12 @@ public class AutoCompletionHelper{
         }
     }
 
-    private String removeSpacesAtEndOfWord(String word) {
+    public static String removeSpacesAtEndOfWord(String word) {
         if (null == word || word.isEmpty())
             return word;
 
-        if (word.charAt(word.length() - 1) == ' ') {
-            int i;
-            for (i = 1; i < word.length(); i++) {
-                if (word.charAt(word.length() - 1) != ' ') break;
-            }
-            word = word.substring(0, word.length() - i);
+        while (word.charAt(word.length() - 1) == ' ') {
+            word = word.substring(0,word.length() - 1);
         }
 
         return word;

@@ -11,7 +11,7 @@ import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.LoadRecipeTask;
+import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadRecipeTask;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewModelBase;

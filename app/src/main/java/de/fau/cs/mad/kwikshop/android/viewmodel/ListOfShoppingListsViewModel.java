@@ -1,16 +1,12 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
-import android.os.AsyncTask;
-
-import java.util.Collection;
-
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListLoadedEvent;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.LoadShoppingListTask;
+import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadShoppingListTask;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;

@@ -1,4 +1,4 @@
-package de.fau.cs.mad.kwikshop.android.viewmodel.common;
+package de.fau.cs.mad.kwikshop.android.viewmodel.tasks;
 
 import android.os.AsyncTask;
 

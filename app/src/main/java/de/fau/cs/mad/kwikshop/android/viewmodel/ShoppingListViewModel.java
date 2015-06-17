@@ -77,15 +77,15 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     private String quickAddText = "";
     private ItemSortType itemSortType = ItemSortType.MANUAL;
 
-    private final Command addItemCommand = new Command() {
+    private final Command<Void> addItemCommand = new Command<Void>() {
         @Override
-        public void execute(Object parameter) {
+        public void execute(Void parameter) {
             addItemCommandExecute();
         }
     };
-    private final Command quickAddCommand = new Command() {
+    private final Command<Void> quickAddCommand = new Command<Void>() {
         @Override
-        public void execute(Object parameter) {quickAddCommandExecute();
+        public void execute(Void parameter) {quickAddCommandExecute();
         }
     };
     private final Command<Integer> selectItemCommand = new Command<Integer>() {
@@ -219,14 +219,14 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     /**
      * Gets the command to be executed when the view's add button is pressed
      */
-    public Command getAddItemCommand() {
+    public Command<Void> getAddItemCommand() {
         return addItemCommand;
     }
 
     /**
      * Gets the command to be executed when the view's quick-add button is pressed
      */
-    public Command getQuickAddCommand() {
+    public Command<Void> getQuickAddCommand() {
         return quickAddCommand;
     }
 

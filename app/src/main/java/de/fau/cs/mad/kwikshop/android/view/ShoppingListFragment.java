@@ -57,7 +57,6 @@ public class ShoppingListFragment
     private static AutoCompletionHelper autoCompletion;
 
     private ShoppingListViewModel viewModel;
-    private DisplayHelper displayHelper;
     private boolean updatingViewModel;
 
     @InjectView(R.id.list_shoppingList)
@@ -111,7 +110,7 @@ public class ShoppingListFragment
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
 
-        displayHelper = objectGraph.get(DisplayHelper.class);
+        DisplayHelper displayHelper = objectGraph.get(DisplayHelper.class);
 
         viewModel = objectGraph.get(ShoppingListViewModel.class);
         viewModel.initialize(this.listID);
@@ -297,10 +296,9 @@ public class ShoppingListFragment
         if (adapter == null) {
             return;
         }
-        ViewGroup vg = listView;
         int totalHeight = 0;
         for (int i = 0; i < adapter.getCount(); i++) {
-            View listItem = adapter.getView(i, null, vg);
+            View listItem = adapter.getView(i, null, listView);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
         }
@@ -320,6 +318,7 @@ public class ShoppingListFragment
 
 
     @OnTextChanged(R.id.textView_quickAdd)
+    @SuppressWarnings("unused")
     public void textView_ShoppingListName_OnTextChanged(CharSequence s) {
 
         synchronized (viewModel) {

@@ -132,6 +132,9 @@ public class AutoCompletionHelper{
             AutoCompletionData data = (group == null ? new AutoCompletionData(name) : new AutoCompletionData(name, group));
             autoCompletionNameStorage.addItem(data);
         }
+        if (!autoGroup.containsKey(name)) {
+            autoGroup.put(name, group);
+        }
     }
 
     /**

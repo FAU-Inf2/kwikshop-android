@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -489,6 +491,36 @@ public class ItemDetailsFragment extends Fragment {
         } else {
             highlight_checkbox.setChecked(false);
         }
+
+        addTextWatcher();
+    }
+
+    /**
+     * adds a Text watcher to productname_text in order to make it possible to set the group for an
+     * already entered item
+     */
+    private void addTextWatcher() {
+        productname_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                return; //do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String name = AutoCompletionHelper.removeSpacesAtEndOfWord(s.toString());
+                Group group = autoCompletion.getGroup(name);
+
+                if (group != null) {
+                    group_spinner.setSelection(groups.indexOf(group));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                return; //do nothing
+            }
+        });
     }
 
 }

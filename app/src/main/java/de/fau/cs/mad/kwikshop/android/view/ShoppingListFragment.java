@@ -48,24 +48,17 @@ public class ShoppingListFragment
         extends Fragment
         implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Item> {
 
-    //region Constants
 
     private static final String ARG_LISTID = "list_id";
 
-    //endregion
 
-
-    //region Fields
-
-    private final Object lock = new Object();
     private int listID = -1;
 
     private static AutoCompletionHelper autoCompletion;
 
-    private View rootView;
-
     private ShoppingListViewModel viewModel;
     private DisplayHelper displayHelper;
+    private boolean updatingViewModel;
 
     @InjectView(R.id.list_shoppingList)
     DynamicListView shoppingListView;
@@ -85,13 +78,7 @@ public class ShoppingListFragment
     @InjectView(R.id.shoppinglist_scrollview)
     ScrollView scrollView;
 
-    private boolean updatingViewModel;
 
-
-    //endregion
-
-
-    //region Construction
 
     public static ShoppingListFragment newInstance(int listID) {
         ShoppingListFragment fragment = new ShoppingListFragment();
@@ -101,10 +88,7 @@ public class ShoppingListFragment
         return fragment;
     }
 
-    //endregion
 
-
-    //region Overrides
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,57 +99,6 @@ public class ShoppingListFragment
 
     }
 
-    private void disableFloatingButtonWhileSoftKeyboardIsShown() {
-
-        final View activityRootView = BaseActivity.frameLayout;
-        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-            @Override
-            public void onGlobalLayout() {
-                //r will be populated with the coordinates of your view that area still visible.
-                Rect r = new Rect();
-                activityRootView.getWindowVisibleDisplayFrame(r);
-
-                int screenHeight = activityRootView.getRootView().getHeight();
-
-                // r.bottom is the position above soft keypad or device button.
-                // if keypad is shown, the r.bottom is smaller than that before.
-                int keypadHeight = screenHeight - r.bottom;
-
-                if (keypadHeight > screenHeight * 0.15) {
-                    //hide right away (fade out animation looks weird if the keyboard is showing up at the same moment)
-                    floatingActionButton.setVisibility(View.GONE);
-                    floatingActionButton.hide();
-                } else {
-                    //make visible so ew can see the fade in animation
-                    floatingActionButton.setVisibility(View.VISIBLE);
-                    floatingActionButton.show();
-                }
-            }
-        });
-
-    }
-
-    public void justifyListViewHeightBasedOnChildren(DynamicListView listView) {
-        ListAdapter adapter = listView.getAdapter();
-
-        if (adapter == null) {
-            return;
-        }
-        ViewGroup vg = listView;
-        int totalHeight = 0;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            View listItem = adapter.getView(i, null, vg);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams par = listView.getLayoutParams();
-        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
-        listView.setLayoutParams(par);
-        listView.requestLayout();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -173,7 +106,7 @@ public class ShoppingListFragment
 
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
-        rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ButterKnife.inject(this, rootView);
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
@@ -328,23 +261,63 @@ public class ShoppingListFragment
         textView_QuickAdd.setAdapter(autoCompletion.getNameAdapter(getActivity()));
     }
 
+    private void disableFloatingButtonWhileSoftKeyboardIsShown() {
 
-    //endregion
+        final View activityRootView = BaseActivity.frameLayout;
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
+            @Override
+            public void onGlobalLayout() {
+                //r will be populated with the coordinates of your view that area still visible.
+                Rect r = new Rect();
+                activityRootView.getWindowVisibleDisplayFrame(r);
 
-    //region Event Handlers
+                int screenHeight = activityRootView.getRootView().getHeight();
 
-    public void onEventMainThread(ItemSortType sortType) {
-        viewModel.setItemSortType(sortType);
+                // r.bottom is the position above soft keypad or device button.
+                // if keypad is shown, the r.bottom is smaller than that before.
+                int keypadHeight = screenHeight - r.bottom;
+
+                if (keypadHeight > screenHeight * 0.15) {
+                    //hide right away (fade out animation looks weird if the keyboard is showing up at the same moment)
+                    floatingActionButton.setVisibility(View.GONE);
+                    floatingActionButton.hide();
+                } else {
+                    //make visible so ew can see the fade in animation
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                    floatingActionButton.show();
+                }
+            }
+        });
+
     }
+
+    public void justifyListViewHeightBasedOnChildren(DynamicListView listView) {
+        ListAdapter adapter = listView.getAdapter();
+
+        if (adapter == null) {
+            return;
+        }
+        ViewGroup vg = listView;
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, vg);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams par = listView.getLayoutParams();
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        listView.setLayoutParams(par);
+        listView.requestLayout();
+    }
+
 
     public void onEvent(AutoCompletionHistoryDeletedEvent event) {
         if (autoCompletion != null) {
             refreshQuickAddAutoCompletion();
         }
     }
-
-    //endregion
 
 
     @OnTextChanged(R.id.textView_quickAdd)
@@ -358,10 +331,6 @@ public class ShoppingListFragment
         }
     }
 
-
-    //region Private Methods
-
-    //Listener
 
     @Override
     public void onQuickAddTextChanged() {
@@ -406,6 +375,5 @@ public class ShoppingListFragment
     }
 
 
-    //endregion
 
 }

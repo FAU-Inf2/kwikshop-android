@@ -41,6 +41,7 @@ import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
+import de.fau.cs.mad.kwikshop.android.model.ItemParser;
 import de.fau.cs.mad.kwikshop.android.model.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
@@ -84,10 +85,12 @@ public class ShoppingListFragment extends Fragment {
     private SimpleStorage<Unit> unitStorage;
     private SimpleStorage<Group> groupStorage;
     private ShoppingList shoppingList = null;
-    private int listID;
+    private int listID = -1;
     private ItemSortType sortType = ItemSortType.MANUAL;
     private int sortTypeInt = 0;
     private DefaultDataProvider dataProvider;
+    private ItemParser itemParser;
+
 
     @InjectView(R.id.textView_quickAdd)
     MultiAutoCompleteTextView textView_QuickAdd;
@@ -199,6 +202,7 @@ public class ShoppingListFragment extends Fragment {
         unitStorage = ListStorageFragment.getUnitStorage();
         groupStorage = ListStorageFragment.getGroupStorage();
         dataProvider = new DefaultDataProvider(getActivity());
+        itemParser = new ItemParser(unitStorage, new DisplayHelper(getActivity()));
 
         rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ButterKnife.inject(this, rootView);
@@ -210,6 +214,7 @@ public class ShoppingListFragment extends Fragment {
             showToast(ex.getMessage());
             Intent intent = new Intent(getActivity(), ShoppingListActivity.class);
             startActivity(intent);
+            getActivity().finish();
         }
 
         if (shoppingList != null) {
@@ -332,7 +337,7 @@ public class ShoppingListFragment extends Fragment {
                         Item newItem = new Item();
                         newItem.setName(name);
                         newItem.setUnit(unitStorage.getDefaultValue());
-                        newItem = parseAmountAndUnit(newItem);
+                        newItem = itemParser.parseAmountAndUnit(newItem);
                         newItem.setGroup(groupStorage.getDefaultValue());
 
                         shoppingList.addItem(newItem);
@@ -402,67 +407,6 @@ public class ShoppingListFragment extends Fragment {
         hasView = false;
     }
 
-    public Item parseAmountAndUnit(Item item) {
-
-        String input = item.getName();
-        String output = "";
-        String amount = "";
-        String thisCanBeUnitOrName = "";
-        boolean lastCharWasANumber = false;
-        boolean charWasReadAfterAmount = false;
-        for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
-            //only parses the first number found to amount
-            if (c > 47 && c < 58 && (lastCharWasANumber == true || amount == "")) {
-                amount = amount + c;
-                lastCharWasANumber = true;
-            } else if (lastCharWasANumber && c == ' ') {
-                //ignore all white spaces between the amount and the next char
-            } else if (lastCharWasANumber || charWasReadAfterAmount && c != ' ') {
-                //String from amount to next whitespace, this should be unit or name
-                thisCanBeUnitOrName = thisCanBeUnitOrName + c;
-                lastCharWasANumber = false;
-                charWasReadAfterAmount = true;
-            } else if (charWasReadAfterAmount && c == ' ') {
-                //whitespace after possible unit
-                charWasReadAfterAmount = false;
-            } else {
-                output = output + c;
-                lastCharWasANumber = false;
-            }
-        }
-
-
-        boolean unitMatchFound = false;
-        DisplayHelper displayHelper = new DisplayHelper(getActivity());
-        List<Unit> unitsList = ListStorageFragment.getUnitStorage().getItems();
-        for (Unit unit : unitsList) {
-            if (displayHelper.getDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName) ||
-                    displayHelper.getShortDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName)) {
-                item.setUnit(unit);
-                unitMatchFound = true;
-                break;
-            }
-        }
-
-
-        if (unitMatchFound == false && thisCanBeUnitOrName != "") {
-            //if no unit was found complete string has to be restored
-            if (output != "") {
-                output = thisCanBeUnitOrName + " " + output;
-            } else {
-                output = thisCanBeUnitOrName;
-            }
-        }
-
-        if (!StringHelper.isNullOrWhiteSpace(output)) {
-            if (amount != "") item.setAmount(Integer.parseInt(amount));
-            item.setName(output);
-        }
-        return item;
-
-
-    }
 
 
     public void deleteItem(final Item deleteItem) {
@@ -522,13 +466,14 @@ public class ShoppingListFragment extends Fragment {
                         Item newItem = new Item();
                         newItem.setName(name);
                         newItem.setUnit(unitStorage.getDefaultValue());
-                        newItem = parseAmountAndUnit(newItem);
+                        newItem = itemParser.parseAmountAndUnit(newItem);
                         newItem.setGroup(groupStorage.getDefaultValue());
 
                         shoppingList.addItem(newItem);
 
                         listStorage.saveList(shoppingList);
 
+                        //IMPORTANT
                         autoCompletion.offerName(newItem.getName());
 
                         EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));

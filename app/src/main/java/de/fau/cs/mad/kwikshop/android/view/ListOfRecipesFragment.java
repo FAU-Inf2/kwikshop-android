@@ -77,7 +77,7 @@ public class ListOfRecipesFragment extends FragmentWithViewModel implements List
     public void onRecipeChanged(final ObservableArrayList<Recipe, Integer> oldValue,
                                        final ObservableArrayList<Recipe, Integer> newValue) {
 
-        oldValue.replaceListener(listAdapter, null);
+        oldValue.removeListener(listAdapter);
         listAdapter = new ListOfRecipesRowAdapter(getActivity(), viewModel.getRecipes());
         listView_Recipes.setAdapter(listAdapter);
     }

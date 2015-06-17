@@ -46,7 +46,7 @@ public class ListOfRecipesRowAdapter extends ArrayAdapter<Recipe> implements Obs
 
         this.parentActivity = parentActivity;
         this.recipes = recipes;
-        this.recipes.setListener(this);
+        this.recipes.addListener(this);
     }
 
     //endregion

@@ -33,7 +33,7 @@ public class Recipe {
 
     public Recipe() {
         // Default no-arg constructor for generating Items, required for ORMLite
-        recipeStorage = ListStorageFragment.getLocalRecipeStorage();
+        recipeStorage = ListStorageFragment.getRecipeStorage();
     }
 
     public int getId() {

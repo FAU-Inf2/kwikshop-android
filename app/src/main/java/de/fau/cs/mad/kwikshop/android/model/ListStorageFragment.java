@@ -68,7 +68,7 @@ public class ListStorageFragment extends Fragment {
         return m_ListStorageFragment;
     }
 
-    public static RecipeStorage getLocalRecipeStorage(){ return m_RecipeStorage;}
+    public static RecipeStorage getRecipeStorage(){ return m_RecipeStorage;}
 
     public void SetupLocalListStorageFragment(FragmentActivity activity) {
         FragmentManager fm = activity.getSupportFragmentManager();

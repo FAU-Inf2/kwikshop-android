@@ -74,6 +74,29 @@
                 android:value="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
 
         </activity>
+
+        <activity
+            android:name="de.fau.cs.mad.kwikshop.android.view.ListOfRecipesActivity"
+            android:label="@string/title_activity_list_of_recipes"
+            android:parentActivityName="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
+        </activity>
+
+        <activity
+            android:name="de.fau.cs.mad.kwikshop.android.view.RecipeDetailActivity"
+            android:label="@string/title_activity_recipe_detail"
+            android:parentActivityName="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
+
+        </activity>
+
+
     </application>
 
 </manifest>

@@ -21,7 +21,7 @@ public class AutoCompletionData {
     /**
      * the group that was set the last time for that item
      */
-    @DatabaseField(foreign = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private Group group;
 
 

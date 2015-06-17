@@ -11,6 +11,7 @@ public class DetailsActivity extends BaseActivity implements SaveDeleteActivity 
 
     public static final String EXTRA_SHOPPINGLISTID = "extra_ShoppingListId";
 
+    public static final String EXTRA_RECIPEID = "extra_RecipeId";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -1,0 +1,109 @@
+package de.fau.cs.mad.kwikshop.android.view;
+
+import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.common.Recipe;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
+
+public class ListOfRecipesRowAdapter extends ArrayAdapter<Recipe> implements ObservableArrayList.Listener<Recipe> {
+
+
+    //region Constants
+
+    private static final int LAYOUT_ID = R.layout.fragment_list_of_recipes_row;
+
+    //endregion
+
+
+    //region Fields
+
+    private final Activity parentActivity;
+    private final ObservableArrayList<Recipe, Integer> recipes;
+
+    //endregion
+
+
+    //region Constructor
+
+    public ListOfRecipesRowAdapter(Activity parentActivity, ObservableArrayList<Recipe, Integer> recipes) {
+
+        super(parentActivity, LAYOUT_ID, recipes);
+
+        if(parentActivity == null) {
+            throw new IllegalArgumentException("'parentActivity' must not be null");
+        }
+
+        if (recipes == null) {
+            throw new IllegalArgumentException("'recipes' must not be null");
+        }
+
+        this.parentActivity = parentActivity;
+        this.recipes = recipes;
+        this.recipes.setListener(this);
+    }
+
+    //endregion
+
+    @Override
+    public View getView(int position, View view, ViewGroup parent) {
+
+        //get the appropriate shopping list
+        Recipe recipe = recipes.get(position);
+
+        //if view is null, inflate a new one
+        if (view == null) {
+
+            LayoutInflater inflater = getLayoutInflater();
+            view = inflater.inflate(LAYOUT_ID, null);
+
+        }
+
+        //display the list's name and number of items in the list
+        TextView recipeNameView = (TextView) view.findViewById(R.id.list_row_textView_recipe_Main);
+        recipeNameView.setText(recipe.getName());
+
+        return view;
+    }
+
+
+    @Override
+    public long getItemId(int position) {
+        return recipes.get(position).getId();
+    }
+
+    //region Private Methods
+
+    /**
+     * Gets the layout inflater from the associated activity
+     * @return Returns a LayoutInflater
+     */
+    private LayoutInflater getLayoutInflater() {
+        return (LayoutInflater) parentActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    //endregion
+
+
+    @Override
+    public void onItemAdded(Recipe newItem) {
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemRemoved(Recipe removedItem) {
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemModified(Recipe modifiedItem) {
+        notifyDataSetChanged();
+    }
+
+}

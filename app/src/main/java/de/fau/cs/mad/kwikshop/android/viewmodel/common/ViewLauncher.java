@@ -15,4 +15,10 @@ public interface ViewLauncher {
     void showItemDetailsView(int shoppingListId);
 
     void showItemDetailsView(int shoppingListId, int itemId);
+
+    void showAddRecipeView();
+
+    void showRecipe(int recipeId);
+
+    void showRecipeDetailsView(int recipeId);
 }

@@ -19,6 +19,7 @@ import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
 import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
+import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 
@@ -53,6 +54,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private Dao<AutoCompletionBrandData, Integer> autoCompletionBrandDao = null;
     private RuntimeExceptionDao<AutoCompletionBrandData, Integer> autoCompletionBrandRuntimeDao = null;
 
+    private Dao<Recipe, Integer> recipeDao = null;
+    private RuntimeExceptionDao<Recipe, Integer> recipeRunTimeDao = null;
+
     public DatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -69,6 +73,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.createTable(connectionSource, CalendarEventDate.class);
             TableUtils.createTable(connectionSource, AutoCompletionData.class);
             TableUtils.createTable(connectionSource, AutoCompletionBrandData.class);
+            TableUtils.createTable(connectionSource, Recipe.class);
 
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
@@ -89,6 +94,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.dropTable(connectionSource, CalendarEventDate.class, true);
             TableUtils.dropTable(connectionSource, AutoCompletionData.class, true);
             TableUtils.dropTable(connectionSource, AutoCompletionBrandData.class, true);
+            TableUtils.dropTable(connectionSource, Recipe.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(db, connectionSource);
         } catch (SQLException e) {
@@ -210,6 +216,21 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         return autoCompletionBrandRuntimeDao;
     }
 
+    public Dao<Recipe, Integer> getRecipeDao() throws SQLException {
+        if (recipeDao == null) {
+            recipeDao = getDao(Recipe.class);
+        }
+        return recipeDao;
+    }
+
+    public RuntimeExceptionDao<Recipe, Integer> getRecipeRuntimeDao() {
+        if (recipeRunTimeDao == null) {
+            recipeRunTimeDao = getRuntimeExceptionDao(Recipe.class);
+        }
+        return recipeRunTimeDao;
+    }
+
+
     @Override
     public void close() {
         super.close();
@@ -236,5 +257,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
         autoCompletionBrandDao = null;
         autoCompletionBrandRuntimeDao = null;
+
+        recipeDao = null;
+        recipeRunTimeDao = null;
     }
 }

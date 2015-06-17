@@ -316,7 +316,9 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         // on the main thread, update an displayed item after it has been loaded
 
         if(event.getShoppingListId() == this.shoppingListId) {
-            updateItem(event.getItem());
+            for(Item i : event.getItems()) {
+                updateItem(i);
+            }
         }
 
     }
@@ -356,7 +358,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
                 case  Added:
                 case PropertiesModified:
-                    new LoadItemTask(listStorage, privateBus, shoppingListId, event.getItemId()).execute();
+                    new LoadItemTask(listStorage, privateBus, shoppingListId).execute(event.getItemId());
                     break;
 
                 case  Deleted:

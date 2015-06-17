@@ -2,7 +2,9 @@ package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
@@ -10,16 +12,15 @@ import de.fau.cs.mad.kwikshop.android.model.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemLoadedEvent;
 import de.greenrobot.event.EventBus;
 
-public class LoadItemTask extends AsyncTask<Object, Object, Item> {
+public class LoadItemTask extends AsyncTask<Integer, Object, Collection<Item>> {
 
 
     private ListStorage listStorage;
     private EventBus resultBus;
     private int shoppingListId;
-    private int itemId;
 
 
-    public LoadItemTask(ListStorage listStorage, EventBus resultBus, int shoppingListId, int itemId) {
+    public LoadItemTask(ListStorage listStorage, EventBus resultBus, int shoppingListId) {
 
         if (listStorage == null) {
             throw new IllegalArgumentException("'listStorage' must not be null");
@@ -33,21 +34,39 @@ public class LoadItemTask extends AsyncTask<Object, Object, Item> {
         this.resultBus = resultBus;
 
         this.shoppingListId = shoppingListId;
-        this.itemId = itemId;
 
     }
 
 
     @Override
-    protected Item doInBackground(Object... params) {
+    protected Collection<Item> doInBackground(Integer... itemIds) {
 
-        //TODO: reimplement this if we can load single items directly from the database
+
         ShoppingList list = listStorage.loadList(shoppingListId);
-        Item item = list.getItem(itemId);
-        if(item != null) {
-            resultBus.post(new ItemLoadedEvent(shoppingListId, item));
-        }
 
-        return null;
+        //load all the items from the list
+        if (itemIds.length == 0) {
+            return list.getItems();
+
+        //load only specified items
+        } else {
+
+            List<Item> result = new ArrayList<>();
+
+            for (int id : itemIds) {
+
+                //TODO: reimplement this if we can load single items directly from the database
+                Item item = list.getItem(id);
+                if (item != null) {
+                    result.add(item);
+                }
+            }
+
+            if (result.size() > 0) {
+                resultBus.post(new ItemLoadedEvent(shoppingListId, result.toArray(new Item[result.size()])));
+            }
+
+            return result;
+        }
     }
 }

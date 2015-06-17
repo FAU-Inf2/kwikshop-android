@@ -5,17 +5,17 @@ import de.fau.cs.mad.kwikshop.android.common.Item;
 public class ItemLoadedEvent {
 
     private final int shoppingListId;
-    private final Item item;
+    private final Item[] items;
 
 
-    public ItemLoadedEvent(int shoppingListId, Item item) {
+    public ItemLoadedEvent(int shoppingListId, Item... items) {
 
-        if (item == null) {
+        if (items == null) {
             throw new IllegalArgumentException("'item' must not be null");
         }
 
         this.shoppingListId = shoppingListId;
-        this.item = item;
+        this.items = items;
 
     }
 
@@ -24,8 +24,8 @@ public class ItemLoadedEvent {
         return shoppingListId;
     }
 
-    public Item getItem() {
-        return this.item;
+    public Item[] getItems() {
+        return this.items;
     }
 
 

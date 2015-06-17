@@ -53,22 +53,47 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
 
         @Override
         public void onItemAdded(T newItem) {
-            for (Listener l : listeners) {
-                l.onItemAdded(newItem);
+
+            synchronized (ObservableArrayList.this) {
+
+                if (!enableEvents) {
+                    return;
+                }
+
+                for (Listener l : listeners) {
+                    l.onItemAdded(newItem);
+                }
             }
+
         }
 
         @Override
         public void onItemRemoved(T removedItem) {
-            for (Listener l : listeners) {
-                l.onItemRemoved(removedItem);
+
+            synchronized (ObservableArrayList.this) {
+
+                if (!enableEvents) {
+                    return;
+                }
+
+                for (Listener l : listeners) {
+                    l.onItemRemoved(removedItem);
+                }
             }
         }
 
         @Override
         public void onItemModified(T modifiedItem) {
-            for (Listener l : listeners) {
-                l.onItemModified(modifiedItem);
+
+            synchronized (ObservableArrayList.this) {
+
+                if (!enableEvents) {
+                    return;
+                }
+
+                for (Listener l : listeners) {
+                    l.onItemModified(modifiedItem);
+                }
             }
         }
     }
@@ -76,7 +101,7 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
     private final IdExtractor<T, K> idExtractor;
     private final List<Listener<T>> listeners = new LinkedList<Listener<T>>();
     private final Listener<T> listener = new CompositeListener<>();
-
+    private boolean enableEvents = true;
 
     public ObservableArrayList(IdExtractor<T, K> idExtractor) {
         super();
@@ -301,6 +326,14 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
             return item;
         }
 
+    }
+
+    public synchronized void enableEvents() {
+        enableEvents = true;
+    }
+
+    public synchronized void disableEvents() {
+           enableEvents = false;
     }
 
     private class ReadonlyListIteratorWrapper implements ListIterator<T> {

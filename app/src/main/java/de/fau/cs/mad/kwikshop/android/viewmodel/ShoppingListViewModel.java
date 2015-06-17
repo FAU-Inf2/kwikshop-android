@@ -253,26 +253,31 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
 
     /**
-     * Swaps the positions of the specified items in the shopping list
+     * To be called by teh view after two items have been swapped
      */
-    public void swapItems(final int id1, final int id2) {
+    public void itemsSwapped(int position1, int position2) {
 
-        if(items.containsById(id1) && items.containsById(id2)) {
-            //TODO
-//            //let's assume the two items are next to each other in the list
-//
-//            int position1 = items.indexOfById(id1);
-//            int position2 = items.indexOfById(id2);
-//
-//            Item item1 = items.get(position1);
-//            Item item2 = items.get(position2);
-//
-//            item1.setOrder(position2);
-//            item2.setOrder(position1);
-//
-//            new SaveItemTask(listStorage, shoppingListId, item1, item2).execute();
-        }
+        Item item1 = items.get(position1);
+        Item item2 = items.get(position2);
+
+        item1.setOrder(position2);
+        item2.setOrder(position1);
+
+        new SaveItemTask(listStorage, shoppingListId, item1, item2).execute();
     }
+
+
+    public void boughtItemsSwapped(int position1, int position2) {
+
+        Item item1 = boughtItems.get(position1);
+        Item item2 = boughtItems.get(position2);
+
+        item1.setOrder(position2);
+        item2.setOrder(position1);
+
+        new SaveItemTask(listStorage, shoppingListId, item1, item2).execute();
+    }
+
 
     @SuppressWarnings("unused")
     public void onEventMainThread(ShoppingListLoadedEvent event) {

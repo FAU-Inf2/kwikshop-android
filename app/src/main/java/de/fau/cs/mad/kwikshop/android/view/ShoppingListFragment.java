@@ -21,6 +21,7 @@ import android.widget.ScrollView;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
+import com.nhaarman.listviewanimations.itemmanipulation.dragdrop.OnItemMovedListener;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
@@ -230,6 +231,13 @@ public class ShoppingListFragment
                 }
         );
 
+        shoppingListView.setOnItemMovedListener(new OnItemMovedListener() {
+            @Override
+            public void onItemMoved(int i, int i1) {
+                viewModel.itemsSwapped(i, i1);
+            }
+        });
+
         justifyListViewHeightBasedOnChildren(shoppingListView);
 
 
@@ -249,6 +257,12 @@ public class ShoppingListFragment
 
 
         shoppingListViewBought.setAdapter(new ShoppingListAdapter(getActivity(), viewModel, viewModel.getBoughtItems(), displayHelper));
+        shoppingListViewBought.setOnItemMovedListener(new OnItemMovedListener() {
+            @Override
+            public void onItemMoved(int i, int i1) {
+                viewModel.boughtItemsSwapped(i, i1);
+            }
+        });
         shoppingListViewBought.enableDragAndDrop();
 
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);

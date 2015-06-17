@@ -227,7 +227,6 @@ public class ShoppingListFragment
         if (autoCompletion == null) {
             autoCompletion = AutoCompletionHelper.getAutoCompletionHelper(getActivity().getBaseContext());
         }
-
         refreshQuickAddAutoCompletion();
 
         disableFloatingButtonWhileSoftKeyboardIsShown();
@@ -358,6 +357,14 @@ public class ShoppingListFragment
 
     @Override
     public void onItemAdded(Item newItem) {
+
+        //TODO: It might make sense to move autocompletion handling to the view model
+        //IMPORTANT
+        if(autoCompletion != null) {
+            autoCompletion.offerName(newItem.getName());
+            refreshQuickAddAutoCompletion();
+        }
+
         justifyListViewHeightBasedOnChildren(shoppingListView);
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);
     }

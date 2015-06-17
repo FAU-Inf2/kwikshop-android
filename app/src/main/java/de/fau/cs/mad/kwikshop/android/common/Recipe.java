@@ -60,7 +60,7 @@ public class Recipe {
         this.items.add(item);
     }
 
-    public void removeItem(int id) {
+    public boolean removeItem(int id) {
         Iterator<Item> iterator = items.iterator();
 
         while (iterator.hasNext()) {
@@ -68,13 +68,14 @@ public class Recipe {
             if (currentItem.getId() == id) {
                 items.remove(currentItem);
                 recipeStorage.deleteItem(id);
-                return;
+                return true;
             }
         }
+        return false;
     }
 
-    public void removeItem(Item item) {
-        removeItem(item.getId());
+    public boolean removeItem(Item item) {
+        return removeItem(item.getId());
     }
 
     public int size() {

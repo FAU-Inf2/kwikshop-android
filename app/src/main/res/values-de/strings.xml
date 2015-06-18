@@ -138,8 +138,11 @@
     <string name="descr_swipe2">um ihn als gekauft zu markieren</string>
 
 
-    <!-- Recipes -->
+    <!--Recipes-->
     <string name="recipes">Rezepte</string>
+    <string name="deleteRecipe_DialogTitle">Rezept löschen</string>
+    <string name="deleteRecipe_DialogText">Sind Sie sicher, dass sie dieses Rezept löschen möchten?</string>
+    <string name="overflow_action_menu_recipes">Rezepte verwalten</string>
 
 
 </resources>

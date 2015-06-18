@@ -170,7 +170,7 @@
     <string name="recipes">Recipes</string>
     <string name="deleteRecipe_DialogTitle">Delete recipe</string>
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
-    <string name="overflow_action_menu_recipes">Recipes</string>
+    <string name="overflow_action_menu_recipes">Manage recipes</string>
 
 
 </resources>

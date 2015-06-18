@@ -98,6 +98,8 @@ public class DefaultViewLauncher implements ViewLauncher {
         alert.show();
     }
 
+
+
     @Override
     public void showItemDetailsView(int shoppingListId) {
         Intent intent = ItemDetailsActivity.getIntent(activity, shoppingListId);
@@ -109,4 +111,15 @@ public class DefaultViewLauncher implements ViewLauncher {
         Intent intent = ItemDetailsActivity.getIntent(activity, shoppingListId, itemId);
         activity.startActivity(intent);
     }
+
+    @Override
+    public void RecipeShowItemDetailsView(int recipeId){
+        //todo when ItemDetails is added for recipes
+    }
+
+    @Override
+    public void RecipeShowItemDetailsView(int recipeId, int itemId){
+        //todo when ItemDetails is added for recipes
+    }
+
 }

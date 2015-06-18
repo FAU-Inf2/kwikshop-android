@@ -371,12 +371,12 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
 
     private void addItemCommandExecute() {
         ensureIsInitialized();
-        viewLauncher.showItemDetailsView(this.recipeId);
+        viewLauncher.RecipeShowItemDetailsView(this.recipeId);
     }
 
     private void selectItemCommandExecute(int itemId) {
         ensureIsInitialized();
-        viewLauncher.showItemDetailsView(this.recipeId, itemId);
+        viewLauncher.RecipeShowItemDetailsView(this.recipeId, itemId);
     }
 
 

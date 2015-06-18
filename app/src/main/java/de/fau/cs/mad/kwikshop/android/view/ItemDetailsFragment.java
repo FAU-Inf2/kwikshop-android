@@ -64,8 +64,8 @@ public class ItemDetailsFragment extends Fragment {
     private List<Group> groups;
     private int selectedGroupIndex = -1;
 
-    private String[] numbersForThePicker;
-    private int numberPickerCalledWith;
+    private String[] numbersForAmountPicker;
+    private int amount_numberPickerCalledWith;
 
     private static AutoCompletionHelper autoCompletion;
 
@@ -75,7 +75,7 @@ public class ItemDetailsFragment extends Fragment {
     MultiAutoCompleteTextView productname_text;
 
     @InjectView(R.id.numberPicker)
-    NumberPicker numberPicker;
+    NumberPicker amount_numberPicker;
 
     @InjectView(R.id.unit_spinner)
     Spinner unit_spinner;
@@ -287,10 +287,10 @@ public class ItemDetailsFragment extends Fragment {
         }
 
         item.setName(productname_text.getText().toString());
-        if(numberPickerCalledWith != numberPicker.getValue()){
+        if(amount_numberPickerCalledWith != amount_numberPicker.getValue()){
             //only set amount if it got changed, so values written by parser which are not listed
-            //in the numberPicker don't get overwritten
-            item.setAmount(Integer.parseInt(numbersForThePicker[numberPicker.getValue()-1]));
+            //in the amount_numberPicker don't get overwritten
+            item.setAmount(Integer.parseInt(numbersForAmountPicker[amount_numberPicker.getValue()-1]));
         }
         item.setBrand(brand_text.getText().toString());
 
@@ -358,11 +358,11 @@ public class ItemDetailsFragment extends Fragment {
     private void setupUI() {
 
         //populate number picker
-       numbersForThePicker = new String[1000];
+       numbersForAmountPicker = new String[1000];
         String [] numsOnce = new String[]{
           "1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
                 "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
-                "450", "500", "600", "700", "800", "900", "1000"
+                "450", "500", "600", "700", "750", "800", "900", "1000"
         };
         int [] intNumsOnce = new int[numsOnce.length];
         for(int i = 0; i < intNumsOnce.length; i++){
@@ -370,19 +370,17 @@ public class ItemDetailsFragment extends Fragment {
         }
 
         //setDisplayedValues length must be as long as range
-        for(int i = 0; i < numbersForThePicker.length; i++){
-            numbersForThePicker[i] = numsOnce[i%numsOnce.length];
+        for(int i = 0; i < numbersForAmountPicker.length; i++){
+            numbersForAmountPicker[i] = numsOnce[i%numsOnce.length];
         }
-        numberPicker.setMinValue(1);
-        numberPicker.setMaxValue(1000);
-        numberPicker.setWrapSelectorWheel(false);
-        numberPicker.setDisplayedValues(numbersForThePicker);
+        amount_numberPicker.setMinValue(1);
+        amount_numberPicker.setMaxValue(1000);
+        amount_numberPicker.setWrapSelectorWheel(false);
+        amount_numberPicker.setDisplayedValues(numbersForAmountPicker);
 
-        //String[] repeatNumbers = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
         repeat_numberPicker.setMinValue(1);
         repeat_numberPicker.setMaxValue(10);
         repeat_numberPicker.setWrapSelectorWheel(false);
-        //repeat_numberPicker.setDisplayedValues(repeatNumbers);
 
         //wire up auto-complete for product name and brand
         productname_text.setAdapter(autoCompletion.getNameAdapter(getActivity()));
@@ -394,7 +392,7 @@ public class ItemDetailsFragment extends Fragment {
         if (isNewItem) {
 
             productname_text.setText("");
-            numberPicker.setValue(1);
+            amount_numberPicker.setValue(1);
             brand_text.setText("");
             comment_text.setText("");
 
@@ -402,7 +400,7 @@ public class ItemDetailsFragment extends Fragment {
             item = shoppingList.getItem(itemId);
 
             //thats not a pretty way to get it done, but the only one that came to my mind
-            //numberPicker.setValue(index) sets the picker to the index + numberPicker.minValue()
+            //amount_numberPicker.setValue(index) sets the picker to the index + amount_numberPicker.minValue()
             int itemAmount = item.getAmount();
             for(int i = 1; i < intNumsOnce.length; i++){
                 if(itemAmount > 1000) itemAmount = 1000;
@@ -419,11 +417,11 @@ public class ItemDetailsFragment extends Fragment {
 
             // Fill UI elements with data from Item
             productname_text.setText(item.getName());
-            numberPicker.setValue(itemAmount);
+            amount_numberPicker.setValue(itemAmount);
             brand_text.setText(item.getBrand());
             comment_text.setText(item.getComment());
         }
-        numberPickerCalledWith = numberPicker.getValue();
+        amount_numberPickerCalledWith = amount_numberPicker.getValue();
 
         //populate unit picker with units from database
         DisplayHelper displayHelper = new DisplayHelper(getActivity());

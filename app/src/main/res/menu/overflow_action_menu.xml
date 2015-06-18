@@ -18,6 +18,11 @@
             <item android:id="@+id/action_listofrecipes"
                 app:showAsAction="ifRoom"
                 android:title="@string/overflow_action_menu_recipes" />
+
+            <item android:id="@+id/action_location"
+                  app:showAsAction="ifRoom"
+                  android:title="@string/overflow_action_menu_location" />
+
             <item android:id="@+id/action_settings"
                   app:showAsAction="ifRoom"
                   android:title="@string/overflow_action_menu_settings" />

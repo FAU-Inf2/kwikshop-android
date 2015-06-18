@@ -6,19 +6,13 @@
                 android:background="@color/text_icons">
 
  <TextView
-     android:id="@+id/tv_location_latidude"
+     android:id="@+id/tv_location"
      android:layout_width="wrap_content"
      android:layout_height="wrap_content"
      android:text="Location"
      />
 
-    <TextView
-        android:id="@+id/tv_location_longitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_location_latidude"
-        android:text="Location 2"
-        />
+
 
 
 </RelativeLayout>

@@ -21,7 +21,7 @@
 
             <item android:id="@+id/action_location"
                   app:showAsAction="ifRoom"
-                  android:title="@string/overflow_action_menu_location" />
+                  android:title="@string/location" />
 
             <item android:id="@+id/action_settings"
                   app:showAsAction="ifRoom"

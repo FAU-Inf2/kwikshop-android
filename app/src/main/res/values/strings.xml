@@ -172,5 +172,9 @@
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
     <string name="overflow_action_menu_recipes">Recipes</string>
 
+    <!--Periods of time-->
+    <string name="days">days</string>
+    <string name="weeks">weeks</string>
+    <string name="months">months</string>
 
 </resources>

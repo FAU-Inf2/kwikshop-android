@@ -143,5 +143,10 @@
     <!-- Recipes -->
     <string name="recipes">Rezepte</string>
 
+    <!--Periods of time-->
+    <string name="days">Tage</string>
+    <string name="weeks">Wochen</string>
+    <string name="months">Monate</string>
+
 
 </resources>

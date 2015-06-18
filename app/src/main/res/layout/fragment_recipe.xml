@@ -1,0 +1,114 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/text_icons"
+    tools:context=".MainActivity$PlaceholderFragment">
+
+
+    <!--Other content of the view-->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#00ffffff">
+
+        <!--Quick add bar-->
+        <RelativeLayout
+            android:id="@+id/quickAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:background="@color/text_icons">
+
+
+            <MultiAutoCompleteTextView
+                android:id="@+id/textView_quickAdd"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/defaultItem"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:inputType="textCapSentences"/>
+
+            <ImageButton
+                android:id="@+id/button_quickAdd"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="40dip"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/textView_quickAdd"
+                android:layout_alignEnd="@id/textView_quickAdd"
+                android:layout_alignRight="@id/textView_quickAdd"
+                android:layout_alignTop="@id/textView_quickAdd"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_action_add" />
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/recipe_scrollview">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#FFB6B6B6"
+                >
+
+                <View
+                    android:id="@+id/divider_top"
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+
+                <!--List of items-->
+                <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+                    android:id="@+id/list_recipe"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider_top"
+                    />
+
+                <View
+                    android:id="@+id/divider_bottom"
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/list_recipe"
+                    android:background="@color/divider_color"/>
+
+
+                <View
+                    android:id="@+id/space_bottom"
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:layout_below="@+id/divider_bottom"
+                    android:background="@color/text_icons"/>
+
+            </RelativeLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+    <!--Floating Action button-->
+    <view
+        android:id="@+id/fab"
+        class="com.melnykov.fab.FloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:layout_weight="10"
+        android:src="@drawable/ic_action_add"
+        fab:fab_colorNormal="@color/fab_Normal"
+        fab:fab_colorPressed="@color/fab_Pressed"
+        fab:fab_colorRipple="@color/fab_Ripple" />
+
+
+</RelativeLayout>

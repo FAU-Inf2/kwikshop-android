@@ -81,7 +81,7 @@
     <string name="settings_option_3_error">Leider ist beim Löschen des Verlaufs ein Fehler aufgetreten</string>
     <string name="settings_option_3_success">Verlauf erfolgreich gelöscht</string>
     <string name="sortby_manual">Manuell</string>
-    <string name="sortby_group">Kategorie</string>
+    <string name="sortby_group">Gruppe</string>
     <string name="sortby_alphabetically">Alphabetisch</string>
     <string name="remove">Löschen</string>
     <string-array name="measures">//TODO importing units from a library of units
@@ -140,13 +140,25 @@
     <string name="descr_swipe2">um ihn als gekauft zu markieren</string>
 
 
-    <!-- Recipes -->
+    <!--Recipes-->
     <string name="recipes">Rezepte</string>
+    <string name="deleteRecipe_DialogTitle">Rezept löschen</string>
+    <string name="deleteRecipe_DialogText">Sind Sie sicher, dass sie dieses Rezept löschen möchten?</string>
+    <string name="overflow_action_menu_recipes">Rezepte verwalten</string>
 
     <!--Periods of time-->
     <string name="days">Tage</string>
     <string name="weeks">Wochen</string>
     <string name="months">Monate</string>
 
+
+    <!-- Alert Dialog For missing connection -->
+    <string name="alert_dialog_connection_label">Netzwerk</string>
+    <string name="alert_dialog_connection_message">Keine Internetverbindung vorhanden. Bitte aktiviere dein Wlan oder dein mobiles Internet.</string>
+    <string name="alert_dialog_connection_cancel">Abbrechen</string>
+    <string name="alert_dialog_connection_try">Wiederholen</string>
+
+    <!-- Location -->
+    <string name="location">Standort</string>
 
 </resources>

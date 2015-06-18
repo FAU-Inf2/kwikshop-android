@@ -10,6 +10,10 @@
     <string name="title_activity_shopping_list_detail">Shopping List Detail</string>
     <string name="title_activity_list_of_recipes">List of Recipes</string>
     <string name="title_activity_recipe_detail">Recipe Detail</string>
+    <string name="title_activity_recipe_item_details">Recipe Item Details</string>
+    <string name="title_activity_recipe">Recipe</string>
+    <string name="title_activity_location">Location</string>
+
     <!-- Fragment Label -->
     <string name="title_fragment_item_details">Create new item</string>
 
@@ -176,5 +180,13 @@
     <string name="days">days</string>
     <string name="weeks">weeks</string>
     <string name="months">months</string>
+    
+    <!-- Alert Dialog For missing connection -->
+    <string name="alert_dialog_connection_label">Network</string>
+    <string name="alert_dialog_connection_message">No Internet connection available. Please turn on your Wi-Fi or your mobile Internet.</string>
+    <string name="alert_dialog_connection_cancel">Cancel</string>
+    <string name="alert_dialog_connection_try">Try again</string>
 
+    <!-- Location -->
+    <string name="location">Location</string>
 </resources>

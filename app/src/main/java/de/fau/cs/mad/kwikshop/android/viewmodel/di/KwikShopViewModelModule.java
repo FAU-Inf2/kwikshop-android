@@ -7,6 +7,7 @@ import dagger.Module;
 import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
 import de.fau.cs.mad.kwikshop.android.model.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
@@ -17,6 +18,7 @@ import de.fau.cs.mad.kwikshop.android.view.DefaultViewLauncher;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfRecipesViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfShoppingListsViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipesDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
@@ -24,13 +26,15 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 
 @Module(injects = {
-            ListOfShoppingListsViewModel.class,
-            ShoppingListDetailsViewModel.class,
-            DisplayHelper.class,
-            ShoppingListViewModel.class,
-            ListOfRecipesViewModel.class,
-            RecipesDetailsViewModel.class
-        },
+        ListOfShoppingListsViewModel.class,
+        ShoppingListDetailsViewModel.class,
+        DisplayHelper.class,
+        ShoppingListViewModel.class,
+        ListOfRecipesViewModel.class,
+        RecipesDetailsViewModel.class,
+        RecipeViewModel.class,
+        AutoCompletionHelper.class
+},
         library = true)
 @SuppressWarnings("unused")
 public class KwikShopViewModelModule {
@@ -89,5 +93,10 @@ public class KwikShopViewModelModule {
     @Provides
     public DisplayHelper provideDisplayHelper(Context context) {
         return new DisplayHelper(context);
+    }
+
+    @Provides
+    public AutoCompletionHelper provideAutoCompletionHelper(Activity activity) {
+        return AutoCompletionHelper.getAutoCompletionHelper(activity.getBaseContext());
     }
 }

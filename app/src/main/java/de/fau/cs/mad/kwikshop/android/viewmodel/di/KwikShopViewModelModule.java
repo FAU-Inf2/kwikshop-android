@@ -7,6 +7,7 @@ import dagger.Module;
 import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
 import de.fau.cs.mad.kwikshop.android.model.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
@@ -31,7 +32,8 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         ShoppingListViewModel.class,
         ListOfRecipesViewModel.class,
         RecipesDetailsViewModel.class,
-        RecipeViewModel.class
+        RecipeViewModel.class,
+        AutoCompletionHelper.class
 },
         library = true)
 @SuppressWarnings("unused")
@@ -91,5 +93,10 @@ public class KwikShopViewModelModule {
     @Provides
     public DisplayHelper provideDisplayHelper(Context context) {
         return new DisplayHelper(context);
+    }
+
+    @Provides
+    public AutoCompletionHelper provideAutoCompletionHelper(Activity activity) {
+        return AutoCompletionHelper.getAutoCompletionHelper(activity.getBaseContext());
     }
 }

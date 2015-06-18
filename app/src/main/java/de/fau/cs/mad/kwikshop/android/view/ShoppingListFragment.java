@@ -54,7 +54,7 @@ public class ShoppingListFragment
 
     private int listID = -1;
 
-    private static AutoCompletionHelper autoCompletion;
+    private AutoCompletionHelper autoCompletion;
 
     private ShoppingListViewModel viewModel;
     private boolean updatingViewModel;
@@ -109,10 +109,9 @@ public class ShoppingListFragment
         ButterKnife.inject(this, rootView);
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
-
         DisplayHelper displayHelper = objectGraph.get(DisplayHelper.class);
-
         viewModel = objectGraph.get(ShoppingListViewModel.class);
+        autoCompletion = objectGraph.get(AutoCompletionHelper.class);
         viewModel.initialize(this.listID);
 
 
@@ -222,10 +221,6 @@ public class ShoppingListFragment
         });
         textView_QuickAdd.setTokenizer(new SpaceTokenizer());
 
-        //wire up auto-complete for product name
-        if (autoCompletion == null) {
-            autoCompletion = AutoCompletionHelper.getAutoCompletionHelper(getActivity().getBaseContext());
-        }
         refreshQuickAddAutoCompletion();
 
         disableFloatingButtonWhileSoftKeyboardIsShown();
@@ -360,7 +355,6 @@ public class ShoppingListFragment
         //TODO: It might make sense to move autocompletion handling to the view model
         //IMPORTANT
         if(autoCompletion != null) {
-            autoCompletion.offerName(newItem.getName());
             refreshQuickAddAutoCompletion();
         }
 

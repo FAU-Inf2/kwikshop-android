@@ -68,6 +68,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     private final SimpleStorage<Group> groupStorage;
     private final ItemParser itemParser;
     protected final DisplayHelper displayHelper;
+    private final AutoCompletionHelper autoCompletionHelper;
     private EventBus privateBus = EventBus.builder().build();
 
     private int shoppingListId;
@@ -108,7 +109,8 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     @Inject
     public ShoppingListViewModel(ViewLauncher viewLauncher, ListStorage listStorage,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
-                                 ItemParser itemParser, DisplayHelper displayHelper) {
+                                 ItemParser itemParser, DisplayHelper displayHelper,
+                                 AutoCompletionHelper autoCompletionHelper) {
 
         if(viewLauncher == null) {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
@@ -128,6 +130,10 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(displayHelper == null) {
             throw new IllegalArgumentException("'displayHelper' must not be null");
         }
+        if(autoCompletionHelper == null) {
+            throw new IllegalArgumentException("'autoCompletionHelper' must not be null");
+        }
+
 
         this.viewLauncher = viewLauncher;
         this.listStorage = listStorage;
@@ -135,6 +141,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         this.groupStorage = groupStorage;
         this.itemParser = itemParser;
         this.displayHelper = displayHelper;
+        this.autoCompletionHelper = autoCompletionHelper;
     }
 
 
@@ -472,7 +479,6 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         //reset quick add text
         setQuickAddText("");
 
-
         new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -495,6 +501,8 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                     shoppingList.addItem(newItem);
 
                     listStorage.saveList(shoppingList);
+
+                    autoCompletionHelper.offerName(newItem.getName());
 
                     EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
                     EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));

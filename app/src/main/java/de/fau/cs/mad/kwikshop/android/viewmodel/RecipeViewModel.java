@@ -11,6 +11,7 @@ import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
 import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
 import de.fau.cs.mad.kwikshop.android.model.SimpleStorage;
@@ -72,6 +73,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
     private final SimpleStorage<Group> groupStorage;
     private final ItemParser itemParser;
     protected final DisplayHelper displayHelper;
+    private final AutoCompletionHelper autoCompletionHelper;
     private EventBus privateBus = EventBus.builder().build();
 
     private int recipeId;
@@ -102,7 +104,8 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
     @Inject
     public RecipeViewModel(ViewLauncher viewLauncher, RecipeStorage recipeStorage,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
-                                 ItemParser itemParser, DisplayHelper displayHelper) {
+                                 ItemParser itemParser, DisplayHelper displayHelper,
+                                 AutoCompletionHelper autoCompletionHelper) {
 
         if(viewLauncher == null) {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
@@ -122,6 +125,9 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
         if(displayHelper == null) {
             throw new IllegalArgumentException("'displayHelper' must not be null");
         }
+        if(autoCompletionHelper == null) {
+            throw new IllegalArgumentException("'autoCompletionHelper' mut not be null");
+        }
 
         this.viewLauncher = viewLauncher;
         this.recipeStorage = recipeStorage;
@@ -129,6 +135,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
         this.groupStorage = groupStorage;
         this.itemParser = itemParser;
         this.displayHelper = displayHelper;
+        this.autoCompletionHelper = autoCompletionHelper;
     }
 
 
@@ -358,6 +365,8 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
                     recipe.addItem(newItem);
 
                     recipeStorage.saveRecipe(recipe);
+
+                    autoCompletionHelper.offerName(newItem.getName());
 
                     EventBus.getDefault().post(new RecipeChangedEvent(ShoppingListChangeType.ItemsAdded, recipe.getId()));
                     EventBus.getDefault().post(new RecipeItemChangedEvent(ItemChangeType.Added, recipe.getId(), newItem.getId()));

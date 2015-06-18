@@ -296,7 +296,6 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
         //TODO: It might make sense to move autocompletion handling to the view model
         //IMPORTANT
         if(autoCompletion != null) {
-            autoCompletion.offerName(newItem.getName());
             refreshQuickAddAutoCompletion();
         }
 

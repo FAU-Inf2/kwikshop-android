@@ -154,6 +154,9 @@ public class ShoppingListFragment
                     @Override
                     public boolean onItemLongClick(final AdapterView<?> parent, final View view,
                                                    final int position, final long id) {
+                        //disable events on observable list during drag&drop to prevent lag
+                        //IMPORTANT: Make sure to reenable events afterwards
+                        viewModel.getItems().disableEvents();
                         scrollView.requestDisallowInterceptTouchEvent(true);
                         shoppingListView.startDragging(position);
                         //sets value of the Spinner to the first entry, in this case Manual
@@ -166,6 +169,8 @@ public class ShoppingListFragment
             @Override
             public void onItemMoved(int i, int i1) {
                 viewModel.itemsSwapped(i, i1);
+                //IMPORTANT: reenable events of the observable list after drag and drop has finished
+                viewModel.getItems().enableEvents();
             }
         });
 

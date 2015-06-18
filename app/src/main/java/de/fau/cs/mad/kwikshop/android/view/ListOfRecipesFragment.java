@@ -40,7 +40,7 @@ public class ListOfRecipesFragment extends FragmentWithViewModel implements List
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // set title for actionbar
-        getActivity().setTitle(R.string.app_name);
+        getActivity().setTitle(R.string.recipes);
 
 
 

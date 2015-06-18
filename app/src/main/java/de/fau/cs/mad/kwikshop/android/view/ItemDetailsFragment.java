@@ -466,6 +466,16 @@ public class ItemDetailsFragment extends Fragment {
             unit_spinner.setSelection(units.indexOf(selectedUnit));
         }
 
+
+        ArrayList<String> repeat_spinner_entries = new ArrayList<String>(3);
+        repeat_spinner_entries.add(0, getString(R.string.days));
+        repeat_spinner_entries.add(1, getString(R.string.weeks));
+        repeat_spinner_entries.add(2, getString(R.string.months));
+        ArrayAdapter<String> repeat_spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, repeat_spinner_entries);
+        repeat_spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        repeat_spinner.setAdapter(repeat_spinnerAdapter);
+
+
         //get groups from the database and populate group spinner
         groups = ListStorageFragment.getGroupStorage().getItems();
         ArrayList<String> groupNames = new ArrayList<>();

@@ -196,13 +196,13 @@
                 <NumberPicker
                     android:layout_width="wrap_content"
                     android:layout_height="76dp"
-                    android:id="@+id/repeatNumberPicker"
+                    android:id="@+id/repeat_numberPicker"
                     android:layout_marginLeft="20dp" />
 
                 <Spinner
                     android:layout_width="135dp"
                     android:layout_height="match_parent"
-                    android:id="@+id/period_spinner"
+                    android:id="@+id/repeat_spinner"
                     android:focusable="false"
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical" />

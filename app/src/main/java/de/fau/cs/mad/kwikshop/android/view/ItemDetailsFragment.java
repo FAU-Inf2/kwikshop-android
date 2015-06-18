@@ -92,6 +92,14 @@ public class ItemDetailsFragment extends Fragment {
     @InjectView(R.id.highlight_checkBox)
     CheckBox highlight_checkbox;
 
+    @InjectView(R.id.repeat_checkBox)
+    CheckBox repeat_checkbox;
+
+    @InjectView(R.id.repeat_spinner)
+    Spinner repeat_spinner;
+
+    @InjectView(R.id.repeat_numberPicker)
+    NumberPicker repeat_numberPicker;
 
     /**
      * Creates a new instance of ItemDetailsFragment for a new shopping list item in the specified list

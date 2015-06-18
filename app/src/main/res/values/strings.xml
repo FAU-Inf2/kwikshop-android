@@ -175,4 +175,14 @@
     <string name="overflow_action_menu_recipes">Recipes</string>
 
 
+    <!-- Alert Dialog For missing connection -->
+    <string name="alert_dialog_connection_label">Network</string>
+    <string name="alert_dialog_connection_message">There is no Internet connection. Please turn on your Wi-Fi or you mobile Internet.</string>
+    <string name="alert_dialog_connection_cancel">Cancel</string>
+    <string name="alert_dialog_connection_try">Try again</string>
+
+    <!-- Location -->
+
+
+
 </resources>

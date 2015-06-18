@@ -3,14 +3,10 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -18,8 +14,6 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeViewModel;
-import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 
 public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Item> implements ObservableArrayList.Listener<Item> {

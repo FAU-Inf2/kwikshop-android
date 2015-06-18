@@ -118,4 +118,8 @@
     <string name="days">dias</string>
     <string name="deleteRecipe_DialogText">Tem certeza que deseja deletar essa receita?</string>
     <string name="deleteRecipe_DialogTitle">Deletar receita</string>
+    <string name="settings_option_3_createUnits">Criar unidades</string>
+    <string name="settings_option_4_createGroups">Criar categorias</string>
+    <string name="settings_option_3_desc2">Crie unidades para quantidade em itens</string>
+    <string name="settings_option_4_desc">Crie categorias para itens</string>
 </resources>

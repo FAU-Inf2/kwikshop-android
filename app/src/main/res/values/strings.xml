@@ -189,4 +189,8 @@
 
     <!-- Location -->
     <string name="location">Location</string>
+    <string name="settings_option_3_createUnits">Create units</string>
+    <string name="settings_option_4_createGroups">Create groups</string>
+    <string name="settings_option_3_desc2">Create units for amount in items</string>
+    <string name="settings_option_4_desc">Create groups for items</string>
 </resources>

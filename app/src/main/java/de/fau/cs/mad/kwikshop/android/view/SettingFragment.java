@@ -34,6 +34,8 @@ public class SettingFragment extends Fragment {
     public static String SETTINGS = "settings";
     public static String OPTION_1 = "locale";
     public static String OPTION_2 = "autocomplete";
+    public static String OPTION_3 = "create units";
+    public static String OPTION_4 = "create groups";
     public static CharSequence[] localeSelectionNames = {"Default", "English", "German", "Portuguese"};
     public static CharSequence[] localeIds = {"default", "en", "de", "pt"};
 
@@ -82,6 +84,8 @@ public class SettingFragment extends Fragment {
         setList = new ArrayList<String>();
         setList.add(OPTION_1);
         setList.add(OPTION_2);
+        setList.add(OPTION_3);
+        setList.add(OPTION_4);
 
         SettingAdapter objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, setList);
         listView.setAdapter(objAdapter);

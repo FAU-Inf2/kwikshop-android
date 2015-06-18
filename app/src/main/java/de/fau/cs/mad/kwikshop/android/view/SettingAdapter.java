@@ -62,7 +62,16 @@ public class SettingAdapter extends ArrayAdapter<String>  {
             tvSetdesc.setText(R.string.settings_option_3_desc);
             checkbox.setVisibility(View.INVISIBLE);
         }
-
+        if (setList.get(position).equals(SettingFragment.OPTION_3)){
+            tvSetname.setText(R.string.settings_option_3_createUnits);
+            tvSetdesc.setText(R.string.settings_option_3_desc2);
+            checkbox.setVisibility(View.INVISIBLE);
+        }
+        if (setList.get(position).equals(SettingFragment.OPTION_4)){
+            tvSetname.setText(R.string.settings_option_4_createGroups);
+            tvSetdesc.setText(R.string.settings_option_4_desc);
+            checkbox.setVisibility(View.INVISIBLE);
+        }
         return view;
     }
 

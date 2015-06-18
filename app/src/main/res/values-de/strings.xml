@@ -10,6 +10,7 @@
     <string name="delete_shopping_list">Einkaufsliste löschen</string>
     <string name="edit_calendar_event">Erinnerung bearbeiten</string>
     <string name="error_empty_productname">Bitte Produktnamen eintragen</string>
+    <string name="every">alle</string>
     <string name="group">Gruppe</string>
     <string name="group_Other">Sonstiges</string>
     <string name="group_babyFoods">Babynahrung</string>
@@ -41,6 +42,7 @@
     <string name="overflow_action_menu_settings">Einstellungen</string>
     <string name="overflow_action_menu_move_all_to_shopping_cart">Alles als gekauft markieren</string>
     <string name="overflow_action_menu_move_all_from_shopping_cart">Nichts als gekauft markieren</string>
+    <string name="regular_repeat">regelmäßig wiederholen</string>
     <string name="save">Speichern</string>
     <string name="settings_option_1_desc">Beschreibung von Option 1</string>
     <string name="settings_option_1_name">Option1</string>

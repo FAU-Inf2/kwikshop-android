@@ -137,6 +137,8 @@
               &lt;br>&lt;a href="http://square.github.io/dagger/">Project Site&lt;/a></item>
         <item>&lt;b>Butter Knife&lt;/b>, licensed under the Apache License, Version 2.0
               &lt;br>&lt;a href="http://jakewharton.github.io/butterknife/">Project Site&lt;/a></item>
+         <item>&lt;b>Google Play Services&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a https://developers.google.com/android/guides/overview">Project Site&lt;/a></item>
     </string-array>
 
 

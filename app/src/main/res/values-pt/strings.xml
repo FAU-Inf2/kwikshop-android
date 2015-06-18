@@ -103,4 +103,19 @@
     <string name="overflow_action_menu_move_all_from_shopping_cart">Marcar nenhum como comprado</string>
     <string name="overflow_action_menu_move_all_to_shopping_cart">Marcar todos como comprados</string>
     <string name="remove">Deletar</string>
+    <string name="overflow_action_menu_recipes">Receitas</string>
+    <string name="recipes">Receitas</string>
+    <string name="regular_repeat">Regularmente repetir esse item</string>
+    <string name="title_activity_list_of_recipes">Lista de Receitas</string>
+    <string name="title_activity_location">Localização</string>
+    <string name="title_activity_recipe">Receita</string>
+    <string name="title_activity_recipe_detail">Detalhes da Receita</string>
+    <string name="title_activity_recipe_item_details">Detalhes do Item da Receita</string>
+    <string name="weeks">Semanas</string>
+    <string name="months">Meses</string>
+    <string name="location">Localização</string>
+    <string name="every">a cada</string>
+    <string name="days">dias</string>
+    <string name="deleteRecipe_DialogText">Tem certeza que deseja deletar essa receita?</string>
+    <string name="deleteRecipe_DialogTitle">Deletar receita</string>
 </resources>

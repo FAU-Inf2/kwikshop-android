@@ -74,31 +74,13 @@
                     android:layout_below="@+id/divider_top"
                     />
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/list_recipe"
-                    android:id="@+id/divider_table"
-                    android:background="@color/accent_material_light">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:text="@string/shoppinglist_divider_textview"
-                        android:id="@+id/textview_divider"
-                        android:layout_marginLeft="20dp"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-                        android:layout_marginTop="3dp"
-                        android:layout_marginBottom="3dp"
-                        android:textColor="@color/text_icons"
-                        android:singleLine="true"/>
-                </TableRow>
-
                 <View
                     android:id="@+id/divider_bottom"
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
+                    android:layout_below="@+id/list_recipe"
                     android:background="@color/divider_color"/>
+
 
                 <View
                     android:id="@+id/space_bottom"

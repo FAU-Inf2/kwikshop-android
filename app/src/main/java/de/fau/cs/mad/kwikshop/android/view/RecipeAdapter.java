@@ -123,6 +123,7 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
             viewHolder.textView_Amount.setText(String.format("%d %s", amount, unitStr));
         }
 
+        viewHolder.view_GroupHeader.setVisibility(View.GONE);
        return view;
     }
 
@@ -179,6 +180,9 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
 
         @InjectView(R.id.list_row_textView_amount)
         TextView textView_Amount;
+
+        @InjectView(R.id.group_header)
+        View view_GroupHeader;
 
     }
 

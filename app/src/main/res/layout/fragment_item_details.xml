@@ -169,6 +169,47 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="25dp"/>
 
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/regular_repeat"
+                android:id="@+id/repeat_checkBox"
+                android:layout_marginLeft="25dp"
+                android:checked="false" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                android:layout_marginLeft="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/every"
+                    android:id="@+id/every_textview"
+                    android:layout_marginLeft="30dp"
+                    android:textColor="@color/primary_text"
+                    android:gravity="center_vertical"/>
+
+                <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="76dp"
+                    android:id="@+id/repeatNumberPicker"
+                    android:layout_marginLeft="20dp" />
+
+                <Spinner
+                    android:layout_width="135dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/period_spinner"
+                    android:focusable="false"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical" />
+
+            </TableRow>
+
+
 
         </LinearLayout>
     </ScrollView>

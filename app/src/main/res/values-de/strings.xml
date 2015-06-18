@@ -148,8 +148,8 @@
     <!-- Alert Dialog For missing connection -->
     <string name="alert_dialog_connection_label">Netzwerk</string>
     <string name="alert_dialog_connection_message">Keine Internetverbindung vorhanden. Bitte aktiviere dein Wlan oder dein mobiles Internet.</string>
-    <string name="alert_dialog_connection_cancel">Cancel</string>
-    <string name="alert_dialog_connection_try">Try again</string>
+    <string name="alert_dialog_connection_cancel">Abbrechen</string>
+    <string name="alert_dialog_connection_try">Wiederholen</string>
 
 
 

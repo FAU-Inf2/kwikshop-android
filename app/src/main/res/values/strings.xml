@@ -170,5 +170,10 @@
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
     <string name="overflow_action_menu_recipes">Recipes</string>
 
+    <!-- Alert Dialog For missing connection -->
+    <string name="alert_dialog_connection_label">Network</string>
+    <string name="alert_dialog_connection_message">No Internet connection available. Please turn on your Wi-Fi or your mobile Internet.</string>
+    <string name="alert_dialog_connection_cancel">Cancel</string>
+    <string name="alert_dialog_connection_try">Try again</string>
 
 </resources>

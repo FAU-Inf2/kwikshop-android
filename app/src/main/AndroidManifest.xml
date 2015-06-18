@@ -120,6 +120,29 @@
 
         </activity>
 
+        <activity
+            android:name="de.fau.cs.mad.kwikshop.android.view.RecipeActivity"
+            android:label="@string/title_activity_recipe"
+            android:parentActivityName="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
+
+        </activity>
+
+        <activity
+            android:name="de.fau.cs.mad.kwikshop.android.view.RecipeItemDetailsActivity"
+            android:label="@string/title_activity_recipe_item_details"
+            android:parentActivityName="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
+
+        </activity>
+
+
 
         <activity
             android:name="de.fau.cs.mad.kwikshop.android.view.LocationActivity"

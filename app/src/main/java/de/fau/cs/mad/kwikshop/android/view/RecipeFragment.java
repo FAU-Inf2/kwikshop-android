@@ -1,11 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
-
-//import android.app.Fragment;
-
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,56 +11,46 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.ListAdapter;
-import android.support.v4.app.Fragment;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.ScrollView;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.dragdrop.OnItemMovedListener;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
-
 
 import butterknife.ButterKnife;
-import butterknife.*;
+import butterknife.InjectView;
+import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.*;
-import de.fau.cs.mad.kwikshop.android.model.*;
-import de.fau.cs.mad.kwikshop.android.model.messages.*;
+import de.fau.cs.mad.kwikshop.android.common.Item;
+import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
+import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
+import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
-import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
+import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 import de.greenrobot.event.EventBus;
 
-
-public class ShoppingListFragment
-        extends Fragment
-        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Item> {
+public class RecipeFragment  extends Fragment implements RecipeViewModel.Listener, ObservableArrayList.Listener<Item> {
 
 
-    private static final String ARG_LISTID = "list_id";
+    private static final String ARG_RECIPEID = "recipe_id";
 
 
-    private int listID = -1;
+    private int recipeID = -1;
 
-    private AutoCompletionHelper autoCompletion;
+    private static AutoCompletionHelper autoCompletion;
 
-    private ShoppingListViewModel viewModel;
+    private RecipeViewModel viewModel;
     private boolean updatingViewModel;
 
-    @InjectView(R.id.list_shoppingList)
-    DynamicListView shoppingListView;
-
-    @InjectView(R.id.list_shoppingListBought)
-    DynamicListView shoppingListViewBought;
+    @InjectView(R.id.list_recipe)
+    DynamicListView recipeListView;
 
     @InjectView(R.id.textView_quickAdd)
     MultiAutoCompleteTextView textView_QuickAdd;
@@ -74,15 +61,15 @@ public class ShoppingListFragment
     @InjectView(R.id.button_quickAdd)
     View button_QuickAdd;
 
-    @InjectView(R.id.shoppinglist_scrollview)
+    @InjectView(R.id.recipe_scrollview)
     ScrollView scrollView;
 
 
 
-    public static ShoppingListFragment newInstance(int listID) {
-        ShoppingListFragment fragment = new ShoppingListFragment();
+    public static RecipeFragment newInstance(int recipeID) {
+        RecipeFragment fragment = new RecipeFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_LISTID, listID);
+        args.putInt(ARG_RECIPEID, recipeID);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,7 +80,7 @@ public class ShoppingListFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            listID = getArguments().getInt(ARG_LISTID);
+            recipeID = getArguments().getInt(ARG_RECIPEID);
         }
 
     }
@@ -105,103 +92,53 @@ public class ShoppingListFragment
 
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
-        View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_recipe, container, false);
         ButterKnife.inject(this, rootView);
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+
         DisplayHelper displayHelper = objectGraph.get(DisplayHelper.class);
-        viewModel = objectGraph.get(ShoppingListViewModel.class);
-        autoCompletion = objectGraph.get(AutoCompletionHelper.class);
-        viewModel.initialize(this.listID);
+
+        viewModel = objectGraph.get(RecipeViewModel.class);
+        viewModel.initialize(this.recipeID);
 
 
         getActivity().setTitle(viewModel.getName());
 
         viewModel.addListener(this);
         viewModel.getItems().addListener(this);
-        viewModel.getBoughtItems().addListener(this);
 
-        ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
+        RecipeAdapter recipeAdapter = new RecipeAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);
-        shoppingListView.setAdapter(shoppingListAdapter);
+        recipeListView.setAdapter(recipeAdapter);
 
         new ListViewItemCommandBinding(ListViewItemCommandBinding.ListViewItemCommandType.Click,
-                shoppingListView,
+                recipeListView,
                 viewModel.getSelectItemCommand());
 
-        SimpleSwipeUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
-                new OnDismissCallback() {
-                    @Override
-                    public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
-                        Command<Integer> command = viewModel.getToggleIsBoughtCommand();
-                        for (int position : reverseSortedPositions) {
+        recipeListView.enableDragAndDrop();
 
-                            if (command.getCanExecute()) {
-                                Item item = viewModel.getItems().get(position);
-                                command.execute(item.getId());
-                            }
-                        }
-                    }
-                });
-
-        swipeUndoAdapter.setAbsListView(shoppingListView);
-        shoppingListView.setAdapter(swipeUndoAdapter);
-        shoppingListView.enableSimpleSwipeUndo();
-        shoppingListView.enableDragAndDrop();
-
-        shoppingListView.setOnItemLongClickListener(
+        recipeListView.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(final AdapterView<?> parent, final View view,
                                                    final int position, final long id) {
-                        //disable events on observable list during drag&drop to prevent lag
-                        //IMPORTANT: Make sure to reenable events afterwards
-                        viewModel.getItems().disableEvents();
                         scrollView.requestDisallowInterceptTouchEvent(true);
-                        shoppingListView.startDragging(position);
+                        recipeListView.startDragging(position);
                         //sets value of the Spinner to the first entry, in this case Manual
                         return true;
                     }
                 }
         );
 
-        shoppingListView.setOnItemMovedListener(new OnItemMovedListener() {
+        recipeListView.setOnItemMovedListener(new OnItemMovedListener() {
             @Override
             public void onItemMoved(int i, int i1) {
                 viewModel.itemsSwapped(i, i1);
-                //IMPORTANT: reenable events of the observable list after drag and drop has finished
-                viewModel.getItems().enableEvents();
             }
         });
 
-        justifyListViewHeightBasedOnChildren(shoppingListView);
-
-
-        shoppingListViewBought.enableSwipeToDismiss(
-                new OnDismissCallback() {
-                    @Override
-                    public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
-                        Command<Integer> command = viewModel.getToggleIsBoughtCommand();
-                        for (int position : reverseSortedPositions) {
-                            if (command.getCanExecute()) {
-                                Item item = viewModel.getBoughtItems().get(position);
-                                command.execute(item.getId());
-                            }
-                        }
-                    }
-                });
-
-
-        shoppingListViewBought.setAdapter(new ShoppingListAdapter(getActivity(), viewModel, viewModel.getBoughtItems(), displayHelper));
-        shoppingListViewBought.setOnItemMovedListener(new OnItemMovedListener() {
-            @Override
-            public void onItemMoved(int i, int i1) {
-                viewModel.boughtItemsSwapped(i, i1);
-            }
-        });
-        shoppingListViewBought.enableDragAndDrop();
-
-        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
+        justifyListViewHeightBasedOnChildren(recipeListView);
 
 
         new ButtonBinding(floatingActionButton, viewModel.getAddItemCommand(), false);
@@ -226,6 +163,10 @@ public class ShoppingListFragment
         });
         textView_QuickAdd.setTokenizer(new SpaceTokenizer());
 
+        //wire up auto-complete for product name
+        if (autoCompletion == null) {
+            autoCompletion = AutoCompletionHelper.getAutoCompletionHelper(getActivity().getBaseContext());
+        }
         refreshQuickAddAutoCompletion();
 
         disableFloatingButtonWhileSoftKeyboardIsShown();
@@ -322,7 +263,7 @@ public class ShoppingListFragment
     public void textView_ShoppingListName_OnTextChanged(CharSequence s) {
 
         synchronized (viewModel) {
-            //send updated value for shopping list name to the view model
+            //send updated value for recipe name to the view model
             updatingViewModel = true;
             viewModel.setQuickAddText(s != null ? s.toString() : "");
             updatingViewModel = false;
@@ -335,11 +276,6 @@ public class ShoppingListFragment
         if (!updatingViewModel) {
             this.textView_QuickAdd.setText(viewModel.getQuickAddText());
         }
-    }
-
-    @Override
-    public void onItemSortTypeChanged() {
-
     }
 
     @Override
@@ -363,22 +299,17 @@ public class ShoppingListFragment
             refreshQuickAddAutoCompletion();
         }
 
-        justifyListViewHeightBasedOnChildren(shoppingListView);
-        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
+        justifyListViewHeightBasedOnChildren(recipeListView);
     }
 
     @Override
     public void onItemRemoved(Item removedItem) {
-        justifyListViewHeightBasedOnChildren(shoppingListView);
-        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
+        justifyListViewHeightBasedOnChildren(recipeListView);
     }
 
     @Override
     public void onItemModified(Item modifiedItem) {
-        justifyListViewHeightBasedOnChildren(shoppingListView);
-        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
+        justifyListViewHeightBasedOnChildren(recipeListView);
     }
-
-
 
 }

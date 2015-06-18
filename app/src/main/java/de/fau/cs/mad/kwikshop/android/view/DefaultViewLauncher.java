@@ -54,7 +54,7 @@ public class DefaultViewLauncher implements ViewLauncher {
 
     @Override
     public void showRecipe(int recipeId) {
-        activity.startActivity(RecipeDetailActivity.getIntent(activity, recipeId));
+        activity.startActivity(RecipeActivity.getIntent(activity, recipeId));
     }
 
     public void showDatePicker(int year, int month, int day, int hour, int minute) {
@@ -98,6 +98,8 @@ public class DefaultViewLauncher implements ViewLauncher {
         alert.show();
     }
 
+
+
     @Override
     public void showItemDetailsView(int shoppingListId) {
         Intent intent = ItemDetailsActivity.getIntent(activity, shoppingListId);
@@ -109,4 +111,17 @@ public class DefaultViewLauncher implements ViewLauncher {
         Intent intent = ItemDetailsActivity.getIntent(activity, shoppingListId, itemId);
         activity.startActivity(intent);
     }
+
+    @Override
+    public void RecipeShowItemDetailsView(int recipeId){
+        Intent intent = RecipeItemDetailsActivity.getIntent(activity, recipeId);
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public void RecipeShowItemDetailsView(int recipeId, int itemId){
+        Intent intent = RecipeItemDetailsActivity.getIntent(activity, recipeId, itemId);
+        activity.startActivity(intent);
+    }
+
 }

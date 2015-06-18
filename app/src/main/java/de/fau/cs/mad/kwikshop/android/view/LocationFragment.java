@@ -1,12 +1,17 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import android.provider.Settings;
@@ -52,6 +57,8 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
 
+    private AlertDialog alert;
+
 
     public static LocationFragment newInstance() {
 
@@ -65,14 +72,13 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // First we need to check availability of play services
+        // check availability of play services
         if (checkPlayServices()) {
             buildGoogleApiClient();
             displayGpsStatus();
         }
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -127,6 +133,13 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
         return true;
     }
 
+    public boolean checkInternetConnection() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
     // Method to check  if GPS is enabled or disabled
     private void displayGpsStatus() {
         ContentResolver contentResolver = getActivity().getBaseContext().getContentResolver();
@@ -148,28 +161,67 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
 
     // Method to display your city name
     private void displayCityName(){
-
-        Geocoder gcd = new Geocoder(getActivity().getBaseContext(), Locale.getDefault());
+        Geocoder geocoder = new Geocoder(getActivity().getBaseContext(), Locale.getDefault());
         List<Address> addresses;
         try {
-            addresses = gcd.getFromLocation(mLastLocation.getLatitude(),  mLastLocation.getLongitude(), 1);
+            addresses = geocoder.getFromLocation(mLastLocation.getLatitude(),  mLastLocation.getLongitude(), 1);
             if (addresses.size() > 0){
-                System.out.println(addresses.get(0).getLocality());
-                String cityName = addresses.get(0).getLocality();
-                tv_city.setText(cityName);
+                String address = "";
+                int maxLines =  addresses.get(0).getMaxAddressLineIndex();
+                for(int i = 0; i <= maxLines; i++){
+                    address = address + addresses.get(0).getAddressLine(i) + " ";
+                }
+                tv_city.setText(address);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG,e.getMessage().toString());
         }
+    }
 
+    private void notificationOfNoConnection(){
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Network");
+        builder.setMessage("There is no Internet connection. You have to turn on your Wi-Fi or you mobile Internet. Do you want to repeat the location service?");
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if(checkInternetConnection()){
+                    getActivity().startActivity(new Intent(getActivity().getApplicationContext(), LocationActivity.class));
+                } else {
+                    notificationOfNoConnection();
+                }
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                getActivity().finish();
+            }
+        });
+
+        alert = builder.create();
+        alert.show();
 
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(alert != null)
+            alert.dismiss();
+
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
-      displayLocation();
-      displayCityName();
+
+      if(checkInternetConnection()){
+          displayLocation();
+          displayCityName();
+      } else {
+          notificationOfNoConnection();
+      }
     }
 
     @Override

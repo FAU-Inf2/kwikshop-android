@@ -99,6 +99,18 @@
         </activity>
 
 
+        <activity
+            android:name="de.fau.cs.mad.kwikshop.android.view.LocationActivity"
+            android:label="@string/title_activity_location"
+            android:parentActivityName="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
+
+        </activity>
+
+
     </application>
 
 </manifest>

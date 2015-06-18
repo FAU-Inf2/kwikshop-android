@@ -11,6 +11,7 @@
     <string name="title_activity_list_of_recipes">List of Recipes</string>
     <string name="title_activity_recipe_detail">Recipe Detail</string>
     <string name="title_activity_recipe">Recipe</string>
+    <string name="title_activity_recipe_item_details">Recipe Item Details</string>
     <!-- Fragment Label -->
     <string name="title_fragment_item_details">Create new item</string>
 

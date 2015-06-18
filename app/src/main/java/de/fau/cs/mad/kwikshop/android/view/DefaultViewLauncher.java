@@ -114,12 +114,14 @@ public class DefaultViewLauncher implements ViewLauncher {
 
     @Override
     public void RecipeShowItemDetailsView(int recipeId){
-        //todo when ItemDetails is added for recipes
+        Intent intent = RecipeItemDetailsActivity.getIntent(activity, recipeId);
+        activity.startActivity(intent);
     }
 
     @Override
     public void RecipeShowItemDetailsView(int recipeId, int itemId){
-        //todo when ItemDetails is added for recipes
+        Intent intent = RecipeItemDetailsActivity.getIntent(activity, recipeId, itemId);
+        activity.startActivity(intent);
     }
 
 }

@@ -178,13 +178,12 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
         }
     }
 
+    // Method to inform the user about no internet connection
     private void notificationOfNoConnection(){
-
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Network");
-        builder.setMessage("There is no Internet connection. You have to turn on your Wi-Fi or you mobile Internet. Do you want to repeat the location service?");
-        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.alert_dialog_connection_label);
+        builder.setMessage(R.string.alert_dialog_connection_message);
+        builder.setPositiveButton(R.string.alert_dialog_connection_try, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if(checkInternetConnection()){
                     getActivity().startActivity(new Intent(getActivity().getApplicationContext(), LocationActivity.class));
@@ -194,7 +193,7 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
             }
         });
 
-        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.alert_dialog_connection_cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 getActivity().finish();
             }

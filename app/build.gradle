@@ -62,7 +62,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
 
     // Google Play Services
-    compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'com.google.android.gms:play-services-location:7.5.0'
+    compile 'com.google.android.gms:play-services-maps:7.5.0'
 
 }
 

@@ -17,6 +17,7 @@ import de.fau.cs.mad.kwikshop.android.view.DefaultViewLauncher;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfRecipesViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfShoppingListsViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipesDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
@@ -24,13 +25,14 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 
 @Module(injects = {
-            ListOfShoppingListsViewModel.class,
-            ShoppingListDetailsViewModel.class,
-            DisplayHelper.class,
-            ShoppingListViewModel.class,
-            ListOfRecipesViewModel.class,
-            RecipesDetailsViewModel.class
-        },
+        ListOfShoppingListsViewModel.class,
+        ShoppingListDetailsViewModel.class,
+        DisplayHelper.class,
+        ShoppingListViewModel.class,
+        ListOfRecipesViewModel.class,
+        RecipesDetailsViewModel.class,
+        RecipeViewModel.class
+},
         library = true)
 @SuppressWarnings("unused")
 public class KwikShopViewModelModule {

@@ -54,7 +54,7 @@ public class DefaultViewLauncher implements ViewLauncher {
 
     @Override
     public void showRecipe(int recipeId) {
-        activity.startActivity(RecipeDetailActivity.getIntent(activity, recipeId));
+        activity.startActivity(RecipeActivity.getIntent(activity, recipeId));
     }
 
     public void showDatePicker(int year, int month, int day, int hour, int minute) {

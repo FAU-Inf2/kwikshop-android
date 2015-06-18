@@ -176,4 +176,6 @@
     <string name="alert_dialog_connection_cancel">Cancel</string>
     <string name="alert_dialog_connection_try">Try again</string>
 
+    <!-- Location -->
+    <string name="location">Location</string>
 </resources>

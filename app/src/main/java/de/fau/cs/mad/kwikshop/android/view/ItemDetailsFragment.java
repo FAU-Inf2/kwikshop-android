@@ -378,6 +378,12 @@ public class ItemDetailsFragment extends Fragment {
         numberPicker.setWrapSelectorWheel(false);
         numberPicker.setDisplayedValues(numbersForThePicker);
 
+        //String[] repeatNumbers = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+        repeat_numberPicker.setMinValue(1);
+        repeat_numberPicker.setMaxValue(10);
+        repeat_numberPicker.setWrapSelectorWheel(false);
+        //repeat_numberPicker.setDisplayedValues(repeatNumbers);
+
         //wire up auto-complete for product name and brand
         productname_text.setAdapter(autoCompletion.getNameAdapter(getActivity()));
         productname_text.setTokenizer(new SpaceTokenizer());

@@ -79,7 +79,7 @@
     <string name="settings_option_3_error">Leider ist beim Löschen des Verlaufs ein Fehler aufgetreten</string>
     <string name="settings_option_3_success">Verlauf erfolgreich gelöscht</string>
     <string name="sortby_manual">Manuell</string>
-    <string name="sortby_group">Kategorie</string>
+    <string name="sortby_group">Gruppe</string>
     <string name="sortby_alphabetically">Alphabetisch</string>
     <string name="remove">Löschen</string>
     <string-array name="measures">//TODO importing units from a library of units

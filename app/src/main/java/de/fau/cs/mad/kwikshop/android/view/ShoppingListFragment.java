@@ -501,8 +501,10 @@ public class ShoppingListFragment extends Fragment {
 
 
     public void addItem() {
+        UpdateLists();
 
         synchronized (lock) {
+            shoppingList.save();
             final String name = textView_QuickAdd.getText().toString();
 
             //adding empty items without a name is not supported

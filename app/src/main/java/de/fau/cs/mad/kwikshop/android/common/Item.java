@@ -3,6 +3,8 @@ package de.fau.cs.mad.kwikshop.android.common;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.Date;
+
 @DatabaseTable(tableName = "item")
 public class Item {
 
@@ -51,6 +53,15 @@ public class Item {
 
     @DatabaseField(foreign = true, columnName = FOREIGN_RECIPE_FIELD_NAME)
     private Recipe recipe;
+
+    @DatabaseField(canBeNull = true)
+    private Date lastBought;
+
+    @DatabaseField
+    private boolean regularyRepeatItem;
+
+    @DatabaseField(canBeNull = true)
+    private Date repeatPeriod;
 
     public Item() {
         // Default no-arg constructor for generating Items, required for ORMLite
@@ -144,5 +155,29 @@ public class Item {
 
     public ShoppingList getShoppingList() {
         return shoppingList;
+    }
+
+    public void setLastBought(Date lastBought) {
+        this.lastBought = lastBought;
+    }
+
+    public Date getLastBought() {
+        return lastBought;
+    }
+
+    public void setRegularyRepeatItem(boolean regularyRepeatItem) {
+        this.regularyRepeatItem = regularyRepeatItem;
+    }
+
+    public boolean isRegularyRepeatItem() {
+        return regularyRepeatItem;
+    }
+
+    public void setRepeatPeriod(Date repeatPeriod) {
+        this.repeatPeriod = repeatPeriod;
+    }
+
+    public Date getRepeatPeriod() {
+        return repeatPeriod;
     }
 }

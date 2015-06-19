@@ -534,6 +534,22 @@ public class ItemDetailsFragment extends Fragment {
             highlight_checkbox.setChecked(false);
         }
 
+        boolean repeatItem = item.isRegularyRepeatItem();
+        repeat_checkbox.setChecked(repeatItem);
+        if (repeatItem){
+            TimePeriodsEnum timePeriod = item.getPeriodType();
+            int spinnerPos = 0;
+            switch (timePeriod) {
+                case DAYS: spinnerPos = 0; break;
+                case WEEKS: spinnerPos = 1; break;
+                case MONTHS: spinnerPos = 2; break;
+            }
+            repeat_spinner.setSelection(spinnerPos);
+            int numberPickerVal = item.getSelectedRepeatTime();
+            repeat_numberPicker.setValue(numberPickerVal);
+
+        }
+
         addTextWatcher();
     }
 

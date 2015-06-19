@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import cs.fau.mad.kwikshop_android.R;
+import de.fau.cs.mad.kwikshop.android.R;
 import de.greenrobot.event.EventBus;
 
 public class ShoppingListActivity extends BaseActivity {

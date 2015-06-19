@@ -12,7 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import cs.fau.mad.kwikshop_android.R;
+import de.fau.cs.mad.kwikshop.android.R;
 
 
 public class SettingAdapter extends ArrayAdapter<String>  {

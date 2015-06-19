@@ -60,8 +60,11 @@ public class Item {
     @DatabaseField
     private boolean regularyRepeatItem;
 
-    @DatabaseField(canBeNull = true)
-    private Date repeatPeriod;
+    @DatabaseField
+    private TimePeriodsEnum periodType;
+
+    @DatabaseField
+    private int selectedRepeatTime;
 
     public Item() {
         // Default no-arg constructor for generating Items, required for ORMLite
@@ -173,11 +176,19 @@ public class Item {
         return regularyRepeatItem;
     }
 
-    public void setRepeatPeriod(Date repeatPeriod) {
-        this.repeatPeriod = repeatPeriod;
+    public void setPeriodType(TimePeriodsEnum periodType) {
+        this.periodType = periodType;
     }
 
-    public Date getRepeatPeriod() {
-        return repeatPeriod;
+    public TimePeriodsEnum getPeriodType() {
+        return periodType;
+    }
+
+    public void setSelectedRepeatTime(int selectedRepeatTime) {
+        this.selectedRepeatTime = selectedRepeatTime;
+    }
+
+    public int getSelectedRepeatTime() {
+        return selectedRepeatTime;
     }
 }

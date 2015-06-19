@@ -258,7 +258,6 @@ public class ShoppingListFragment extends Fragment {
                             ScrollView sview = (ScrollView) getView().findViewById(R.id.shoppinglist_scrollview);
                             sview.requestDisallowInterceptTouchEvent(true);
                             shoppingListView.startDragging(position);
-                            //sets value of the Spinner to the first entry, in this case Manual
                             return true;
                         }
                     }

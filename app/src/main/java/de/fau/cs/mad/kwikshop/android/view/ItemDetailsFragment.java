@@ -33,6 +33,7 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
@@ -311,6 +312,25 @@ public class ItemDetailsFragment extends Fragment {
         item.setBrand(brand_text.getText().toString());
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
+
+        item.setRegularyRepeatItem(repeat_checkbox.isChecked());
+        if (repeat_checkbox.isChecked()){
+            int repeatSpinnerPos = repeat_spinner.getSelectedItemPosition();
+            switch (repeatSpinnerPos){
+                case 0:
+                    item.setPeriodType(TimePeriodsEnum.DAYS);
+                    break;
+                case 1:
+                    item.setPeriodType(TimePeriodsEnum.WEEKS);
+                    break;
+                case 2:
+                    item.setPeriodType(TimePeriodsEnum.MONTHS);
+                    break;
+                default:
+                    break;
+            }
+            item.setSelectedRepeatTime(repeat_numberPicker.getValue());
+        }
 
         autoCompletion.offerNameAndGroup(productname_text.getText().toString(), item.getGroup());
         autoCompletion.offerBrand(brand_text.getText().toString());

@@ -29,6 +29,14 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
 import java.io.IOException;
@@ -38,9 +46,10 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 
 
-public class LocationFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class LocationFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
 
     // LogCat tag
     private static final String TAG = LocationActivity.class.getSimpleName();
@@ -57,7 +66,12 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
 
+    // coordinates of location
+    private double latitude;
+    private double longitude;
+
     private AlertDialog alert;
+    private GoogleMap map;
 
 
     public static LocationFragment newInstance() {
@@ -71,11 +85,9 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // check availability of play services
         if (checkPlayServices()) {
             buildGoogleApiClient();
-            displayGpsStatus();
         }
 
     }
@@ -83,9 +95,9 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
+
         return rootView;
 
     }
@@ -104,6 +116,67 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
         checkPlayServices();
     }
 
+    private void initiateMap(){
+        MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
+        map = mapFragment.getMap();
+        map.setMyLocationEnabled(true);
+        mapFragment.getMapAsync(this);
+
+        UiSettings settings = map.getUiSettings();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(new LatLng(latitude, longitude),13.5f, 0f, 0f))); // zoom, tilt, bearing
+        map.setTrafficEnabled(true);
+        settings.setAllGesturesEnabled(true);
+        settings.setCompassEnabled(true);
+        settings.setMyLocationButtonEnabled(true);
+        settings.setRotateGesturesEnabled(true);
+        settings.setScrollGesturesEnabled(true);
+        settings.setTiltGesturesEnabled(true);
+        settings.setZoomControlsEnabled(true);
+        settings.setZoomGesturesEnabled(true);
+        map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+
+            @Override
+            public void onMyLocationChange(Location arg0) {
+                // TODO Auto-generated method stub
+
+                map.addMarker(new MarkerOptions().position(new LatLng(arg0.getLatitude(), arg0.getLongitude())).title("It's Me!"));
+            }
+        });
+
+
+
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+   //   googleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location"));
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+        if(InternetHelper.checkInternetConnection(getActivity())){
+            setLastLocation();
+            displayLocation();
+            displayCityName();
+            initiateMap();
+        } else {
+            notificationOfNoConnection();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
+    }
+
+
     protected synchronized void buildGoogleApiClient() {
         Context context = getActivity().getApplicationContext();
         mGoogleApiClient = new GoogleApiClient.Builder(context)
@@ -113,9 +186,7 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
                 .build();
     }
 
-    /**
-     * Method to verify google play services on the device
-     */
+    // Method to check Play Service support
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()
                 .getApplicationContext());
@@ -124,8 +195,7 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
                 GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(),
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                Toast.makeText(getActivity().getApplicationContext(), "This device is not supported.",
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "This device is not supported.", Toast.LENGTH_LONG).show();
                 getActivity().finish();
             }
             return false;
@@ -133,26 +203,21 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
         return true;
     }
 
-    public boolean checkInternetConnection() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
+    //Method to check Last Location
+    private void setLastLocation(){
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(mLastLocation != null){
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(), "No last Location available.", Toast.LENGTH_LONG).show();
+        }
 
-    // Method to check  if GPS is enabled or disabled
-    private void displayGpsStatus() {
-        ContentResolver contentResolver = getActivity().getBaseContext().getContentResolver();
-        boolean gpsStatus = Settings.Secure.isLocationProviderEnabled(contentResolver,
-                LocationManager.GPS_PROVIDER);
-        Toast.makeText(getActivity().getApplicationContext(), "GPS status: " + gpsStatus,
-                Toast.LENGTH_LONG).show();
     }
 
     // Method to display the coordinates
     private void displayLocation(){
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
             tv_location.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()) +
                     " Longitude: " + String.valueOf(mLastLocation.getLongitude()));
@@ -185,7 +250,7 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
         builder.setMessage(R.string.alert_dialog_connection_message);
         builder.setPositiveButton(R.string.alert_dialog_connection_try, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                if(checkInternetConnection()){
+                if(InternetHelper.checkInternetConnection(getActivity())){
                     getActivity().startActivity(new Intent(getActivity().getApplicationContext(), LocationActivity.class));
                 } else {
                     notificationOfNoConnection();
@@ -212,25 +277,7 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
 
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
 
-      if(checkInternetConnection()){
-          displayLocation();
-          displayCityName();
-      } else {
-          notificationOfNoConnection();
-      }
-    }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
-    }
 }
 

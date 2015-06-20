@@ -1,13 +1,19 @@
 package de.fau.cs.mad.kwikshop.android.model;
 
 import android.content.Context;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
 
@@ -26,7 +32,7 @@ public class LocationFinder implements LocationListener {
 
     private boolean isGPSEnabled = false;
     private boolean isNetworkEnabled = false;
-    private String provider_info;
+
 
 
     // The minimum distance to change updates in meters
@@ -35,78 +41,82 @@ public class LocationFinder implements LocationListener {
     // The minimum time between updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
     private Location location;
-    private boolean canGetLocation;
 
     public LocationFinder(Context context){
 
         this.context = context;
-
-
         getLocation();
     }
 
     public Location getLocation() {
-        try {
-            locationManager = (LocationManager) context
-                    .getSystemService(Context.LOCATION_SERVICE);
 
-            // getting GPS status
-            isGPSEnabled = locationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-            // getting network status
-            isNetworkEnabled = locationManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                // no network provider is enabled
-            } else {
-              
-                if (isNetworkEnabled) {
-                    locationManager.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER,
-                            MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                    Log.d("Network", "Network Enabled");
-                    if (locationManager != null) {
-                        location = locationManager
-                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                        }
-                    }
+        if (isNetworkEnabled) {
+            locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+
+            if (locationManager != null) {
+                // get last position
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if (location != null) {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
                 }
-                // if GPS Enabled get lat/long using GPS Services
-                if (isGPSEnabled) {
-                    if (location == null) {
-                        locationManager.requestLocationUpdates(
-                                LocationManager.GPS_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
-                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        Log.d("GPS", "GPS Enabled");
-                        if (locationManager != null) {
-                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location != null) {
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
-                            }
-                        }
+            }
+        }
+
+        // if GPS Enabled get lat/long using GPS Services
+        if (isGPSEnabled) {
+            if (location == null) {
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+
+                if (locationManager != null) {
+                    // get last position
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location != null) {
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
                     }
                 }
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
         return location;
+
+    }
+
+
+    public String getAddressFromLocation(){
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocation(location.getLatitude(),  location.getLongitude(), 1);
+            if (addresses.size() > 0){
+                String address = "";
+                int maxLines =  addresses.get(0).getMaxAddressLineIndex();
+                for(int i = 0; i <= maxLines; i++){
+                    address = address + addresses.get(0).getAddressLine(i) + " ";
+                }
+              return address;
+            }
+        } catch (IOException e) {
+            Log.e(TAG,e.getMessage().toString());
+        }
+        return "No Address found";
     }
 
 
     @Override
     public void onLocationChanged(Location location) {
-
+        this.location = location;
     }
 
 
@@ -124,4 +134,6 @@ public class LocationFinder implements LocationListener {
     public void onProviderDisabled(String provider) {
 
     }
+
+
 }

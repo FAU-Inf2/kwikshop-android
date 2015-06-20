@@ -59,13 +59,11 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
     TextView placeName;
 
 
-    private static final String LOG_TAG = "PlacesAPIActivity";
+    private static final String LOG_TAG = "LocationFragment";
     private static final int GOOGLE_API_CLIENT_ID = 0;
     private GoogleApiClient mGoogleApiClient;
 
 
-    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
-            new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
     private static final int PLACE_PICKER_REQUEST = 1;
 
     public static LocationFragment newInstance() {
@@ -85,32 +83,25 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
         rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
 
+        LocationFinder location = new LocationFinder(getActivity());
+        double latitudeSW = location.getLocation().getLatitude();
+        double longitudeSW = location.getLocation().getLongitude();
 
+        LatLngBounds currentLocationSquare = new LatLngBounds(
+                new LatLng(latitudeSW , longitudeSW), new LatLng(latitudeSW + 1.0, longitudeSW + 1.0));
 
-        /*
-        Context context = getActivity().getApplicationContext();
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .addApi(Places.PLACE_DETECTION_API)
-                .build();
+        try {
+            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
+            intentBuilder.setLatLngBounds(currentLocationSquare);
+            Intent intent = intentBuilder.build(getActivity().getApplicationContext());
+            startActivityForResult(intent, PLACE_PICKER_REQUEST);
 
-        PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
-                .getCurrentPlace(mGoogleApiClient, null);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
 
-        result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
-            @Override
-            public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-                for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                    Log.i(LOG_TAG, String.format("Place '%s' with " +
-                                    "likelihood: %g",
-                            placeLikelihood.getPlace().getName(),
-                            placeLikelihood.getLikelihood()));
-
-                }
-
-                likelyPlaces.release();
-            }
-        });
-        */
 
 
         //initiateMap();
@@ -120,11 +111,25 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
 
 
 
+
     @Override
-    public void onStart() {
-        super.onStart();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
+    public void onActivityResult(int requestCode,
+                                    int resultCode, Intent data) {
+
+        if (requestCode == PLACE_PICKER_REQUEST
+                && resultCode == Activity.RESULT_OK) {
+
+            final Place place = PlacePicker.getPlace(data, getActivity());
+            final CharSequence name = place.getName();
+            final CharSequence address = place.getAddress();
+            String attributions = PlacePicker.getAttributions(data);
+            if (attributions == null) {
+                attributions = "";
+            }
+            placeName.setText(name);
+
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 

@@ -313,8 +313,10 @@ public class ItemDetailsFragment extends Fragment {
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
 
-        item.setRegularyRepeatItem(repeat_checkbox.isChecked());
+
         if (repeat_checkbox.isChecked()){
+            boolean newRegularRepeat = !item.isRegularyRepeatItem(); // is repeat_checkbox checked for the first time?
+            item.setRegularyRepeatItem(true);
             int repeatSpinnerPos = repeat_spinner.getSelectedItemPosition();
             switch (repeatSpinnerPos){
                 case 0:
@@ -330,7 +332,13 @@ public class ItemDetailsFragment extends Fragment {
                     break;
             }
             item.setSelectedRepeatTime(repeat_numberPicker.getValue());
+            if (newRegularRepeat) {
+                // TODO add the item somewhere where it can be found quickly on app start
+            }
+        } else {
+            item.setRegularyRepeatItem(false);
         }
+
 
         autoCompletion.offerNameAndGroup(productname_text.getText().toString(), item.getGroup());
         autoCompletion.offerBrand(brand_text.getText().toString());

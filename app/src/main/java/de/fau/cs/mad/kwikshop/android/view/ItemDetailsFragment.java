@@ -336,7 +336,11 @@ public class ItemDetailsFragment extends Fragment {
                 // TODO add the item somewhere where it can be found quickly on app start
             }
         } else {
+            boolean wasRegularRepeat = item.isRegularyRepeatItem();
             item.setRegularyRepeatItem(false);
+            if (wasRegularRepeat) {
+                // TODO mark this item as not a regular repeat item anymore
+            }
         }
 
 

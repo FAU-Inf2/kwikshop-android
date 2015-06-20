@@ -66,6 +66,9 @@ public class Item {
     @DatabaseField
     private int selectedRepeatTime;
 
+    @DatabaseField(canBeNull = true, foreign = true)
+    private ItemRepeatData itemRepeatData;
+
     public Item() {
         // Default no-arg constructor for generating Items, required for ORMLite
     }
@@ -190,5 +193,13 @@ public class Item {
 
     public int getSelectedRepeatTime() {
         return selectedRepeatTime;
+    }
+
+    public ItemRepeatData getItemRepeatData() {
+        return itemRepeatData;
+    }
+
+    public void setItemRepeatData(ItemRepeatData itemRepeatData) {
+        this.itemRepeatData = itemRepeatData;
     }
 }

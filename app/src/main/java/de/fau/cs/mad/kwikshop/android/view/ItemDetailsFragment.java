@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -32,6 +33,7 @@ import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
+import de.fau.cs.mad.kwikshop.android.common.ItemRepeatData;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
@@ -314,11 +316,11 @@ public class ItemDetailsFragment extends Fragment {
         item.setHighlight(highlight_checkbox.isChecked());
 
 
-        if (repeat_checkbox.isChecked()){
+        if (repeat_checkbox.isChecked()) {
             boolean newRegularRepeat = !item.isRegularyRepeatItem(); // is repeat_checkbox checked for the first time?
             item.setRegularyRepeatItem(true);
             int repeatSpinnerPos = repeat_spinner.getSelectedItemPosition();
-            switch (repeatSpinnerPos){
+            switch (repeatSpinnerPos) {
                 case 0:
                     item.setPeriodType(TimePeriodsEnum.DAYS);
                     break;
@@ -332,9 +334,35 @@ public class ItemDetailsFragment extends Fragment {
                     break;
             }
             item.setSelectedRepeatTime(repeat_numberPicker.getValue());
-            if (newRegularRepeat) {
-                // TODO add the item somewhere where it can be found quickly on app start
+
+            // TODO add the item somewhere where it can be found quickly on app start
+            Calendar remindDate = Calendar.getInstance();
+            switch (item.getPeriodType()) {
+                case DAYS:
+                    remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime());
+                    break;
+                case WEEKS:
+                    remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime() * 7);
+                    break;
+                case MONTHS:
+                    remindDate.add(Calendar.MONTH, item.getSelectedRepeatTime());
+                    break;
             }
+
+            ItemRepeatData repeatData;
+            if (newRegularRepeat) {
+                repeatData = new ItemRepeatData();
+                item.setItemRepeatData(repeatData);
+                repeatData.setItem(item);
+            } else {
+                repeatData = item.getItemRepeatData();
+            }
+            repeatData.setRemindAtDate(remindDate.getTime());
+
+            // TODO post on EventBus or something similar
+
+            /*DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Toast.makeText(getActivity(), "Remind at " + dateFormat.format(remindDate.getTime()), Toast.LENGTH_LONG).show();*/
         } else {
             boolean wasRegularRepeat = item.isRegularyRepeatItem();
             item.setRegularyRepeatItem(false);

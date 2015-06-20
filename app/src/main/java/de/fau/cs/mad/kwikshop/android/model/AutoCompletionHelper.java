@@ -24,7 +24,7 @@ public class AutoCompletionHelper{
     private ArrayList<String> autocompleteBrandSuggestions = null;
     private HashMap<String, Group> autoGroup = null;
 
-    private static AutoCompletionHelper instance = null; //singleton
+    private static volatile AutoCompletionHelper instance = null; //singleton
 
     private AutoCompletionHelper(Context context) {
         if (context == null) {
@@ -62,7 +62,11 @@ public class AutoCompletionHelper{
 
     public static AutoCompletionHelper getAutoCompletionHelper(Context context) {
         if (instance == null) {
-            instance = new AutoCompletionHelper(context);
+            synchronized (AutoCompletionHelper.class) { // double checked looking
+                if (instance == null) {
+                    instance = new AutoCompletionHelper(context);
+                }
+            }
         }
         return instance;
     }

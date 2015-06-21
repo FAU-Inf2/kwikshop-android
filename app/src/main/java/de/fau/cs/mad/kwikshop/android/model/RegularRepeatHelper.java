@@ -46,6 +46,14 @@ public class RegularRepeatHelper {
         return instance;
     }
 
+    /**
+     * Gets the instance of RegularRepeatHelper, if it was already created (via getRegularRepeatHelper)
+     * @return the instance of RegularRepeatHelper, or null if it doesn't exist
+     */
+    public static RegularRepeatHelper getInstance() {
+        return instance;
+    }
+
     public void offerRepeatData (ItemRepeatData data) {
         if (!(repeatArrayList.contains(data))){
             repeatArrayList.add(data);

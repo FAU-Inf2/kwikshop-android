@@ -44,6 +44,14 @@ public class SimpleStorage<T> {
         }
     }
 
+    public void deleteSingleItem(T item) {
+        try {
+            dao.delete(item);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void deleteAll() {
         try {
             List<T> items = dao.queryForAll();

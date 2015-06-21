@@ -49,7 +49,10 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
     private View rootView;
     private GoogleMap map;
     private AlertDialog alert;
-
+    private LocationFinder lastLocation;
+    double lastLat;
+    double lastLng;
+    String address;
 
     private static final String LOG_TAG = "LocationFragment";
 
@@ -123,29 +126,50 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
             notificationOfNoConnection();
         }
 
-        LocationFinder location = new LocationFinder(getActivity().getApplicationContext());
-        double lat= location.getLocation().getLatitude();
-        double lng = location.getLocation().getLongitude();
-        final String address = location.getAddressFromLastLocation();
+        lastLocation = new LocationFinder(getActivity().getApplicationContext());
+        lastLat = lastLocation.getLatitude();
+        lastLng = lastLocation.getLongitude();
+        address = lastLocation.getAddressFromLastLocation();
 
         MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         map = mapFragment.getMap();
         map.setMyLocationEnabled(true);
-        //map.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(new LatLng(latitude, longitude),13.5f, 0f, 0f))); // zoom, tilt, bearing
-        map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lat,lng) , 14.0f) );
+        map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lastLat,lastLng) , 15.0f) );
         UiSettings settings = map.getUiSettings();
         settings.setAllGesturesEnabled(true);
 
         for(Place place : places){
-            Log.i(LOG_TAG,"Places: " + place.getName());
 
+           String distance = getDistanceBetweenLastLocationAndPlace(place);
 
             IconGenerator iconFactory = new IconGenerator(getActivity().getApplicationContext());
-            addIcon(iconFactory, place.getName(), new LatLng(place.getLatitude(), place.getLongitude()));
+            addIcon(iconFactory, place.getName() + " " +  distance, new LatLng(place.getLatitude(), place.getLongitude()));
          //   map.addMarker(new MarkerOptions().position(new LatLng(place.getLatitude(), place.getLongitude())).title(place.getName()));
         }
 
+    }
+
+    private String getDistanceBetweenLastLocationAndPlace(Place place){
+
+        Location shopLocation = new Location("place");
+        shopLocation.setLatitude(place.getLatitude());
+        shopLocation.setLongitude(place.getLongitude());
+
+        Location lastLocation = new Location("current");
+        lastLocation.setLatitude(lastLat);
+        lastLocation.setLongitude(lastLng);
+
+        return  distanceConverter(lastLocation.distanceTo(shopLocation));
+
+    }
+
+
+    private String distanceConverter(double distance){
+        if(distance >= 1000){
+            return Math.round((distance / 1000) * 10.0) / 10.0 + " km";
+        } else
+            return Math.round(distance * 10.0) / 10.0 + " m";
     }
 
     private void addIcon(IconGenerator iconFactory, String text, LatLng position) {
@@ -153,7 +177,6 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
                 icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
                 position(position).
                 anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-
         map.addMarker(markerOptions);
     }
 

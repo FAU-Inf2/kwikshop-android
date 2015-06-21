@@ -37,6 +37,7 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinder;
 import se.walkercrou.places.GooglePlaces;
+import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
 
 
@@ -68,7 +69,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
         rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
 
-        initiateMap();
+
         whereIsTheNextSupermarketRequest();
 
         return rootView;
@@ -94,13 +95,15 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
             protected Void doInBackground(Void... params) {
                 String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
                 GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-                places = client.getNearbyPlaces(lat, lng, 2000, GooglePlaces.MAXIMUM_RESULTS);
+                //places = client.getPlacesByQuery("supermarkt", GooglePlaces.MAXIMUM_RESULTS, Param.name("types").value("grocery_or_supermarket"));
+                places = client.getNearbyPlaces(lat, lng, 2000, GooglePlaces.MAXIMUM_RESULTS, Param.name("types").value("grocery_or_supermarket"));
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                initiateMap(places);
                 for(Place place : places){
                     Log.i(LOG_TAG,"Places: " + place.getName());
                 }
@@ -111,7 +114,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
 
     }
 
-    private void initiateMap(){
+    private void initiateMap(List<Place> places){
 
         // no connection to internet
         if(!InternetHelper.checkInternetConnection(getActivity())){
@@ -131,10 +134,18 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
         UiSettings settings = map.getUiSettings();
         settings.setAllGesturesEnabled(true);
 
+        for(Place place : places){
+            Log.i(LOG_TAG,"Places: " + place.getName());
+            map.addMarker(new MarkerOptions().position(new LatLng(place.getLatitude(), place.getLongitude())).title(place.getName()));
+        }
+
         map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(Location arg0) {
+
                 map.addMarker(new MarkerOptions().position(new LatLng(arg0.getLatitude(), arg0.getLongitude())).title(address));
+
+
             }
         });
 

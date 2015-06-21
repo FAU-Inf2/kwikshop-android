@@ -59,7 +59,7 @@ public class RegularRepeatHelper {
         return new ArrayList<>(repeatArrayList);
     }
 
-    public void remove(ItemRepeatData data) {
+    public void delete(ItemRepeatData data) {
         if(!repeatArrayList.contains(data)){
             return;
         }

@@ -11,6 +11,8 @@
     <string name="edit_calendar_event">Erinnerung bearbeiten</string>
     <string name="error_empty_productname">Bitte Produktnamen eintragen</string>
     <string name="every">alle</string>
+    <string name="from_now_on">von jetzt an</string>
+    <string name="from_time_of_next_purchase_on">vom nächsten Kauf an</string>
     <string name="group">Gruppe</string>
     <string name="group_Other">Sonstiges</string>
     <string name="group_babyFoods">Babynahrung</string>

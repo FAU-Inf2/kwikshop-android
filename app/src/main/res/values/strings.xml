@@ -45,6 +45,8 @@
     <string name="highlight">Highlight</string>
     <string name="regular_repeat">Regularly repeat this item</string>
     <string name="every">every</string>
+    <string name="from_now_on">from now on</string>
+    <string name="from_time_of_next_purchase_on">from time of next purchase on</string>
     <string-array name="measures">//TODO importing units from a library of units
         <item>millimeters</item>
         <item>centimeters</item>

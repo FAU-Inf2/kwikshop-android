@@ -59,6 +59,12 @@ public class RegularRepeatHelper {
         return new ArrayList<>(repeatArrayList);
     }
 
-
+    public void remove(ItemRepeatData data) {
+        if(!repeatArrayList.contains(data)){
+            return;
+        }
+        repeatArrayList.remove(data);
+        repeatStorage.deleteSingleItem(data);
+    }
 
 }

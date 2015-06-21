@@ -344,20 +344,8 @@ public class ItemDetailsFragment extends Fragment {
             item.setRemindFromNowOn(repeat_fromNow_radioButton.isChecked());
 
             // TODO add the item somewhere where it can be found quickly on app start
-            Calendar remindDate = Calendar.getInstance();
-            switch (item.getPeriodType()) {
-                case DAYS:
-                    remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime());
-                    break;
-                case WEEKS:
-                    remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime() * 7);
-                    break;
-                case MONTHS:
-                    remindDate.add(Calendar.MONTH, item.getSelectedRepeatTime());
-                    break;
-            }
-
             ItemRepeatData repeatData;
+
             if (newRegularRepeat) {
                 repeatData = new ItemRepeatData();
                 item.setItemRepeatData(repeatData);
@@ -365,7 +353,26 @@ public class ItemDetailsFragment extends Fragment {
             } else {
                 repeatData = item.getItemRepeatData();
             }
-            repeatData.setRemindAtDate(remindDate.getTime());
+
+            if (repeat_fromNow_radioButton.isChecked()) {
+                Calendar remindDate = Calendar.getInstance();
+                switch (item.getPeriodType()) {
+                    case DAYS:
+                        remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime());
+                        break;
+                    case WEEKS:
+                        remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime() * 7);
+                        break;
+                    case MONTHS:
+                        remindDate.add(Calendar.MONTH, item.getSelectedRepeatTime());
+                        break;
+                }
+                repeatData.setRemindAtDate(remindDate.getTime());
+
+            } else { //repeat from next purchase on
+                item.setLastBought(null);
+                repeatData.setRemindAtDate(null);
+            }
 
             // TODO post on EventBus or something similar
 

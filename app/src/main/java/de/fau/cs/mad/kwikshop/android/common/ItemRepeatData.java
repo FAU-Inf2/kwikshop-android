@@ -14,7 +14,7 @@ public class ItemRepeatData {
     @DatabaseField(canBeNull = false, foreign = true)
     private Item item;
 
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = true)
     private Date remindAtDate;
 
 

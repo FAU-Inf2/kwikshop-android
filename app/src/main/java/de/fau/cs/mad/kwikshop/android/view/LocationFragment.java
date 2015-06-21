@@ -26,9 +26,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.ui.IconGenerator;
 
 import java.util.List;
 
@@ -122,36 +124,40 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
         }
 
         LocationFinder location = new LocationFinder(getActivity().getApplicationContext());
-        double latitude = location.getLocation().getLatitude();
-        double longitude = location.getLocation().getLongitude();
-        final String address = location.getAddressFromLocation();
+        double lat= location.getLocation().getLatitude();
+        double lng = location.getLocation().getLongitude();
+        final String address = location.getAddressFromLastLocation();
 
         MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         map = mapFragment.getMap();
         map.setMyLocationEnabled(true);
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(new LatLng(latitude, longitude),13.5f, 0f, 0f))); // zoom, tilt, bearing
+        //map.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(new LatLng(latitude, longitude),13.5f, 0f, 0f))); // zoom, tilt, bearing
+        map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lat,lng) , 14.0f) );
         UiSettings settings = map.getUiSettings();
         settings.setAllGesturesEnabled(true);
 
         for(Place place : places){
             Log.i(LOG_TAG,"Places: " + place.getName());
-            map.addMarker(new MarkerOptions().position(new LatLng(place.getLatitude(), place.getLongitude())).title(place.getName()));
+
+
+            IconGenerator iconFactory = new IconGenerator(getActivity().getApplicationContext());
+            addIcon(iconFactory, place.getName(), new LatLng(place.getLatitude(), place.getLongitude()));
+         //   map.addMarker(new MarkerOptions().position(new LatLng(place.getLatitude(), place.getLongitude())).title(place.getName()));
         }
-
-        map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location arg0) {
-
-                map.addMarker(new MarkerOptions().position(new LatLng(arg0.getLatitude(), arg0.getLongitude())).title(address));
-
-
-            }
-        });
 
     }
 
-    // Method to inform the user about no internet connection
+    private void addIcon(IconGenerator iconFactory, String text, LatLng position) {
+        MarkerOptions markerOptions = new MarkerOptions().
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
+                position(position).
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+
+        map.addMarker(markerOptions);
+    }
+
+    // Method to inform user about no internet connection
     private void notificationOfNoConnection(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.alert_dialog_connection_label);

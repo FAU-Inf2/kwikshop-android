@@ -8,14 +8,14 @@ import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.ItemRepeatData;
 
-public class RegularRepeatHelper {
+public class RegularlyRepeatHelper {
 
     private SimpleStorage<ItemRepeatData> repeatStorage;
     private ArrayList<ItemRepeatData> repeatArrayList;
 
-    private static volatile RegularRepeatHelper instance = null; //singleton
+    private static volatile RegularlyRepeatHelper instance = null; //singleton
 
-    private RegularRepeatHelper(Context context) {
+    private RegularlyRepeatHelper(Context context) {
         if (context == null) {
             throw new IllegalArgumentException("'context' must not be null");
         }
@@ -35,11 +35,11 @@ public class RegularRepeatHelper {
         repeatArrayList = new ArrayList<>(repeatStorage.getItems());
     }
 
-    public static RegularRepeatHelper getRegularRepeatHelper(Context context) {
+    public static RegularlyRepeatHelper getRegularlyRepeatHelper(Context context) {
         if (instance == null) {
-            synchronized (RegularRepeatHelper.class) { // double checked looking
+            synchronized (RegularlyRepeatHelper.class) { // double checked looking
                 if (instance == null) {
-                    instance = new RegularRepeatHelper(context);
+                    instance = new RegularlyRepeatHelper(context);
                 }
             }
         }
@@ -47,10 +47,10 @@ public class RegularRepeatHelper {
     }
 
     /**
-     * Gets the instance of RegularRepeatHelper, if it was already created (via getRegularRepeatHelper)
-     * @return the instance of RegularRepeatHelper, or null if it doesn't exist
+     * Gets the instance of RegularlyRepeatHelper, if it was already created (via getRegularlyRepeatHelper)
+     * @return the instance of RegularlyRepeatHelper, or null if it doesn't exist
      */
-    public static RegularRepeatHelper getInstance() {
+    public static RegularlyRepeatHelper getInstance() {
         return instance;
     }
 

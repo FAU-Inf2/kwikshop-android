@@ -41,7 +41,7 @@ import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
-import de.fau.cs.mad.kwikshop.android.model.RegularRepeatHelper;
+import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
@@ -381,16 +381,16 @@ public class ItemDetailsFragment extends Fragment {
                 additionalToastText += ". " + getString(R.string.reminder_nextTimeBought_msg);
             }
 
-            RegularRepeatHelper repeatHelper = RegularRepeatHelper.getRegularRepeatHelper(getActivity());
+            RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
             repeatHelper.offerRepeatData(repeatData);
 
-        } else { // repeat_fromNextPurchase_radioButton is checked
+        } else { // repeat_checkbox is not checked
             boolean wasRegularRepeat = item.isRegularlyRepeatItem();
             item.setRegularlyRepeatItem(false);
-            if (wasRegularRepeat) {
+            if (wasRegularRepeat) { //repeat_checkbox was checked before
                 ItemRepeatData oldRepeatData = item.getItemRepeatData();
                 item.setItemRepeatData(null);
-                RegularRepeatHelper repeatHelper = RegularRepeatHelper.getRegularRepeatHelper(getActivity());
+                RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
                 repeatHelper.delete(oldRepeatData);
                 additionalToastText += ". " + getString(R.string.reminder_deleted_msg);
             }

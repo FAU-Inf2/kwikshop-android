@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.annotation.Nullable;
@@ -16,20 +17,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -37,15 +28,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinder;
+import se.walkercrou.places.GooglePlaces;
+import se.walkercrou.places.Place;
 
 
 public class LocationFragment extends Fragment implements  OnMapReadyCallback,
@@ -55,16 +47,9 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
     private GoogleMap map;
     private AlertDialog alert;
 
-    @InjectView(R.id.textView)
-    TextView placeName;
-
 
     private static final String LOG_TAG = "LocationFragment";
-    private static final int GOOGLE_API_CLIENT_ID = 0;
-    private GoogleApiClient mGoogleApiClient;
 
-
-    private static final int PLACE_PICKER_REQUEST = 1;
 
     public static LocationFragment newInstance() {
         LocationFragment fragment = new LocationFragment();
@@ -83,56 +68,48 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
         rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
 
-        LocationFinder location = new LocationFinder(getActivity());
-        double latitudeSW = location.getLocation().getLatitude();
-        double longitudeSW = location.getLocation().getLongitude();
+        initiateMap();
+        whereIsTheNextSupermarketRequest();
 
-        LatLngBounds currentLocationSquare = new LatLngBounds(
-                new LatLng(latitudeSW , longitudeSW), new LatLng(latitudeSW + 1.0, longitudeSW + 1.0));
-
-        try {
-            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
-            intentBuilder.setLatLngBounds(currentLocationSquare);
-            Intent intent = intentBuilder.build(getActivity().getApplicationContext());
-            startActivityForResult(intent, PLACE_PICKER_REQUEST);
-
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
-
-
-
-        //initiateMap();
         return rootView;
 
     }
 
+    private void whereIsTheNextSupermarketRequest(){
 
+        AsyncTask<Void, Void, Void> aTask = new AsyncTask<Void, Void, Void>(){
+            double lat;
+            double lng;
+            List<Place> places;
 
-
-    @Override
-    public void onActivityResult(int requestCode,
-                                    int resultCode, Intent data) {
-
-        if (requestCode == PLACE_PICKER_REQUEST
-                && resultCode == Activity.RESULT_OK) {
-
-            final Place place = PlacePicker.getPlace(data, getActivity());
-            final CharSequence name = place.getName();
-            final CharSequence address = place.getAddress();
-            String attributions = PlacePicker.getAttributions(data);
-            if (attributions == null) {
-                attributions = "";
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                LocationFinder location = new LocationFinder(getActivity());
+                lat = location.getLatitude();
+                lng = location.getLongitude();
             }
-            placeName.setText(name);
 
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+            @Override
+            protected Void doInBackground(Void... params) {
+                String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
+                GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
+                places = client.getNearbyPlaces(lat, lng, 2000, GooglePlaces.MAXIMUM_RESULTS);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                for(Place place : places){
+                    Log.i(LOG_TAG,"Places: " + place.getName());
+                }
+            }
+        };
+
+        aTask.execute();
+
     }
-
 
     private void initiateMap(){
 

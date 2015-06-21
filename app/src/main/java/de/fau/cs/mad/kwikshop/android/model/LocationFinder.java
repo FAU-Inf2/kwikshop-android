@@ -93,6 +93,14 @@ public class LocationFinder implements LocationListener {
 
     }
 
+    public double getLatitude(){
+        return location.getLatitude();
+    }
+
+    public double getLongitude(){
+        return location.getLongitude();
+    }
+
 
     public String getAddressFromLocation(){
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());

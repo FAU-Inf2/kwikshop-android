@@ -43,6 +43,7 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinder;
 import se.walkercrou.places.GooglePlaces;
+import se.walkercrou.places.Hours;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
 
@@ -110,8 +111,8 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
             protected Void doInBackground(Void... params) {
                 String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
                 GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-                //places = client.getPlacesByQuery("supermarkt", GooglePlaces.MAXIMUM_RESULTS, Param.name("types").value("grocery_or_supermarket"));
-                places = client.getNearbyPlaces(lat, lng, 2000, GooglePlaces.MAXIMUM_RESULTS, Param.name("types").value("grocery_or_supermarket"));
+
+                places = client.getNearbyPlaces(lat, lng, 5000, GooglePlaces.MAXIMUM_RESULTS, Param.name("types").value("grocery_or_supermarket"));
                 return null;
             }
 
@@ -147,6 +148,8 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
         map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lastLat,lastLng) , 15.0f) );
         UiSettings settings = map.getUiSettings();
         settings.setAllGesturesEnabled(true);
+        settings.setMapToolbarEnabled(false);
+
 
 
         // display place on the map
@@ -165,7 +168,23 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
 
                 if(clickedPlace != null){
                     mapInfoBox.setVisibility(View.VISIBLE);
-                    mapPlaceName.setText(clickedPlace.getName());
+
+                    /*
+
+                    if(clickedPlace.getHours() != null){
+                        List<Hours.Period> hours = clickedPlace.getHours().getPeriods();
+                        for(Hours.Period period : hours){
+                            period.getOpeningDay();
+                            Log.i(LOG_TAG, "Hours: " + period.getOpeningDay().toString());
+                        }
+                    }
+
+                    */
+
+                    LatLng clickedPostion = new LatLng(clickedPlace.getLatitude(),clickedPlace.getLongitude());
+                    mapPlaceName.setText(clickedPlace.getName() + "\n"
+                            + LocationFinder.getAddress(clickedPostion, getActivity().getApplicationContext()) + "\n"
+                            + clickedPlace.getStatus()) ;
                 }
 
                 return false;

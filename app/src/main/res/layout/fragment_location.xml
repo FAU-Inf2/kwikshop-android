@@ -13,6 +13,22 @@
               android:layout_height="match_parent"
               android:name="com.google.android.gms.maps.MapFragment"/>
 
+    <RelativeLayout
+        android:id="@+id/map_infobox"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:padding="10dp"
+        android:background="@android:color/white"
+        android:layout_alignParentBottom="true" >
+
+        <TextView
+            android:id="@+id/map_place_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TESTTEXT"/>
+
+        </RelativeLayout>
+
 
 
 </RelativeLayout>

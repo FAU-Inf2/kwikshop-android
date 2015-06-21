@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -29,12 +31,14 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinder;
@@ -53,6 +57,12 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
     double lastLat;
     double lastLng;
     String address;
+
+    @InjectView(R.id.map_infobox)
+    RelativeLayout mapInfoBox;
+
+    @InjectView(R.id.map_place_name)
+    TextView mapPlaceName;
 
     private static final String LOG_TAG = "LocationFragment";
 
@@ -73,7 +83,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
         super.onCreate(savedInstanceState);
         rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
-
+        mapInfoBox.setVisibility(View.INVISIBLE);
 
         whereIsTheNextSupermarketRequest();
 
@@ -109,9 +119,6 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 initiateMap(places);
-                for(Place place : places){
-                    Log.i(LOG_TAG,"Places: " + place.getName());
-                }
             }
         };
 
@@ -119,18 +126,20 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
 
     }
 
-    private void initiateMap(List<Place> places){
+    private void initiateMap(final List<Place> places){
 
         // no connection to internet
         if(!InternetHelper.checkInternetConnection(getActivity())){
             notificationOfNoConnection();
         }
 
+        // get last/current location
         lastLocation = new LocationFinder(getActivity().getApplicationContext());
         lastLat = lastLocation.getLatitude();
         lastLng = lastLocation.getLongitude();
         address = lastLocation.getAddressFromLastLocation();
 
+        // set up map
         MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         map = mapFragment.getMap();
@@ -139,15 +148,46 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
         UiSettings settings = map.getUiSettings();
         settings.setAllGesturesEnabled(true);
 
+
+        // display place on the map
         for(Place place : places){
-
-           String distance = getDistanceBetweenLastLocationAndPlace(place);
-
+            String distance = getDistanceBetweenLastLocationAndPlace(place);
             IconGenerator iconFactory = new IconGenerator(getActivity().getApplicationContext());
             addIcon(iconFactory, place.getName() + " " +  distance, new LatLng(place.getLatitude(), place.getLongitude()));
-         //   map.addMarker(new MarkerOptions().position(new LatLng(place.getLatitude(), place.getLongitude())).title(place.getName()));
         }
 
+
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                Place clickedPlace = findCorrespondPlaceToMarker(marker, places);
+
+                if(clickedPlace != null){
+                    mapInfoBox.setVisibility(View.VISIBLE);
+                    mapPlaceName.setText(clickedPlace.getName());
+                }
+
+                return false;
+            }
+        });
+
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                mapInfoBox.setVisibility(View.INVISIBLE);
+            }
+        });
+
+    }
+
+    private Place findCorrespondPlaceToMarker(Marker marker, List<Place> places){
+        for(Place place : places){
+            if(place.getLatitude() - marker.getPosition().latitude == 0.0 && place.getLongitude() - marker.getPosition().longitude == 0.0){
+                return place;
+            }
+        }
+        return null;
     }
 
     private String getDistanceBetweenLastLocationAndPlace(Place place){

@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -114,6 +116,26 @@ public class LocationFinder implements LocationListener {
                     address = address + addresses.get(0).getAddressLine(i) + " ";
                 }
               return address;
+            }
+        } catch (IOException e) {
+            Log.e(TAG,e.getMessage().toString());
+        }
+        return "No Address found";
+    }
+
+
+    public static String getAddress(LatLng coord, Context context){
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocation(coord.latitude,  coord.longitude, 1);
+            if (addresses.size() > 0){
+                String address = "";
+                int maxLines =  addresses.get(0).getMaxAddressLineIndex();
+                for(int i = 0; i <= maxLines; i++){
+                    address = address + addresses.get(0).getAddressLine(i) + " ";
+                }
+                return address;
             }
         } catch (IOException e) {
             Log.e(TAG,e.getMessage().toString());

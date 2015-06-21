@@ -50,5 +50,20 @@ public class ItemRepeatData {
     public void setItem(Item item) {
         this.item = item;
     }
+
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (this == obj)
+            return true;
+        if (obj.getClass() != this.getClass())
+            return false;
+        ItemRepeatData itemRepeatData = (ItemRepeatData)obj;
+        return this.id == itemRepeatData.id;
+    }
+
+    public int hashCode() {
+        return this.id;
+    }
 }
 

@@ -23,6 +23,8 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -39,6 +41,7 @@ import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
+import de.fau.cs.mad.kwikshop.android.model.RegularRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
@@ -322,6 +325,7 @@ public class ItemDetailsFragment extends Fragment {
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
 
+        String additionalToastText = "";
 
         if (repeat_checkbox.isChecked()) {
             boolean newRegularRepeat = !item.isRegularlyRepeatItem(); // is repeat_checkbox checked for the first time?
@@ -343,7 +347,6 @@ public class ItemDetailsFragment extends Fragment {
             item.setSelectedRepeatTime(repeat_numberPicker.getValue());
             item.setRemindFromNowOn(repeat_fromNow_radioButton.isChecked());
 
-            // TODO add the item somewhere where it can be found quickly on app start
             ItemRepeatData repeatData;
 
             if (newRegularRepeat) {
@@ -369,20 +372,27 @@ public class ItemDetailsFragment extends Fragment {
                 }
                 repeatData.setRemindAtDate(remindDate.getTime());
 
+                DateFormat dateFormat = new SimpleDateFormat(getString(R.string.time_format));
+                additionalToastText += ". " + getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
+
             } else { //repeat from next purchase on
                 item.setLastBought(null);
                 repeatData.setRemindAtDate(null);
+                additionalToastText += ". " + getString(R.string.reminder_nextTimeBought_msg);
             }
 
-            // TODO post on EventBus or something similar
+            RegularRepeatHelper repeatHelper = RegularRepeatHelper.getRegularRepeatHelper(getActivity());
+            repeatHelper.offerRepeatData(repeatData);
 
-            /*DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Toast.makeText(getActivity(), "Remind at " + dateFormat.format(remindDate.getTime()), Toast.LENGTH_LONG).show();*/
-        } else {
+        } else { // repeat_fromNextPurchase_radioButton is checked
             boolean wasRegularRepeat = item.isRegularlyRepeatItem();
             item.setRegularlyRepeatItem(false);
             if (wasRegularRepeat) {
-                // TODO mark this item as not a regular repeat item anymore
+                ItemRepeatData oldRepeatData = item.getItemRepeatData();
+                item.setItemRepeatData(null);
+                RegularRepeatHelper repeatHelper = RegularRepeatHelper.getRegularRepeatHelper(getActivity());
+                repeatHelper.delete(oldRepeatData);
+                additionalToastText += ". " + getString(R.string.reminder_deleted_msg);
             }
         }
 
@@ -416,7 +426,7 @@ public class ItemDetailsFragment extends Fragment {
         task.execute();
 
 
-        Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved) + additionalToastText, Toast.LENGTH_LONG).show();
 
         hideKeyboard();
     }

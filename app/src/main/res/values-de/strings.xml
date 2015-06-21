@@ -148,11 +148,14 @@
     <string name="deleteRecipe_DialogText">Sind Sie sicher, dass sie dieses Rezept löschen möchten?</string>
     <string name="overflow_action_menu_recipes">Rezepte verwalten</string>
 
-    <!--Periods of time-->
+    <!--Time-->
     <string name="days">Tage</string>
     <string name="weeks">Wochen</string>
     <string name="months">Monate</string>
-
+    <string name="time_format">dd/MM/yyyy HH:mm</string>
+    <string name="reminder_set_msg">Erinnerung gesetzt für</string>
+    <string name="reminder_nextTimeBought_msg">Die Erinnerung wird gestartet, wenn der Gegenstand als gekauft markiert wird.</string>
+    <string name="reminder_deleted_msg">Erinnerung gelöscht.</string>
 
     <!-- Alert Dialog For missing connection -->
     <string name="alert_dialog_connection_label">Netzwerk</string>

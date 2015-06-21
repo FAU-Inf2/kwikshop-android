@@ -317,8 +317,8 @@ public class ItemDetailsFragment extends Fragment {
 
 
         if (repeat_checkbox.isChecked()) {
-            boolean newRegularRepeat = !item.isRegularyRepeatItem(); // is repeat_checkbox checked for the first time?
-            item.setRegularyRepeatItem(true);
+            boolean newRegularRepeat = !item.isRegularlyRepeatItem(); // is repeat_checkbox checked for the first time?
+            item.setRegularlyRepeatItem(true);
             int repeatSpinnerPos = repeat_spinner.getSelectedItemPosition();
             switch (repeatSpinnerPos) {
                 case 0:
@@ -364,8 +364,8 @@ public class ItemDetailsFragment extends Fragment {
             /*DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Toast.makeText(getActivity(), "Remind at " + dateFormat.format(remindDate.getTime()), Toast.LENGTH_LONG).show();*/
         } else {
-            boolean wasRegularRepeat = item.isRegularyRepeatItem();
-            item.setRegularyRepeatItem(false);
+            boolean wasRegularRepeat = item.isRegularlyRepeatItem();
+            item.setRegularlyRepeatItem(false);
             if (wasRegularRepeat) {
                 // TODO mark this item as not a regular repeat item anymore
             }
@@ -575,7 +575,7 @@ public class ItemDetailsFragment extends Fragment {
         }
 
         if (!isNewItem) {
-            boolean repeatItem = item.isRegularyRepeatItem();
+            boolean repeatItem = item.isRegularlyRepeatItem();
             repeat_checkbox.setChecked(repeatItem);
             if (repeatItem) {
                 TimePeriodsEnum timePeriod = item.getPeriodType();

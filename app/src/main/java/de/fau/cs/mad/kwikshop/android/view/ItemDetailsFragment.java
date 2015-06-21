@@ -19,6 +19,7 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -103,6 +104,12 @@ public class ItemDetailsFragment extends Fragment {
 
     @InjectView(R.id.repeat_numberPicker)
     NumberPicker repeat_numberPicker;
+
+    @InjectView(R.id.repeat_fromNow_radioButton)
+    RadioButton repeat_fromNow_radioButton;
+
+    @InjectView(R.id.repeat_fromNextPurchase_radioButton)
+    RadioButton repeat_fromNextPurchase_radioButton;
 
     /**
      * Creates a new instance of ItemDetailsFragment for a new shopping list item in the specified list
@@ -334,6 +341,7 @@ public class ItemDetailsFragment extends Fragment {
                     break;
             }
             item.setSelectedRepeatTime(repeat_numberPicker.getValue());
+            item.setRemindFromNowOn(repeat_fromNow_radioButton.isChecked());
 
             // TODO add the item somewhere where it can be found quickly on app start
             Calendar remindDate = Calendar.getInstance();
@@ -594,6 +602,7 @@ public class ItemDetailsFragment extends Fragment {
                 repeat_spinner.setSelection(spinnerPos);
                 int numberPickerVal = item.getSelectedRepeatTime();
                 repeat_numberPicker.setValue(numberPickerVal);
+                repeat_fromNextPurchase_radioButton.setChecked(item.isRemindFromNextPurchaseOn());
             }
         }
 

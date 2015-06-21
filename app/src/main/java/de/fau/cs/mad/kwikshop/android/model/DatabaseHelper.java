@@ -235,14 +235,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         return recipeRunTimeDao;
     }
 
-    public Dao<ItemRepeatData, Integer> getItemRepeatDaoDao() throws SQLException {
+    public Dao<ItemRepeatData, Integer> getItemRepeatDao() throws SQLException {
         if (itemRepeatDao == null) {
             itemRepeatDao = getDao(ItemRepeatData.class);
         }
         return itemRepeatDao;
     }
 
-    public RuntimeExceptionDao<ItemRepeatData, Integer> getItemRepeatDaoRuntimeDao() {
+    public RuntimeExceptionDao<ItemRepeatData, Integer> getItemRepeatDaoRuntime() {
         if (itemRepeatRunTimeDao == null) {
             itemRepeatRunTimeDao = getRuntimeExceptionDao(ItemRepeatData.class);
         }

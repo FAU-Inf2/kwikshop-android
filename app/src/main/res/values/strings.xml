@@ -108,6 +108,7 @@
     <string name="sortby_group">Group</string>
     <string name="sortby_alphabetically">Alphabetically</string>
 
+    <string name="item_divider">next</string>
 
     <!-- Other -->
     <string name="hello_world">Hello world!</string>

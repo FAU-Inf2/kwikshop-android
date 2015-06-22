@@ -1,9 +1,14 @@
 package de.fau.cs.mad.kwikshop.android.model;
 
+import android.app.Activity;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
@@ -13,9 +18,10 @@ public class ItemParser {
 
     private final SimpleStorage<Unit> unitStorage;
     private final DisplayHelper displayHelper;
+    private final Activity context;
 
     @Inject
-    public ItemParser(SimpleStorage<Unit> unitStorage, DisplayHelper displayHelper) {
+    public ItemParser(SimpleStorage<Unit> unitStorage, DisplayHelper displayHelper, Activity context) {
 
         if(unitStorage == null) {
             throw new IllegalArgumentException("'unitStorage' must not be null");
@@ -25,8 +31,13 @@ public class ItemParser {
             throw new IllegalArgumentException("'displayHelper' must not be null");
         }
 
+        if(context == null) {
+            throw new IllegalArgumentException("'context' must not be null");
+        }
+
         this.unitStorage = unitStorage;
         this.displayHelper = displayHelper;
+        this.context = context;
     }
 
 
@@ -60,6 +71,7 @@ public class ItemParser {
                 emptyStringOrWhiteSpace = true;
             } else if(c == ' '){
                 emptyStringOrWhiteSpace = true;
+                output = output + c;
             } else {
                 output = output + c;
                 lastCharWasANumber = false;
@@ -96,6 +108,31 @@ public class ItemParser {
         return item;
 
 
+    }
+
+    public ArrayList<String> parseSeveralItems(String input){
+
+        ArrayList<String> output = new ArrayList<>();
+        int positionWordBegin = 0;
+        int positionLastWhiteSpace = 0;
+
+        for(int i = 0; i < input.length(); i++){
+            if(i == input.length() -1){
+                String word = input.substring(positionLastWhiteSpace, input.length());
+                output.add(word);
+                break;
+            }
+            if(input.charAt(i) == ' ' && i != positionLastWhiteSpace){
+                String word = input.substring(positionLastWhiteSpace, i);
+                if(word.equalsIgnoreCase(context.getString(R.string.item_divider))){
+                    output.add(input.substring(positionWordBegin, positionLastWhiteSpace - 1));
+                    positionWordBegin = i + 1;
+                }
+                positionLastWhiteSpace = i + 1;
+            }
+        }
+
+        return output;
     }
 
 

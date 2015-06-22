@@ -42,6 +42,7 @@ import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinder;
+import se.walkercrou.places.Day;
 import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Hours;
 import se.walkercrou.places.Param;
@@ -112,7 +113,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
                 String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
                 GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
 
-                places = client.getNearbyPlaces(lat, lng, 5000, GooglePlaces.MAXIMUM_RESULTS, Param.name("types").value("grocery_or_supermarket"));
+                places = client.getNearbyPlaces(lat, lng, 1000, GooglePlaces.MAXIMUM_RESULTS, Param.name("types").value("grocery_or_supermarket"));
                 return null;
             }
 
@@ -166,20 +167,31 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
 
                 Place clickedPlace = findCorrespondPlaceToMarker(marker, places);
 
+
                 if(clickedPlace != null){
                     mapInfoBox.setVisibility(View.VISIBLE);
 
-                    /*
+
 
                     if(clickedPlace.getHours() != null){
                         List<Hours.Period> hours = clickedPlace.getHours().getPeriods();
                         for(Hours.Period period : hours){
+                            Day day = period.getOpeningDay();
+                            switch (day){
+                                case MONDAY:
+                                    Log.i(LOG_TAG, "Hours: " + period.getOpeningTime());
+                                    break;
+
+                            }
+
                             period.getOpeningDay();
                             Log.i(LOG_TAG, "Hours: " + period.getOpeningDay().toString());
                         }
+                    } else {
+                        Log.i(LOG_TAG, "ELSE Hours: " + clickedPlace.getHours());
                     }
 
-                    */
+
 
                     LatLng clickedPostion = new LatLng(clickedPlace.getLatitude(),clickedPlace.getLongitude());
                     mapPlaceName.setText(clickedPlace.getName() + "\n"

@@ -11,6 +11,8 @@
     <string name="edit_calendar_event">Erinnerung bearbeiten</string>
     <string name="error_empty_productname">Bitte Produktnamen eintragen</string>
     <string name="every">alle</string>
+    <string name="from_now_on">von jetzt an</string>
+    <string name="from_time_of_next_purchase_on">vom nächsten Kauf an</string>
     <string name="group">Gruppe</string>
     <string name="group_Other">Sonstiges</string>
     <string name="group_babyFoods">Babynahrung</string>
@@ -56,6 +58,7 @@
     <string name="title_activity_shopping_list_detail">Details </string>
     <string name="title_default_list">Einkaufsliste 1</string>
     <string name="title_fragment_item_details">Neuer Artikel</string>
+    <string name="title_fragment_reminder">Erinnerung</string>
     <string name="unit_bag">Säcke</string>
     <string name="unit_bottle">Flaschen</string>
     <string name="unit_box">Kisten</string>
@@ -146,11 +149,14 @@
     <string name="deleteRecipe_DialogText">Sind Sie sicher, dass sie dieses Rezept löschen möchten?</string>
     <string name="overflow_action_menu_recipes">Rezepte verwalten</string>
 
-    <!--Periods of time-->
+    <!--Time-->
     <string name="days">Tage</string>
     <string name="weeks">Wochen</string>
     <string name="months">Monate</string>
-
+    <string name="time_format">dd/MM/yyyy HH:mm</string>
+    <string name="reminder_set_msg">Erinnerung gesetzt für</string>
+    <string name="reminder_nextTimeBought_msg">Die Erinnerung wird gestartet, wenn der Gegenstand als gekauft markiert wird.</string>
+    <string name="reminder_deleted_msg">Erinnerung gelöscht.</string>
 
     <!-- Alert Dialog For missing connection -->
     <string name="alert_dialog_connection_label">Netzwerk</string>

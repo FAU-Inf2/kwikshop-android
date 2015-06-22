@@ -16,6 +16,7 @@
 
     <!-- Fragment Label -->
     <string name="title_fragment_item_details">Create new item</string>
+    <string name="title_fragment_reminder">Reminder</string>
 
 
     <!-- Calender -->
@@ -45,6 +46,8 @@
     <string name="highlight">Highlight</string>
     <string name="regular_repeat">Regularly repeat this item</string>
     <string name="every">every</string>
+    <string name="from_now_on">from now on</string>
+    <string name="from_time_of_next_purchase_on">from time of next purchase on</string>
     <string-array name="measures">//TODO importing units from a library of units
         <item>millimeters</item>
         <item>centimeters</item>
@@ -182,10 +185,14 @@
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
     <string name="overflow_action_menu_recipes">Recipes</string>
 
-    <!--Periods of time-->
+    <!--Time-->
     <string name="days">days</string>
     <string name="weeks">weeks</string>
     <string name="months">months</string>
+    <string name="time_format">MM/dd/yyyy HH:mm</string>
+    <string name="reminder_set_msg">Reminder set for</string>
+    <string name="reminder_nextTimeBought_msg">Reminder will be started when the item is marked as bought.</string>
+    <string name="reminder_deleted_msg">Reminder deleted.</string>
     
     <!-- Alert Dialog For missing connection -->
     <string name="alert_dialog_connection_label">Network</string>

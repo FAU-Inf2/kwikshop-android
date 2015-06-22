@@ -58,13 +58,19 @@ public class Item {
     private Date lastBought;
 
     @DatabaseField
-    private boolean regularyRepeatItem;
+    private boolean regularlyRepeatItem;
 
     @DatabaseField
     private TimePeriodsEnum periodType;
 
     @DatabaseField
     private int selectedRepeatTime;
+
+    @DatabaseField
+    private boolean remindFromNextPurchaseOn;
+
+    @DatabaseField(canBeNull = true)
+    private Date remindAtDate;
 
     public Item() {
         // Default no-arg constructor for generating Items, required for ORMLite
@@ -168,12 +174,12 @@ public class Item {
         return lastBought;
     }
 
-    public void setRegularyRepeatItem(boolean regularyRepeatItem) {
-        this.regularyRepeatItem = regularyRepeatItem;
+    public void setRegularlyRepeatItem(boolean regularlyRepeatItem) {
+        this.regularlyRepeatItem = regularlyRepeatItem;
     }
 
-    public boolean isRegularyRepeatItem() {
-        return regularyRepeatItem;
+    public boolean isRegularlyRepeatItem() {
+        return regularlyRepeatItem;
     }
 
     public void setPeriodType(TimePeriodsEnum periodType) {
@@ -190,5 +196,46 @@ public class Item {
 
     public int getSelectedRepeatTime() {
         return selectedRepeatTime;
+    }
+
+    public Date getRemindAtDate() {
+        return remindAtDate;
+    }
+
+    public void setRemindAtDate(Date remindAtDate) {
+        this.remindAtDate = remindAtDate;
+    }
+
+    public boolean isRemindFromNextPurchaseOn() {
+        return remindFromNextPurchaseOn;
+    }
+
+    public boolean isRemindFromNowOn() {
+        return !remindFromNextPurchaseOn;
+    }
+
+    public void setRemindFromNextPurchaseOn(boolean remindFromNextPurchaseOn) {
+        this.remindFromNextPurchaseOn = remindFromNextPurchaseOn;
+    }
+
+    public void setRemindFromNowOn(boolean remindFromNowOn) {
+        this.remindFromNextPurchaseOn = !remindFromNowOn;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+        if (this == o)
+            return true;
+        if (o.getClass() != this.getClass())
+            return false;
+        Item item = (Item) o;
+        return item.id == this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

@@ -19,10 +19,14 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,6 +40,7 @@ import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
+import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
@@ -101,6 +106,12 @@ public class ItemDetailsFragment extends Fragment {
 
     @InjectView(R.id.repeat_numberPicker)
     NumberPicker repeat_numberPicker;
+
+    @InjectView(R.id.repeat_fromNow_radioButton)
+    RadioButton repeat_fromNow_radioButton;
+
+    @InjectView(R.id.repeat_fromNextPurchase_radioButton)
+    RadioButton repeat_fromNextPurchase_radioButton;
 
     /**
      * Creates a new instance of ItemDetailsFragment for a new shopping list item in the specified list
@@ -313,10 +324,12 @@ public class ItemDetailsFragment extends Fragment {
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
 
-        item.setRegularyRepeatItem(repeat_checkbox.isChecked());
-        if (repeat_checkbox.isChecked()){
+        String additionalToastText = "";
+
+        if (repeat_checkbox.isChecked()) {
+            item.setRegularlyRepeatItem(true);
             int repeatSpinnerPos = repeat_spinner.getSelectedItemPosition();
-            switch (repeatSpinnerPos){
+            switch (repeatSpinnerPos) {
                 case 0:
                     item.setPeriodType(TimePeriodsEnum.DAYS);
                     break;
@@ -330,7 +343,46 @@ public class ItemDetailsFragment extends Fragment {
                     break;
             }
             item.setSelectedRepeatTime(repeat_numberPicker.getValue());
+            item.setRemindFromNowOn(repeat_fromNow_radioButton.isChecked());
+
+            if (repeat_fromNow_radioButton.isChecked()) {
+                Calendar remindDate = Calendar.getInstance();
+                switch (item.getPeriodType()) {
+                    case DAYS:
+                        remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime());
+                        break;
+                    case WEEKS:
+                        remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime() * 7);
+                        break;
+                    case MONTHS:
+                        remindDate.add(Calendar.MONTH, item.getSelectedRepeatTime());
+                        break;
+                }
+                item.setRemindAtDate(remindDate.getTime());
+
+                DateFormat dateFormat = new SimpleDateFormat(getString(R.string.time_format));
+                additionalToastText += ". " + getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
+
+            } else { //repeat from next purchase on
+                item.setLastBought(null);
+                item.setRemindAtDate(null);
+                additionalToastText += ". " + getString(R.string.reminder_nextTimeBought_msg);
+            }
+
+            RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
+            repeatHelper.offerRepeatData(item);
+
+        } else { // repeat_checkbox is not checked
+            boolean wasRegularRepeat = item.isRegularlyRepeatItem();
+            item.setRegularlyRepeatItem(false);
+            if (wasRegularRepeat) { //repeat_checkbox was checked before
+                item.setRemindAtDate(null);
+                RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
+                repeatHelper.delete(item);
+                additionalToastText += ". " + getString(R.string.reminder_deleted_msg);
+            }
         }
+
 
         autoCompletion.offerNameAndGroup(productname_text.getText().toString(), item.getGroup());
         autoCompletion.offerBrand(brand_text.getText().toString());
@@ -361,7 +413,7 @@ public class ItemDetailsFragment extends Fragment {
         task.execute();
 
 
-        Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved) + additionalToastText, Toast.LENGTH_LONG).show();
 
         hideKeyboard();
     }
@@ -534,20 +586,28 @@ public class ItemDetailsFragment extends Fragment {
             highlight_checkbox.setChecked(false);
         }
 
-        boolean repeatItem = item.isRegularyRepeatItem();
-        repeat_checkbox.setChecked(repeatItem);
-        if (repeatItem){
-            TimePeriodsEnum timePeriod = item.getPeriodType();
-            int spinnerPos = 0;
-            switch (timePeriod) {
-                case DAYS: spinnerPos = 0; break;
-                case WEEKS: spinnerPos = 1; break;
-                case MONTHS: spinnerPos = 2; break;
+        if (!isNewItem) {
+            boolean repeatItem = item.isRegularlyRepeatItem();
+            repeat_checkbox.setChecked(repeatItem);
+            if (repeatItem) {
+                TimePeriodsEnum timePeriod = item.getPeriodType();
+                int spinnerPos = 0;
+                switch (timePeriod) {
+                    case DAYS:
+                        spinnerPos = 0;
+                        break;
+                    case WEEKS:
+                        spinnerPos = 1;
+                        break;
+                    case MONTHS:
+                        spinnerPos = 2;
+                        break;
+                }
+                repeat_spinner.setSelection(spinnerPos);
+                int numberPickerVal = item.getSelectedRepeatTime();
+                repeat_numberPicker.setValue(numberPickerVal);
+                repeat_fromNextPurchase_radioButton.setChecked(item.isRemindFromNextPurchaseOn());
             }
-            repeat_spinner.setSelection(spinnerPos);
-            int numberPickerVal = item.getSelectedRepeatTime();
-            repeat_numberPicker.setValue(numberPickerVal);
-
         }
 
         addTextWatcher();

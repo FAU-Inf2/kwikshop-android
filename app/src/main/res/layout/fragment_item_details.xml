@@ -209,6 +209,26 @@
 
             </TableRow>
 
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="25dp">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/from_now_on"
+                    android:id="@+id/repeat_fromNow_radioButton"
+                    android:checked="true" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/from_time_of_next_purchase_on"
+                    android:id="@+id/repeat_fromNextPurchase_radioButton"
+                    android:checked="false" />
+            </RadioGroup>
+
+
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

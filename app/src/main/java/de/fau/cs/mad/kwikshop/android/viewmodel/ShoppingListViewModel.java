@@ -448,6 +448,30 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(item != null) {
 
             item.setBought(!item.isBought());
+            if (item.isBought()) {
+                if (item.isRegularlyRepeatItem() && item.isRemindFromNextPurchaseOn() && item.getLastBought() == null) {
+                    Calendar now = Calendar.getInstance();
+                    item.setLastBought(now.getTime());
+                    RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getInstance();
+
+                    Calendar remindDate = Calendar.getInstance();
+                    switch (item.getPeriodType()) {
+                        case DAYS:
+                            remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime());
+                            break;
+                        case WEEKS:
+                            remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime() * 7);
+                            break;
+                        case MONTHS:
+                            remindDate.add(Calendar.MONTH, item.getSelectedRepeatTime());
+                            break;
+                    }
+                    item.setRemindAtDate(remindDate.getTime());
+                    repeatHelper.offerRepeatData(item);
+                    // post on EventBus is not necessary because it is done by the SaveItemTask anyway
+                }
+            }
+
             new SaveItemTask(listStorage, shoppingListId).execute(item);
         }
     }

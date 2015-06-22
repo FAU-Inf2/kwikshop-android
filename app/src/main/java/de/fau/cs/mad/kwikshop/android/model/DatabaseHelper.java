@@ -28,7 +28,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
     private static final String DATABASE_NAME = "kwikshop.db";
 
-    private static final int DATABASE_VERSION = 10; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 17; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -74,7 +74,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.createTable(connectionSource, AutoCompletionData.class);
             TableUtils.createTable(connectionSource, AutoCompletionBrandData.class);
             TableUtils.createTable(connectionSource, Recipe.class);
-
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -230,7 +229,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         return recipeRunTimeDao;
     }
 
-
     @Override
     public void close() {
         super.close();
@@ -260,5 +258,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
         recipeDao = null;
         recipeRunTimeDao = null;
+
+        //itemRepeatDao = null;
+        //itemRepeatRunTimeDao = null;
     }
 }

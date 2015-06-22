@@ -48,9 +48,15 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Do nothing"
-                android:id="@+id/reminder_doNothing_radioButton"
+                android:text="Do nothing this time"
+                android:id="@+id/reminder_doNothingThisTime_radioButton"
                 android:checked="true" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete reminder"
+                android:id="@+id/reminder_deleteReminder_radioButton_radioButton"
+                android:checked="false" />
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -89,13 +95,13 @@
                 <NumberPicker
                     android:layout_width="wrap_content"
                     android:layout_height="76dp"
-                    android:id="@+id/repeat_numberPicker"
+                    android:id="@+id/reminder_numberPicker"
                     android:layout_marginLeft="20dp" />
 
                 <Spinner
                     android:layout_width="135dp"
                     android:layout_height="match_parent"
-                    android:id="@+id/repeat_spinner"
+                    android:id="@+id/reminder_period_spinner"
                     android:focusable="false"
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical" />

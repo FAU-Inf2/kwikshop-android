@@ -16,6 +16,7 @@
 
     <!-- Fragment Label -->
     <string name="title_fragment_item_details">Create new item</string>
+    <string name="title_fragment_reminder">Reminder</string>
 
 
     <!-- Calender -->

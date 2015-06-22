@@ -13,6 +13,7 @@
     <string name="title_activity_recipe_item_details">Recipe Item Details</string>
     <string name="title_activity_recipe">Recipe</string>
     <string name="title_activity_location">Location</string>
+    <string name="title_activity_reminder">Reminder</string>
 
     <!-- Fragment Label -->
     <string name="title_fragment_item_details">Create new item</string>

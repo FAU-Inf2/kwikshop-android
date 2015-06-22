@@ -144,7 +144,7 @@ public class ReminderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
+        rootView = inflater.inflate(R.layout.fragment_reminder, container, false);
         ButterKnife.inject(this, rootView);
 
         setupUI();

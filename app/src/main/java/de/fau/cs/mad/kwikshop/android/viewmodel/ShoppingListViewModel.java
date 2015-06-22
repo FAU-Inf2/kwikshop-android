@@ -476,6 +476,13 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                     item.setRemindAtDate(remindDate.getTime());
                     repeatHelper.offerRepeatData(item);
                     // post on EventBus is not necessary because it is done by the SaveItemTask anyway
+
+                    //TODO only for testing. Delete this EventBus post immediately if I've forgotten it before push
+                    /*if (!(EventBus.getDefault().isRegistered(this)))
+                        EventBus.getDefault().register(this);
+
+                    EventBus.getDefault().post(new ReminderTimeIsOverEvent(item.getId()));*/
+                    onEventBackgroundThread(new ReminderTimeIsOverEvent(item.getId()));
                 }
             }
 

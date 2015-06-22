@@ -53,6 +53,7 @@
     <string name="taptoundo">ZURÜCK<!--rückgängig machen--></string>
     <string name="title_activity_about">Über</string>
     <string name="title_activity_list_of_shopping_list">Einkaufslisten</string>
+    <string name="title_activity_reminder">Erinnerung</string>
     <string name="title_activity_settings">Einstellungen</string>
     <string name="title_activity_shopping_list">Einkaufsliste</string>
     <string name="title_activity_shopping_list_detail">Details </string>

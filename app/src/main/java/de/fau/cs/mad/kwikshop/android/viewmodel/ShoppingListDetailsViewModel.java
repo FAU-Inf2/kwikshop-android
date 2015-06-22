@@ -428,7 +428,11 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
             reminders.put(CalendarContract.Reminders.MINUTES, 0);
 
-            Uri uri2 = cr.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
+            try {
+                Uri uri2 = cr.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
+            } catch(android.database.sqlite.SQLiteException e){
+                e.printStackTrace();
+            }
 
 
         }

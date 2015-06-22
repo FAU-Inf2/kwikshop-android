@@ -25,4 +25,6 @@ public interface ViewLauncher {
     void RecipeShowItemDetailsView(int recipeId);
 
     void RecipeShowItemDetailsView(int recipeId, int itemId);
+
+    void showReminderView(int itemId);
 }

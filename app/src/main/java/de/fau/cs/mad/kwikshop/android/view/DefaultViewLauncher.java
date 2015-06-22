@@ -124,4 +124,9 @@ public class DefaultViewLauncher implements ViewLauncher {
         activity.startActivity(intent);
     }
 
+    @Override
+    public void showReminderView(int itemId) {
+        Intent intent = ReminderActivity.getIntent(activity, itemId);
+        activity.startActivity(intent);
+    }
 }

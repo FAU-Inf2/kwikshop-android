@@ -38,25 +38,32 @@ public class ItemParser {
         String thisCanBeUnitOrName = "";
         boolean lastCharWasANumber = false;
         boolean charWasReadAfterAmount = false;
+        boolean emptyStringOrWhiteSpace = true;
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             //only parses the first number found to amount
-            if (c > 47 && c < 58 && (lastCharWasANumber == true || amount == "")) {
+            if (c > 47 && c < 58 && (lastCharWasANumber == true || amount == "") && emptyStringOrWhiteSpace) {
                 amount = amount + c;
                 lastCharWasANumber = true;
             } else if (lastCharWasANumber && c == ' ') {
                 //ignore all white spaces between the amount and the next char
+                emptyStringOrWhiteSpace = true;
             } else if (lastCharWasANumber || charWasReadAfterAmount && c != ' ') {
                 //String from amount to next whitespace, this should be unit or name
                 thisCanBeUnitOrName = thisCanBeUnitOrName + c;
                 lastCharWasANumber = false;
                 charWasReadAfterAmount = true;
+                emptyStringOrWhiteSpace = false;
             } else if (charWasReadAfterAmount && c == ' ') {
                 //whitespace after possible unit
                 charWasReadAfterAmount = false;
+                emptyStringOrWhiteSpace = true;
+            } else if(c == ' '){
+                emptyStringOrWhiteSpace = true;
             } else {
                 output = output + c;
                 lastCharWasANumber = false;
+                emptyStringOrWhiteSpace = false;
             }
         }
 

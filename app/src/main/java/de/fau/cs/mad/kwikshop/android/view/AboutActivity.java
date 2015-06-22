@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.common.GooglePlayServicesUtil;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
@@ -61,6 +63,16 @@ public class AboutActivity extends BaseActivity {
             textView.setMovementMethod(LinkMovementMethod.getInstance());
             container.addView(view);
         }
+
+
+        // long Google Play Services attribution text
+        // if we use Google Play Service it has to be included
+        View view = layoutInflater.inflate(R.layout.activity_about_acknowledgements_item, null);
+        TextView textView = (TextView) view.findViewById(R.id.textView);
+        textView.setText(GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(this));
+        container.addView(view);
+
+
 
     }
 

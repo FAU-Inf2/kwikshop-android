@@ -1,0 +1,112 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/text_icons"
+    tools:context=".MainActivity$PlaceholderFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|top"
+        android:background="@color/text_icons"
+        android:focusable="false"
+        android:focusableInTouchMode="false">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="A reminder for an item was set for some date at the past. What would you like to do now?"
+            android:id="@+id/reminder_question_text"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:textColor="@color/primary_text"
+            android:gravity="center_vertical" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="25dp">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Do nothing"
+                android:id="@+id/reminder_doNothing_radioButton"
+                android:checked="true" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Item to a shopping list"
+                android:id="@+id/reminder_addToShoppingList_radioButton"
+                android:checked="false" />
+
+            <Spinner
+                android:layout_width="135dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:id="@+id/reminder_shoppingList_spinner" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remind me again later"
+                android:id="@+id/reminder_later_radioButton"
+                android:checked="false" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="in"
+                    android:id="@+id/in_textview"
+                    android:layout_marginLeft="30dp"
+                    android:textColor="@color/primary_text"
+                    android:gravity="center_vertical"/>
+
+                <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="76dp"
+                    android:id="@+id/repeat_numberPicker"
+                    android:layout_marginLeft="20dp" />
+
+                <Spinner
+                    android:layout_width="135dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/repeat_spinner"
+                    android:focusable="false"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical" />
+
+            </TableRow>
+
+        </RadioGroup>
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

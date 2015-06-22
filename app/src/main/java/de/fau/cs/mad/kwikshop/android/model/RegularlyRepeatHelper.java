@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ItemRepeatData;
 
 public class RegularlyRepeatHelper {
@@ -54,12 +55,17 @@ public class RegularlyRepeatHelper {
         return instance;
     }
 
-    public void offerRepeatData (ItemRepeatData data) {
-        if (!(repeatArrayList.contains(data))){
-            repeatArrayList.add(data);
-            repeatStorage.addItem(data);
+    public void offerRepeatData (ItemRepeatData repeatData, Item item) {
+        if (repeatData.getItem() == null)
+            repeatData.setItem(item);
+        if (!(repeatData.getItem().equals(item))) {
+            throw new IllegalArgumentException("parameter item and repeatData.getItem() have to be equal objects");
+        }
+        if (!(repeatArrayList.contains(repeatData))){
+            repeatArrayList.add(repeatData);
+            repeatStorage.addItem(repeatData);
         } else {
-            repeatStorage.updateItem(data);
+            repeatStorage.updateItem(repeatData);
         }
     }
 

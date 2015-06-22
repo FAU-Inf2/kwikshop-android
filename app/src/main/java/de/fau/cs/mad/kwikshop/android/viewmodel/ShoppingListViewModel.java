@@ -448,6 +448,31 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(item != null) {
 
             item.setBought(!item.isBought());
+            if (item.isBought()) {
+                if (item.isRegularlyRepeatItem() && item.isRemindFromNextPurchaseOn() && item.getLastBought() == null) {
+                    Calendar now = Calendar.getInstance();
+                    item.setLastBought(now.getTime());
+                    RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getInstance();
+                    ItemRepeatData repeatData = item.getItemRepeatData();
+
+                    Calendar remindDate = Calendar.getInstance();
+                    switch (item.getPeriodType()) {
+                        case DAYS:
+                            remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime());
+                            break;
+                        case WEEKS:
+                            remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime() * 7);
+                            break;
+                        case MONTHS:
+                            remindDate.add(Calendar.MONTH, item.getSelectedRepeatTime());
+                            break;
+                    }
+                    repeatData.setRemindAtDate(remindDate.getTime());
+                    repeatHelper.offerRepeatData(repeatData, item);
+                    //System.err.println("Item " + item.getName() + " is marked as bought now.");
+                }
+            }
+
             new SaveItemTask(listStorage, shoppingListId).execute(item);
         }
     }

@@ -382,7 +382,7 @@ public class ItemDetailsFragment extends Fragment {
             }
 
             RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
-            repeatHelper.offerRepeatData(repeatData);
+            repeatHelper.offerRepeatData(repeatData, item);
 
         } else { // repeat_checkbox is not checked
             boolean wasRegularRepeat = item.isRegularlyRepeatItem();

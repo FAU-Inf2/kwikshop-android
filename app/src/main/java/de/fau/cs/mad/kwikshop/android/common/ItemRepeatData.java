@@ -11,7 +11,7 @@ public class ItemRepeatData {
     @DatabaseField(generatedId = true)
     private int id;
 
-    @DatabaseField(canBeNull = false, foreign = true)
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true, columnName = "item", maxForeignAutoRefreshLevel = 2)
     private Item item;
 
     @DatabaseField(canBeNull = true)

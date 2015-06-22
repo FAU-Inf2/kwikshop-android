@@ -1,34 +1,79 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/text_icons">
 
 
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/textView"/>
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/map"
-              android:layout_below="@id/textView"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:name="com.google.android.gms.maps.MapFragment"/>
+
+
 
     <RelativeLayout
         android:id="@+id/map_infobox"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:padding="10dp"
-        android:background="@android:color/white"
+        android:layout_height="120dp"
         android:layout_alignParentBottom="true" >
+
+       <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:background="@android:color/white"
+            android:layout_alignParentBottom="true"
+            android:padding="20dp">
 
         <TextView
             android:id="@+id/map_place_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Place Name"
+            android:textSize="14dp"/>
+
+        <TextView
+            android:id="@+id/map_place_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TESTTEXT"/>
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/map_place_name"
+            android:layout_marginTop="10dp"
+            android:text="Distance"
+            android:textColor="@android:color/darker_gray"/>
 
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/map_place_open_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/map_place_name"
+            android:layout_marginTop="10dp"
+            android:text="Open Status"
+            android:textColor="@android:color/darker_gray"/>
 
+      </RelativeLayout>
+
+        <!--Floating Action button-->
+        <view
+            android:id="@+id/direction_button"
+            class="com.melnykov.fab.FloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="60dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_directions_white_36dp"
+            fab:fab_colorNormal="@color/fab_Normal"
+            fab:fab_colorPressed="@color/fab_Pressed"
+            fab:fab_colorRipple="@color/fab_Ripple" />
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

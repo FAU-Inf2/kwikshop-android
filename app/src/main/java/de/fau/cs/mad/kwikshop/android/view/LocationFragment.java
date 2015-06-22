@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -47,10 +48,10 @@ import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Hours;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
+import se.walkercrou.places.Status;
 
 
-public class LocationFragment extends Fragment implements  OnMapReadyCallback,
-        GoogleApiClient.OnConnectionFailedListener {
+public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
     private View rootView;
     private GoogleMap map;
@@ -66,6 +67,15 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
     @InjectView(R.id.map_place_name)
     TextView mapPlaceName;
 
+    @InjectView(R.id.map_place_open_status)
+    TextView mapPlaceOpenStatus;
+
+    @InjectView(R.id.map_place_distance)
+    TextView mapPlaceDistance;
+
+    @InjectView(R.id.direction_button)
+    View mapDirectionButton;
+
     private static final String LOG_TAG = "LocationFragment";
 
 
@@ -80,12 +90,14 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
-        mapInfoBox.setVisibility(View.INVISIBLE);
+
+        hideInfoBox();
 
         whereIsTheNextSupermarketRequest();
 
@@ -112,8 +124,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
             protected Void doInBackground(Void... params) {
                 String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
                 GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-
-                places = client.getNearbyPlaces(lat, lng, 1000, GooglePlaces.MAXIMUM_RESULTS, Param.name("types").value("grocery_or_supermarket"));
+                places = client.getNearbyPlaces(lat, lng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
                 return null;
             }
 
@@ -152,64 +163,74 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
         settings.setMapToolbarEnabled(false);
 
 
-
         // display place on the map
         for(Place place : places){
-            String distance = getDistanceBetweenLastLocationAndPlace(place);
             IconGenerator iconFactory = new IconGenerator(getActivity().getApplicationContext());
-            addIcon(iconFactory, place.getName() + " " +  distance, new LatLng(place.getLatitude(), place.getLongitude()));
+            addIcon(iconFactory, place.getName(), new LatLng(place.getLatitude(), place.getLongitude()));
         }
 
 
+        // display info box
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                Place clickedPlace = findCorrespondPlaceToMarker(marker, places);
-
+                final Place clickedPlace = findCorrespondPlaceToMarker(marker, places);
+                final String clickedAdress = LocationFinder.getAddress(new LatLng(clickedPlace.getLatitude(),clickedPlace.getLongitude()),
+                        getActivity().getApplicationContext());
 
                 if(clickedPlace != null){
-                    mapInfoBox.setVisibility(View.VISIBLE);
 
+                    showInfoBox();
 
+                    mapPlaceName.setText(clickedPlace.getName());
+                    mapPlaceOpenStatus.setText(convertStatus(clickedPlace.getStatus()));
+                    mapPlaceDistance.setText(getDistanceBetweenLastLocationAndPlace(clickedPlace));
+                    mapDirectionButton.setOnClickListener(new View.OnClickListener() {
 
-                    if(clickedPlace.getHours() != null){
-                        List<Hours.Period> hours = clickedPlace.getHours().getPeriods();
-                        for(Hours.Period period : hours){
-                            Day day = period.getOpeningDay();
-                            switch (day){
-                                case MONDAY:
-                                    Log.i(LOG_TAG, "Hours: " + period.getOpeningTime());
-                                    break;
+                        @Override
+                        public void onClick(View v) {
 
-                            }
-
-                            period.getOpeningDay();
-                            Log.i(LOG_TAG, "Hours: " + period.getOpeningDay().toString());
+                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                                    Uri.parse("http://maps.google.com/maps?daddr=" + clickedAdress));
+                            startActivity(intent);
                         }
-                    } else {
-                        Log.i(LOG_TAG, "ELSE Hours: " + clickedPlace.getHours());
-                    }
-
-
-
-                    LatLng clickedPostion = new LatLng(clickedPlace.getLatitude(),clickedPlace.getLongitude());
-                    mapPlaceName.setText(clickedPlace.getName() + "\n"
-                            + LocationFinder.getAddress(clickedPostion, getActivity().getApplicationContext()) + "\n"
-                            + clickedPlace.getStatus()) ;
+                    });
                 }
 
                 return false;
             }
         });
 
+        // hide info box
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                mapInfoBox.setVisibility(View.INVISIBLE);
+                 hideInfoBox();
             }
         });
 
+    }
+
+    private void showInfoBox(){
+
+        mapInfoBox.setVisibility(View.VISIBLE);
+        mapDirectionButton.bringToFront();
+        mapDirectionButton.setVisibility(View.VISIBLE);
+    }
+
+    private void hideInfoBox(){
+        mapInfoBox.setVisibility(View.INVISIBLE);
+        mapDirectionButton.setVisibility(View.INVISIBLE);
+    }
+
+    private String convertStatus(Status status){
+        if(status.toString().equals(Status.OPENED.toString())){
+            return getResources().getString(R.string.place_status_opened);
+        } else if(status.toString().equals(Status.CLOSED.toString())){
+            return getResources().getString(R.string.place_status_closed);
+        } else
+            return "";
     }
 
     private Place findCorrespondPlaceToMarker(Marker marker, List<Place> places){
@@ -222,7 +243,6 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
     }
 
     private String getDistanceBetweenLastLocationAndPlace(Place place){
-
         Location shopLocation = new Location("place");
         shopLocation.setLatitude(place.getLatitude());
         shopLocation.setLongitude(place.getLongitude());
@@ -291,15 +311,6 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback,
 
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.e(LOG_TAG, "Google Places API connection failed with error code: "
-                + connectionResult.getErrorCode());
 
-        Toast.makeText(getActivity().getApplicationContext(),
-                "Google Places API connection failed with error code:" +
-                        connectionResult.getErrorCode(),
-                Toast.LENGTH_LONG).show();
-    }
 }
 

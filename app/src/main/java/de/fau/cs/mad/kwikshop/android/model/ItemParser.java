@@ -114,7 +114,7 @@ public class ItemParser {
 
         ArrayList<String> output = new ArrayList<>();
         int positionWordBegin = 0;
-        int positionLastWhiteSpace = 0;
+        int positionAfterLastWhiteSpace = 0;
 
         for(int i = 0; i < input.length(); i++){
             if(i == input.length() -1){
@@ -122,13 +122,13 @@ public class ItemParser {
                 output.add(word);
                 break;
             }
-            if(input.charAt(i) == ' ' && i != positionLastWhiteSpace){
-                String word = input.substring(positionLastWhiteSpace, i);
+            if(input.charAt(i) == ' ' && i != positionAfterLastWhiteSpace){
+                String word = input.substring(positionAfterLastWhiteSpace, i);
                 if(word.equalsIgnoreCase(context.getString(R.string.item_divider))){
-                    output.add(input.substring(positionWordBegin, positionLastWhiteSpace - 1));
+                    output.add(input.substring(positionWordBegin, positionAfterLastWhiteSpace - 1));
                     positionWordBegin = i + 1;
                 }
-                positionLastWhiteSpace = i + 1;
+                positionAfterLastWhiteSpace = i + 1;
             }
         }
 

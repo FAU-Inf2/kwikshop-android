@@ -327,7 +327,6 @@ public class ItemDetailsFragment extends Fragment {
         String additionalToastText = "";
 
         if (repeat_checkbox.isChecked()) {
-            boolean newRegularRepeat = !item.isRegularlyRepeatItem(); // is repeat_checkbox checked for the first time?
             item.setRegularlyRepeatItem(true);
             int repeatSpinnerPos = repeat_spinner.getSelectedItemPosition();
             switch (repeatSpinnerPos) {

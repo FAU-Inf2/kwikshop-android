@@ -11,7 +11,6 @@ import de.fau.cs.mad.kwikshop.android.common.Item;
 
 public class RegularlyRepeatHelper {
 
-    //private SimpleStorage<Item> repeatStorage;
     private LinkedList<Item> repeatList;
 
     private static volatile RegularlyRepeatHelper instance = null; //singleton
@@ -22,8 +21,6 @@ public class RegularlyRepeatHelper {
         }
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         try {
-            //create local autocompletion storage
-            //repeatStorage = new SimpleStorage<>(databaseHelper.getItemRepeatDao());
             List<Item> items = databaseHelper.getItemDao().queryForAll();
             repeatList = new LinkedList<>();
             for (Item item : items) {
@@ -35,10 +32,6 @@ public class RegularlyRepeatHelper {
             e.printStackTrace();
         }
     }
-
-    /*private void initializeArrayList() {
-        repeatArrayList = new ArrayList<>(repeatStorage.getItems());
-    }*/
 
     public static RegularlyRepeatHelper getRegularlyRepeatHelper(Context context) {
         if (instance == null) {

@@ -468,8 +468,6 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                     }
                     item.setRemindAtDate(remindDate.getTime());
                     repeatHelper.offerRepeatData(item);
-                    //System.err.println("Item " + item.getName() + " is marked as bought now.");
-
                     // post on EventBus is not necessary because it is done by the SaveItemTask anyway
                 }
             }

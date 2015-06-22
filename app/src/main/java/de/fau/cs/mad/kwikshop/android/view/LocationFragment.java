@@ -135,8 +135,12 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
             }
         };
 
-        aTask.execute();
-
+        // no connection to internet
+        if(!InternetHelper.checkInternetConnection(getActivity())){
+            notificationOfNoConnection();
+        } else {
+            aTask.execute();
+        }
     }
 
     private void initiateMap(final List<Place> places){

@@ -86,6 +86,7 @@
     <string name="sortby_manual">Manuell</string>
     <string name="sortby_group">Gruppe</string>
     <string name="sortby_alphabetically">Alphabetisch</string>
+    <string name="item_divider">weiter</string>
     <string name="remove">Löschen</string>
     <string-array name="measures">//TODO importing units from a library of units
         <item>millimeters</item>

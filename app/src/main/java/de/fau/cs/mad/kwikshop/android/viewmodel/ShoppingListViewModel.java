@@ -510,26 +510,31 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
                 if(!StringHelper.isNullOrWhiteSpace(text)) {
 
-                    Item newItem = new Item();
-                    newItem.setName(text);
-                    newItem.setUnit(unitStorage.getDefaultValue());
-                    newItem = itemParser.parseAmountAndUnit(newItem);
-                    Group group = AutoCompletionHelper.getInstance().getGroup(AutoCompletionHelper.removeSpacesAtEndOfWord(text));
-                    if (group == null) {
-                        newItem.setGroup(groupStorage.getDefaultValue());
-                    } else {
-                        newItem.setGroup(group);
+                    ArrayList<String> listOfItems = itemParser.parseSeveralItems(text);
+                    for(int i = 0; i < listOfItems.size(); i++){
+                        Item newItem = new Item();
+                        newItem.setName(listOfItems.get(i));
+                        newItem.setUnit(unitStorage.getDefaultValue());
+                        newItem = itemParser.parseAmountAndUnit(newItem);
+                        Group group = AutoCompletionHelper.getInstance().getGroup(AutoCompletionHelper.removeSpacesAtEndOfWord(text));
+                        if (group == null) {
+                            newItem.setGroup(groupStorage.getDefaultValue());
+                        } else {
+                            newItem.setGroup(group);
+                        }
+
+                        ShoppingList shoppingList = listStorage.loadList(shoppingListId);
+                        shoppingList.addItem(newItem);
+
+                        listStorage.saveList(shoppingList);
+
+                        autoCompletionHelper.offerName(newItem.getName());
+
+                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
+                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+
                     }
 
-                    ShoppingList shoppingList = listStorage.loadList(shoppingListId);
-                    shoppingList.addItem(newItem);
-
-                    listStorage.saveList(shoppingList);
-
-                    autoCompletionHelper.offerName(newItem.getName());
-
-                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
                 }
                 return null;
             }

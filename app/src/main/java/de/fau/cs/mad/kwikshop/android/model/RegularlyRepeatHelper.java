@@ -4,15 +4,16 @@ import android.content.Context;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.ItemRepeatData;
+//import de.fau.cs.mad.kwikshop.android.common.ItemRepeatData;
 
 public class RegularlyRepeatHelper {
 
-    private SimpleStorage<ItemRepeatData> repeatStorage;
-    private ArrayList<ItemRepeatData> repeatArrayList;
+    //private SimpleStorage<Item> repeatStorage;
+    private LinkedList<Item> repeatList;
 
     private static volatile RegularlyRepeatHelper instance = null; //singleton
 
@@ -23,18 +24,22 @@ public class RegularlyRepeatHelper {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         try {
             //create local autocompletion storage
-            repeatStorage = new SimpleStorage<>(databaseHelper.getItemRepeatDao());
-
+            //repeatStorage = new SimpleStorage<>(databaseHelper.getItemRepeatDao());
+            List<Item> items = databaseHelper.getItemDao().queryForAll();
+            repeatList = new LinkedList<>();
+            for (Item item : items) {
+                if(item.isRegularlyRepeatItem() && item.getRemindAtDate() != null) {
+                    repeatList.add(item);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        initializeArrayList();
     }
 
-    private void initializeArrayList() {
+    /*private void initializeArrayList() {
         repeatArrayList = new ArrayList<>(repeatStorage.getItems());
-    }
+    }*/
 
     public static RegularlyRepeatHelper getRegularlyRepeatHelper(Context context) {
         if (instance == null) {
@@ -55,30 +60,21 @@ public class RegularlyRepeatHelper {
         return instance;
     }
 
-    public void offerRepeatData (ItemRepeatData repeatData, Item item) {
-        if (repeatData.getItem() == null)
-            repeatData.setItem(item);
-        if (!(repeatData.getItem().equals(item))) {
-            throw new IllegalArgumentException("parameter item and repeatData.getItem() have to be equal objects");
-        }
-        if (!(repeatArrayList.contains(repeatData))){
-            repeatArrayList.add(repeatData);
-            repeatStorage.addItem(repeatData);
-        } else {
-            repeatStorage.updateItem(repeatData);
+    public void offerRepeatData (Item item) {
+        if (!(repeatList.contains(item))){
+            repeatList.add(item);
         }
     }
 
-    public List<ItemRepeatData> getAll() {
-        return new ArrayList<>(repeatArrayList);
+    public List<Item> getAll() {
+        return new ArrayList<>(repeatList);
     }
 
-    public void delete(ItemRepeatData data) {
-        if(!repeatArrayList.contains(data)){
+    public void delete(Item data) {
+        if(!repeatList.contains(data)){
             return;
         }
-        repeatArrayList.remove(data);
-        repeatStorage.deleteSingleItem(data);
+        repeatList.remove(data);
     }
 
 }

@@ -453,7 +453,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                     Calendar now = Calendar.getInstance();
                     item.setLastBought(now.getTime());
                     RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getInstance();
-                    ItemRepeatData repeatData = item.getItemRepeatData();
+                    //ItemRepeatData repeatData = item.getItemRepeatData();
 
                     Calendar remindDate = Calendar.getInstance();
                     switch (item.getPeriodType()) {
@@ -467,9 +467,11 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                             remindDate.add(Calendar.MONTH, item.getSelectedRepeatTime());
                             break;
                     }
-                    repeatData.setRemindAtDate(remindDate.getTime());
-                    repeatHelper.offerRepeatData(repeatData, item);
+                    item.setRemindAtDate(remindDate.getTime());
+                    repeatHelper.offerRepeatData(item);
                     //System.err.println("Item " + item.getName() + " is marked as bought now.");
+
+                    // post on EventBus is not necessary because it is done by the SaveItemTask anyway
                 }
             }
 

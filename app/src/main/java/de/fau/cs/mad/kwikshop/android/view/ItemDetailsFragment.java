@@ -36,7 +36,6 @@ import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.ItemRepeatData;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
@@ -347,15 +346,15 @@ public class ItemDetailsFragment extends Fragment {
             item.setSelectedRepeatTime(repeat_numberPicker.getValue());
             item.setRemindFromNowOn(repeat_fromNow_radioButton.isChecked());
 
-            ItemRepeatData repeatData;
+            //ItemRepeatData repeatData;
 
-            if (newRegularRepeat) {
+            /*if (newRegularRepeat) {
                 repeatData = new ItemRepeatData();
                 item.setItemRepeatData(repeatData);
                 repeatData.setItem(item);
             } else {
                 repeatData = item.getItemRepeatData();
-            }
+            }*/
 
             if (repeat_fromNow_radioButton.isChecked()) {
                 Calendar remindDate = Calendar.getInstance();
@@ -370,28 +369,29 @@ public class ItemDetailsFragment extends Fragment {
                         remindDate.add(Calendar.MONTH, item.getSelectedRepeatTime());
                         break;
                 }
-                repeatData.setRemindAtDate(remindDate.getTime());
+                item.setRemindAtDate(remindDate.getTime());
 
                 DateFormat dateFormat = new SimpleDateFormat(getString(R.string.time_format));
                 additionalToastText += ". " + getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
 
             } else { //repeat from next purchase on
                 item.setLastBought(null);
-                repeatData.setRemindAtDate(null);
+                item.setRemindAtDate(null);
                 additionalToastText += ". " + getString(R.string.reminder_nextTimeBought_msg);
             }
 
             RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
-            repeatHelper.offerRepeatData(repeatData, item);
+            repeatHelper.offerRepeatData(item);
 
         } else { // repeat_checkbox is not checked
             boolean wasRegularRepeat = item.isRegularlyRepeatItem();
             item.setRegularlyRepeatItem(false);
             if (wasRegularRepeat) { //repeat_checkbox was checked before
-                ItemRepeatData oldRepeatData = item.getItemRepeatData();
-                item.setItemRepeatData(null);
+                //ItemRepeatData oldRepeatData = item.getItemRepeatData();
+                //item.setItemRepeatData(null);
+                item.setRemindAtDate(null);
                 RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
-                repeatHelper.delete(oldRepeatData);
+                repeatHelper.delete(item);
                 additionalToastText += ". " + getString(R.string.reminder_deleted_msg);
             }
         }

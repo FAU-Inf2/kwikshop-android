@@ -66,11 +66,14 @@ public class Item {
     @DatabaseField
     private int selectedRepeatTime;
 
-    @DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true, columnName = "itemRepeatData", maxForeignAutoRefreshLevel = 2)
-    private ItemRepeatData itemRepeatData;
+    /*@DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true, columnName = "itemRepeatData", maxForeignAutoRefreshLevel = 2)
+    private ItemRepeatData itemRepeatData;*/
 
     @DatabaseField
     private boolean remindFromNextPurchaseOn;
+
+    @DatabaseField(canBeNull = true)
+    private Date remindAtDate;
 
     public Item() {
         // Default no-arg constructor for generating Items, required for ORMLite
@@ -198,12 +201,12 @@ public class Item {
         return selectedRepeatTime;
     }
 
-    public ItemRepeatData getItemRepeatData() {
-        return itemRepeatData;
+    public Date getRemindAtDate() {
+        return remindAtDate;
     }
 
-    public void setItemRepeatData(ItemRepeatData itemRepeatData) {
-        this.itemRepeatData = itemRepeatData;
+    public void setRemindAtDate(Date remindAtDate) {
+        this.remindAtDate = remindAtDate;
     }
 
     public boolean isRemindFromNextPurchaseOn() {
@@ -220,5 +223,22 @@ public class Item {
 
     public void setRemindFromNowOn(boolean remindFromNowOn) {
         this.remindFromNextPurchaseOn = !remindFromNowOn;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+        if (this == o)
+            return true;
+        if (o.getClass() != this.getClass())
+            return false;
+        Item item = (Item) o;
+        return item.id == this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

@@ -19,7 +19,7 @@ import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
 import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.ItemRepeatData;
+//import de.fau.cs.mad.kwikshop.android.common.ItemRepeatData;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
@@ -29,7 +29,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
     private static final String DATABASE_NAME = "kwikshop.db";
 
-    private static final int DATABASE_VERSION = 16; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 17; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -58,8 +58,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private Dao<Recipe, Integer> recipeDao = null;
     private RuntimeExceptionDao<Recipe, Integer> recipeRunTimeDao = null;
 
-    private Dao<ItemRepeatData, Integer> itemRepeatDao = null;
-    private RuntimeExceptionDao<ItemRepeatData, Integer> itemRepeatRunTimeDao = null;
+    //private Dao<ItemRepeatData, Integer> itemRepeatDao = null;
+    //private RuntimeExceptionDao<ItemRepeatData, Integer> itemRepeatRunTimeDao = null;
 
     public DatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -78,7 +78,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.createTable(connectionSource, AutoCompletionData.class);
             TableUtils.createTable(connectionSource, AutoCompletionBrandData.class);
             TableUtils.createTable(connectionSource, Recipe.class);
-            TableUtils.createTable(connectionSource, ItemRepeatData.class);
+            //TableUtils.createTable(connectionSource, ItemRepeatData.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -99,7 +99,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.dropTable(connectionSource, AutoCompletionData.class, true);
             TableUtils.dropTable(connectionSource, AutoCompletionBrandData.class, true);
             TableUtils.dropTable(connectionSource, Recipe.class, true);
-            TableUtils.dropTable(connectionSource, ItemRepeatData.class, true);
+            //TableUtils.dropTable(connectionSource, ItemRepeatData.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(db, connectionSource);
         } catch (SQLException e) {
@@ -235,7 +235,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         return recipeRunTimeDao;
     }
 
-    public Dao<ItemRepeatData, Integer> getItemRepeatDao() throws SQLException {
+    /*public Dao<ItemRepeatData, Integer> getItemRepeatDao() throws SQLException {
         if (itemRepeatDao == null) {
             itemRepeatDao = getDao(ItemRepeatData.class);
         }
@@ -247,7 +247,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             itemRepeatRunTimeDao = getRuntimeExceptionDao(ItemRepeatData.class);
         }
         return itemRepeatRunTimeDao;
-    }
+    }*/
 
     @Override
     public void close() {
@@ -279,7 +279,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         recipeDao = null;
         recipeRunTimeDao = null;
 
-        itemRepeatDao = null;
-        itemRepeatRunTimeDao = null;
+        //itemRepeatDao = null;
+        //itemRepeatRunTimeDao = null;
     }
 }

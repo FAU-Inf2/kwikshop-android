@@ -118,7 +118,7 @@ public class ItemParser {
 
         for(int i = 0; i < input.length(); i++){
             if(i == input.length() -1){
-                String word = input.substring(positionLastWhiteSpace, input.length());
+                String word = input.substring(positionWordBegin, input.length());
                 output.add(word);
                 break;
             }

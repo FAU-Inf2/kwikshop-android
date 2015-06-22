@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
-//import de.fau.cs.mad.kwikshop.android.common.ItemRepeatData;
 
 public class RegularlyRepeatHelper {
 

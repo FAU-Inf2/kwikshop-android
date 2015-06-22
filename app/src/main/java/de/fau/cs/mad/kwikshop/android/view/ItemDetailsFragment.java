@@ -346,16 +346,6 @@ public class ItemDetailsFragment extends Fragment {
             item.setSelectedRepeatTime(repeat_numberPicker.getValue());
             item.setRemindFromNowOn(repeat_fromNow_radioButton.isChecked());
 
-            //ItemRepeatData repeatData;
-
-            /*if (newRegularRepeat) {
-                repeatData = new ItemRepeatData();
-                item.setItemRepeatData(repeatData);
-                repeatData.setItem(item);
-            } else {
-                repeatData = item.getItemRepeatData();
-            }*/
-
             if (repeat_fromNow_radioButton.isChecked()) {
                 Calendar remindDate = Calendar.getInstance();
                 switch (item.getPeriodType()) {
@@ -387,8 +377,6 @@ public class ItemDetailsFragment extends Fragment {
             boolean wasRegularRepeat = item.isRegularlyRepeatItem();
             item.setRegularlyRepeatItem(false);
             if (wasRegularRepeat) { //repeat_checkbox was checked before
-                //ItemRepeatData oldRepeatData = item.getItemRepeatData();
-                //item.setItemRepeatData(null);
                 item.setRemindAtDate(null);
                 RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
                 repeatHelper.delete(item);

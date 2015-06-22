@@ -453,7 +453,6 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                     Calendar now = Calendar.getInstance();
                     item.setLastBought(now.getTime());
                     RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getInstance();
-                    //ItemRepeatData repeatData = item.getItemRepeatData();
 
                     Calendar remindDate = Calendar.getInstance();
                     switch (item.getPeriodType()) {

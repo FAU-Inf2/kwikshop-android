@@ -66,9 +66,6 @@ public class Item {
     @DatabaseField
     private int selectedRepeatTime;
 
-    /*@DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true, columnName = "itemRepeatData", maxForeignAutoRefreshLevel = 2)
-    private ItemRepeatData itemRepeatData;*/
-
     @DatabaseField
     private boolean remindFromNextPurchaseOn;
 

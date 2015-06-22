@@ -1,191 +1,284 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.ui.IconGenerator;
 
-
-import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
+import de.fau.cs.mad.kwikshop.android.model.LocationFinder;
+import se.walkercrou.places.Day;
+import se.walkercrou.places.GooglePlaces;
+import se.walkercrou.places.Hours;
+import se.walkercrou.places.Param;
+import se.walkercrou.places.Place;
+import se.walkercrou.places.Status;
 
 
-public class LocationFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
-    // LogCat tag
-    private static final String TAG = LocationActivity.class.getSimpleName();
-    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-
-    @InjectView(R.id.tv_location)
-    TextView tv_location;
-
-    @InjectView(R.id.tv_city)
-    TextView tv_city;
+public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
     private View rootView;
-
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
-
+    private GoogleMap map;
     private AlertDialog alert;
+    private LocationFinder lastLocation;
+    double lastLat;
+    double lastLng;
+    String address;
+
+    @InjectView(R.id.map_infobox)
+    RelativeLayout mapInfoBox;
+
+    @InjectView(R.id.map_place_name)
+    TextView mapPlaceName;
+
+    @InjectView(R.id.map_place_open_status)
+    TextView mapPlaceOpenStatus;
+
+    @InjectView(R.id.map_place_distance)
+    TextView mapPlaceDistance;
+
+    @InjectView(R.id.direction_button)
+    View mapDirectionButton;
+
+    private static final String LOG_TAG = "LocationFragment";
 
 
     public static LocationFragment newInstance() {
-
         LocationFragment fragment = new LocationFragment();
         return fragment;
-
     }
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // check availability of play services
-        if (checkPlayServices()) {
-            buildGoogleApiClient();
-            displayGpsStatus();
-        }
-
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
+
+        hideInfoBox();
+
+        whereIsTheNextSupermarketRequest();
+
         return rootView;
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
+    private void whereIsTheNextSupermarketRequest(){
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        checkPlayServices();
-    }
+        AsyncTask<Void, Void, Void> aTask = new AsyncTask<Void, Void, Void>(){
+            double lat;
+            double lng;
+            List<Place> places;
 
-    protected synchronized void buildGoogleApiClient() {
-        Context context = getActivity().getApplicationContext();
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
-
-    /**
-     * Method to verify google play services on the device
-     */
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()
-                .getApplicationContext());
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(),
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Toast.makeText(getActivity().getApplicationContext(), "This device is not supported.",
-                        Toast.LENGTH_LONG).show();
-                getActivity().finish();
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                LocationFinder location = new LocationFinder(getActivity());
+                lat = location.getLatitude();
+                lng = location.getLongitude();
             }
-            return false;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
+                GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
+                places = client.getNearbyPlaces(lat, lng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                initiateMap(places);
+            }
+        };
+
+        aTask.execute();
+
+    }
+
+    private void initiateMap(final List<Place> places){
+
+        // no connection to internet
+        if(!InternetHelper.checkInternetConnection(getActivity())){
+            notificationOfNoConnection();
         }
-        return true;
-    }
 
-    public boolean checkInternetConnection() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
+        // get last/current location
+        lastLocation = new LocationFinder(getActivity().getApplicationContext());
+        lastLat = lastLocation.getLatitude();
+        lastLng = lastLocation.getLongitude();
+        address = lastLocation.getAddressFromLastLocation();
 
-    // Method to check  if GPS is enabled or disabled
-    private void displayGpsStatus() {
-        ContentResolver contentResolver = getActivity().getBaseContext().getContentResolver();
-        boolean gpsStatus = Settings.Secure.isLocationProviderEnabled(contentResolver,
-                LocationManager.GPS_PROVIDER);
-        Toast.makeText(getActivity().getApplicationContext(), "GPS status: " + gpsStatus,
-                Toast.LENGTH_LONG).show();
-    }
+        // set up map
+        MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        map = mapFragment.getMap();
+        map.setMyLocationEnabled(true);
+        map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lastLat,lastLng) , 15.0f) );
+        UiSettings settings = map.getUiSettings();
+        settings.setAllGesturesEnabled(true);
+        settings.setMapToolbarEnabled(false);
 
-    // Method to display the coordinates
-    private void displayLocation(){
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if (mLastLocation != null) {
-            tv_location.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()) +
-                    " Longitude: " + String.valueOf(mLastLocation.getLongitude()));
+
+        // display place on the map
+        for(Place place : places){
+            IconGenerator iconFactory = new IconGenerator(getActivity().getApplicationContext());
+            addIcon(iconFactory, place.getName(), new LatLng(place.getLatitude(), place.getLongitude()));
         }
-    }
 
-    // Method to display your city name
-    private void displayCityName(){
-        Geocoder geocoder = new Geocoder(getActivity().getBaseContext(), Locale.getDefault());
-        List<Address> addresses;
-        try {
-            addresses = geocoder.getFromLocation(mLastLocation.getLatitude(),  mLastLocation.getLongitude(), 1);
-            if (addresses.size() > 0){
-                String address = "";
-                int maxLines =  addresses.get(0).getMaxAddressLineIndex();
-                for(int i = 0; i <= maxLines; i++){
-                    address = address + addresses.get(0).getAddressLine(i) + " ";
+
+        // display info box
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                final Place clickedPlace = findCorrespondPlaceToMarker(marker, places);
+                final String clickedAdress = LocationFinder.getAddress(new LatLng(clickedPlace.getLatitude(),clickedPlace.getLongitude()),
+                        getActivity().getApplicationContext());
+
+                if(clickedPlace != null){
+
+                    showInfoBox();
+
+                    mapPlaceName.setText(clickedPlace.getName());
+                    mapPlaceOpenStatus.setText(convertStatus(clickedPlace.getStatus()));
+                    mapPlaceDistance.setText(getDistanceBetweenLastLocationAndPlace(clickedPlace));
+                    mapDirectionButton.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+
+                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                                    Uri.parse("http://maps.google.com/maps?daddr=" + clickedAdress));
+                            startActivity(intent);
+                        }
+                    });
                 }
-                tv_city.setText(address);
+
+                return false;
             }
-        } catch (IOException e) {
-            Log.e(TAG,e.getMessage().toString());
-        }
+        });
+
+        // hide info box
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                 hideInfoBox();
+            }
+        });
+
     }
 
-    // Method to inform the user about no internet connection
+    private void showInfoBox(){
+
+        mapInfoBox.setVisibility(View.VISIBLE);
+        mapDirectionButton.bringToFront();
+        mapDirectionButton.setVisibility(View.VISIBLE);
+    }
+
+    private void hideInfoBox(){
+        mapInfoBox.setVisibility(View.INVISIBLE);
+        mapDirectionButton.setVisibility(View.INVISIBLE);
+    }
+
+    private String convertStatus(Status status){
+        if(status.toString().equals(Status.OPENED.toString())){
+            return getResources().getString(R.string.place_status_opened);
+        } else if(status.toString().equals(Status.CLOSED.toString())){
+            return getResources().getString(R.string.place_status_closed);
+        } else
+            return "";
+    }
+
+    private Place findCorrespondPlaceToMarker(Marker marker, List<Place> places){
+        for(Place place : places){
+            if(place.getLatitude() - marker.getPosition().latitude == 0.0 && place.getLongitude() - marker.getPosition().longitude == 0.0){
+                return place;
+            }
+        }
+        return null;
+    }
+
+    private String getDistanceBetweenLastLocationAndPlace(Place place){
+        Location shopLocation = new Location("place");
+        shopLocation.setLatitude(place.getLatitude());
+        shopLocation.setLongitude(place.getLongitude());
+
+        Location lastLocation = new Location("current");
+        lastLocation.setLatitude(lastLat);
+        lastLocation.setLongitude(lastLng);
+
+        return  distanceConverter(lastLocation.distanceTo(shopLocation));
+
+    }
+
+
+    private String distanceConverter(double distance){
+        if(distance >= 1000){
+            return Math.round((distance / 1000) * 10.0) / 10.0 + " km";
+        } else
+            return Math.round(distance * 10.0) / 10.0 + " m";
+    }
+
+    private void addIcon(IconGenerator iconFactory, String text, LatLng position) {
+        MarkerOptions markerOptions = new MarkerOptions().
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
+                position(position).
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+        map.addMarker(markerOptions);
+    }
+
+    // Method to inform user about no internet connection
     private void notificationOfNoConnection(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.alert_dialog_connection_label);
         builder.setMessage(R.string.alert_dialog_connection_message);
         builder.setPositiveButton(R.string.alert_dialog_connection_try, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                if(checkInternetConnection()){
+                if(InternetHelper.checkInternetConnection(getActivity())){
                     getActivity().startActivity(new Intent(getActivity().getApplicationContext(), LocationActivity.class));
                 } else {
                     notificationOfNoConnection();
@@ -212,25 +305,12 @@ public class LocationFragment extends Fragment implements GoogleApiClient.Connec
 
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-
-      if(checkInternetConnection()){
-          displayLocation();
-          displayCityName();
-      } else {
-          notificationOfNoConnection();
-      }
-    }
 
     @Override
-    public void onConnectionSuspended(int i) {
+    public void onMapReady(GoogleMap googleMap) {
 
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
-    }
+
 }
 

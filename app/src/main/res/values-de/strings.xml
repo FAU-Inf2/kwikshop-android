@@ -58,6 +58,7 @@
     <string name="title_activity_shopping_list_detail">Details </string>
     <string name="title_default_list">Einkaufsliste 1</string>
     <string name="title_fragment_item_details">Neuer Artikel</string>
+    <string name="title_fragment_reminder">Erinnerung</string>
     <string name="unit_bag">Säcke</string>
     <string name="unit_bottle">Flaschen</string>
     <string name="unit_box">Kisten</string>

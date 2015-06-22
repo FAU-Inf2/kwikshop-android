@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <!-- Map integration -->
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -29,10 +30,10 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <!--
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="API_KEY"/> -->
+            android:value="@string/google_android_api_key"/>
 
 
         <activity

@@ -16,6 +16,7 @@
 
     <!-- Fragment Label -->
     <string name="title_fragment_item_details">Create new item</string>
+    <string name="title_fragment_reminder">Reminder</string>
 
 
     <!-- Calender -->
@@ -146,6 +147,12 @@
               &lt;br>&lt;a href="http://square.github.io/dagger/">Project Site&lt;/a></item>
         <item>&lt;b>Butter Knife&lt;/b>, licensed under the Apache License, Version 2.0
               &lt;br>&lt;a href="http://jakewharton.github.io/butterknife/">Project Site&lt;/a></item>
+        <item>&lt;b>Google Maps Utils&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a href="http://googlemaps.github.io/android-maps-utils/">Project Site&lt;/a></item>
+        <item>&lt;b>HttpClient for Android&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a href="https://hc.apache.org/httpcomponents-client-4.3.x/android-port.html">Project Site&lt;/a></item>
+        <item>&lt;b>Java client for Google Places API &lt;/b>, licensed under the MIT License
+              &lt;br>&lt;a href="https://github.com/windy1/google-places-api-java#quickstart">Project Site&lt;/a></item>
     </string-array>
 
 
@@ -200,4 +207,9 @@
     <string name="settings_option_4_createGroups">Create groups</string>
     <string name="settings_option_3_desc2">Create units for amount in items</string>
     <string name="settings_option_4_desc">Create groups for items</string>
+
+    <!-- Place -->
+    <string name="place_status_opened">opened</string>
+    <string name="place_status_closed">closed</string>
+
 </resources>

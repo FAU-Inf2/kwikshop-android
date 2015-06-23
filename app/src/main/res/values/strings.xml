@@ -13,6 +13,7 @@
     <string name="title_activity_recipe_item_details">Recipe Item Details</string>
     <string name="title_activity_recipe">Recipe</string>
     <string name="title_activity_location">Location</string>
+    <string name="title_activity_reminder">Reminder</string>
 
     <!-- Fragment Label -->
     <string name="title_fragment_item_details">Create new item</string>
@@ -187,14 +188,22 @@
     <string name="overflow_action_menu_recipes">Manage recipes</string>
     <string name="overflow_action_menu_add_recipes">Add recipes to the list</string>
 
+    <!--Example Recipes -->
+    <string name="recipe_name_chili_con_carne">Chili con carne</string>
+    <string name="recipe_onion">Onion</string>
+    <string name="recipe_mince">Mince</string>
+    <string name="recipe_kidney_beans">Kidney beans</string>
+    <string name="recipe_corn">Corn</string>
+    <string name="recipe_potatoes">Potatoes</string>
+    <string name="recipe_tomatoes">Tomatoes</string>
+
     <!--Time-->
     <string name="days">days</string>
     <string name="weeks">weeks</string>
     <string name="months">months</string>
     <string name="time_format">MM/dd/yyyy HH:mm</string>
-    <string name="reminder_set_msg">Reminder set for</string>
-    <string name="reminder_nextTimeBought_msg">Reminder will be started when the item is marked as bought.</string>
-    <string name="reminder_deleted_msg">Reminder deleted.</string>
+    <string name="now">now</string>
+
     
     <!-- Alert Dialog For missing connection -->
     <string name="alert_dialog_connection_label">Network</string>
@@ -212,10 +221,24 @@
     <!-- Place -->
     <string name="place_status_opened">opened</string>
     <string name="place_status_closed">closed</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="action_settings">Settings</string>
+    
+    <!--Reminder-->
+    <string name="reminder_question_beginning">"A reminder for the item "</string>
+    <string name="reminder_question_second">" was set for "</string>
+    <string name="reminder_question_third">". "</string>
+    <string name="reminder_question_end">What would you like to do now?</string>
+    <string name="reminder_set_msg">Reminder set for</string>
+    <string name="reminder_nextTimeBought_msg">Reminder will be started when the item is marked as bought.</string>
+    <string name="reminder_deleted_msg">Reminder deleted.</string>
+    <string name="reminder_doNothing">Do nothing this time</string>
+    <string name="reminder_delete">Delete this reminder</string>
+    <string name="reminder_addItemToShoppingList">Add this Item to a shopping list</string>
+    <string name="reminder_remindLater">Remind me again</string>
+    <string name="reminder_in">in</string>
 
     <!-- Login -->
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="action_settings">Settings</string>
     <string name="login_skip">Skip login</string>
     <string name="signed_in_fmt">Signed in as: %s</string>
     <string name="signing_in">Signing in…</string>
@@ -228,5 +251,6 @@
     <string name="retry">Retry</string>
     <string name="login_skip_message">Are you sure you want to skip logging in? You can login later from the application menu.</string>
     <string name="overflow_action_menu_openloginactivity">Account / Login</string>
+
 
 </resources>

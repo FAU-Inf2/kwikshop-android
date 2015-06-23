@@ -24,7 +24,7 @@ public class RegularlyRepeatHelper {
             List<Item> items = databaseHelper.getItemDao().queryForAll();
             repeatList = new LinkedList<>();
             for (Item item : items) {
-                if(item.isRegularlyRepeatItem() && item.getRemindAtDate() != null) {
+                if(item.isRegularlyRepeatItem()/* && item.getRemindAtDate() != null*/) {
                     repeatList.add(item);
                 }
             }
@@ -60,6 +60,14 @@ public class RegularlyRepeatHelper {
 
     public List<Item> getAll() {
         return new ArrayList<>(repeatList);
+    }
+
+    public Item getItemForId(int id) {
+        for (Item item : repeatList) {
+            if (item.getId() == id)
+                return item;
+        }
+        return null;
     }
 
     public void delete(Item data) {

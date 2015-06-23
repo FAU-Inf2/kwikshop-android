@@ -98,7 +98,7 @@ public class RecipeStorage {
         DeleteBuilder db;
         try {
             db = ListStorageFragment.getDatabaseHelper().getItemDao().deleteBuilder();
-            db.where().eq(Item.FOREIGN_SHOPPINGLIST_FIELD_NAME, listid); // Delete all items that belong to this list
+            db.where().eq(Item.FOREIGN_RECIPE_FIELD_NAME, listid); // Delete all items that belong to this list
             ListStorageFragment.getDatabaseHelper().getItemDao().delete(db.prepare());
         } catch (SQLException e) {
             e.printStackTrace();

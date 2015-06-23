@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.widget.Toast;
 
 import java.sql.SQLException;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
+import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 
@@ -28,6 +31,7 @@ public class ListStorageFragment extends Fragment {
     private static LocalListStorage m_LocalListStorage;
     private static SimpleStorage<Group> m_GroupStorage;
     private static SimpleStorage<Unit> m_UnitStorage;
+    private static SimpleStorage<CalendarEventDate> m_CalendarEventStorage;
     private static ListStorageFragment m_ListStorageFragment;
     private static DatabaseHelper m_DatabaseHelper;
     private static RecipeStorage m_RecipeStorage;
@@ -55,6 +59,11 @@ public class ListStorageFragment extends Fragment {
     public static SimpleStorage<Unit> getUnitStorage() {
         return m_UnitStorage;
     }
+
+    public static SimpleStorage<CalendarEventDate> getCalendarEventStorage() {
+        return m_CalendarEventStorage;
+    }
+
 
     public static LocalListStorage getLocalListStorage() {
         return m_LocalListStorage;
@@ -106,6 +115,8 @@ public class ListStorageFragment extends Fragment {
 
             m_UnitStorage = new UnitStorage(m_DatabaseHelper.getUnitDao());
             createUnitsInDatabase(activity, m_UnitStorage);
+
+            m_CalendarEventStorage = new SimpleStorage<>(m_DatabaseHelper.getCalendarDao());
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -166,6 +177,64 @@ public class ListStorageFragment extends Fragment {
 
 
             list.save();
+        }
+
+        if(m_RecipeStorage.getAllRecipes().size() == 0){
+
+
+            //I couldn't find a better way
+            //see defaultDataProvider for order
+            Unit gram = m_UnitStorage.getItems().get(6);
+
+            Group meat = m_GroupStorage.getItems().get(11);
+            Group vegetable = m_GroupStorage.getItems().get(10);
+
+            int id = m_RecipeStorage.createRecipe();
+            Recipe recipe1 = m_RecipeStorage.loadRecipe(id);
+            recipe1.setName(context.getString(R.string.recipe_name_chili_con_carne));
+
+            //4 persons
+            Item item1 = new Item();
+            item1.setName(context.getString(R.string.recipe_mince));
+            item1.setAmount(600);
+            item1.setUnit(gram);
+            item1.setGroup(meat);
+            recipe1.addItem(item1);
+
+            Item item4 = new Item();
+            item4.setName(context.getString(R.string.recipe_tomatoes));
+            item4.setAmount(500);
+            item4.setUnit(gram);
+            item4.setGroup(vegetable);
+            recipe1.addItem(item4);
+
+            Item item2 = new Item();
+            item2.setName(context.getString(R.string.recipe_kidney_beans));
+            item2.setAmount(200);
+            item2.setUnit(gram);
+            item2.setGroup(vegetable);
+            recipe1.addItem(item2);
+
+            Item item5 = new Item();
+            item5.setName(context.getString(R.string.recipe_corn));
+            item5.setAmount(120);
+            item5.setUnit(gram);
+            item5.setGroup(vegetable);
+            recipe1.addItem(item5);
+
+            Item item3 = new Item();
+            item3.setName(context.getString(R.string.recipe_potatoes));
+            item3.setAmount(4);
+            item3.setGroup(vegetable);
+            recipe1.addItem(item3);
+
+            Item item6 = new Item();
+            item6.setName(context.getString(R.string.recipe_onion));
+            item6.setAmount(2);
+            item6.setGroup(vegetable);
+            recipe1.addItem(item6);
+
+            recipe1.save();
         }
 
     }

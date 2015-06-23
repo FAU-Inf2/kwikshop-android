@@ -159,6 +159,7 @@
         <activity
             android:name="de.fau.cs.mad.kwikshop.android.view.ReminderActivity"
             android:label="@string/title_activity_reminder"
+            android:windowSoftInputMode="stateHidden"
             android:parentActivityName="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data

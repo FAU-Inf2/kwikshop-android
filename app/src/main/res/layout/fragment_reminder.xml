@@ -26,7 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="A reminder for an item was set for some date at the past. What would you like to do now?"
             android:id="@+id/reminder_question_text"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"

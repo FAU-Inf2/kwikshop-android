@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,11 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.j256.ormlite.dao.Dao;
+
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +25,10 @@ import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.LocalListStorage;
+import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 
 public class ReminderFragment extends Fragment {
@@ -190,7 +198,42 @@ public class ReminderFragment extends Fragment {
 
     private void setupUI() {
 
-        item = ListStorageFragment.getLocalListStorage().loadList(listId).getItem(itemId);
+        //item = ListStorageFragment.getLocalListStorage().loadList(listId).getItem(itemId);
+
+        /*DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+
+        SystemClock.sleep(1000);
+
+        try {
+            Dao<Item, Integer> itemDao = dbHelper.getItemDao();
+            item = itemDao.queryForId(listId);
+            if(item == null)
+                throw new RuntimeException("ASDF " + itemId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if(item == null)
+            throw new RuntimeException("ASDFASDF");*/
+
+        RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
+
+        item = repeatHelper.getItemForId(itemId);
+
+        question_text.append(getString(R.string.reminder_question_beginning));
+        question_text.append("\"" + item.getName() + "\"");
+        question_text.append(getString(R.string.reminder_question_second));
+
+        DateFormat dateFormat = new SimpleDateFormat(getString(R.string.time_format));
+        String date;
+        if (item.getRemindAtDate() != null)
+            date = dateFormat.format(item.getRemindAtDate().getTime());
+        else
+            date = getString(R.string.now);
+
+        question_text.append(date);
+        question_text.append(getString(R.string.reminder_question_third));
+        question_text.append(getString(R.string.reminder_question_end));
 
         period_numberPicker.setMinValue(1);
         period_numberPicker.setMaxValue(10);

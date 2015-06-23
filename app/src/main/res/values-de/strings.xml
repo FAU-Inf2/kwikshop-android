@@ -156,9 +156,7 @@
     <string name="weeks">Wochen</string>
     <string name="months">Monate</string>
     <string name="time_format">dd/MM/yyyy HH:mm</string>
-    <string name="reminder_set_msg">Erinnerung gesetzt für</string>
-    <string name="reminder_nextTimeBought_msg">Die Erinnerung wird gestartet, wenn der Gegenstand als gekauft markiert wird.</string>
-    <string name="reminder_deleted_msg">Erinnerung gelöscht.</string>
+    <string name="now">jetzt</string>
 
     <!-- Alert Dialog For missing connection -->
     <string name="alert_dialog_connection_label">Netzwerk</string>
@@ -168,5 +166,14 @@
 
     <!-- Location -->
     <string name="location">Standort</string>
+
+    <!--Reminder-->
+    <string name="reminder_question_beginning">"Eine Erinnerung für den Gegenstand "</string>
+    <string name="reminder_question_second">" wurde für "</string>
+    <string name="reminder_question_third">" gesetzt. "</string>
+    <string name="reminder_question_end">Was möchten Sie nun machen?</string>
+    <string name="reminder_set_msg">Erinnerung gesetzt für</string>
+    <string name="reminder_nextTimeBought_msg">Die Erinnerung wird gestartet, wenn der Gegenstand als gekauft markiert wird.</string>
+    <string name="reminder_deleted_msg">Erinnerung gelöscht.</string>
 
 </resources>

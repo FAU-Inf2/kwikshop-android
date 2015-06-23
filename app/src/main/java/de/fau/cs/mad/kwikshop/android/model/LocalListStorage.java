@@ -46,6 +46,10 @@ public class LocalListStorage extends ListStorage {
         try {
             loadedList = ListStorageFragment.getDatabaseHelper().getShoppingListDao().queryForId(listID);
 
+            if(loadedList.getCalendarEventDate() != null) {
+                ListStorageFragment.getDatabaseHelper().getCalendarDao().refresh(loadedList.getCalendarEventDate());
+            }
+
             for (Item i : loadedList.getItems()) {
 
                 if (i.getUnit() != null) {

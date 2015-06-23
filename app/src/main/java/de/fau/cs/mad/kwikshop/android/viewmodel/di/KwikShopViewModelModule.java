@@ -5,6 +5,7 @@ import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
+import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
@@ -85,6 +86,11 @@ public class KwikShopViewModelModule {
     @Provides
     public SimpleStorage<Group> provideGroupStorage() {
         return ListStorageFragment.getGroupStorage();
+    }
+
+    @Provides
+    public SimpleStorage<CalendarEventDate> provideCalendarEventStorage() {
+        return ListStorageFragment.getCalendarEventStorage();
     }
 
     @Provides

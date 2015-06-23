@@ -28,7 +28,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
     private static final String DATABASE_NAME = "kwikshop.db";
 
-    private static final int DATABASE_VERSION = 17; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 18; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;

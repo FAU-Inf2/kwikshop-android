@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import java.sql.SQLException;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
@@ -28,6 +29,7 @@ public class ListStorageFragment extends Fragment {
     private static LocalListStorage m_LocalListStorage;
     private static SimpleStorage<Group> m_GroupStorage;
     private static SimpleStorage<Unit> m_UnitStorage;
+    private static SimpleStorage<CalendarEventDate> m_CalendarEventStorage;
     private static ListStorageFragment m_ListStorageFragment;
     private static DatabaseHelper m_DatabaseHelper;
     private static RecipeStorage m_RecipeStorage;
@@ -55,6 +57,11 @@ public class ListStorageFragment extends Fragment {
     public static SimpleStorage<Unit> getUnitStorage() {
         return m_UnitStorage;
     }
+
+    public static SimpleStorage<CalendarEventDate> getCalendarEventStorage() {
+        return m_CalendarEventStorage;
+    }
+
 
     public static LocalListStorage getLocalListStorage() {
         return m_LocalListStorage;
@@ -106,6 +113,8 @@ public class ListStorageFragment extends Fragment {
 
             m_UnitStorage = new UnitStorage(m_DatabaseHelper.getUnitDao());
             createUnitsInDatabase(activity, m_UnitStorage);
+
+            m_CalendarEventStorage = new SimpleStorage<>(m_DatabaseHelper.getCalendarDao());
 
         } catch (SQLException e) {
             e.printStackTrace();

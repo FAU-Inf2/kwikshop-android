@@ -24,7 +24,7 @@ public class RegularlyRepeatHelper {
             List<Item> items = databaseHelper.getItemDao().queryForAll();
             repeatList = new LinkedList<>();
             for (Item item : items) {
-                if(item.isRegularlyRepeatItem() && item.getRemindAtDate() != null) {
+                if(item.isRegularlyRepeatItem()/* && item.getRemindAtDate() != null*/) {
                     repeatList.add(item);
                 }
             }

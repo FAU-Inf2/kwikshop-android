@@ -56,32 +56,32 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Do nothing this time"
+                android:text="@string/reminder_doNothing"
                 android:id="@+id/reminder_doNothingThisTime_radioButton"
                 android:checked="true" />
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delete reminder"
+                android:text="@string/reminder_delete"
                 android:id="@+id/reminder_deleteReminder_radioButton_radioButton"
                 android:checked="false" />
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Item to a shopping list"
+                android:text="@string/reminder_addItemToShoppingList"
                 android:id="@+id/reminder_addToShoppingList_radioButton"
                 android:checked="false" />
 
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="25dp"
                 android:id="@+id/reminder_shoppingList_spinner" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Remind me again later"
+                android:text="@string/reminder_remindLater"
                 android:id="@+id/reminder_later_radioButton"
                 android:checked="false" />
 
@@ -94,7 +94,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="in"
+                    android:text="@string/reminder_in"
                     android:id="@+id/in_textview"
                     android:layout_marginLeft="30dp"
                     android:textColor="@color/primary_text"

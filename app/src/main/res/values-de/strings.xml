@@ -175,5 +175,10 @@
     <string name="reminder_set_msg">Erinnerung gesetzt für</string>
     <string name="reminder_nextTimeBought_msg">Die Erinnerung wird gestartet, wenn der Gegenstand als gekauft markiert wird.</string>
     <string name="reminder_deleted_msg">Erinnerung gelöscht.</string>
+    <string name="reminder_doNothing">Diesmal nichts tun</string>
+    <string name="reminder_delete">Diese Erinnerung löschen</string>
+    <string name="reminder_addItemToShoppingList">Den Gegenstand einer Einkaufsliste hinzufügen</string>
+    <string name="reminder_remindLater">Erneut erinnern</string>
+    <string name="reminder_in">in</string>
 
 </resources>

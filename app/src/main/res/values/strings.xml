@@ -220,6 +220,11 @@
     <string name="reminder_set_msg">Reminder set for</string>
     <string name="reminder_nextTimeBought_msg">Reminder will be started when the item is marked as bought.</string>
     <string name="reminder_deleted_msg">Reminder deleted.</string>
+    <string name="reminder_doNothing">Do nothing this time</string>
+    <string name="reminder_delete">Delete this reminder</string>
+    <string name="reminder_addItemToShoppingList">Add this Item to a shopping list</string>
+    <string name="reminder_remindLater">Remind me again</string>
+    <string name="reminder_in">in</string>
 
 
 </resources>

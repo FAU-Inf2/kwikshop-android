@@ -34,7 +34,7 @@ public class AddRecipeToShoppingListFragment extends FragmentWithViewModel imple
         Bundle args = new Bundle();
         args.putInt("shoppingListId", shoppingListId);
         fragment.setArguments(args);
-        return new AddRecipeToShoppingListFragment();
+        return fragment;
     }
 
     @Override
@@ -56,6 +56,8 @@ public class AddRecipeToShoppingListFragment extends FragmentWithViewModel imple
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
         viewModel = objectGraph.get(AddRecipeToShoppingListViewModel.class);
         viewModel.setListener(this);
+        viewModel.initialize(shoppingListId);
+
 
         View rootView = inflater.inflate(R.layout.fragment_add_recipe_to_shoppinglist, container, false);
         ButterKnife.inject(this, rootView);

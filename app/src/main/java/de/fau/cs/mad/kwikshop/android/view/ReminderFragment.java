@@ -114,10 +114,6 @@ public class ReminderFragment extends Fragment {
         } else {
             throw new IllegalArgumentException("Missing arguments for creating ReminderFragment.");
         }
-
-        ShoppingList shoppingList = ListStorageFragment.getLocalListStorage().loadList(listId);
-        item = shoppingList.getItem(itemId);
-
     }
 
     @Override
@@ -193,6 +189,8 @@ public class ReminderFragment extends Fragment {
 
 
     private void setupUI() {
+
+        item = ListStorageFragment.getLocalListStorage().loadList(listId).getItem(itemId);
 
         period_numberPicker.setMinValue(1);
         period_numberPicker.setMaxValue(10);

@@ -151,6 +151,16 @@
     <string name="overflow_action_menu_recipes">Rezepte verwalten</string>
     <string name="overflow_action_menu_add_recipes">Rezept zur Liste hinzufügen</string>
 
+    <!-- Example Recipes -->
+    <string name="recipe_name_chili_con_carne">Chili con Carne</string>
+    <string name="recipe_onion">Zwiebeln</string>
+    <string name="recipe_mince">Hackfleisch</string>
+    <string name="recipe_kidney_beans">Kidneybohnen</string>
+    <string name="recipe_corn">Mais</string>
+    <string name="recipe_potatoes">Kartoffeln</string>
+    <string name="recipe_tomatoes">Tomaten</string>
+
+
     <!--Time-->
     <string name="days">Tage</string>
     <string name="weeks">Wochen</string>

@@ -1,11 +1,9 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.accounts.Account;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -22,6 +20,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -35,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 
@@ -46,7 +46,7 @@ public class LoginActivity extends FragmentActivity implements
     private static final String TAG = "LoginActivity";
 
     /* RequestCode for resolutions involving sign-in */
-    private static final int RC_SIGN_IN = 9001;
+    private static final int RC_SIGN_IN = 0;
 
     /* Keys for persisting instance variables in savedInstanceState */
     private static final String KEY_IS_RESOLVING = "is_resolving";
@@ -57,6 +57,7 @@ public class LoginActivity extends FragmentActivity implements
 
     /* View to display current status (signed-in, signed-out, disconnected, etc) */
     private TextView mStatus;
+    private TextView mDebugStatus;
 
     /* Is there a ConnectionResult resolution in progress? */
     private boolean mIsResolving = false;
@@ -80,7 +81,8 @@ public class LoginActivity extends FragmentActivity implements
         // Set up button click listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
-        //findViewById(R.id.backend_button).setOnClickListener(this);
+        findViewById(R.id.login_debug_login).setOnClickListener(this);
+        findViewById(R.id.login_debug_logout).setOnClickListener(this);
 
         // Large sign-in
         ((SignInButton) findViewById(R.id.sign_in_button)).setSize(SignInButton.SIZE_WIDE);
@@ -89,7 +91,14 @@ public class LoginActivity extends FragmentActivity implements
         findViewById(R.id.sign_in_button).setEnabled(false);
 
         // Set up view instances
-        mStatus = (TextView) findViewById(R.id.login_debug_status);
+        mStatus = (TextView) findViewById(R.id.login_status);
+
+        mDebugStatus = (TextView) findViewById(R.id.login_debug_status);
+
+        if (!BuildConfig.DEBUG) {
+            mDebugStatus.setEnabled(false);
+            mDebugStatus.setVisibility(View.GONE);
+        }
 
         // [START create_google_api_client]
         // Build GoogleApiClient with access to basic profile
@@ -103,12 +112,21 @@ public class LoginActivity extends FragmentActivity implements
     }
 
     private void updateUI(boolean isSignedIn) {
-        if (isSignedIn) {
-            // Show signed-in user's name
-            String name = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName();
-            mStatus.setText(name);
+        mDebugStatus.setText(SessionHandler.getSessionToken(getApplicationContext()));
 
-            // Set button visibility
+        if (!BuildConfig.DEBUG) {
+            findViewById(R.id.login_debug_login).setEnabled(false);
+            findViewById(R.id.login_debug_login).setVisibility(View.GONE);
+            findViewById(R.id.login_debug_logout).setEnabled(false);
+            findViewById(R.id.login_debug_logout).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.login_debug_login).setEnabled(true);
+            findViewById(R.id.login_debug_login).setVisibility(View.VISIBLE);
+            findViewById(R.id.login_debug_logout).setEnabled(true);
+            findViewById(R.id.login_debug_logout).setVisibility(View.VISIBLE);
+        }
+
+        if (isSignedIn) {
             findViewById(R.id.sign_in_button).setEnabled(false);
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setEnabled(true);
@@ -118,14 +136,24 @@ public class LoginActivity extends FragmentActivity implements
                 findViewById(R.id.login_retry_button).setEnabled(true);
                 findViewById(R.id.login_retry_button).setVisibility(View.VISIBLE);
             } else {
-                mStatus.setText(SessionHandler.getSessionToken(getApplicationContext()));
+                if(!SessionHandler.getSessionToken(getApplicationContext()).equals("DEBUG")) {
+                    // Show signed-in user's name
+                    Person p = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+                    if(p != null) {
+                        String name = p.getDisplayName();
+                        mStatus.setText(name);
+                    }
+                } else {
+                    mStatus.setText("DEBUG logged in");
+                }
+                mDebugStatus.setText(SessionHandler.getSessionToken(getApplicationContext()));
                 findViewById(R.id.login_retry_button).setEnabled(false);
                 findViewById(R.id.login_retry_button).setVisibility(View.GONE);
             }
 
         } else {
             // Show signed-out message
-            mStatus.setText("Signed out");
+            mStatus.setText(R.string.signed_out);
 
             // Set button visibility
             findViewById(R.id.sign_in_button).setEnabled(true);
@@ -246,7 +274,7 @@ public class LoginActivity extends FragmentActivity implements
                     }).show();
         } else {
             // No default Google Play Services error, display a message to the user.
-            String errorString = getString(R.string.play_services_error_fmt, errorCode);
+            String errorString = getString(R.string.play_services_error_fmt);
             Toast.makeText(this, errorString, Toast.LENGTH_SHORT).show();
 
             mShouldResolve = false;
@@ -330,10 +358,19 @@ public class LoginActivity extends FragmentActivity implements
                     mGoogleApiClient.disconnect();
                 }
                 // [END sign_out_clicked]
+                SessionHandler.logout(getApplicationContext());
                 updateUI(false);
                 break;
             case R.id.login_retry_button:
                 new GetIdTokenTask().execute(null, null, null);
+                break;
+            case R.id.login_debug_login:
+                SessionHandler.setSessionToken(getApplicationContext(), "DEBUG");
+                updateUI(true);
+                break;
+            case R.id.login_debug_logout:
+                SessionHandler.logout(getApplicationContext());
+                updateUI(false);
                 break;
         }
     }

@@ -20,6 +20,6 @@
 
     <!-- Dark Buttons -->
     <style name="ThemeOverlay.MyDarkButton" parent="ThemeOverlay.AppCompat.Dark">
-        <item name="colorButtonNormal">@color/accent_material_light</item>
+        <item name="colorButtonNormal">@color/material_blue_grey_950</item>
     </style>
 </resources>

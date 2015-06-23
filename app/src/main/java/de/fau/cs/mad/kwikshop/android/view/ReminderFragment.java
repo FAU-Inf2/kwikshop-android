@@ -56,11 +56,14 @@ import de.greenrobot.event.EventBus;
 public class ReminderFragment extends Fragment {
 
     private static final String ARG_ITEMID = "item_id";
+    private static final String ARG_LISTID = "list_id";
 
     private View rootView;
 
     private int itemId;
     private Item item;
+
+    private int listID;
 
     /*private int listId;
 
@@ -109,9 +112,10 @@ public class ReminderFragment extends Fragment {
      * @param itemID
      * @return
      */
-    public static ReminderFragment newInstance(int itemID) {
+    public static ReminderFragment newInstance(int listID, int itemID) {
         ReminderFragment fragment = new ReminderFragment();
         Bundle args = new Bundle();
+        args.putInt(ARG_LISTID, listID);
         args.putInt(ARG_ITEMID, itemID);
         fragment.setArguments(args);
 
@@ -136,6 +140,7 @@ public class ReminderFragment extends Fragment {
 
         if (getArguments() != null) {
             itemId = getArguments().getInt(ARG_ITEMID);
+            listID = getArguments().getInt(ARG_LISTID);
         }
 
     }

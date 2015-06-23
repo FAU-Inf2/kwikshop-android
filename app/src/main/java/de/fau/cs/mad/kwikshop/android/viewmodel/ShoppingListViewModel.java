@@ -429,7 +429,8 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     @SuppressWarnings("unused")
     public void onEvent(ReminderTimeIsOverEvent e) {
         int itemId = e.getItemId();
-        viewLauncher.showReminderView(itemId);
+        int listId = e.getListId();
+        viewLauncher.showReminderView(listId, itemId);
     }
 
 
@@ -481,7 +482,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                     //if (!(EventBus.getDefault().isRegistered(this)))
                     //    EventBus.getDefault().register(this);
 
-                    EventBus.getDefault().post(new ReminderTimeIsOverEvent(item.getId()));
+                    EventBus.getDefault().post(new ReminderTimeIsOverEvent(item.getShoppingList().getId(), item.getId()));
                     //onEventBackgroundThread(new ReminderTimeIsOverEvent(item.getId()));
                 }
             }

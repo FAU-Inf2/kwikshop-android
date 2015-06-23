@@ -9,8 +9,9 @@ public class ReminderActivity extends DetailsActivity {
 
     public static final String EXTRA_ITEMID = "extra_ItemId";
 
-    public static Intent getIntent(Context context, int itemId) {
+    public static Intent getIntent(Context context, int listId, int itemId) {
         return new Intent(context, ReminderActivity.class)
+                .putExtra(EXTRA_SHOPPINGLISTID, (long) listId)
                 .putExtra(EXTRA_ITEMID, (long) itemId);
     }
 
@@ -27,7 +28,9 @@ public class ReminderActivity extends DetailsActivity {
             ReminderFragment fragment;
 
             int itemId = ((Long) intent.getExtras().get(EXTRA_ITEMID)).intValue();
-            fragment = ReminderFragment.newInstance(itemId);
+            int listId = ((Long) intent.getExtras().get(EXTRA_SHOPPINGLISTID)).intValue();
+
+            fragment = ReminderFragment.newInstance(listId, itemId);
 
 
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();

@@ -149,6 +149,7 @@
     <string name="deleteRecipe_DialogTitle">Rezept löschen</string>
     <string name="deleteRecipe_DialogText">Sind Sie sicher, dass sie dieses Rezept löschen möchten?</string>
     <string name="overflow_action_menu_recipes">Rezepte verwalten</string>
+    <string name="overflow_action_menu_add_recipes">Rezept zur Liste hinzufügen</string>
 
     <!--Time-->
     <string name="days">Tage</string>

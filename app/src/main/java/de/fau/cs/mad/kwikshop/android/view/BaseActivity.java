@@ -59,11 +59,6 @@ public class BaseActivity extends ActionBarActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Deprecated
-    protected boolean onCreateOptionsMenuSuper(Menu menu) {
-        // TODO remove this method as soon as we don't need it any more. This is not how it is done properly
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

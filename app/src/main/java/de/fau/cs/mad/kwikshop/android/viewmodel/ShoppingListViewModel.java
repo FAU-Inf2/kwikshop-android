@@ -427,7 +427,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     }
 
     @SuppressWarnings("unused")
-    public void onEventBackgroundThread(ReminderTimeIsOverEvent e) {
+    public void onEvent(ReminderTimeIsOverEvent e) {
         int itemId = e.getItemId();
         viewLauncher.showReminderView(itemId);
     }
@@ -478,11 +478,11 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                     // post on EventBus is not necessary because it is done by the SaveItemTask anyway
 
                     //TODO only for testing. Delete this EventBus post immediately if I've forgotten it before push
-                    /*if (!(EventBus.getDefault().isRegistered(this)))
-                        EventBus.getDefault().register(this);
+                    //if (!(EventBus.getDefault().isRegistered(this)))
+                    //    EventBus.getDefault().register(this);
 
-                    EventBus.getDefault().post(new ReminderTimeIsOverEvent(item.getId()));*/
-                    onEventBackgroundThread(new ReminderTimeIsOverEvent(item.getId()));
+                    EventBus.getDefault().post(new ReminderTimeIsOverEvent(item.getId()));
+                    //onEventBackgroundThread(new ReminderTimeIsOverEvent(item.getId()));
                 }
             }
 

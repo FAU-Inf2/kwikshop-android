@@ -61,7 +61,7 @@
         android:gravity="center|bottom">
 
         <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
+            android:id="@+id/login_sign_in_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"
@@ -79,7 +79,7 @@
             android:theme="@style/ThemeOverlay.MyDarkButton"/>
 
         <Button
-            android:id="@+id/sign_out_button"
+            android:id="@+id/login_sign_out_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"

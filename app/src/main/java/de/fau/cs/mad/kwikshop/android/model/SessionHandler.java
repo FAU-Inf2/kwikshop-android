@@ -3,25 +3,23 @@ package de.fau.cs.mad.kwikshop.android.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.SettingFragment;
 
 public class SessionHandler {
+
+    private static final String SESSION_TOKEN = "SESSION_TOKEN";
 
     public static boolean isAuthenticated(Context context) {
         return (getSessionToken(context) != null ? true : false);
     }
 
     public static void setSessionToken(Context context, String token) {
-        SharedPreferences sharedPref = context.getSharedPreferences(SettingFragment.SETTINGS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(context.getString(R.string.session_token), token);
-        editor.commit();
+        SharedPreferencesHelper.saveString(SESSION_TOKEN, token, context);
     }
 
     public static String getSessionToken(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(SettingFragment.SETTINGS, Context.MODE_PRIVATE);
-        String sessionToken = sharedPref.getString(context.getString(R.string.session_token), null);
-        return sessionToken;
+        return SharedPreferencesHelper.loadString(SESSION_TOKEN, null,context);
     }
 
     public static void logout(Context context) {

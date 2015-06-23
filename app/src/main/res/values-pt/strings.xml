@@ -122,8 +122,6 @@
     <string name="settings_option_4_createGroups">Criar categorias</string>
     <string name="settings_option_3_desc2">Crie unidades para quantidade em itens</string>
     <string name="settings_option_4_desc">Crie categorias para itens</string>
-    <string name="login_skip">Skip login</string>
-    <string name="sign_out">Sign Out</string>
     <string name="disconnect">Disconnect</string>
     <string name="retry">Retry</string>
 </resources>

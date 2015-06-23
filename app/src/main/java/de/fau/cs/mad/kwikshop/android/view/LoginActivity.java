@@ -44,6 +44,7 @@ import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 
 public class LoginActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -51,6 +52,8 @@ public class LoginActivity extends FragmentActivity implements
         View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
+
+    private static final String SKIPLOGIN = "SKIPLOGIN"; // Used in SharedPreferences
 
     /* RequestCode for resolutions involving sign-in */
     private static final int RC_SIGN_IN = 0;
@@ -101,6 +104,10 @@ public class LoginActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
+
+        // If the user is logged in or has skipped the login, go to the main Activity
+        if(SessionHandler.isAuthenticated(getApplicationContext()) || SharedPreferencesHelper.loadInt(SKIPLOGIN, 0, getApplicationContext()) == 1)
+            exitLoginActivity();
 
         // Restore from saved instance state
         // [START restore_saved_instance_state]
@@ -175,6 +182,7 @@ public class LoginActivity extends FragmentActivity implements
                 mDebugStatus.setText(SessionHandler.getSessionToken(getApplicationContext()));
                 login_retry_button.setEnabled(false);
                 login_retry_button.setVisibility(View.GONE);
+                exitLoginActivity();
             }
 
         } else {
@@ -362,6 +370,13 @@ public class LoginActivity extends FragmentActivity implements
 
     }
 
+    private void exitLoginActivity() {
+        Intent intent = new Intent(getApplicationContext(), ListOfShoppingListsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -391,12 +406,13 @@ public class LoginActivity extends FragmentActivity implements
                 updateUI(false);
                 break;
             case R.id.login_skip_button:
-                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                 builder.setTitle(R.string.login_skip);
                 builder.setMessage(R.string.login_skip_message);
                 builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int position) {
-
+                        SharedPreferencesHelper.saveInt(SKIPLOGIN, 1, getApplicationContext());
+                        exitLoginActivity();
                     }
                 });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

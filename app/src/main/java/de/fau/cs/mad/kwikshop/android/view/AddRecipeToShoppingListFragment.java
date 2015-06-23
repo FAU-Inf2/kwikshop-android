@@ -26,11 +26,22 @@ public class AddRecipeToShoppingListFragment extends FragmentWithViewModel imple
 
     private AddRecipeToShoppingListViewModel viewModel;
     private ListOfRecipesRowAdapter listAdapter;
+    private int shoppingListId;
 
 
-
-    public static AddRecipeToShoppingListFragment newInstance(){
+    public static AddRecipeToShoppingListFragment newInstance(int shoppingListId){
+        AddRecipeToShoppingListFragment fragment = new AddRecipeToShoppingListFragment();
+        Bundle args = new Bundle();
+        args.putInt("shoppingListId", shoppingListId);
+        fragment.setArguments(args);
         return new AddRecipeToShoppingListFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+            shoppingListId = getArguments().getInt("shoppingListId");
+
     }
 
     @Override

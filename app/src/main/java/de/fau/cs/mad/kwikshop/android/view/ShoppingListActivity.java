@@ -54,8 +54,11 @@ public class ShoppingListActivity extends BaseActivity {
                 EventBus.getDefault().post(MoveAllItemsEvent.moveAllFromBoughtEvent);
                 break;
             case R.id.action_add_recipe:
+                Bundle extras = getIntent().getExtras();
+                int id = extras.getInt(SHOPPING_LIST_ID);
+
                 android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().add(frameLayout.getId(), AddRecipeToShoppingListFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().add(frameLayout.getId(), AddRecipeToShoppingListFragment.newInstance(id)).commit();
                 break;
         }
         if(type != null) EventBus.getDefault().post(type);

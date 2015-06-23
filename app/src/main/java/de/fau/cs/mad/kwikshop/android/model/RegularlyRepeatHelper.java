@@ -62,6 +62,14 @@ public class RegularlyRepeatHelper {
         return new ArrayList<>(repeatList);
     }
 
+    public Item getItemForId(int id) {
+        for (Item item : repeatList) {
+            if (item.getId() == id)
+                return item;
+        }
+        return null;
+    }
+
     public void delete(Item data) {
         if(!repeatList.contains(data)){
             return;

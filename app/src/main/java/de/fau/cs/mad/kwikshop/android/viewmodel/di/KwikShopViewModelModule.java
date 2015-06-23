@@ -5,6 +5,7 @@ import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
+import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
@@ -16,6 +17,7 @@ import de.fau.cs.mad.kwikshop.android.model.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.view.DefaultResourceProvider;
 import de.fau.cs.mad.kwikshop.android.view.DefaultViewLauncher;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
+import de.fau.cs.mad.kwikshop.android.viewmodel.AddRecipeToShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfRecipesViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfShoppingListsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeViewModel;
@@ -33,7 +35,8 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         ListOfRecipesViewModel.class,
         RecipesDetailsViewModel.class,
         RecipeViewModel.class,
-        AutoCompletionHelper.class
+        AutoCompletionHelper.class,
+        AddRecipeToShoppingListViewModel.class
 },
         library = true)
 @SuppressWarnings("unused")
@@ -83,6 +86,11 @@ public class KwikShopViewModelModule {
     @Provides
     public SimpleStorage<Group> provideGroupStorage() {
         return ListStorageFragment.getGroupStorage();
+    }
+
+    @Provides
+    public SimpleStorage<CalendarEventDate> provideCalendarEventStorage() {
+        return ListStorageFragment.getCalendarEventStorage();
     }
 
     @Provides

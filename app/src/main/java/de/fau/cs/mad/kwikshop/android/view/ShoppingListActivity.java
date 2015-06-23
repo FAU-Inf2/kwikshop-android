@@ -31,8 +31,11 @@ public class ShoppingListActivity extends BaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu){
+        //add recipes
         menu.getItem(1).getSubMenu().getItem(2).setVisible(true);
+        //mark everything as bought
         menu.getItem(1).getSubMenu().getItem(6).setVisible(true);
+        //mark nothing as bought
         menu.getItem(1).getSubMenu().getItem(7).setVisible(true);
         return true;
     }

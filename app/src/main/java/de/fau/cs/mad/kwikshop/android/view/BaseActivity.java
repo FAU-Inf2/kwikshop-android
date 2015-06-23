@@ -82,6 +82,9 @@ public class BaseActivity extends ActionBarActivity {
             case R.id.action_listofrecipes:
                 startActivity(new Intent(this, ListOfRecipesActivity.class));
                 return true;
+            case R.id.action_openloginactivity:
+                startActivity(new Intent(this, LoginActivity.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

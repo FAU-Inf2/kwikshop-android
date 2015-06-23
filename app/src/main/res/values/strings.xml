@@ -227,5 +227,6 @@
     <string name="session_token">SESSION_TOKEN</string>
     <string name="retry">Retry</string>
     <string name="login_skip_message">Are you sure you want to skip logging in? You can login later from the application menu.</string>
+    <string name="overflow_action_menu_openloginactivity">Account / Login</string>
 
 </resources>

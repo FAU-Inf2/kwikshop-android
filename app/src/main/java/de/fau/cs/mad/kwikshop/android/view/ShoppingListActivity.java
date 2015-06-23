@@ -26,10 +26,15 @@ public class ShoppingListActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.shoppinglist_replacement_menu, menu);
-        getMenuInflater().inflate(R.menu.shoppinglist_item_movement_menu, menu);
-        //menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.overflow_action_menu_move_all_to_shopping_cart);
-        // TODO: change this. We should not jump over the onCreateOptionsMenu method of BaseActivity
-        return onCreateOptionsMenuSuper(menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        menu.getItem(1).getSubMenu().getItem(2).setVisible(true);
+        menu.getItem(1).getSubMenu().getItem(6).setVisible(true);
+        menu.getItem(1).getSubMenu().getItem(7).setVisible(true);
+        return true;
     }
 
     @Override

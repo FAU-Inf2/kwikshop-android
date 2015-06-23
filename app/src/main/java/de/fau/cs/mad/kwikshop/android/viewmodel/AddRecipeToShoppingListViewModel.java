@@ -54,11 +54,18 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
             ShoppingList shoppingList = listStorage.loadList(shoppingListId);
             Recipe recipe = recipeStorage.loadRecipe(recipeId);
             for(Item item : recipe.getItems()){
-                //TODO: this also adds the items to the recpipe (multiply)
-                shoppingList.addItem(item);
+                Item newItem = new Item();
+                newItem.setName(item.getName());
+                newItem.setAmount(item.getAmount());
+                newItem.setBrand(item.getBrand());
+                newItem.setComment(item.getComment());
+                newItem.setHighlight(item.isHighlight());
+                newItem.setGroup(item.getGroup());
+                newItem.setUnit(item.getUnit());
+                shoppingList.addItem(newItem);
 
                 EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-                EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), item.getId()));
+                EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
             }
             listStorage.saveList(shoppingList);
             viewLauncher.showShoppingList(shoppingListId);

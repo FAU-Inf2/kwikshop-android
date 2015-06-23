@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 21
@@ -79,6 +80,9 @@ dependencies {
     //Google Maps Utils
     compile 'com.google.maps.android:android-maps-utils:0.3+'
 
+    //Google Play Services for Login
+    compile 'com.google.android.gms:play-services-base:7.5.0'
+    compile 'com.google.android.gms:play-services-plus:7.5.0'
 
 
 }

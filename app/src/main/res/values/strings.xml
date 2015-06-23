@@ -211,5 +211,19 @@
     <!-- Place -->
     <string name="place_status_opened">opened</string>
     <string name="place_status_closed">closed</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Login -->
+    <string name="login_skip">Skip login</string>
+    <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="signed_out">Signed out</string>
+    <string name="play_services_error_fmt">Google Play Services Error: %i</string>
+    <string name="kwikshop_login_failed">Kwik Shop login failed, please try again.</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="session_token">SESSION_TOKEN</string>
+    <string name="retry">Retry</string>
 
 </resources>

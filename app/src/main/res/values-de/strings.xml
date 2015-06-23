@@ -168,4 +168,15 @@
     <!-- Location -->
     <string name="location">Standort</string>
 
+    <!-- Login -->
+    <string name="login_skip">Login überspringen</string>
+    <string name="signed_in_fmt">Eingeloggt als: %s</string>
+    <string name="signing_in">Anmeldung…</string>
+    <string name="signed_out">Nicht eingeloggt</string>
+    <string name="play_services_error_fmt">Google Play Service Fehler: %i</string>
+    <string name="kwikshop_login_failed">Login bei Kwik Shop fehlgeschlagen, bitte erneut versuchen.</string>
+    <string name="sign_out">Abmelden</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="retry">Login erneut versuchen</string>
+
 </resources>

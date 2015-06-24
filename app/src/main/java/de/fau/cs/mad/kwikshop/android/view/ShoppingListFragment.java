@@ -137,8 +137,12 @@ public class ShoppingListFragment
                         for (int position : reverseSortedPositions) {
 
                             if (command.getCanExecute()) {
-                                Item item = viewModel.getItems().get(position);
-                                command.execute(item.getId());
+                                try {
+                                    Item item = viewModel.getItems().get(position);
+                                    command.execute(item.getId());
+                                } catch (IndexOutOfBoundsException ex) {
+                                    //nothing to do
+                                }
                             }
                         }
                     }

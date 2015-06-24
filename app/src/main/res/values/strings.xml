@@ -254,5 +254,8 @@
     <string name="overflow_action_menu_openloginactivity">Account / Login</string>
     <string name="kwikshop_login_success">You are logged in.</string>
 
+    <!-- REST -->
+    <string name="API_URL">http://ec2-52-28-159-181.eu-central-1.compute.amazonaws.com</string>
+
 
 </resources>

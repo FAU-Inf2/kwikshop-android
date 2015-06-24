@@ -7,12 +7,6 @@ public class SessionHandler {
 
     private static final String SESSION_TOKEN = "SESSION_TOKEN";
 
-    private static final String authenticationEndpoint = "http://ec2-52-28-159-181.eu-central-1.compute.amazonaws.com:8080/users/auth";
-
-    public static String getAuthenticationEndpoint() {
-        return authenticationEndpoint;
-    }
-
     public static boolean isAuthenticated(Context context) {
         return (getSessionToken(context) != null ? true : false);
     }

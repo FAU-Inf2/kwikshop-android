@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -26,6 +27,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+
+import org.glassfish.jersey.client.proxy.WebResourceFactory;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -39,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import javax.ws.rs.core.Response;
 import javax.xml.datatype.Duration;
 
 import butterknife.ButterKnife;
@@ -47,6 +53,8 @@ import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.common.User;
+import de.fau.cs.mad.kwikshop.common.UserResource;
 
 public class LoginActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -354,7 +362,19 @@ public class LoginActivity extends FragmentActivity implements
                 return null;
             }
 
-            HttpClient httpClient = new DefaultHttpClient();
+            WebTarget target = ClientBuilder.newClient().register(JacksonJsonProvider.class).target(getString(R.string.API_URL));
+            UserResource endpoint = WebResourceFactory.newResource(UserResource.class, target);
+            String authResponse;
+            try {
+                authResponse = endpoint.auth(idToken);
+            } catch (Exception e) {
+                Log.e(TAG, "Error contacting server.", e);
+                return null;
+            }
+            return authResponse;
+            //return time.getTimestamp();
+
+            /*HttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(SessionHandler.getAuthenticationEndpoint());
             String responseBody;
             try {
@@ -377,7 +397,7 @@ public class LoginActivity extends FragmentActivity implements
                 return null;
             }
 
-            return responseBody;
+            return responseBody;*/
         }
 
         @Override

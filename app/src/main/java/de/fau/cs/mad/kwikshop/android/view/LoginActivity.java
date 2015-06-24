@@ -32,28 +32,13 @@ import org.glassfish.jersey.client.proxy.WebResourceFactory;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
-import javax.ws.rs.core.Response;
-import javax.xml.datatype.Duration;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
-import de.fau.cs.mad.kwikshop.common.User;
+
 import de.fau.cs.mad.kwikshop.common.UserResource;
 
 public class LoginActivity extends FragmentActivity implements
@@ -352,11 +337,10 @@ public class LoginActivity extends FragmentActivity implements
         protected String doInBackground(String... params) {
             String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
             Account account = new Account(accountName, GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
-            String scopes = "audience:server:client_id:" + getString(R.string.login_client_id);
+            String scopes = "audience:server:client_id:" + getString(R.string.login_server_client_id);
             String idToken;
             try {
                 idToken = GoogleAuthUtil.getToken(getApplicationContext(), account, scopes);
-                Log.i(TAG, "TOKEN: " + idToken);
             } catch (Exception e) {
                 Log.e(TAG, "Error retrieving ID token.", e);
                 return null;

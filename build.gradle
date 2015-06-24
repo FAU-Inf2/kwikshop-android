@@ -92,9 +92,3 @@ allprojects {
 license {
     header = file('license.txt')
 }
-
-project(':app') {
-    dependencies {
-        project(':../kwikshop-common')
-    }
-}

@@ -222,4 +222,10 @@
     <string name="place_status_opened">opened</string>
     <string name="place_status_closed">closed</string>
 
+    <!-- Intent filter, does not need to be translated -->
+    <string name="intent_http">http</string>
+    <string name="intent_host">kwikshop.is.nice</string>
+    <string name="intent_calendar_description">http://kwikshop.is.nice/#id=</string>
+
+
 </resources>

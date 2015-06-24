@@ -85,7 +85,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="kwikshop.is.nice" />
+                <data android:scheme="@string/intent_http" android:host="@string/intent_host" />
 
             </intent-filter>
         </activity>

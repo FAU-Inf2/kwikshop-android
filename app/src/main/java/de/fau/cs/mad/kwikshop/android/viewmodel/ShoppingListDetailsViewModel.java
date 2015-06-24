@@ -398,7 +398,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             values.put(CalendarContract.Events.CALENDAR_ID, calID);
             TimeZone defaultTimeZone = TimeZone.getDefault();
             values.put(CalendarContract.Events.EVENT_TIMEZONE, defaultTimeZone.getID());
-            values.put(CalendarContract.Events.DESCRIPTION, "http://kwikshop.is.nice/#id=" + Integer.toString(shoppingList.getId()));
+            values.put(CalendarContract.Events.DESCRIPTION, context.getString(R.string.intent_calendar_description) + Integer.toString(shoppingList.getId()));
             Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
             eventDate.setAndroidCalendarId((Long.parseLong(uri.getLastPathSegment())));
 
@@ -431,7 +431,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             values.put(CalendarContract.Events.DTSTART, startMillis);
             values.put(CalendarContract.Events.DTEND, endMillis);
             values.put(CalendarContract.Events.TITLE, "[Kwik Shop] " + shoppingList.getName());
-            values.put(CalendarContract.Events.DESCRIPTION, "http://kwikshop.is.nice/#id=" + Integer.toString(shoppingList.getId()));
+            values.put(CalendarContract.Events.DESCRIPTION, context.getString(R.string.intent_calendar_description) + Integer.toString(shoppingList.getId()));
             Uri updateUri;
             updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventDate.getAndroidCalendarId());
             int rows = context.getContentResolver().update(updateUri, values, null, null);

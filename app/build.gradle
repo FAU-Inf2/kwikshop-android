@@ -5,6 +5,10 @@ android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
 
+    sourceSets {
+        main.java.srcDirs += 'src/common/src/main/java'
+    }
+
     defaultConfig {
         applicationId "de.fau.cs.mad.kwikshop.android"
         minSdkVersion 14

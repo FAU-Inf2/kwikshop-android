@@ -73,8 +73,22 @@ public class ShoppingListActivity extends BaseActivity {
 
         //Get Shopping List ID
 
+        Intent intent = getIntent();
+        String dataString = intent.getDataString();
+        int id = -1;
+        if(dataString != null) {
+            //dataString is not null if Activity was opened by Calendar intent filter
+            for (int i = 0; i < dataString.length(); i++) {
+                if (dataString.substring(i, i + 5).equals("/#id=")) {
+                    String idString = dataString.substring(i + 5);
+                    id = Integer.parseInt(idString);
+                    break;
+                }
+            }
+        }else {
             Bundle extras = getIntent().getExtras();
-            int id = extras.getInt(SHOPPING_LIST_ID);
+            id = extras.getInt(SHOPPING_LIST_ID);
+        }
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();

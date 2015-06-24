@@ -344,7 +344,7 @@ public class LoginActivity extends FragmentActivity implements
         protected String doInBackground(String... params) {
             String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
             Account account = new Account(accountName, GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
-            String scopes = "audience:server:client_id:" + SessionHandler.getClient_id(); // Not the app's client ID.
+            String scopes = "audience:server:client_id:" + getString(R.string.login_client_id);
             String idToken;
             try {
                 idToken = GoogleAuthUtil.getToken(getApplicationContext(), account, scopes);
@@ -385,9 +385,8 @@ public class LoginActivity extends FragmentActivity implements
             if(result == null) {
                 Toast.makeText(getApplicationContext(), R.string.kwikshop_login_failed, Toast.LENGTH_LONG).show();
                 mStatus.setText(R.string.kwikshop_login_failed);
-                updateUI(true);
-            } else
-                updateUI(true);
+            }
+            updateUI(true);
         }
 
     }
@@ -446,6 +445,7 @@ public class LoginActivity extends FragmentActivity implements
                 alert.show();
                 break;
             case R.id.login_retry_button:
+                mStatus.setText(R.string.signing_in);
                 new GetIdTokenTask().execute(null, null, null);
                 break;
             case R.id.login_debug_login:

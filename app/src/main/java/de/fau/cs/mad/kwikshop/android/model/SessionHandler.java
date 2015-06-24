@@ -9,15 +9,8 @@ public class SessionHandler {
 
     private static final String authenticationEndpoint = "http://ec2-52-28-159-181.eu-central-1.compute.amazonaws.com:8080/users/auth";
 
-    // TODO: production client_id
-    private static final String client_id = "974373376910-mg6fm7feie2rn0v9qj2nmi1jpeftr47u.apps.googleusercontent.com";
-
     public static String getAuthenticationEndpoint() {
         return authenticationEndpoint;
-    }
-
-    public static String getClient_id() {
-        return client_id;
     }
 
     public static boolean isAuthenticated(Context context) {

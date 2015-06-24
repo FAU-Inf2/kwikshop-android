@@ -226,6 +226,7 @@
     <string name="intent_http">http</string>
     <string name="intent_host">kwikshop.is.nice</string>
     <string name="intent_calendar_description">http://kwikshop.is.nice/#id=</string>
+    <string name="intent_id_separator">/#id=</string>
 
 
 </resources>

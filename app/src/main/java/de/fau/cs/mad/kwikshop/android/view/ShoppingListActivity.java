@@ -78,13 +78,14 @@ public class ShoppingListActivity extends BaseActivity {
         int id = -1;
         if(dataString != null) {
             //dataString is not null if Activity was opened by Calendar intent filter
-            for (int i = 0; i < dataString.length(); i++) {
-                if (dataString.substring(i, i + 5).equals("/#id=")) {
+            for (int i = 0; i < dataString.length() - this.getString(R.string.intent_id_separator).length(); i++) {
+                if (dataString.substring(i, i + 5).equals(this.getString(R.string.intent_id_separator))) {
                     String idString = dataString.substring(i + 5);
                     id = Integer.parseInt(idString);
                     break;
                 }
             }
+            intent.putExtra(SHOPPING_LIST_ID, id);
         }else {
             Bundle extras = getIntent().getExtras();
             id = extras.getInt(SHOPPING_LIST_ID);

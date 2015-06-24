@@ -315,7 +315,7 @@ public class ShoppingListFragment
         listView.requestLayout();
     }
 
-
+    @SuppressWarnings("unused")
     public void onEvent(AutoCompletionHistoryDeletedEvent event) {
         if (autoCompletion != null) {
             refreshQuickAddAutoCompletion();

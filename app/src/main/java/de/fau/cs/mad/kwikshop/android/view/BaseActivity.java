@@ -83,7 +83,11 @@ public class BaseActivity extends ActionBarActivity {
                 startActivity(new Intent(this, ListOfRecipesActivity.class));
                 return true;
             case R.id.action_openloginactivity:
-                startActivity(new Intent(this, LoginActivity.class));
+                Intent intent = new Intent(this, LoginActivity.class);
+                Bundle b = new Bundle();
+                b.putBoolean("FORCE", true); //To make sure the Activity does not close immediately
+                intent.putExtras(b);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

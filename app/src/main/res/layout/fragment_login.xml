@@ -21,7 +21,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
         android:id="@+id/login_status"
         android:layout_gravity="center_horizontal"
         android:textColor="#ffffffff"/>
@@ -29,7 +28,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
         android:id="@+id/login_debug_status"
         android:layout_gravity="center_horizontal"
         android:textColor="#ffffffff"/>
@@ -40,15 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:text="DEBUG Login"
-        android:textColor="@android:color/white"
-        android:theme="@style/ThemeOverlay.MyDarkButton"/>
-
-    <Button
-        android:id="@+id/login_debug_logout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:text="DEBUG Logout"
         android:textColor="@android:color/white"
         android:theme="@style/ThemeOverlay.MyDarkButton"/>
 

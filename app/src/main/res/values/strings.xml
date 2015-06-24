@@ -240,7 +240,7 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="action_settings">Settings</string>
     <string name="login_skip">Skip login</string>
-    <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="signed_in_fmt">Signed in as:</string>
     <string name="signing_in">Signing in…</string>
     <string name="signed_out">Signed out</string>
     <string name="play_services_error_fmt">Google Play Services Error</string>
@@ -251,6 +251,7 @@
     <string name="retry">Retry</string>
     <string name="login_skip_message">Are you sure you want to skip logging in? You can login later from the application menu.</string>
     <string name="overflow_action_menu_openloginactivity">Account / Login</string>
+    <string name="kwikshop_login_success">You are logged in.</string>
 
 
 </resources>

@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import javax.xml.datatype.Duration;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.BuildConfig;
@@ -87,9 +89,6 @@ public class LoginActivity extends FragmentActivity implements
     @InjectView(R.id.login_debug_login)
     Button login_debug_login;
 
-    @InjectView(R.id.login_debug_logout)
-    Button login_debug_logout;
-
     @InjectView(R.id.login_status)
     TextView mStatus;
 
@@ -105,9 +104,17 @@ public class LoginActivity extends FragmentActivity implements
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
 
-        // If the user is logged in or has skipped the login, go to the main Activity
-        if(SessionHandler.isAuthenticated(getApplicationContext()) || SharedPreferencesHelper.loadInt(SKIPLOGIN, 0, getApplicationContext()) == 1)
-            exitLoginActivity();
+        boolean force = false;
+        Bundle b = getIntent().getExtras();
+        if(b != null) {
+             force = b.getBoolean("FORCE", false);
+        }
+
+        // If the user is logged in or has skipped the login, go to the main Activity - except if the user opens the Activity from the menu
+        if(!force) {
+            if (SessionHandler.isAuthenticated(getApplicationContext()) || SharedPreferencesHelper.loadInt(SKIPLOGIN, 0, getApplicationContext()) == 1)
+                exitLoginActivity();
+        }
 
         // Restore from saved instance state
         // [START restore_saved_instance_state]
@@ -122,7 +129,7 @@ public class LoginActivity extends FragmentActivity implements
         login_sign_out_button.setOnClickListener(this);
         login_skip_button.setOnClickListener(this);
         login_debug_login.setOnClickListener(this);
-        login_debug_logout.setOnClickListener(this);
+        login_retry_button.setOnClickListener(this);
 
         // Large sign-in
         login_sign_in_button.setSize(SignInButton.SIZE_WIDE);
@@ -144,17 +151,19 @@ public class LoginActivity extends FragmentActivity implements
                 .addScope(new Scope(Scopes.PROFILE))
                 .build();
         // [END create_google_api_client]
+
     }
 
     private void updateUI(boolean isSignedIn) {
         mDebugStatus.setText(SessionHandler.getSessionToken(getApplicationContext()));
 
+        if(SessionHandler.isAuthenticated(getApplicationContext()))
+            isSignedIn = true;
+
         // Hide debug buttons if this is not a debug build
         if (!BuildConfig.DEBUG) {
             login_debug_login.setEnabled(false);
             login_debug_login.setVisibility(View.GONE);
-            login_debug_logout.setEnabled(false);
-            login_debug_logout.setVisibility(View.GONE);
         }
 
         if (isSignedIn) {
@@ -174,15 +183,24 @@ public class LoginActivity extends FragmentActivity implements
                     Person p = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
                     if(p != null) {
                         String name = p.getDisplayName();
-                        mStatus.setText(name);
+                        mStatus.setText(getText(R.string.signed_in_fmt) + " " + name);
                     }
                 } else {
                     mStatus.setText("DEBUG logged in");
                 }
-                mDebugStatus.setText(SessionHandler.getSessionToken(getApplicationContext()));
+
                 login_retry_button.setEnabled(false);
                 login_retry_button.setVisibility(View.GONE);
-                exitLoginActivity();
+                login_debug_login.setEnabled(false);
+                login_debug_login.setVisibility(View.GONE);
+
+                boolean force = false;
+                Bundle b = getIntent().getExtras();
+                if(b != null) {
+                    force = b.getBoolean("FORCE", false);
+                }
+                if(!force)
+                    exitLoginActivity();
             }
 
         } else {
@@ -194,6 +212,8 @@ public class LoginActivity extends FragmentActivity implements
             login_sign_in_button.setVisibility(View.VISIBLE);
             login_sign_out_button.setEnabled(false);
             login_sign_out_button.setVisibility(View.GONE);
+            login_debug_login.setEnabled(true);
+            login_debug_login.setVisibility(View.VISIBLE);
             login_retry_button.setEnabled(false);
             login_retry_button.setVisibility(View.GONE);
             login_skip_button.setEnabled(true);
@@ -324,7 +344,7 @@ public class LoginActivity extends FragmentActivity implements
         protected String doInBackground(String... params) {
             String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
             Account account = new Account(accountName, GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
-            String scopes = "audience:server:client_id:" + "974373376910-mg6fm7feie2rn0v9qj2nmi1jpeftr47u.apps.googleusercontent.com"; // Not the app's client ID.
+            String scopes = "audience:server:client_id:" + SessionHandler.getClient_id(); // Not the app's client ID.
             String idToken;
             try {
                 idToken = GoogleAuthUtil.getToken(getApplicationContext(), account, scopes);
@@ -335,7 +355,7 @@ public class LoginActivity extends FragmentActivity implements
             }
 
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://192.168.99.100:8080/users/auth");
+            HttpPost httpPost = new HttpPost(SessionHandler.getAuthenticationEndpoint());
             String responseBody;
             try {
                 List nameValuePairs = new ArrayList(1);
@@ -346,9 +366,9 @@ public class LoginActivity extends FragmentActivity implements
                 int statusCode = response.getStatusLine().getStatusCode();
                 responseBody = EntityUtils.toString(response.getEntity());
 
-                if(statusCode == 200) { // save session token in shared preferences
-                    SessionHandler.setSessionToken(getApplicationContext(), responseBody);
-                } else
+                if(statusCode == 200)
+                    SessionHandler.setSessionToken(getApplicationContext(), responseBody); // save session token
+                else
                     return null;
 
                 Log.i(TAG, "Signed in as: " + responseBody);
@@ -362,10 +382,12 @@ public class LoginActivity extends FragmentActivity implements
 
         @Override
         protected void onPostExecute(String result) {
-            if(result != null)
+            if(result == null) {
+                Toast.makeText(getApplicationContext(), R.string.kwikshop_login_failed, Toast.LENGTH_LONG).show();
                 mStatus.setText(R.string.kwikshop_login_failed);
-            else
-                mStatus.setText(result);
+                updateUI(true);
+            } else
+                updateUI(true);
         }
 
     }
@@ -429,10 +451,6 @@ public class LoginActivity extends FragmentActivity implements
             case R.id.login_debug_login:
                 SessionHandler.setSessionToken(getApplicationContext(), "DEBUG");
                 updateUI(true);
-                break;
-            case R.id.login_debug_logout:
-                SessionHandler.logout(getApplicationContext());
-                updateUI(false);
                 break;
         }
     }

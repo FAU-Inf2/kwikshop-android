@@ -1,66 +1,47 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
-import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.j256.ormlite.dao.Dao;
+
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
-import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
+import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.LocalListStorage;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
-import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
-import de.greenrobot.event.EventBus;
 
 public class ReminderFragment extends Fragment {
 
     private static final String ARG_ITEMID = "item_id";
+    private static final String ARG_LISTID = "list_id";
 
     private View rootView;
 
     private int itemId;
     private Item item;
+
+    private int listId;
 
     /*private int listId;
 
@@ -109,9 +90,10 @@ public class ReminderFragment extends Fragment {
      * @param itemID
      * @return
      */
-    public static ReminderFragment newInstance(int itemID) {
+    public static ReminderFragment newInstance(int listID, int itemID) {
         ReminderFragment fragment = new ReminderFragment();
         Bundle args = new Bundle();
+        args.putInt(ARG_LISTID, listID);
         args.putInt(ARG_ITEMID, itemID);
         fragment.setArguments(args);
 
@@ -136,15 +118,17 @@ public class ReminderFragment extends Fragment {
 
         if (getArguments() != null) {
             itemId = getArguments().getInt(ARG_ITEMID);
+            listId = getArguments().getInt(ARG_LISTID);
+        } else {
+            throw new IllegalArgumentException("Missing arguments for creating ReminderFragment.");
         }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
+        rootView = inflater.inflate(R.layout.fragment_reminder, container, false);
         ButterKnife.inject(this, rootView);
 
         setupUI();
@@ -213,6 +197,43 @@ public class ReminderFragment extends Fragment {
 
 
     private void setupUI() {
+
+        //item = ListStorageFragment.getLocalListStorage().loadList(listId).getItem(itemId);
+
+        /*DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+
+        SystemClock.sleep(1000);
+
+        try {
+            Dao<Item, Integer> itemDao = dbHelper.getItemDao();
+            item = itemDao.queryForId(listId);
+            if(item == null)
+                throw new RuntimeException("ASDF " + itemId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if(item == null)
+            throw new RuntimeException("ASDFASDF");*/
+
+        RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
+
+        item = repeatHelper.getItemForId(itemId);
+
+        question_text.append(getString(R.string.reminder_question_beginning));
+        question_text.append("\"" + item.getName() + "\"");
+        question_text.append(getString(R.string.reminder_question_second));
+
+        DateFormat dateFormat = new SimpleDateFormat(getString(R.string.time_format));
+        String date;
+        if (item.getRemindAtDate() != null)
+            date = dateFormat.format(item.getRemindAtDate().getTime());
+        else
+            date = getString(R.string.now);
+
+        question_text.append(date);
+        question_text.append(getString(R.string.reminder_question_third));
+        question_text.append(getString(R.string.reminder_question_end));
 
         period_numberPicker.setMinValue(1);
         period_numberPicker.setMaxValue(10);

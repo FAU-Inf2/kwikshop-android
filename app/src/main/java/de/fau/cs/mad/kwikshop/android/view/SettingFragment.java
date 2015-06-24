@@ -26,6 +26,7 @@ import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.SimpleStorage;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 
 
 public class SettingFragment extends Fragment {
@@ -100,14 +101,16 @@ public class SettingFragment extends Fragment {
         if (setList.get(position).equals(OPTION_1)) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            int currentLocaleIdIndex = getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).getInt(OPTION_1, 0);
+            //int currentLocaleIdIndex = getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).getInt(OPTION_1, 0);
+            int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(OPTION_1, 0, getActivity());
             builder.setTitle(R.string.settings_option_2_setlocale);
             builder.setSingleChoiceItems(localeSelectionNames, currentLocaleIdIndex, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
                     setLocale(localeIds[which].toString());
-                    getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).edit().putInt(OPTION_1, which).apply();
+                    SharedPreferencesHelper.saveInt(OPTION_1, which, getActivity());
+                    //getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).edit().putInt(OPTION_1, which).apply();
 
                 }
 

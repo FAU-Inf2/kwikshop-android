@@ -48,7 +48,9 @@
                 android:visible="false"
                 android:title="@string/overflow_action_menu_move_all_from_shopping_cart" />
 
-
+            <item android:id="@+id/action_openloginactivity"
+                  app:showAsAction="ifRoom"
+                  android:title="@string/overflow_action_menu_openloginactivity" />
 
         </menu>
 

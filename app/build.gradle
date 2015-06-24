@@ -49,7 +49,7 @@ android {
     }
 }
 
-preBuild.dependsOn(":../../kwikshop-common:build")
+preBuild.dependsOn(":../kwikshop-common:build")
 
 dependencies {
 

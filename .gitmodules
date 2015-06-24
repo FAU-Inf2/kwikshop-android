@@ -1,3 +1,0 @@
-[submodule "app/src/common"]
-	path = app/src/common
-	url = https://github.com/FAU-Inf2/kwikshop-common.git

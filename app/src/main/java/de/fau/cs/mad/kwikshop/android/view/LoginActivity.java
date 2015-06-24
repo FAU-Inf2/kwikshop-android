@@ -371,33 +371,9 @@ public class LoginActivity extends FragmentActivity implements
                 Log.e(TAG, "Error contacting server.", e);
                 return null;
             }
+            SessionHandler.setSessionToken(getApplicationContext(), authResponse); // save session token
             return authResponse;
-            //return time.getTimestamp();
 
-            /*HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(SessionHandler.getAuthenticationEndpoint());
-            String responseBody;
-            try {
-                List nameValuePairs = new ArrayList(1);
-                nameValuePairs.add(new BasicNameValuePair("token", idToken));
-                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                HttpResponse response = httpClient.execute(httpPost);
-                int statusCode = response.getStatusLine().getStatusCode();
-                responseBody = EntityUtils.toString(response.getEntity());
-
-                if(statusCode == 200)
-                    SessionHandler.setSessionToken(getApplicationContext(), responseBody); // save session token
-                else
-                    return null;
-
-                Log.i(TAG, "Signed in as: " + responseBody);
-            } catch (Exception e) {
-                Log.e(TAG, "Error sending ID token to backend.", e);
-                return null;
-            }
-
-            return responseBody;*/
         }
 
         @Override

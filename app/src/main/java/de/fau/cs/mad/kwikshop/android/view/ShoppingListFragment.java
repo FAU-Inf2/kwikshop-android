@@ -107,13 +107,7 @@ public class ShoppingListFragment
         if (getArguments() != null) {
             listID = getArguments().getInt(ARG_LISTID);
         }
-        setHasOptionsMenu(true);
 
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -258,7 +252,7 @@ public class ShoppingListFragment
 
         // shopping mode is on
         if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getActivity())){
-
+            BaseActivity.overflow_menu.findItem(R.id.overflow_menu).setVisible(false);
             floatingActionButton.setVisibility(View.GONE);
             floatingActionButton.hide();
              // remove quick add view

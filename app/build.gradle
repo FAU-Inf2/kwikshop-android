@@ -49,6 +49,9 @@ android {
     }
 }
 
+
+preBuild.dependsOn(":kwikshop-common:build")
+
 dependencies {
 
     //IMPORTANT: If you add dependencies here, you also need to mention
@@ -56,6 +59,7 @@ dependencies {
     // you also need to add it to the string array acknowledgements_Items in values/strings.xml
 
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: '../../kwikshop-common/build/classes', include: '*.class')
 
     //Google support libaries for older android version
     compile 'com.android.support:appcompat-v7:21.0.+'

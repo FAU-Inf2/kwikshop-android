@@ -139,7 +139,6 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
                             places = client.getNearbyPlaces(lat, lng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
                         } catch (Exception e) {
                             Log.e(LOG_TAG, "Exception: " + e.getMessage());
- 
                         }
                     }
 

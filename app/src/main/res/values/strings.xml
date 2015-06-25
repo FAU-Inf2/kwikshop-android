@@ -89,7 +89,7 @@
     <string name="overflow_action_menu_listofshoppinglists">Shopping lists</string>
     <string name="overflow_action_menu_move_all_to_shopping_cart">Mark everything as bought</string>
     <string name="overflow_action_menu_move_all_from_shopping_cart">Mark nothing as bought</string>
-
+    <string name="overflow_action_menu_shopping_mode">Shopping mode</string>
 
     <!-- Shopping list -->
     <!--<string name="itemdeleted">Moved to shopping cart</string> -->

@@ -8,13 +8,14 @@ import android.view.MenuItem;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.greenrobot.event.EventBus;
 
 public class ShoppingListActivity extends BaseActivity {
 
 
     private static final String SHOPPING_LIST_ID = "shopping_list_id";
-
+    public static String SHOPPING_MODE_SETTING = "shopping_mode_setting";
 
     public static Intent getIntent(Context context, int shoppingListId) {
 
@@ -37,6 +38,8 @@ public class ShoppingListActivity extends BaseActivity {
         menu.getItem(1).getSubMenu().getItem(6).setVisible(true);
         //mark nothing as bought
         menu.getItem(1).getSubMenu().getItem(7).setVisible(true);
+        //shopping mode
+        menu.getItem(1).getSubMenu().getItem(8).setVisible(true);
         return true;
     }
 
@@ -60,11 +63,20 @@ public class ShoppingListActivity extends BaseActivity {
                 android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().add(frameLayout.getId(), AddRecipeToShoppingListFragment.newInstance(id)).commit();
                 break;
+            case R.id.action_shopping_mode:
+                // save enabled shopping mode setting and restart activity
+                SharedPreferencesHelper.saveBoolean(SHOPPING_MODE_SETTING, true, getApplicationContext());
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+                break;
         }
         if(type != null) EventBus.getDefault().post(type);
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

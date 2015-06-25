@@ -4,7 +4,7 @@
 
 
     <item
-        android:id="@+id/empty"
+        android:id="@+id/overflow_menu"
         android:title="options"
         android:orderInCategory="101"
         app:showAsAction="always"
@@ -47,6 +47,11 @@
                 app:showAsAction="ifRoom"
                 android:visible="false"
                 android:title="@string/overflow_action_menu_move_all_from_shopping_cart" />
+
+            <item android:id="@+id/action_shopping_mode"
+                  app:showAsAction="ifRoom"
+                  android:visible="false"
+                  android:title="@string/overflow_action_menu_shopping_mode" />
 
             <item android:id="@+id/action_openloginactivity"
                   app:showAsAction="ifRoom"

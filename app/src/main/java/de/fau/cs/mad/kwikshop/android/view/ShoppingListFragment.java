@@ -3,13 +3,19 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 //import android.app.Fragment;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ListAdapter;
 import android.support.v4.app.Fragment;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.melnykov.fab.FloatingActionButton;
@@ -35,6 +42,7 @@ import de.fau.cs.mad.kwikshop.android.common.*;
 import de.fau.cs.mad.kwikshop.android.model.*;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
@@ -51,6 +59,7 @@ public class ShoppingListFragment
 
     private static final String ARG_LISTID = "list_id";
 
+    public Menu overflow_menu;
 
     private int listID = -1;
 
@@ -77,6 +86,9 @@ public class ShoppingListFragment
     @InjectView(R.id.shoppinglist_scrollview)
     ScrollView scrollView;
 
+    @InjectView(R.id.quickAdd)
+    RelativeLayout quickAddLayout;
+
 
 
     public static ShoppingListFragment newInstance(int listID) {
@@ -95,7 +107,13 @@ public class ShoppingListFragment
         if (getArguments() != null) {
             listID = getArguments().getInt(ARG_LISTID);
         }
+        setHasOptionsMenu(true);
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -236,8 +254,23 @@ public class ShoppingListFragment
 
         disableFloatingButtonWhileSoftKeyboardIsShown();
 
+
+
+        // shopping mode is on
+        if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getActivity())){
+
+            floatingActionButton.setVisibility(View.GONE);
+            floatingActionButton.hide();
+             // remove quick add view
+            ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
+        }
+
         return rootView;
     }
+
+
+
+
 
     @Override
     public void onResume() {

@@ -31,4 +31,19 @@ public class SharedPreferencesHelper {
         int value = sharedPref.getInt(key, defaultValue);
         return value;
     }
+
+    public static void saveBoolean(String key, Boolean value, Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(key, value);
+        editor.apply();
+    }
+
+    public static Boolean loadBoolean(String key, Boolean defaultValue, Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE);
+        Boolean value = sharedPref.getBoolean(key, defaultValue);
+        return value;
+    }
+
+
 }

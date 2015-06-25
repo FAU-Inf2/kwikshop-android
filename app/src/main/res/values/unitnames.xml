@@ -11,6 +11,7 @@
 
     -->
 
+    <string name="unit_piece_name">piece</string>
     <string name="unit_piece">pieces</string>
     <string name="unit_piece_short">pc</string>
     <string name="unit_bag">bags</string>

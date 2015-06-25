@@ -123,12 +123,16 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         // amount
         int amount = item.getAmount();
-        boolean hideAmount = true;
-        if(item.getUnit() != null)
-            if(!item.getUnit().getName().equals(R.string.unit_piece))
-                hideAmount = false;
+        boolean unitIsPieces = false;
+        if (item.getUnit() != null) {
+            if (item.getUnit().getName().equals(context.getString(R.string.unit_piece_name))) {
+                unitIsPieces = true;
+            }
+        } else {
+            unitIsPieces = true;
+        }
 
-        if (amount <= 1 && hideAmount) {
+        if (amount <= 1 && unitIsPieces) {
             viewHolder.textView_Amount.setVisibility(View.GONE);
         } else {
             String unitStr = displayHelper.getShortDisplayName(item.getUnit());

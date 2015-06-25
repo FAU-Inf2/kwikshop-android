@@ -1,6 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import de.fau.cs.mad.kwikshop.android.R;
 
@@ -9,7 +11,6 @@ public class ListOfShoppingListsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();

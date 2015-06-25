@@ -59,11 +59,6 @@ public class BaseActivity extends ActionBarActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Deprecated
-    protected boolean onCreateOptionsMenuSuper(Menu menu) {
-        // TODO remove this method as soon as we don't need it any more. This is not how it is done properly
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -86,6 +81,13 @@ public class BaseActivity extends ActionBarActivity {
                 return true;
             case R.id.action_listofrecipes:
                 startActivity(new Intent(this, ListOfRecipesActivity.class));
+                return true;
+            case R.id.action_openloginactivity:
+                Intent intent = new Intent(this, LoginActivity.class);
+                Bundle b = new Bundle();
+                b.putBoolean("FORCE", true); //To make sure the Activity does not close immediately
+                intent.putExtras(b);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

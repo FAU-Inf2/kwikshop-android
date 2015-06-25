@@ -18,6 +18,7 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -57,6 +58,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
     private final Context context;
     private final ListStorage listStorage;
+    private final SimpleStorage<CalendarEventDate> calendarEventStorage;
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
 
@@ -71,7 +73,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     private Command editCalendarEventCommand;
     private Command createCalendarEventCommand;
     private Command deleteCalendarEventCommand;
-    private CalendarEventDate calendarEventDate = new CalendarEventDate();
+    private CalendarEventDate calendarEventDate;
 
 
 
@@ -82,7 +84,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     @Inject
     public ShoppingListDetailsViewModel(final Context context, final ViewLauncher viewLauncher,
                                         final ResourceProvider resourceProvider,
-                                        final ListStorage listStorage) {
+                                        final ListStorage listStorage, final SimpleStorage<CalendarEventDate> calendarEventStorage) {
 
         if (context == null) {
             throw new IllegalArgumentException("'context' must not be null");
@@ -100,10 +102,15 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             throw new IllegalArgumentException("'listStorage' must not be null");
         }
 
+        if(calendarEventStorage == null) {
+            throw new IllegalArgumentException("'calendarEventStorage' must not be null");
+        }
+
         this.context = context;
         this.viewLauncher = viewLauncher;
         this.resourceProvider = resourceProvider;
         this.listStorage = listStorage;
+        this.calendarEventStorage = calendarEventStorage;
 
     }
 
@@ -223,6 +230,11 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     }
 
     public void onEventMainThread(CalendarEventDate eventDate) {
+
+        if(getCalendarEventDate() != null) {
+            eventDate.setAndroidCalendarId(getCalendarEventDate().getAndroidCalendarId());
+            calendarEventStorage.deleteSingleItem(getCalendarEventDate());
+        }
         setCalendarEventDate(eventDate);
     }
 
@@ -253,13 +265,13 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             //TODO: handle exception when list is not found
             this.shoppingList = listStorage.loadList(shoppingListId);
             setName(shoppingList.getName());
+            setCalendarEventDate(shoppingList.getCalendarEventDate());
 
-            boolean calendarEventExists = shoppingList.getCalendarEventDate().getCalendarEventId() != -1;
+            boolean calendarEventExists = shoppingList.getCalendarEventDate() != null;
             this.editCalendarEventCommand.setIsAvailable(calendarEventExists);
             this.createCalendarEventCommand.setIsAvailable(!calendarEventExists);
             this.deleteCalendarEventCommand.setIsAvailable(calendarEventExists);
 
-            setName(shoppingList.getName());
         }
 
         EventBus.getDefault().register(this);
@@ -270,19 +282,17 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             this.shoppingListId = listStorage.createList();
             shoppingList = listStorage.loadList(shoppingListId);
         }
-        CalendarEventDate calendarEventDate = getCalendarEventDate();
-
 
         shoppingList.setName(this.getName());
-        if (calendarEventDate.getIsSet()) {
-            writeEventToCalendar();
-            shoppingList.getCalendarEventDate().setYear(calendarEventDate.getYear());
-            shoppingList.getCalendarEventDate().setMonth(calendarEventDate.getMonth());
-            shoppingList.getCalendarEventDate().setDay(calendarEventDate.getDay());
-            shoppingList.getCalendarEventDate().setHour(calendarEventDate.getHour());
-            shoppingList.getCalendarEventDate().setMinute(calendarEventDate.getMinute());
 
+        if (getCalendarEventDate() != null) {
+
+            writeEventToCalendar();
+
+            calendarEventStorage.addItem(getCalendarEventDate());
         }
+
+        shoppingList.setCalendarEventDate(getCalendarEventDate());
 
         listStorage.saveList(shoppingList);
 
@@ -321,7 +331,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
                     @Override
                     public void execute(Object parameter) {
 
-                        if (shoppingList.getCalendarEventDate().getCalendarEventId() != -1) {
+                        if (getCalendarEventDate() != null) {
                             deleteCalendarEventCommandExecute();
                         }
 
@@ -339,27 +349,32 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
     private void deleteCalendarEventCommandExecute() {
 
-        Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI,
-                shoppingList.getCalendarEventDate().getCalendarEventId());
-        int rows = context.getContentResolver().delete(deleteUri, null, null);
+        if(getCalendarEventDate() != null && getCalendarEventDate().getAndroidCalendarId() != -1) {
+            Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI,
+                                                       getCalendarEventDate().getAndroidCalendarId());
+            int rows = context.getContentResolver().delete(deleteUri, null, null);
+        }
     }
 
     private void createCalendarEventCommandExecute() {
 
-        setCalendarEventDate(new CalendarEventDate());
-        CalendarEventDate eventDate = getCalendarEventDate();
-        eventDate.initialize();
+        CalendarEventDate eventDate = getCalendarEventDate() != null
+                ? getCalendarEventDate()
+                : CalendarEventDate.now();
 
         viewLauncher.showDatePicker(eventDate.getYear(), eventDate.getMonth(), eventDate.getDay(),
                 eventDate.getHour(), eventDate.getMinute());
-
     }
 
     private void writeEventToCalendar() {
 
         CalendarEventDate eventDate = getCalendarEventDate();
 
-        if (shoppingList.getCalendarEventDate().getCalendarEventId() == -1) {
+        if(eventDate== null) {
+            return;
+        }
+
+        if (eventDate.getAndroidCalendarId() == -1) {
 
             //create Event
             long calID = 1;
@@ -383,13 +398,13 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             values.put(CalendarContract.Events.CALENDAR_ID, calID);
             TimeZone defaultTimeZone = TimeZone.getDefault();
             values.put(CalendarContract.Events.EVENT_TIMEZONE, defaultTimeZone.getID());
-            values.put(CalendarContract.Events.DESCRIPTION, "http://kwikshop.is.nice");
+            values.put(CalendarContract.Events.DESCRIPTION, context.getString(R.string.intent_calendar_description) + Integer.toString(shoppingList.getId()));
             Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
-            shoppingList.getCalendarEventDate().setCalendarEventId((Long.parseLong(uri.getLastPathSegment())));
+            eventDate.setAndroidCalendarId((Long.parseLong(uri.getLastPathSegment())));
 
             //sets alarm
             ContentValues reminders = new ContentValues();
-            reminders.put(CalendarContract.Reminders.EVENT_ID, shoppingList.getCalendarEventDate().getCalendarEventId());
+            reminders.put(CalendarContract.Reminders.EVENT_ID, eventDate.getAndroidCalendarId());
             reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
             reminders.put(CalendarContract.Reminders.MINUTES, 0);
 
@@ -397,6 +412,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
 
         } else {
+
             //update Event
             long startMillis;
             long endMillis;
@@ -415,29 +431,27 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             values.put(CalendarContract.Events.DTSTART, startMillis);
             values.put(CalendarContract.Events.DTEND, endMillis);
             values.put(CalendarContract.Events.TITLE, "[Kwik Shop] " + shoppingList.getName());
-            values.put(CalendarContract.Events.DESCRIPTION, "http://kwikshop.is.nice");
+            values.put(CalendarContract.Events.DESCRIPTION, context.getString(R.string.intent_calendar_description) + Integer.toString(shoppingList.getId()));
             Uri updateUri;
-            updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, shoppingList.
-                    getCalendarEventDate().getCalendarEventId());
+            updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventDate.getAndroidCalendarId());
             int rows = context.getContentResolver().update(updateUri, values, null, null);
 
 
             //sets alarm
             ContentValues reminders = new ContentValues();
-            reminders.put(CalendarContract.Reminders.EVENT_ID, shoppingList.getCalendarEventDate().getCalendarEventId());
+            reminders.put(CalendarContract.Reminders.EVENT_ID, eventDate.getAndroidCalendarId());
             reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
             reminders.put(CalendarContract.Reminders.MINUTES, 0);
 
-            Uri uri2 = cr.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
+            try {
+                Uri uri2 = cr.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
+            } catch(android.database.sqlite.SQLiteException e){
 
-
+                //todo: maybe remove CalendarEventDate, so the user is able to set a new one?
+                setCalendarEventDate(null);
+                e.printStackTrace();
+            }
         }
-        //todo: does not get saved
-        shoppingList.getCalendarEventDate().setYear(eventDate.getYear());
-        shoppingList.getCalendarEventDate().setMonth(eventDate.getMonth());
-        shoppingList.getCalendarEventDate().setDay(eventDate.getDay());
-        shoppingList.getCalendarEventDate().setHour(eventDate.getHour());
-        shoppingList.getCalendarEventDate().setMinute(eventDate.getMinute());
 
     }
 }

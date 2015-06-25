@@ -426,6 +426,14 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         setItemSortType(sortType);
     }
 
+    @SuppressWarnings("unused")
+    public void onEvent(ReminderTimeIsOverEvent e) {
+        int itemId = e.getItemId();
+        int listId = e.getListId();
+        viewLauncher.showReminderView(listId, itemId);
+    }
+
+
 
     @Override
     protected Listener getListener() {
@@ -469,6 +477,13 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                     item.setRemindAtDate(remindDate.getTime());
                     repeatHelper.offerRepeatData(item);
                     // post on EventBus is not necessary because it is done by the SaveItemTask anyway
+
+                    //TODO only for testing. Delete this EventBus post immediately if I've forgotten it before push
+                    //if (!(EventBus.getDefault().isRegistered(this)))
+                    //    EventBus.getDefault().register(this);
+
+                    EventBus.getDefault().post(new ReminderTimeIsOverEvent(item.getShoppingList().getId(), item.getId()));
+                    //onEventBackgroundThread(new ReminderTimeIsOverEvent(item.getId()));
                 }
             }
 

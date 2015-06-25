@@ -6,10 +6,14 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.Calendar;
 
 @DatabaseTable(tableName = "calendarEvent")
-public class CalendarEventDate{
-    //TODO: we might want to change it to generatedId = true
-    @DatabaseField(id = true)
-    private long calendarEventId = -1;
+public class CalendarEventDate {
+
+
+    @DatabaseField(generatedId = true)
+    private long calendarEventId;
+
+    @DatabaseField
+    private long androidCalendarId = -1;
 
     @DatabaseField
     private int year;
@@ -26,15 +30,7 @@ public class CalendarEventDate{
     @DatabaseField
     private int minute;
 
-    @DatabaseField
-    private boolean isSet = false;
-
     public CalendarEventDate(){
-        this.year = 0;
-        this.month = 0;
-        this.day = 0;
-        this.hour = 0;
-        this.minute = 0;
     }
 
     public CalendarEventDate(int year, int month, int day, int hour, int minute){
@@ -51,14 +47,14 @@ public class CalendarEventDate{
         this.day = eventDate.getDay();
         this.hour = eventDate.getHour();
         this.minute = eventDate.getMinute();
-        this.isSet = eventDate.getIsSet();
         this.calendarEventId = eventDate.getCalendarEventId();
     }
 
 
     //setter
-    public void setCalendarEventId(long id){
-        calendarEventId = id;
+
+    public void setAndroidCalendarId(long value) {
+        this.androidCalendarId = value;
     }
 
     public void setYear(int year){
@@ -80,8 +76,6 @@ public class CalendarEventDate{
     public void setMinute(int minute){
         this.minute = minute;
     }
-
-    public void setIsSet(boolean bool) { this.isSet = bool;}
 
     //getter
     public long getCalendarEventId(){
@@ -108,30 +102,28 @@ public class CalendarEventDate{
         return minute;
     }
 
-    public boolean getIsSet() { return isSet; }
 
-    //compares the id of a given CalendarEventDate
-    //if id has default value current time is set, else time from eventDate
-    public void initialize(){
-            this.isSet = true;
-            //if(eventDate.getCalendarEventId() == -1) {
-                final Calendar c = Calendar.getInstance();
-                setYear(c.get(Calendar.YEAR));
-                setMonth(c.get(Calendar.MONTH));
-                setDay(c.get(Calendar.DAY_OF_MONTH));
-                setHour(c.get(Calendar.HOUR_OF_DAY));
-                setMinute(c.get(Calendar.MINUTE));
-           /*}else{
-                setYear(eventDate.getYear());
-                setMonth(eventDate.getMonth());
-                setDay(eventDate.getDay());
-                setHour(eventDate.getHour());
-                setMinute(eventDate.getMinute());
-            }
-*/
+    public long getAndroidCalendarId() {
+        return this.androidCalendarId;
     }
 
 
+
+    public static CalendarEventDate now() {
+
+        final Calendar c = Calendar.getInstance();
+
+
+        CalendarEventDate date = new CalendarEventDate();
+
+        date.setYear(c.get(Calendar.YEAR));
+        date.setMonth(c.get(Calendar.MONTH));
+        date.setDay(c.get(Calendar.DAY_OF_MONTH));
+        date.setHour(c.get(Calendar.HOUR_OF_DAY));
+        date.setMinute(c.get(Calendar.MINUTE));
+
+        return date;
+    }
 
 }
 

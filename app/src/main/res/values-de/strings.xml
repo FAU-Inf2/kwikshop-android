@@ -53,6 +53,7 @@
     <string name="taptoundo">ZURÜCK<!--rückgängig machen--></string>
     <string name="title_activity_about">Über</string>
     <string name="title_activity_list_of_shopping_list">Einkaufslisten</string>
+    <string name="title_activity_reminder">Erinnerung</string>
     <string name="title_activity_settings">Einstellungen</string>
     <string name="title_activity_shopping_list">Einkaufsliste</string>
     <string name="title_activity_shopping_list_detail">Details </string>
@@ -149,15 +150,24 @@
     <string name="deleteRecipe_DialogTitle">Rezept löschen</string>
     <string name="deleteRecipe_DialogText">Sind Sie sicher, dass sie dieses Rezept löschen möchten?</string>
     <string name="overflow_action_menu_recipes">Rezepte verwalten</string>
+    <string name="overflow_action_menu_add_recipes">Rezept zur Liste hinzufügen</string>
+
+    <!-- Example Recipes -->
+    <string name="recipe_name_chili_con_carne">Chili con Carne</string>
+    <string name="recipe_onion">Zwiebeln</string>
+    <string name="recipe_mince">Hackfleisch</string>
+    <string name="recipe_kidney_beans">Kidneybohnen</string>
+    <string name="recipe_corn">Mais</string>
+    <string name="recipe_potatoes">Kartoffeln</string>
+    <string name="recipe_tomatoes">Tomaten</string>
+
 
     <!--Time-->
     <string name="days">Tage</string>
     <string name="weeks">Wochen</string>
     <string name="months">Monate</string>
     <string name="time_format">dd/MM/yyyy HH:mm</string>
-    <string name="reminder_set_msg">Erinnerung gesetzt für</string>
-    <string name="reminder_nextTimeBought_msg">Die Erinnerung wird gestartet, wenn der Gegenstand als gekauft markiert wird.</string>
-    <string name="reminder_deleted_msg">Erinnerung gelöscht.</string>
+    <string name="now">jetzt</string>
 
     <!-- Alert Dialog For missing connection -->
     <string name="alert_dialog_connection_label">Netzwerk</string>
@@ -167,5 +177,31 @@
 
     <!-- Location -->
     <string name="location">Standort</string>
+
+    <!--Reminder-->
+    <string name="reminder_question_beginning">"Eine Erinnerung für den Gegenstand "</string>
+    <string name="reminder_question_second">" wurde für "</string>
+    <string name="reminder_question_third">" gesetzt. "</string>
+    <string name="reminder_question_end">Was möchten Sie nun machen?</string>
+    <string name="reminder_set_msg">Erinnerung gesetzt für</string>
+    <string name="reminder_nextTimeBought_msg">Die Erinnerung wird gestartet, wenn der Gegenstand als gekauft markiert wird.</string>
+    <string name="reminder_deleted_msg">Erinnerung gelöscht.</string>
+    <string name="reminder_doNothing">Diesmal nichts tun</string>
+    <string name="reminder_delete">Diese Erinnerung löschen</string>
+    <string name="reminder_addItemToShoppingList">Einer Einkaufsliste hinzufügen</string>
+    <string name="reminder_remindLater">Erneut erinnern</string>
+    <string name="reminder_in">in</string>
+
+    <!-- Login -->
+    <string name="login_skip">Jetzt nicht einloggen</string>
+    <string name="signed_in_fmt">Eingeloggt als: %s</string>
+    <string name="signing_in">Login läuft…</string>
+    <string name="signed_out">Nicht eingeloggt</string>
+    <string name="play_services_error_fmt">Google Play Services Fehler</string>
+    <string name="kwikshop_login_failed">Login bei Kwik Shop fehlgeschlagen, bitte erneut versuchen.</string>
+    <string name="sign_out">Abmelden</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="retry">Login erneut versuchen</string>
+    <string name="login_skip_message">Login wirklich überspringen? Du kannst dich jederzeit im Menü einloggen.</string>
 
 </resources>

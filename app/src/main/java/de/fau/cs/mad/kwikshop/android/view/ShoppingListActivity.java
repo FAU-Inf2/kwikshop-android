@@ -26,10 +26,18 @@ public class ShoppingListActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.shoppinglist_replacement_menu, menu);
-        getMenuInflater().inflate(R.menu.shoppinglist_item_movement_menu, menu);
-        //menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.overflow_action_menu_move_all_to_shopping_cart);
-        // TODO: change this. We should not jump over the onCreateOptionsMenu method of BaseActivity
-        return onCreateOptionsMenuSuper(menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        //add recipes
+        menu.getItem(1).getSubMenu().getItem(2).setVisible(true);
+        //mark everything as bought
+        menu.getItem(1).getSubMenu().getItem(6).setVisible(true);
+        //mark nothing as bought
+        menu.getItem(1).getSubMenu().getItem(7).setVisible(true);
+        return true;
     }
 
     @Override
@@ -45,6 +53,13 @@ public class ShoppingListActivity extends BaseActivity {
             case R.id.action_move_all_from_shopping_cart:
                 EventBus.getDefault().post(MoveAllItemsEvent.moveAllFromBoughtEvent);
                 break;
+            case R.id.action_add_recipe:
+                Bundle extras = getIntent().getExtras();
+                int id = extras.getInt(SHOPPING_LIST_ID);
+
+                android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().add(frameLayout.getId(), AddRecipeToShoppingListFragment.newInstance(id)).commit();
+                break;
         }
         if(type != null) EventBus.getDefault().post(type);
 
@@ -58,8 +73,23 @@ public class ShoppingListActivity extends BaseActivity {
 
         //Get Shopping List ID
 
+        Intent intent = getIntent();
+        String dataString = intent.getDataString();
+        int id = -1;
+        if(dataString != null) {
+            //dataString is not null if Activity was opened by Calendar intent filter
+            for (int i = 0; i < dataString.length() - this.getString(R.string.intent_id_separator).length(); i++) {
+                if (dataString.substring(i, i + 5).equals(this.getString(R.string.intent_id_separator))) {
+                    String idString = dataString.substring(i + 5);
+                    id = Integer.parseInt(idString);
+                    break;
+                }
+            }
+            intent.putExtra(SHOPPING_LIST_ID, id);
+        }else {
             Bundle extras = getIntent().getExtras();
-            int id = extras.getInt(SHOPPING_LIST_ID);
+            id = extras.getInt(SHOPPING_LIST_ID);
+        }
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();

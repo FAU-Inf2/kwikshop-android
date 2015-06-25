@@ -46,7 +46,6 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         eventDate.setDay(day);
         eventDate.setHour(hourOfDay);
         eventDate.setMinute(minute);
-        eventDate.setIsSet(true);
 
         EventBus.getDefault().post(eventDate);
     }

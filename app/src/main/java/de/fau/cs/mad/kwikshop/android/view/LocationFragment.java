@@ -52,6 +52,7 @@ import se.walkercrou.places.Hours;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
 import se.walkercrou.places.Status;
+import se.walkercrou.places.exception.NoResultsFoundException;
 
 
 public class LocationFragment extends Fragment implements  OnMapReadyCallback {
@@ -127,12 +128,21 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
             }
 
             @Override
-            protected Void doInBackground(Void... params)
-            {
+            protected Void doInBackground(Void... params) {
                 String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
-                if(InternetHelper.checkInternetConnection(getActivity())){
-                    GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-                    places = client.getNearbyPlaces(lat, lng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
+                if (InternetHelper.checkInternetConnection(getActivity())) {
+
+                    GooglePlaces client  = new GooglePlaces(googleBrowserApiKey);
+
+                    if (client != null) {
+                        try {
+                            places = client.getNearbyPlaces(lat, lng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
+                        } catch (Exception e) {
+                            Log.e(LOG_TAG, "Exception: " + e.getMessage());
+ 
+                        }
+                    }
+
                 }
 
                 return null;

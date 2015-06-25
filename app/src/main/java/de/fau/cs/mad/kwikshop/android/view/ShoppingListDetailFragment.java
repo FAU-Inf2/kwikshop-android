@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +39,7 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
     private ShoppingListDetailsViewModel viewModel;
     private boolean updatingViewModel = false;
-    private SaveDeleteActivity saveCancelActivity;
+
 
 
     public static ShoppingListDetailFragment newInstance() {
@@ -91,9 +92,8 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         textView_ShoppingListName.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    bindButton(saveCancelActivity.getSaveButton(), viewModel.getSaveCommand());
+                    viewModel.getSaveCommand().execute(null);
                     return true;
                 }
                 return false;

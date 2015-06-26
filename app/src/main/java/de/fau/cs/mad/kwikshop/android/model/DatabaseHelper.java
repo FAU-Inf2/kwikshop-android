@@ -28,6 +28,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
     private static final String DATABASE_NAME = "kwikshop.db";
 
+    //note if you increment here, also add migration strategy with correct version to onUpgrade
     private static final int DATABASE_VERSION = 18; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
@@ -109,28 +110,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             }
         }
 
-
-/*
-        try {
-            // TODO: in later versions we want to keep tho old data and migrate it to the new db
-            Log.i(DatabaseHelper.class.getName(), "onUpgrade");
-            TableUtils.dropTable(connectionSource, Item.class, true);
-            TableUtils.dropTable(connectionSource, AccountID.class, true);
-            TableUtils.dropTable(connectionSource, ShoppingList.class, true);
-            TableUtils.dropTable(connectionSource, Unit.class, true);
-            TableUtils.dropTable(connectionSource, Group.class, true);
-            TableUtils.dropTable(connectionSource, CalendarEventDate.class, true);
-            TableUtils.dropTable(connectionSource, AutoCompletionData.class, true);
-            TableUtils.dropTable(connectionSource, AutoCompletionBrandData.class, true);
-            TableUtils.dropTable(connectionSource, Recipe.class, true);
-            // after we drop the old databases, we create the new ones
-            onCreate(db, connectionSource);
-        } catch (SQLException e) {
-            Log.e(DatabaseHelper.class.getName(), "Can't drop databases", e);
-            throw new RuntimeException(e);
+        if(oldVersion < 19){
+            //put next changes here
         }
 
-        */
     }
 
     public Dao<Item, Integer> getItemDao() throws SQLException {

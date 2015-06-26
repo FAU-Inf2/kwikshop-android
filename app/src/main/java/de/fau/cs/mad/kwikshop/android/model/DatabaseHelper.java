@@ -82,6 +82,33 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
+
+        //version of the play store release
+        if(oldVersion == 7){
+            try {
+                //Changes in CalendarEventDate were to big to migrate them
+                TableUtils.dropTable(connectionSource, CalendarEventDate.class, true);
+                TableUtils.createTable(connectionSource, CalendarEventDate.class);
+                //Recipes are completely new
+                TableUtils.createTable(connectionSource, Recipe.class);
+                //Item changes
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN recipe RECIPE;");
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN lastBought DATE;");
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN regularlyRepeatItem BOOLEAN;");
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN periodType TIMEPERIODSENUM;");
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN selectedRepeatTime INTEGER;");
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN remindFromNextPurchaseOn BOOLEAN;");
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN remindAtDate DATE;");
+                //AutoCompletionData changes
+                autoCompletionDao.executeRaw("ALTER TABLE 'autoCompletionData' ADD COLUMN group GROUP;");
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+
+
+
         try {
             // TODO: in later versions we want to keep tho old data and migrate it to the new db
             Log.i(DatabaseHelper.class.getName(), "onUpgrade");

@@ -12,7 +12,6 @@ public class Item {
 
     public static final String FOREIGN_RECIPE_FIELD_NAME = "recipe";
 
-    // TODO: we might want to change the annotation to generatedId = true
     @DatabaseField(generatedId = true)
     private int id;
 

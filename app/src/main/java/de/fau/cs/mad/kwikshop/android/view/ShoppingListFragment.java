@@ -129,7 +129,7 @@ public class ShoppingListFragment
                 shoppingListView,
                 viewModel.getSelectItemCommand());
 
-        SimpleSwipeUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
+        TimedUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
                 new OnDismissCallback() {
                     @Override
                     public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
@@ -149,10 +149,10 @@ public class ShoppingListFragment
                 });
 
         swipeUndoAdapter.setAbsListView(shoppingListView);
+        swipeUndoAdapter.setTimeoutMs(1000);
         shoppingListView.setAdapter(swipeUndoAdapter);
         shoppingListView.enableSimpleSwipeUndo();
         shoppingListView.enableDragAndDrop();
-
         shoppingListView.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
                     @Override

@@ -92,6 +92,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 //Recipes are completely new
                 TableUtils.createTable(connectionSource, Recipe.class);
                 //Item changes
+                itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
                 itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN recipe RECIPE;");
                 itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN lastBought DATE;");
                 itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN regularlyRepeatItem BOOLEAN;");
@@ -100,6 +101,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN remindFromNextPurchaseOn BOOLEAN;");
                 itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN remindAtDate DATE;");
                 //AutoCompletionData changes
+                autoCompletionDao = ListStorageFragment.getDatabaseHelper().getAutoCompletionDao();
                 autoCompletionDao.executeRaw("ALTER TABLE 'autoCompletionData' ADD COLUMN group GROUP;");
 
             }catch (SQLException e){
@@ -108,7 +110,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         }
 
 
-
+/*
         try {
             // TODO: in later versions we want to keep tho old data and migrate it to the new db
             Log.i(DatabaseHelper.class.getName(), "onUpgrade");
@@ -127,6 +129,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             Log.e(DatabaseHelper.class.getName(), "Can't drop databases", e);
             throw new RuntimeException(e);
         }
+
+        */
     }
 
     public Dao<Item, Integer> getItemDao() throws SQLException {

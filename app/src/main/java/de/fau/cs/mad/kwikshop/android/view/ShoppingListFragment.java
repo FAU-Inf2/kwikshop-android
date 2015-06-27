@@ -14,10 +14,12 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ListAdapter;
 import android.support.v4.app.Fragment;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
@@ -77,6 +79,9 @@ public class ShoppingListFragment
     @InjectView(R.id.shoppinglist_scrollview)
     ScrollView scrollView;
 
+    @InjectView(R.id.cartCounter)
+    EditText cartCounter;
+
 
 
     public static ShoppingListFragment newInstance(int listID) {
@@ -115,11 +120,12 @@ public class ShoppingListFragment
         viewModel.initialize(this.listID);
 
 
-        getActivity().setTitle(viewModel.getName());
 
         viewModel.addListener(this);
         viewModel.getItems().addListener(this);
         viewModel.getBoughtItems().addListener(this);
+
+       // cartCounter.setText(viewModel.getBoughtItems().size());
 
         ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);

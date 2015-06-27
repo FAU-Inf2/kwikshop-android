@@ -93,6 +93,30 @@
                         android:layout_marginBottom="3dp"
                         android:textColor="@color/text_icons"
                         android:singleLine="true"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                        android:text="0"
+                        android:id="@+id/cartCounter"
+                        android:layout_marginLeft="140dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:textColor="@color/text_icons" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                        android:text="@string/items"
+                        android:id="@+id/textview_items"
+                        android:textColor="@color/text_icons"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="20dp" />
+
                 </TableRow>
 
                 <!--List of bought items-->

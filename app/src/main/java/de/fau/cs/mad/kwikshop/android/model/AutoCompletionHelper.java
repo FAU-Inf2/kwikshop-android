@@ -12,6 +12,7 @@ import java.util.List;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
 import de.fau.cs.mad.kwikshop.android.common.Group;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.greenrobot.event.EventBus;
 
@@ -33,8 +34,8 @@ public class AutoCompletionHelper{
         databaseHelper = new DatabaseHelper(context);
         try {
             //create local autocompletion storage
-            autoCompletionNameStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
-            autoCompletionBrandStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionBrandDao());
+            autoCompletionNameStorage = new SimpleStorageBase<>(databaseHelper.getAutoCompletionDao());
+            autoCompletionBrandStorage = new SimpleStorageBase<>(databaseHelper.getAutoCompletionBrandDao());
         } catch (SQLException e) {
             e.printStackTrace();
         }

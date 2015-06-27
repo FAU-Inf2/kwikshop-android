@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.*;
 import de.fau.cs.mad.kwikshop.android.model.*;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;

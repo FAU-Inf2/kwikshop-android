@@ -16,6 +16,7 @@ import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 
 public class ListStorageFragment extends Fragment {
 
@@ -116,7 +117,7 @@ public class ListStorageFragment extends Fragment {
             m_UnitStorage = new UnitStorage(m_DatabaseHelper.getUnitDao());
             createUnitsInDatabase(activity, m_UnitStorage);
 
-            m_CalendarEventStorage = new SimpleStorage<>(m_DatabaseHelper.getCalendarDao());
+            m_CalendarEventStorage = new SimpleStorageBase<>(m_DatabaseHelper.getCalendarDao());
 
         } catch (SQLException e) {
             e.printStackTrace();

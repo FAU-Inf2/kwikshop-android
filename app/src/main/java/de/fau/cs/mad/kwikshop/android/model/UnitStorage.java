@@ -3,8 +3,9 @@ package de.fau.cs.mad.kwikshop.android.model;
 import com.j256.ormlite.dao.Dao;
 
 import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 
-public class UnitStorage extends SimpleStorage<Unit> {
+public class UnitStorage extends SimpleStorageBase<Unit> {
 
     private static Unit defaultUnit;
 

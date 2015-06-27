@@ -5,12 +5,14 @@ import com.j256.ormlite.dao.Dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 
-public class SimpleStorage<T> {
+
+public class SimpleStorageBase<T> implements SimpleStorage<T> {
 
     protected final Dao<T, Integer> dao;
 
-    public SimpleStorage(Dao<T, Integer> dao) {
+    public SimpleStorageBase(Dao<T, Integer> dao) {
         if (dao == null) {
             throw new IllegalArgumentException("'dao' must not be null");
         }

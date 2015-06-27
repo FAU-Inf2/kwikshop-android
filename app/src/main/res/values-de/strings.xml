@@ -176,7 +176,11 @@
     <string name="alert_dialog_connection_try">Wiederholen</string>
 
     <!-- Location -->
-    <string name="location">Standort</string>
+    <string name="find_nearby_supermarket">Supermarkt Finder</string>
+
+    <!-- Place -->
+    <string name="place_status_opened">geöffnet</string>
+    <string name="place_status_closed">geschlossen</string>
 
     <!--Reminder-->
     <string name="reminder_question_beginning">"Eine Erinnerung für den Gegenstand "</string>

@@ -25,7 +25,8 @@ import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
-import de.fau.cs.mad.kwikshop.android.model.SimpleStorage;
+import de.fau.cs.mad.kwikshop.android.model.SimpleStorageBase;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 
 
@@ -179,8 +180,8 @@ public class SettingFragment extends Fragment {
         SimpleStorage<AutoCompletionBrandData> autoCompletionBrandStorage = null;
         try {
             //create local autocompletion storage
-            autoCompletionNameStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionDao());
-            autoCompletionBrandStorage = new SimpleStorage<>(databaseHelper.getAutoCompletionBrandDao());
+            autoCompletionNameStorage = new SimpleStorageBase<>(databaseHelper.getAutoCompletionDao());
+            autoCompletionBrandStorage = new SimpleStorageBase<>(databaseHelper.getAutoCompletionBrandDao());
         } catch (SQLException e) {
             e.printStackTrace();
             Toast.makeText(getActivity(), getResources().getString(R.string.settings_option_3_error), Toast.LENGTH_LONG).show();

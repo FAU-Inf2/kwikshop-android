@@ -10,13 +10,17 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import java.util.Locale;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 
 /**
  * BaseActivity: all activities have to inherit
@@ -26,10 +30,17 @@ public class BaseActivity extends ActionBarActivity {
 
     public static FrameLayout frameLayout;
     public static boolean refreshed = false;
+    public static Menu overflow_menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+
+        if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, this)){
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
 
         setContentView(R.layout.activity_main);
         setSavedLocale();
@@ -93,6 +104,18 @@ public class BaseActivity extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, this)){
+            SharedPreferencesHelper.saveBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getApplicationContext());
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        }
+    }
+
 
     public void setSavedLocale() {
 

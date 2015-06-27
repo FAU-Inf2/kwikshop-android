@@ -78,8 +78,8 @@
         <activity
             android:name=".view.ShoppingListActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".view.ListOfShoppingListsActivity" >
-
+            android:parentActivityName=".view.ListOfShoppingListsActivity"
+            android:configChanges="screenSize|orientation" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -144,7 +144,7 @@
         </activity>
         <activity
             android:name=".view.LocationActivity"
-            android:label="@string/title_activity_location"
+            android:label="@string/find_nearby_supermarket"
             android:parentActivityName=".view.ListOfShoppingListsActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->

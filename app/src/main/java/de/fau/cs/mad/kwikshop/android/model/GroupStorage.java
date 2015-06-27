@@ -4,7 +4,7 @@ import com.j256.ormlite.dao.Dao;
 
 import de.fau.cs.mad.kwikshop.android.common.Group;
 
-public class GroupStorage extends SimpleStorage<Group> {
+public class GroupStorage extends SimpleStorageBase<Group> {
 
     private static Group defaultGroup;
 

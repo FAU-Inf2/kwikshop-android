@@ -44,6 +44,7 @@
     <string name="overflow_action_menu_settings">Einstellungen</string>
     <string name="overflow_action_menu_move_all_to_shopping_cart">Alles als gekauft markieren</string>
     <string name="overflow_action_menu_move_all_from_shopping_cart">Nichts als gekauft markieren</string>
+    <string name="overflow_action_menu_shopping_mode">Einkaufsmodus</string>
     <string name="regular_repeat">regelmäßig wiederholen</string>
     <string name="save">Speichern</string>
     <string name="settings_option_1_desc">Beschreibung von Option 1</string>
@@ -176,7 +177,11 @@
     <string name="alert_dialog_connection_try">Wiederholen</string>
 
     <!-- Location -->
-    <string name="location">Standort</string>
+    <string name="find_nearby_supermarket">Supermarkt Finder</string>
+
+    <!-- Place -->
+    <string name="place_status_opened">geöffnet</string>
+    <string name="place_status_closed">geschlossen</string>
 
     <!--Reminder-->
     <string name="reminder_question_beginning">"Eine Erinnerung für den Gegenstand "</string>

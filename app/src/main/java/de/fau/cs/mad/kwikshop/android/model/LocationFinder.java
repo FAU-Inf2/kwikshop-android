@@ -96,11 +96,13 @@ public class LocationFinder implements LocationListener {
     }
 
     public double getLatitude(){
-        return location.getLatitude();
+
+       return location != null ? location.getLatitude() : 0.0;
     }
 
     public double getLongitude(){
-        return location.getLongitude();
+
+        return location != null ? location.getLongitude() : 0.0;
     }
 
 

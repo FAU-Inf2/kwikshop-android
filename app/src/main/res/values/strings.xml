@@ -82,6 +82,10 @@
     <string name="settings_option_3_check_text">Are you sure you want to delete the history of autocompletion?</string>
     <string name="settings_option_3_error">Unfortunately an error occurred while deleting the history</string>
     <string name="settings_option_3_success">Successfully deleted history</string>
+    <string name="settings_option_3_createUnits">Create units</string>
+    <string name="settings_option_4_createGroups">Create groups</string>
+    <string name="settings_option_3_desc2">Create units for amount in items</string>
+    <string name="settings_option_4_desc">Create groups for items</string>
 
     <!-- Overflow Action Menu -->
     <string name="overflow_action_menu_settings">Settings</string>
@@ -89,7 +93,7 @@
     <string name="overflow_action_menu_listofshoppinglists">Shopping lists</string>
     <string name="overflow_action_menu_move_all_to_shopping_cart">Mark everything as bought</string>
     <string name="overflow_action_menu_move_all_from_shopping_cart">Mark nothing as bought</string>
-
+    <string name="overflow_action_menu_shopping_mode">Shopping Mode</string>
 
     <!-- Shopping list -->
     <!--<string name="itemdeleted">Moved to shopping cart</string> -->
@@ -212,15 +216,16 @@
     <string name="alert_dialog_connection_try">Try again</string>
 
     <!-- Location -->
-    <string name="location">Location</string>
-    <string name="settings_option_3_createUnits">Create units</string>
-    <string name="settings_option_4_createGroups">Create groups</string>
-    <string name="settings_option_3_desc2">Create units for amount in items</string>
-    <string name="settings_option_4_desc">Create groups for items</string>
+    <string name="find_nearby_supermarket">Supermarket Finder</string>
+
 
     <!-- Place -->
     <string name="place_status_opened">opened</string>
     <string name="place_status_closed">closed</string>
+
+
+
+
     
     <!--Reminder-->
     <string name="reminder_question_beginning">"A reminder for the item "</string>

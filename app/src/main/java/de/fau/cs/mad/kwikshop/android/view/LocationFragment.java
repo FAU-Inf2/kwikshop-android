@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 
+import org.apache.http.HttpException;
+
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -49,6 +52,7 @@ import se.walkercrou.places.Hours;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
 import se.walkercrou.places.Status;
+import se.walkercrou.places.exception.NoResultsFoundException;
 
 
 public class LocationFragment extends Fragment implements  OnMapReadyCallback {
@@ -88,6 +92,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
 
@@ -111,6 +116,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
             double lat;
             double lng;
             List<Place> places;
+            boolean isConnectionLost = false;
 
             @Override
             protected void onPreExecute() {
@@ -118,20 +124,37 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
                 LocationFinder location = new LocationFinder(getActivity());
                 lat = location.getLatitude();
                 lng = location.getLongitude();
+
             }
 
             @Override
             protected Void doInBackground(Void... params) {
                 String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
-                GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-                places = client.getNearbyPlaces(lat, lng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
+                if (InternetHelper.checkInternetConnection(getActivity())) {
+
+                    GooglePlaces client  = new GooglePlaces(googleBrowserApiKey);
+
+                    if (client != null) {
+                        try {
+                            places = client.getNearbyPlaces(lat, lng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
+                        } catch (Exception e) {
+                            Log.e(LOG_TAG, "Exception: " + e.getMessage());
+                        }
+                    }
+
+                }
+
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                initiateMap(places);
+                if(places != null){
+                    initiateMap(places);
+                } else {
+                    notificationOfNoConnection();
+                }
             }
         };
 

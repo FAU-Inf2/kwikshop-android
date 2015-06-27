@@ -7,7 +7,7 @@
         android:id="@+id/sortby_options_icon"
         android:title="sortby_options"
         app:showAsAction="always"
-        android:icon="@drawable/ic_menu_sort_by_size">
+        android:icon="@drawable/ic_sort_white_24dp">
 
         <menu>
 

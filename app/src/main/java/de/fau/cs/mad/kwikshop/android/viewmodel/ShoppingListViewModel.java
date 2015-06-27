@@ -560,6 +560,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
     private void addItemCommandExecute() {
         ensureIsInitialized();
+        getItems().enableEvents();
         viewLauncher.showItemDetailsView(this.shoppingListId);
     }
 

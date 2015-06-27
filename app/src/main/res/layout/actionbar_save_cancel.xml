@@ -2,29 +2,34 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="fill_horizontal"
-    android:paddingRight="15dip">
+    android:layout_gravity="fill_horizontal">
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button_remove"
-        android:src="@android:drawable/ic_menu_delete"
+        android:src="@drawable/ic_action"
         android:background="@android:color/transparent"
         android:layout_alignBottom="@+id/button_save"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:paddingRight="30dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button_save"
-        android:src="@android:drawable/ic_menu_save"
-        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_save_white_24dp"
         android:background="@android:color/transparent"
+        android:paddingLeft="30dip"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="15dp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:paddingLeft="15dip" />
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

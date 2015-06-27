@@ -63,7 +63,8 @@ dependencies {
 
     //Google support libaries for older android version
     compile 'com.android.support:appcompat-v7:21.0.+'
-    compile 'com.android.support:appcompat-v7:+'
+
+    compile 'com.android.support:multidex:1.0.0'
 
     //orm-lite (Object mapper)
     compile 'com.j256.ormlite:ormlite-android:4.48'

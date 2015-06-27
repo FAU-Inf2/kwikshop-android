@@ -20,6 +20,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ListAdapter;
 import android.support.v4.app.Fragment;
@@ -252,11 +253,10 @@ public class ShoppingListFragment
 
         // shopping mode is on
         if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getActivity())){
-            BaseActivity.overflow_menu.findItem(R.id.overflow_menu).setVisible(false);
-            floatingActionButton.setVisibility(View.GONE);
-            floatingActionButton.hide();
              // remove quick add view
+
             ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
+            ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
         }
 
         return rootView;

@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -16,6 +17,8 @@ public class ShoppingListActivity extends BaseActivity {
 
     private static final String SHOPPING_LIST_ID = "shopping_list_id";
     public static String SHOPPING_MODE_SETTING = "shopping_mode_setting";
+    public Menu menu;
+
 
     public static Intent getIntent(Context context, int shoppingListId) {
 
@@ -32,14 +35,30 @@ public class ShoppingListActivity extends BaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu){
-        //add recipes
-        menu.getItem(1).getSubMenu().getItem(2).setVisible(true);
-        //mark everything as bought
-        menu.getItem(1).getSubMenu().getItem(6).setVisible(true);
-        //mark nothing as bought
-        menu.getItem(1).getSubMenu().getItem(7).setVisible(true);
-        //shopping mode
-        menu.getItem(1).getSubMenu().getItem(8).setVisible(true);
+
+        MenuItem addRecipe = menu.findItem(R.id.action_add_recipe);
+        addRecipe.setVisible(true);
+
+        MenuItem moveToShoppingCart = menu.findItem(R.id.action_move_all_to_shopping_cart);
+        moveToShoppingCart.setVisible(true);
+
+        MenuItem moveFromShoppingCart = menu.findItem(R.id.action_move_all_from_shopping_cart);
+        moveFromShoppingCart.setVisible(true);
+
+        MenuItem shoppingMode = menu.findItem(R.id.action_shopping_mode);
+        shoppingMode.setVisible(true);
+
+        if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getApplicationContext())){
+            Log.d("Menu", "Mode on");
+            for(int i = 0; i <  menu.getItem(1).getSubMenu().size(); i++){
+                menu.getItem(1).getSubMenu().getItem(i).setVisible(false);
+                Log.d("Menu", "hide everything");
+            }
+            moveToShoppingCart.setVisible(true);
+            moveFromShoppingCart.setVisible(true);
+        }
+
+
         return true;
     }
 
@@ -64,7 +83,7 @@ public class ShoppingListActivity extends BaseActivity {
                 fragmentManager.beginTransaction().add(frameLayout.getId(), AddRecipeToShoppingListFragment.newInstance(id)).commit();
                 break;
             case R.id.action_shopping_mode:
-                // save enabled shopping mode setting and restart activity
+                // save enabled shopping mode setting and restart activity to update view
                 SharedPreferencesHelper.saveBoolean(SHOPPING_MODE_SETTING, true, getApplicationContext());
                 Intent intent = getIntent();
                 finish();

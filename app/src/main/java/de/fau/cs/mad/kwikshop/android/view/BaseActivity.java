@@ -116,11 +116,6 @@ public class BaseActivity extends ActionBarActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SharedPreferencesHelper.saveBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getApplicationContext());
-    }
 
     public void setSavedLocale() {
 

@@ -78,8 +78,8 @@
         <activity
             android:name=".view.ShoppingListActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".view.ListOfShoppingListsActivity" >
-
+            android:parentActivityName=".view.ListOfShoppingListsActivity"
+            android:configChanges="screenSize|orientation" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

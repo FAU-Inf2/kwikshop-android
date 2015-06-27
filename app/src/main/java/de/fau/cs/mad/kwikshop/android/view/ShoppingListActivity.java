@@ -2,6 +2,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -49,10 +50,8 @@ public class ShoppingListActivity extends BaseActivity {
         shoppingMode.setVisible(true);
 
         if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getApplicationContext())){
-            Log.d("Menu", "Mode on");
             for(int i = 0; i <  menu.getItem(1).getSubMenu().size(); i++){
                 menu.getItem(1).getSubMenu().getItem(i).setVisible(false);
-                Log.d("Menu", "hide everything");
             }
             moveToShoppingCart.setVisible(true);
             moveFromShoppingCart.setVisible(true);
@@ -126,6 +125,22 @@ public class ShoppingListActivity extends BaseActivity {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().add(frameLayout.getId(), ShoppingListFragment.newInstance(id)).commit();
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+       if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+           Log.i("Rotated: ", "Config changed");
+           SharedPreferencesHelper.saveBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, true, getApplicationContext());
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferencesHelper.saveBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getApplicationContext());
     }
 
 

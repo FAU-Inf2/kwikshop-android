@@ -105,6 +105,7 @@ public class ShoppingListFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         if (getArguments() != null) {
             listID = getArguments().getInt(ARG_LISTID);
         }

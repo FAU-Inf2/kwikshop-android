@@ -12,6 +12,10 @@ import de.fau.cs.mad.kwikshop.android.common.*;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.ItemNotFoundException;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.ListNotFoundException;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.tasks.SaveShoppingListTask;
 import de.greenrobot.event.EventBus;
 
@@ -108,6 +112,8 @@ public class ShoppingListManager implements ListManager<ShoppingList> {
             shoppingListItems.put(listId, items);
         }
 
+        eventBus.post(new ShoppingListChangedEvent(ShoppingListChangeType.Added, shoppingList.getId()));
+
         return shoppingList;
     }
 
@@ -115,6 +121,7 @@ public class ShoppingListManager implements ListManager<ShoppingList> {
     public ShoppingList saveList(int listId) {
 
         ShoppingList shoppingList = saveListWithoutEvents(listId);
+        eventBus.post(new ShoppingListChangedEvent(ShoppingListChangeType.PropertiesModified, shoppingList.getId()));
         return shoppingList;
     }
 
@@ -130,6 +137,8 @@ public class ShoppingListManager implements ListManager<ShoppingList> {
         }
         list.addItem(item);
         saveListWithoutEvents(listId);
+
+        eventBus.post(new ItemChangedEvent(ItemChangeType.Added, listId, item.getId()));
 
         return item;
     }
@@ -147,6 +156,8 @@ public class ShoppingListManager implements ListManager<ShoppingList> {
             }
         }
         saveListWithoutEvents(listId);
+
+        eventBus.post(new ItemChangedEvent(ItemChangeType.PropertiesModified, listId, item.getId()));
 
         return item;
     }
@@ -170,6 +181,8 @@ public class ShoppingListManager implements ListManager<ShoppingList> {
 
         if (list.removeItem(itemId)) {
             saveListWithoutEvents(listId);
+
+            eventBus.post(new ItemChangedEvent(ItemChangeType.Deleted, listId, itemId));
             return true;
 
         } else {
@@ -188,6 +201,9 @@ public class ShoppingListManager implements ListManager<ShoppingList> {
         }
 
         listStorage.deleteList(listId);
+
+        eventBus.post(new ShoppingListChangedEvent(ShoppingListChangeType.Deleted, listId));
+
         return true;
     }
 

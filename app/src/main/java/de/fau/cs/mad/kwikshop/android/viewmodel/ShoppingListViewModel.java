@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.*;
 import de.fau.cs.mad.kwikshop.android.model.*;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
@@ -68,7 +69,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     private boolean initialized = false;
 
     private final ViewLauncher viewLauncher;
-    private final ListStorage listStorage;
+    private final ListManager<ShoppingList> shoppingListManager;
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<Group> groupStorage;
     private final ItemParser itemParser;
@@ -113,7 +114,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
 
     @Inject
-    public ShoppingListViewModel(ViewLauncher viewLauncher, ListStorage listStorage,
+    public ShoppingListViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> shoppingListManager,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
                                  AutoCompletionHelper autoCompletionHelper,
@@ -122,8 +123,8 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(viewLauncher == null) {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
         }
-        if(listStorage == null) {
-            throw new IllegalArgumentException("'listStorage' must not be null");
+        if(shoppingListManager == null) {
+            throw new IllegalArgumentException("'shoppingListManager' must not be null");
         }
         if(unitStorage == null) {
             throw new IllegalArgumentException("'unitStorage' must not be null");
@@ -147,7 +148,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
 
         this.viewLauncher = viewLauncher;
-        this.listStorage = listStorage;
+        this.shoppingListManager = shoppingListManager;
         this.unitStorage = unitStorage;
         this.groupStorage = groupStorage;
         this.itemParser = itemParser;
@@ -168,8 +169,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
             privateBus.register(this);
             EventBus.getDefault().register(this);
 
-            new LoadShoppingListTask(this.listStorage, privateBus).execute(this.shoppingListId);
-
+            loadShoppingList();
             initialized = true;
         }
     }
@@ -285,7 +285,8 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         item1.setOrder(position2);
         item2.setOrder(position1);
 
-        new SaveItemTask(listStorage, shoppingListId, false).execute(item1, item2);
+        shoppingListManager.saveListItem(shoppingListId, item1);
+        shoppingListManager.saveListItem(shoppingListId, item2);
     }
 
 
@@ -297,53 +298,40 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         item1.setOrder(position2);
         item2.setOrder(position1);
 
-        new SaveItemTask(listStorage, shoppingListId, false).execute(item1, item2);
+        shoppingListManager.saveListItem(shoppingListId, item1);
+        shoppingListManager.saveListItem(shoppingListId, item2);
     }
 
 
-    @SuppressWarnings("unused")
-    public void onEventMainThread(ShoppingListLoadedEvent event) {
+    private void loadShoppingList() {
 
-        //on the main thread, update the displayed shopping list after is has been (re-) loaded
+        ShoppingList shoppingList = shoppingListManager.getList(this.shoppingListId);
 
-        ShoppingList shoppingList = event.getShoppingList();
-
-        if(shoppingList.getId() == this.shoppingListId) {
-
-            int  sortTypeInt = shoppingList.getSortTypeInt();
-            switch (sortTypeInt){
-                case 1:
-                    setItemSortType(ItemSortType.GROUP);
-                    break;
-                case 2:
-                    setItemSortType(ItemSortType.ALPHABETICALLY);
-                    break;
-                default:
-                    setItemSortType(ItemSortType.MANUAL);
-                    break;
-            }
+        int  sortTypeInt = shoppingList.getSortTypeInt();
+        switch (sortTypeInt){
+            case 1:
+                setItemSortType(ItemSortType.GROUP);
+                break;
+            case 2:
+                setItemSortType(ItemSortType.ALPHABETICALLY);
+                break;
+            default:
+                setItemSortType(ItemSortType.MANUAL);
+                break;
+        }
 
 
-            this.setName(shoppingList.getName());
+        this.setName(shoppingList.getName());
 
-            for(Item item : event.getShoppingList().getItems()) {
-               updateItem(item);
-            }
+        for(Item item : shoppingList.getItems()) {
+            updateItem(item);
         }
     }
 
-    @SuppressWarnings("unused")
-    public void onEventMainThread(ItemLoadedEvent event) {
 
-        // on the main thread, update an displayed item after it has been loaded
 
-        if(event.getShoppingListId() == this.shoppingListId) {
-            for(Item i : event.getItems()) {
-                updateItem(i);
-            }
-        }
 
-    }
+
 
     @SuppressWarnings("unused")
     public void onEventMainThread(ShoppingListChangedEvent event) {
@@ -352,41 +340,8 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
             if(event.getChangeType() == ShoppingListChangeType.Deleted) {
                 finish();
-            }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventBackgroundThread(ShoppingListChangedEvent event) {
-
-        if(event.getListId() == this.shoppingListId) {
-
-            if(event.getChangeType() == ShoppingListChangeType.PropertiesModified) {
-                new LoadShoppingListTask(listStorage, privateBus).execute(shoppingListId);
-
-            }
-
-            //other change types should already be covered by other event handlers
-
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventBackgroundThread(ItemChangedEvent event) {
-
-        if(event.getShoppingListId() == this.shoppingListId) {
-
-            switch (event.getChangeType()) {
-
-                case  Added:
-                case PropertiesModified:
-                    new LoadItemTask(listStorage, privateBus, shoppingListId).execute(event.getItemId());
-                    break;
-
-                case  Deleted:
-                    // ignore (handled on background thread)
-                    break;
-
+            } else if(event.getChangeType() == ShoppingListChangeType.PropertiesModified) {
+                loadShoppingList();
             }
         }
     }
@@ -400,7 +355,9 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
                 case  Added:
                 case PropertiesModified:
-                    // ignore (handled on background thread)
+                    Item item = shoppingListManager.getListItem(shoppingListId, event.getItemId());
+                    updateItem(item);
+
                     break;
                 case  Deleted:
                     items.removeById(event.getItemId());
@@ -415,7 +372,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     public void onEventBackgroundThread(MoveAllItemsEvent event) {
 
         boolean isBoughtNew = event.isMoveAllToBought();
-        ShoppingList list = listStorage.loadList(shoppingListId);
+        ShoppingList list = shoppingListManager.getList(shoppingListId);
 
         List<Item> changedItems = new LinkedList<>();
 
@@ -425,10 +382,9 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                 changedItems.add(item);
             }
         }
-        list.save();
 
         for(Item item : changedItems) {
-            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.PropertiesModified, shoppingListId, item.getId()));
+            shoppingListManager.saveListItem(shoppingListId, item);
         }
 
     }
@@ -490,27 +446,13 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                 }
             }
 
-            new SaveItemTask(listStorage, shoppingListId).execute(item);
+            shoppingListManager.saveListItem(shoppingListId, item);
         }
     }
 
     private void deleteItemCommandExecute(final int id) {
 
-        new AsyncTask<Object, Object, Object>() {
-            @Override
-            protected Object doInBackground(Object... params) {
-
-                ShoppingList shoppingList = listStorage.loadList(shoppingListId);
-                if(shoppingList.removeItem(id)) {
-                    shoppingList.save();
-                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, shoppingListId));
-                    EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, shoppingListId, id));
-                }
-                return null;
-            }
-
-        }.execute();
-
+        shoppingListManager.deleteItem(shoppingListId, id);
     }
 
     private synchronized void quickAddCommandExecute() {
@@ -541,16 +483,9 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                             newItem.setGroup(group);
                         }
 
-                        ShoppingList shoppingList = listStorage.loadList(shoppingListId);
-                        shoppingList.addItem(newItem);
-
-                        listStorage.saveList(shoppingList);
+                        shoppingListManager.addListItem(shoppingListId, newItem);
 
                         autoCompletionHelper.offerName(newItem.getName());
-
-                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-                        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
-
                     }
 
                 }

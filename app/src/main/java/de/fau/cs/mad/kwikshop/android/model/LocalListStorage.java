@@ -30,6 +30,21 @@ public class LocalListStorage extends ListStorage {
             ArrayList<ShoppingList> lists = new ArrayList<>();
             for(ShoppingList list : ListStorageFragment.getDatabaseHelper().getShoppingListDao()) {
                 lists.add(list);
+
+                if(list.getCalendarEventDate() != null) {
+                    ListStorageFragment.getDatabaseHelper().getCalendarDao().refresh(list.getCalendarEventDate());
+                }
+
+                for (Item i : list.getItems()) {
+
+                    if (i.getUnit() != null) {
+                        ListStorageFragment.getDatabaseHelper().getUnitDao().refresh(i.getUnit());
+                    }
+
+                    if (i.getGroup() != null) {
+                        ListStorageFragment.getDatabaseHelper().getGroupDao().refresh(i.getGroup());
+                    }
+                }
             }
             return Collections.unmodifiableList(lists);
 

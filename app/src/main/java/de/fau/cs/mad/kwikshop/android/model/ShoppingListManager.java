@@ -129,8 +129,13 @@ public class ShoppingListManager implements ListManager<ShoppingList> {
 
             list = shoppingLists.get(listId);
         }
+
         list.addItem(item);
-        saveListWithoutEvents(listId);
+        listStorage.saveList(list);
+
+        synchronized (listLock) {
+            shoppingListItems.get(listId).put(item.getId(), item);
+        }
 
         eventBus.post(new ItemChangedEvent(ItemChangeType.Added, listId, item.getId()));
 

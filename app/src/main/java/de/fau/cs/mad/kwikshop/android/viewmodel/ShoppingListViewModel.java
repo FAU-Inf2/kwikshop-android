@@ -528,6 +528,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
             boughtItems.removeById(id);
             items.setOrAddById(item);
+
             boughtItems.notifyItemModifiedById(id);
 
         }

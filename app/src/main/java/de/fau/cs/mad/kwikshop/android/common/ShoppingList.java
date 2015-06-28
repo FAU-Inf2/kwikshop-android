@@ -124,7 +124,6 @@ public class ShoppingList {
             Item currentItem = iterator.next();
             if (currentItem.getId() == id) {
                 items.remove(currentItem);
-                listStorage.deleteItem(id);
                 return true;
             }
         }

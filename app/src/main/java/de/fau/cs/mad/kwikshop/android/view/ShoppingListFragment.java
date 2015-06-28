@@ -21,7 +21,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ListAdapter;
 import android.support.v4.app.Fragment;
@@ -92,7 +91,7 @@ public class ShoppingListFragment
     @InjectView(R.id.quickAdd)
     RelativeLayout quickAddLayout;
     @InjectView(R.id.cartCounter)
-    EditText cartCounter;
+    TextView cartCounter;
 
 
     public static ShoppingListFragment newInstance(int listID) {

@@ -89,27 +89,26 @@ public class ShoppingListManager implements ListManager<ShoppingList> {
         }
     }
 
+
     @Override
-    public ShoppingList addList(ShoppingList shoppingList) {
+    public int createList() {
 
         //currently realized as blocking operation so we can be sure the list's id has been set
 
+        int id = listStorage.createList();
+        ShoppingList shoppingList = listStorage.loadList(id);
         listStorage.saveList(shoppingList);
-
-        Map<Integer, Item> items = new HashMap<>();
-        for (Item item : shoppingList.getItems()) {
-            items.put(item.getId(), item);
-        }
 
         int listId = shoppingList.getId();
         synchronized (listLock) {
             shoppingLists.put(listId, shoppingList);
-            shoppingListItems.put(listId, items);
+            shoppingListItems.put(listId, new HashMap<Integer, Item>());
         }
 
         eventBus.post(new ShoppingListChangedEvent(ShoppingListChangeType.Added, shoppingList.getId()));
 
-        return shoppingList;
+
+        return id;
     }
 
     @Override

@@ -18,6 +18,7 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
@@ -57,7 +58,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     private Listener compositeListener = new CompositeListener();
 
     private final Context context;
-    private final ListStorage listStorage;
+    private final ListManager<ShoppingList> shoppingListManager;
     private final SimpleStorage<CalendarEventDate> calendarEventStorage;
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
@@ -84,7 +85,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
     @Inject
     public ShoppingListDetailsViewModel(final Context context, final ViewLauncher viewLauncher,
                                         final ResourceProvider resourceProvider,
-                                        final ListStorage listStorage, final SimpleStorage<CalendarEventDate> calendarEventStorage) {
+                                        final ListManager<ShoppingList> shoppingListManager, final SimpleStorage<CalendarEventDate> calendarEventStorage) {
 
         if (context == null) {
             throw new IllegalArgumentException("'context' must not be null");
@@ -98,8 +99,8 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             throw new IllegalArgumentException("'resourceProvider' must not be null");
         }
 
-        if (listStorage == null) {
-            throw new IllegalArgumentException("'listStorage' must not be null");
+        if (shoppingListManager == null) {
+            throw new IllegalArgumentException("'shoppingListManager' must not be null");
         }
 
         if(calendarEventStorage == null) {
@@ -109,7 +110,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         this.context = context;
         this.viewLauncher = viewLauncher;
         this.resourceProvider = resourceProvider;
-        this.listStorage = listStorage;
+        this.shoppingListManager = shoppingListManager;
         this.calendarEventStorage = calendarEventStorage;
 
     }
@@ -229,6 +230,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         EventBus.getDefault().unregister(this);
     }
 
+    @SuppressWarnings("unused")
     public void onEventMainThread(CalendarEventDate eventDate) {
 
         if(getCalendarEventDate() != null) {
@@ -263,7 +265,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             this.deleteCommand.setIsAvailable(true);
 
             //TODO: handle exception when list is not found
-            this.shoppingList = listStorage.loadList(shoppingListId);
+            this.shoppingList = shoppingListManager.getList(shoppingListId);
             setName(shoppingList.getName());
             setCalendarEventDate(shoppingList.getCalendarEventDate());
 
@@ -279,8 +281,8 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
     private void saveCommandExecute() {
         if (isNewShoppingList) {
-            this.shoppingListId = listStorage.createList();
-            shoppingList = listStorage.loadList(shoppingListId);
+            shoppingListId = shoppingListManager.createList();
+            shoppingList = shoppingListManager.getList(shoppingListId);
         }
 
         shoppingList.setName(this.getName());
@@ -294,13 +296,9 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
         shoppingList.setCalendarEventDate(getCalendarEventDate());
 
-        listStorage.saveList(shoppingList);
+        shoppingListManager.saveList(shoppingListId);
 
-        ShoppingListChangeType changeType = isNewShoppingList
-                ? ShoppingListChangeType.Added
-                : ShoppingListChangeType.PropertiesModified;
 
-        EventBus.getDefault().post(new ShoppingListChangedEvent(changeType, shoppingList.getId()));
 
         // if we just created a shopping list, open it right away,
         // when a existing shopping list was edited, just close the current view and go back to
@@ -309,9 +307,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             viewLauncher.showShoppingList(shoppingListId);
         }
 
-
         finish();
-
     }
 
     private void cancelCommandExecute() {
@@ -335,7 +331,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
                             deleteCalendarEventCommandExecute();
                         }
 
-                        listStorage.deleteList(shoppingListId);
+                        shoppingListManager.deleteList(shoppingListId);
                         EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.Deleted, shoppingListId));
                         finish();
                     }

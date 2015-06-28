@@ -17,7 +17,7 @@ public interface ListManager<TList> {
 
     Item getListItem(int listId, int itemId);
 
-    TList addList(TList list);
+    int createList();
 
     TList saveList(int listId);
 

@@ -11,14 +11,15 @@ android {
 
     defaultConfig {
         applicationId "de.fau.cs.mad.kwikshop.android"
-        minSdkVersion 14
-        targetSdkVersion 21
+        //minSdkVersion 14
+        //targetSdkVersion 21
+        //multiDexEnabled true
         versionCode 2
         versionName "1.0.1"
         resValue "string", "BuildInfo_Git_Branch", getGitBranchName()
         resValue "string", "BuildInfo_Git_Commit", getGitCommitId()
-        multiDexEnabled true
     }
+
     signingConfigs {
         release {
             storeFile file("unknown")
@@ -27,8 +28,24 @@ android {
             keyPassword "unknown"
         }
     }
+
+    productFlavors {
+        // Define separate dev and prod product flavors.
+        dev {
+            // dev utilizes minSDKVersion = 21 to allow the Android gradle plugin
+            // to pre-dex each module and produce an APK that can be tested on
+            // Android Lollipop without time consuming dex merging processes.
+            minSdkVersion 21
+        }
+        prod {
+            // The actual minSdkVersion for the application.
+            minSdkVersion 14
+        }
+    }
+
     buildTypes {
         release {
+            multiDexEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release

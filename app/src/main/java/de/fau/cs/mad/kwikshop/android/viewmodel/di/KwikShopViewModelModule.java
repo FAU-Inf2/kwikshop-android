@@ -45,6 +45,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 @SuppressWarnings("unused")
 public class KwikShopViewModelModule {
 
+    private static ListManager<ShoppingList> shoppingListManager;
     private final Activity currentActivity;
 
     public KwikShopViewModelModule(Activity currentActivity) {
@@ -113,6 +114,9 @@ public class KwikShopViewModelModule {
 
     @Provides
     public ListManager<ShoppingList> provideShoppingListManager(ListStorage listStorage) {
-        return new ShoppingListManager(listStorage);
+        if(shoppingListManager == null) {
+            shoppingListManager = new ShoppingListManager(listStorage);
+        }
+        return shoppingListManager;
     }
 }

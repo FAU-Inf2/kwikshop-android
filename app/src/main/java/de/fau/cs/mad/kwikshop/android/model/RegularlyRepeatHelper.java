@@ -13,6 +13,7 @@ import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
+import de.greenrobot.event.EventBus;
 
 public class RegularlyRepeatHelper {
 
@@ -26,6 +27,9 @@ public class RegularlyRepeatHelper {
             throw new IllegalArgumentException("'context' must not be null");
         }
         databaseHelper = new DatabaseHelper(context);
+
+        EventBus.getDefault().register(this);
+
         loadFromDatabase();
     }
 

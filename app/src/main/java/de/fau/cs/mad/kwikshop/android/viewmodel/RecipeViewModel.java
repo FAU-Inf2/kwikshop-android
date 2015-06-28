@@ -342,6 +342,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
     private synchronized void quickAddCommandExecute() {
 
         ensureIsInitialized();
+        getItems().enableEvents();
 
         final String text = getQuickAddText();
         //reset quick add text

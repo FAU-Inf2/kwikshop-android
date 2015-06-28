@@ -24,4 +24,18 @@
         android:singleLine="true"
         android:inputType="textCapSentences"/>
 
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/recipe_detail_number_picker"
+        android:layout_below="@+id/textView_RecipeName"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/recipe_detail_spinner"
+        android:layout_alignRight="@+id/textView_RecipeName"
+        android:layout_alignEnd="@+id/textView_RecipeName"
+        android:layout_toRightOf="@+id/recipe_detail_number_picker" />
+
 </RelativeLayout>

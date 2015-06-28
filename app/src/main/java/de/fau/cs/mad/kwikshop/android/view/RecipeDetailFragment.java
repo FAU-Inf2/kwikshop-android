@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -28,6 +30,12 @@ public class RecipeDetailFragment extends FragmentWithViewModel implements Recip
 
     @InjectView(R.id.textView_RecipeName)
     TextView textView_RecipeName;
+
+    @InjectView(R.id.recipe_detail_number_picker)
+    NumberPicker scaleNumberPicker;
+
+    @InjectView(R.id.recipe_detail_spinner)
+    Spinner scaleNameSpinner;
 
     private RecipesDetailsViewModel viewModel;
     private boolean updatingViewModel = false;

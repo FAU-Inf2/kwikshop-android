@@ -123,6 +123,7 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
                     @Override
                     public boolean onItemLongClick(final AdapterView<?> parent, final View view,
                                                    final int position, final long id) {
+                        viewModel.getItems().disableEvents();
                         scrollView.requestDisallowInterceptTouchEvent(true);
                         recipeListView.startDragging(position);
                         //sets value of the Spinner to the first entry, in this case Manual

@@ -41,7 +41,7 @@ public class RegularlyRepeatHelper {
             repeatList = new PriorityQueue<>(items.size(), new Comparator<Item>() {
                 @Override
                 public int compare(Item lhs, Item rhs) {
-                    return -(lhs.getRemindAtDate().compareTo(rhs.getRemindAtDate()));
+                    return lhs.getRemindAtDate().compareTo(rhs.getRemindAtDate());
                 }
             });
             for (Item item : items) {

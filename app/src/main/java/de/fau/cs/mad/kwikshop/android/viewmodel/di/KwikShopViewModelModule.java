@@ -7,12 +7,15 @@ import dagger.Module;
 import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.Group;
+import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
 import de.fau.cs.mad.kwikshop.android.model.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
+import de.fau.cs.mad.kwikshop.android.model.ShoppingListManager;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.view.DefaultResourceProvider;
 import de.fau.cs.mad.kwikshop.android.view.DefaultViewLauncher;
@@ -106,5 +109,10 @@ public class KwikShopViewModelModule {
     @Provides
     public AutoCompletionHelper provideAutoCompletionHelper(Activity activity) {
         return AutoCompletionHelper.getAutoCompletionHelper(activity.getBaseContext());
+    }
+
+    @Provides
+    public ListManager<ShoppingList> provideShoppingListManager(ListStorage listStorage) {
+        return new ShoppingListManager(listStorage);
     }
 }

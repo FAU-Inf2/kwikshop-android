@@ -3,11 +3,9 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.model.ListStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListLoadedEvent;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadShoppingListTask;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ShoppingListIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
@@ -25,7 +23,7 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
 
     // infrastructure references
     private final ViewLauncher viewLauncher;
-    private final ListStorage listStorage;
+    private final ListManager<ShoppingList> shoppingListManager;
     private final EventBus privateBus = EventBus.builder().build();
 
 
@@ -54,10 +52,18 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
 
 
     @Inject
-    public ListOfShoppingListsViewModel(ViewLauncher viewLauncher, ListStorage listStorage) {
+    public ListOfShoppingListsViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> shoppingListManager) {
+
+        if (viewLauncher == null) {
+            throw new IllegalArgumentException("'viewLauncher' must not be null");
+        }
+
+        if (shoppingListManager == null) {
+            throw new IllegalArgumentException("'shoppingListManager' must not be null");
+        }
 
         this.viewLauncher = viewLauncher;
-        this.listStorage = listStorage;
+        this.shoppingListManager = shoppingListManager;
 
         setShoppingLists(new ObservableArrayList<>(new ObservableArrayList.IdExtractor<ShoppingList, Integer>() {
             @Override
@@ -67,9 +73,7 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         }));
 
         EventBus.getDefault().register(this);
-        privateBus.register(this);
-
-        new LoadShoppingListTask(listStorage, privateBus).execute();
+        this.shoppingLists = new ObservableArrayList<>(new ShoppingListIdExtractor(), shoppingListManager.getLists());
     }
 
 
@@ -111,6 +115,7 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         return listener;
     }
 
+    @SuppressWarnings("unused")
     public void onEventMainThread(ShoppingListChangedEvent ev) {
 
         switch (ev.getChangeType()) {
@@ -120,10 +125,24 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
                 break;
 
             case PropertiesModified:
-            case ItemsAdded:
-            case ItemsRemoved:
             case Added:
-                loadShoppingListAsync(ev.getListId());
+                reloadList(ev.getListId());
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(ItemChangedEvent ev) {
+
+
+        switch (ev.getChangeType()) {
+
+            case Deleted:
+            case Added:
+                reloadList(ev.getShoppingListId());
                 break;
 
             default:
@@ -132,31 +151,22 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
     }
 
     @Override
-    public void finish() {
+    public void onDestroyView() {
         EventBus.getDefault().unregister(this);
-        super.finish();
     }
 
 
-    private void loadShoppingListAsync(int id) {
-
-        new LoadShoppingListTask(listStorage, privateBus).execute(id);
-    }
-
-    public void onEventMainThread(ShoppingListLoadedEvent event) {
-
-        ShoppingList loadedList = event.getShoppingList();
-
+    private void reloadList(int listId) {
+        ShoppingList list = shoppingListManager.getList(listId);
         synchronized (this) {
 
-            int index = shoppingLists.indexOfById(loadedList.getId());
+            int index = shoppingLists.indexOfById(list.getId());
             if (index >= 0) {
-                shoppingLists.set(index, loadedList);
+                shoppingLists.set(index, list);
             } else {
-                shoppingLists.add(loadedList);
+                shoppingLists.add(list);
             }
         }
-
     }
 
     @SuppressWarnings("unused")

@@ -24,6 +24,12 @@ public class Recipe {
     @ForeignCollectionField(eager = true)
     private ForeignCollection<Item> items;
 
+    @DatabaseField
+    private int scaleFactor = 1;
+
+    @DatabaseField
+    private String scaleName;
+
     private RecipeStorage recipeStorage;
 
 

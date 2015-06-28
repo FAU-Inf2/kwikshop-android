@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadShoppingListTask;
@@ -156,6 +157,13 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
             }
         }
 
+    }
+
+    @SuppressWarnings("unused")
+    public void onEvent(ReminderTimeIsOverEvent e) {
+        int itemId = e.getItemId();
+        int listId = e.getListId();
+        viewLauncher.showReminderView(listId, itemId);
     }
 
 }

@@ -196,6 +196,7 @@
     <string name="reminder_addItemToShoppingList">Einer Einkaufsliste hinzufügen</string>
     <string name="reminder_remindLater">Erneut erinnern</string>
     <string name="reminder_in">in</string>
+    <string name="reminder_itemAdded">"Gegenstand der angegebenen Einkaufsliste hinzugefügt. "</string>
 
     <!-- Login -->
     <string name="login_skip">Jetzt nicht einloggen</string>

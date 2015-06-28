@@ -240,6 +240,7 @@
     <string name="reminder_addItemToShoppingList">Add this Item to a shopping list</string>
     <string name="reminder_remindLater">Remind me again</string>
     <string name="reminder_in">in</string>
+    <string name="reminder_itemAdded">"Item added to specified shopping list. "</string>
 
     <!-- Login -->
     <string name="login_server_client_id">974373376910-mg6fm7feie2rn0v9qj2nmi1jpeftr47u.apps.googleusercontent.com</string>

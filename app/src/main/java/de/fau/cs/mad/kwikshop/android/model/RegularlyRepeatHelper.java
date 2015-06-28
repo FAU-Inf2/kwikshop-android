@@ -43,7 +43,13 @@ public class RegularlyRepeatHelper {
             repeatList = new PriorityQueue<>(items.size(), new Comparator<Item>() {
                 @Override
                 public int compare(Item lhs, Item rhs) {
-                    return lhs.getRemindAtDate().compareTo(rhs.getRemindAtDate());
+                    if (lhs != null && lhs.getRemindAtDate() != null && rhs != null && rhs.getRemindAtDate() != null)
+                        return lhs.getRemindAtDate().compareTo(rhs.getRemindAtDate());
+                    if (lhs != null && lhs.getRemindAtDate() != null)
+                        return -1;
+                    if (rhs != null && rhs.getRemindAtDate() != null)
+                        return 1;
+                    return 0;
                 }
             });
             for (Item item : items) {
@@ -77,6 +83,10 @@ public class RegularlyRepeatHelper {
 
     public void offerRepeatData (Item item) {
         if (!(repeatList.contains(item))){
+            repeatList.add(item);
+        } else {
+            // delete the item and add it again, in order to re-sort the list
+            repeatList.remove(item);
             repeatList.add(item);
         }
     }

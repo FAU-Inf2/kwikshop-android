@@ -438,12 +438,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         setItemSortType(sortType);
     }
 
-    @SuppressWarnings("unused")
-    public void onEvent(ReminderTimeIsOverEvent e) {
-        int itemId = e.getItemId();
-        int listId = e.getListId();
-        viewLauncher.showReminderView(listId, itemId);
-    }
+
 
 
 

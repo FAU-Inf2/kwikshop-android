@@ -12,6 +12,8 @@ import java.util.PriorityQueue;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
@@ -84,14 +86,17 @@ public class RegularlyRepeatHelper {
     }
 
     public Item getItemForId(int id) {
-        for (Item item : repeatList) {
-            if (item.getId() == id)
-                return item;
-        }
-        // item was not found
+        Item item = getItem(id);
+        if (item != null) return item;
 
-        // reload from db and retry
+        // item was not found
+        // -> reload from db and retry
         loadFromDatabase();
+        item = getItem(id);
+        return item;
+    }
+
+    private Item getItem(int id) {
         for (Item item : repeatList) {
             if (item.getId() == id)
                 return item;
@@ -122,7 +127,18 @@ public class RegularlyRepeatHelper {
 
     public void onEventBackgroundThread(ShoppingListChangedEvent event) {
         if (event.getChangeType() == ShoppingListChangeType.Deleted) {
-            loadFromDatabase();
+            if (repeatList.size() > 0) {
+                // it is probably faster to reload every time a shopping list is deleted than checking all items if they are in the deleted shopping list
+                loadFromDatabase();
+            }
+        }
+    }
+
+    public void onEventBackgroundThread(ItemChangedEvent event) {
+        if (event.getChangeType() == ItemChangeType.Deleted) {
+            Item item = getItem(event.getItemId());
+            if (item != null)
+                repeatList.remove(item);
         }
     }
 }

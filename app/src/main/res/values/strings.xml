@@ -253,20 +253,20 @@
     <string name="kwikshop_login_failed">Kwik Shop login failed, please try again.</string>
     <string name="sign_out">Sign Out</string>
     <string name="disconnect">Disconnect</string>
-    <string name="session_token">SESSION_TOKEN</string>
+    <string name="session_token" translatable="false">SESSION_TOKEN</string>
     <string name="retry">Retry</string>
     <string name="login_skip_message">Are you sure you want to skip logging in? You can login later from the application menu.</string>
     <string name="overflow_action_menu_openloginactivity">Account / Login</string>
     <string name="kwikshop_login_success">You are logged in.</string>
 
     <!-- REST -->
-    <string name="API_URL">http://ec2-52-28-159-181.eu-central-1.compute.amazonaws.com</string>
+    <string name="API_URL" translatable="false">http://ec2-52-28-159-181.eu-central-1.compute.amazonaws.com</string>
 
     <!-- Intent filter, does not need to be translated -->
-    <string name="intent_http">http</string>
-    <string name="intent_host">kwikshop.is.nice</string>
-    <string name="intent_calendar_description">http://kwikshop.is.nice/#id=</string>
-    <string name="intent_id_separator">/#id=</string>
+    <string name="intent_http" translatable="false">http</string>
+    <string name="intent_host" translatable="false">kwikshop.is.nice</string>
+    <string name="intent_calendar_description" translatable="false">http://kwikshop.is.nice/#id=</string>
+    <string name="intent_id_separator" translatable="false">/#id=</string>
 
 
 </resources>

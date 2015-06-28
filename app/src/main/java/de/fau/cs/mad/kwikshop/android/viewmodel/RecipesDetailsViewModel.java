@@ -52,6 +52,8 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
     private int recipeId;
     private boolean isNewRecipe;
     private Recipe recipe;
+    private int scaleFactor;
+    private String scaleName;
 
     // backing fields for properties
     private Command saveCommand;
@@ -143,6 +145,22 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
         return this.deleteCommand;
     }
 
+    public int getScaleFactor(){
+        return scaleFactor;
+    }
+
+    public String getScaleName(){
+        return scaleName;
+    }
+
+    public void setScaleFactor(int scaleFactor){
+        this.scaleFactor = scaleFactor;
+    }
+
+    public void setScaleName(String scaleName){
+        this.scaleName = scaleName;
+    }
+
 
     @Override
     public void setName(String value) {
@@ -182,6 +200,8 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
 
             this.deleteCommand.setIsAvailable(false);
             setName("");
+            setScaleFactor(1);
+            setScaleName(context.getString(R.string.recipe_scaleName_person));
 
         } else {
 
@@ -189,6 +209,8 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
 
             //TODO: handle exception when list is not found
             this.recipe = recipeStorage.loadRecipe(recipeId);
+            setScaleFactor(recipe.getScaleFactor());
+            setScaleName(recipe.getScaleName());
             setName(recipe.getName());
         }
 
@@ -201,6 +223,8 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
         }
 
         recipe.setName(this.getName());
+        recipe.setScaleFactor(scaleFactor);
+        recipe.setScaleName(scaleName);
 
         recipeStorage.saveRecipe(recipe);
 

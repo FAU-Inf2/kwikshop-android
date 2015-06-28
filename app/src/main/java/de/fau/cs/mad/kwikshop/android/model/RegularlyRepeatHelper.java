@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.PriorityQueue;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.greenrobot.event.EventBus;
@@ -102,6 +104,20 @@ public class RegularlyRepeatHelper {
             return;
         }
         repeatList.remove(data);
+    }
+
+    public void checkIfReminderIsOver() {
+
+        Calendar now = Calendar.getInstance();
+        Item item = repeatList.peek();
+        if (item == null || item.getRemindAtDate() == null)
+            return;
+
+        if (now.getTime().after(item.getRemindAtDate())) {
+            EventBus.getDefault().post(new ReminderTimeIsOverEvent(item.getShoppingList().getId(), item.getId()));
+        }
+
+
     }
 
     public void onEventBackgroundThread(ShoppingListChangedEvent event) {

@@ -31,18 +31,7 @@ public class ListOfShoppingListsActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(this);
-        List<Item> items = repeatHelper.getAll();
-        Calendar now = Calendar.getInstance();
-        for (Item item : items) {
-            if (item == null || item.getRemindAtDate() == null) continue;
-            //if (item.getRemindAtDate().after(now.getTime())) {
-            if (now.getTime().after(item.getRemindAtDate())) {
-                /*DateFormat dateFormat = new SimpleDateFormat(getString(R.string.time_format));
-                String text = "Now: " + dateFormat.format(now.getTime()) + "\nRemind date: " + dateFormat.format(item.getRemindAtDate());
-                Toast.makeText(this, text, Toast.LENGTH_LONG).show();*/
-                EventBus.getDefault().post(new ReminderTimeIsOverEvent(item.getShoppingList().getId(), item.getId()));
-            }
-        }
+        repeatHelper.checkIfReminderIsOver();
     }
 
 }

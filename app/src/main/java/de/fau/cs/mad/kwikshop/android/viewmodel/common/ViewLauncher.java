@@ -12,6 +12,10 @@ public interface ViewLauncher {
 
     void showYesNoDialog(String title, String message, Command positiveCommand, Command negativeCommand);
 
+    void showToast(String message, int duration);
+
+    void showToast(int resId, int duration);
+
     void showItemDetailsView(int shoppingListId);
 
     void showItemDetailsView(int shoppingListId, int itemId);

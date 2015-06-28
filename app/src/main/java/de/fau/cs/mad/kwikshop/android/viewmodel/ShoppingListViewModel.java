@@ -1,11 +1,15 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.*;
 import de.fau.cs.mad.kwikshop.android.model.*;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
@@ -71,6 +75,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     protected final DisplayHelper displayHelper;
     private final AutoCompletionHelper autoCompletionHelper;
     private EventBus privateBus = EventBus.builder().build();
+    private final ResourceProvider resourceProvider;
 
     private int shoppingListId;
 
@@ -111,7 +116,8 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     public ShoppingListViewModel(ViewLauncher viewLauncher, ListStorage listStorage,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
-                                 AutoCompletionHelper autoCompletionHelper) {
+                                 AutoCompletionHelper autoCompletionHelper,
+                                 final ResourceProvider resourceProvider) {
 
         if(viewLauncher == null) {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
@@ -135,6 +141,10 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
             throw new IllegalArgumentException("'autoCompletionHelper' must not be null");
         }
 
+        if (resourceProvider == null) {
+            throw new IllegalArgumentException("'resourceProvider' must not be null");
+        }
+
 
         this.viewLauncher = viewLauncher;
         this.listStorage = listStorage;
@@ -143,6 +153,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         this.itemParser = itemParser;
         this.displayHelper = displayHelper;
         this.autoCompletionHelper = autoCompletionHelper;
+        this.resourceProvider = resourceProvider;
     }
 
 
@@ -486,6 +497,10 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
                     //EventBus.getDefault().post(new ReminderTimeIsOverEvent(item.getShoppingList().getId(), item.getId()));
                     //onEventBackgroundThread(new ReminderTimeIsOverEvent(item.getId()));
+
+                    DateFormat dateFormat = new SimpleDateFormat(resourceProvider.getString(R.string.time_format));
+                    String message = resourceProvider.getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
+                    viewLauncher.showToast(message, Toast.LENGTH_LONG);
                 }
             }
 

@@ -4,8 +4,10 @@ import android.content.Context;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
@@ -14,7 +16,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 
 public class RegularlyRepeatHelper {
 
-    private LinkedList<Item> repeatList;
+    private PriorityQueue<Item> repeatList;
     private DatabaseHelper databaseHelper;
 
     private static volatile RegularlyRepeatHelper instance = null; //singleton
@@ -30,7 +32,12 @@ public class RegularlyRepeatHelper {
     private void loadFromDatabase() {
         try {
             List<Item> items = databaseHelper.getItemDao().queryForAll();
-            repeatList = new LinkedList<>();
+            repeatList = new PriorityQueue<>(items.size(), new Comparator<Item>() {
+                @Override
+                public int compare(Item lhs, Item rhs) {
+                    return -(lhs.getRemindAtDate().compareTo(rhs.getRemindAtDate()));
+                }
+            });
             for (Item item : items) {
                 if(item.isRegularlyRepeatItem()/* && item.getRemindAtDate() != null*/) {
                     repeatList.add(item);

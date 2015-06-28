@@ -7,7 +7,7 @@ import de.fau.cs.mad.kwikshop.android.common.*;
 /**
  * Interface for storage to access lists of items (Shopping lists, recipes etc)
  */
-public interface ItemListStorage<TList> {
+public interface ListManager<TList> {
 
     Collection<TList> getLists();
 
@@ -17,11 +17,15 @@ public interface ItemListStorage<TList> {
 
     Item getListItem(int listId, int itemId);
 
-    TList saveList(TList list);
+    TList addList(TList list);
 
-    Item saveListItem(Item item);
+    TList saveList(int listId);
 
-    boolean deleteItem(int itemId);
+    Item addListItem(int listId, Item item);
+
+    Item saveListItem(int listId, Item item);
+
+    boolean deleteItem(int listId, int itemId);
 
     boolean deleteList(int listId);
 

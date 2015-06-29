@@ -335,9 +335,9 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
         if(event.getListId() == this.shoppingListId) {
 
-            if(event.getChangeType() == ShoppingListChangeType.Deleted) {
+            if(event.getChangeType() == ListChangeType.Deleted) {
                 finish();
-            } else if(event.getChangeType() == ShoppingListChangeType.PropertiesModified) {
+            } else if(event.getChangeType() == ListChangeType.PropertiesModified) {
                 loadShoppingList();
             }
         }

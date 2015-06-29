@@ -40,7 +40,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDelete
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeItemChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.greenrobot.event.EventBus;
@@ -239,7 +239,7 @@ public class RecipeItemDetailsFragment extends Fragment {
 
             recipe.removeItem(itemId);
 
-            EventBus.getDefault().post(new RecipeChangedEvent(ShoppingListChangeType.ItemsRemoved, recipeId));
+            EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.ItemsRemoved, recipeId));
             EventBus.getDefault().post(new RecipeItemChangedEvent(ItemChangeType.Deleted, recipeId, itemId));
         }
 
@@ -325,7 +325,7 @@ public class RecipeItemDetailsFragment extends Fragment {
                 EventBus.getDefault().post(new RecipeItemChangedEvent(itemChangeType, recipe.getId(), item.getId()));
 
                 if (isNewItem) {
-                    EventBus.getDefault().post(new RecipeChangedEvent(ShoppingListChangeType.ItemsAdded, recipe.getId()));
+                    EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.ItemsAdded, recipe.getId()));
                 }
                 return null;
             }

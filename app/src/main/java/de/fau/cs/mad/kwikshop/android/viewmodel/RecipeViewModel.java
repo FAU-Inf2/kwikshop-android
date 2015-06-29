@@ -20,7 +20,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeItemLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -267,7 +267,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
 
         if(event.getListId() == this.recipeId) {
 
-            if(event.getChangeType() == ShoppingListChangeType.Deleted) {
+            if(event.getChangeType() == ListChangeType.Deleted) {
                 finish();
             }
         }
@@ -278,7 +278,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
 
         if(event.getListId() == this.recipeId) {
 
-            if(event.getChangeType() == ShoppingListChangeType.PropertiesModified) {
+            if(event.getChangeType() == ListChangeType.PropertiesModified) {
                 new LoadRecipeTask(recipeStorage, privateBus, recipeId).execute();
 
             }
@@ -369,7 +369,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
 
                     autoCompletionHelper.offerName(newItem.getName());
 
-                    EventBus.getDefault().post(new RecipeChangedEvent(ShoppingListChangeType.ItemsAdded, recipe.getId()));
+                    EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.ItemsAdded, recipe.getId()));
                     EventBus.getDefault().post(new RecipeItemChangedEvent(ItemChangeType.Added, recipe.getId(), newItem.getId()));
                 }
                 return null;

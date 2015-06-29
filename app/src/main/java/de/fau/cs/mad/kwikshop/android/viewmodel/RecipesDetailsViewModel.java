@@ -8,7 +8,7 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
@@ -204,9 +204,9 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
 
         recipeStorage.saveList(recipe);
 
-        ShoppingListChangeType changeType = isNewRecipe
-                ? ShoppingListChangeType.Added
-                : ShoppingListChangeType.PropertiesModified;
+        ListChangeType changeType = isNewRecipe
+                ? ListChangeType.Added
+                : ListChangeType.PropertiesModified;
 
         EventBus.getDefault().post(new RecipeChangedEvent(changeType, recipe.getId()));
 
@@ -240,7 +240,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
                     public void execute(Object parameter) {
 
                         recipeStorage.deleteList(recipeId);
-                        EventBus.getDefault().post(new RecipeChangedEvent(ShoppingListChangeType.Deleted, recipeId));
+                        EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.Deleted, recipeId));
                         finish();
                     }
                 },

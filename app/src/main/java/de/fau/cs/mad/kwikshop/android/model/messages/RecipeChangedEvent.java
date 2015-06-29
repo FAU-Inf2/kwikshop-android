@@ -6,14 +6,14 @@ public class RecipeChangedEvent {
     //region Fields
 
     private final int m_ListId;
-    private final ShoppingListChangeType m_ChangeType;
+    private final ListChangeType m_ChangeType;
 
     //endregion
 
 
     //region Constructor
 
-    public RecipeChangedEvent(ShoppingListChangeType changeType, int listId) {
+    public RecipeChangedEvent(ListChangeType changeType, int listId) {
 
         this.m_ListId = listId;
         this.m_ChangeType = changeType;
@@ -25,7 +25,7 @@ public class RecipeChangedEvent {
 
     //region Getters
 
-    public ShoppingListChangeType getChangeType() {
+    public ListChangeType getChangeType() {
         return this.m_ChangeType;
     }
 

@@ -6,16 +6,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.greenrobot.event.EventBus;
 
@@ -136,7 +134,7 @@ public class RegularlyRepeatHelper {
     }
 
     public void onEventBackgroundThread(ShoppingListChangedEvent event) {
-        if (event.getChangeType() == ShoppingListChangeType.Deleted) {
+        if (event.getChangeType() == ListChangeType.Deleted) {
             if (repeatList.size() > 0) {
                 // it is probably faster to reload every time a shopping list is deleted than checking all items if they are in the deleted shopping list
                 loadFromDatabase();

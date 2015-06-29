@@ -1,6 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.model.messages;
 
-public enum ShoppingListChangeType {
+public enum ListChangeType {
 
     PropertiesModified,
     @Deprecated

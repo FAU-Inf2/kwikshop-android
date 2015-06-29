@@ -19,7 +19,7 @@ import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
@@ -331,7 +331,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
                         }
 
                         shoppingListManager.deleteList(shoppingListId);
-                        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.Deleted, shoppingListId));
+                        EventBus.getDefault().post(new ShoppingListChangedEvent(ListChangeType.Deleted, shoppingListId));
                         finish();
                     }
                 },

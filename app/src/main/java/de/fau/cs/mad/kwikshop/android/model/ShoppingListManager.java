@@ -21,17 +21,17 @@ public class ShoppingListManager extends AbstractListManager<ShoppingList> {
 
     @Override
     protected Object getAddedListChangedEvent(int id) {
-        return new ShoppingListChangedEvent(ShoppingListChangeType.Added, id);
+        return new ShoppingListChangedEvent(ListChangeType.Added, id);
     }
 
     @Override
     protected Object getDeletedListChangedEvent(int id) {
-        return new ShoppingListChangedEvent(ShoppingListChangeType.Deleted, id);
+        return new ShoppingListChangedEvent(ListChangeType.Deleted, id);
     }
 
     @Override
     protected Object getPropertiesModifiedListChangedEvent(int id) {
-        return new ShoppingListChangedEvent(ShoppingListChangeType.PropertiesModified, id);
+        return new ShoppingListChangedEvent(ListChangeType.PropertiesModified, id);
     }
 
 }

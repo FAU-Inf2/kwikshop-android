@@ -5,9 +5,10 @@ import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ShoppingListIdExtractor;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ListIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
@@ -75,7 +76,7 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         }));
 
         EventBus.getDefault().register(this);
-        this.shoppingLists = new ObservableArrayList<>(new ShoppingListIdExtractor(), shoppingListManager.getLists());
+        this.shoppingLists = new ObservableArrayList<>(new ListIdExtractor(), shoppingListManager.getLists());
     }
 
 
@@ -139,16 +140,17 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
     @SuppressWarnings("unused")
     public void onEventMainThread(ItemChangedEvent ev) {
 
+        if (ev.getListType() == ListType.ShoppingList) {
+            switch (ev.getChangeType()) {
 
-        switch (ev.getChangeType()) {
+                case Deleted:
+                case Added:
+                    reloadList(ev.getListId());
+                    break;
 
-            case Deleted:
-            case Added:
-                reloadList(ev.getListId());
-                break;
-
-            default:
-                break;
+                default:
+                    break;
+            }
         }
     }
 

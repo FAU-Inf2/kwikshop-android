@@ -1,17 +1,14 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
-import android.os.AsyncTask;
-
-import java.util.Collection;
-
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadRecipeTask;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ListIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewModelBase;
@@ -23,12 +20,12 @@ public class ListOfRecipesViewModel extends ViewModelBase {
     public interface Listener extends ViewModelBase.Listener {
 
         void onRecipeChanged(final ObservableArrayList<Recipe, Integer> oldValue,
-                                    final ObservableArrayList<Recipe, Integer> newValue);
+                             final ObservableArrayList<Recipe, Integer> newValue);
     }
 
     // infrastructure references
     private final ViewLauncher viewLauncher;
-    private final ListStorage<Recipe> recipeStorage;
+    private final ListManager<Recipe> recipeManager;
     private final EventBus privateBus = EventBus.builder().build();
 
 
@@ -49,7 +46,7 @@ public class ListOfRecipesViewModel extends ViewModelBase {
         }
     };
 
-    private final Command selectRecipeDetailsCommand = new Command<Integer>() {
+    private final Command<Integer> selectRecipeDetailsCommand = new Command<Integer>() {
         @Override
         public void execute(Integer recipeId) {
             viewLauncher.showRecipeDetailsView(recipeId);
@@ -58,10 +55,18 @@ public class ListOfRecipesViewModel extends ViewModelBase {
 
 
     @Inject
-    public ListOfRecipesViewModel(ViewLauncher viewLauncher, ListStorage<Recipe> recipeStorage) {
+    public ListOfRecipesViewModel(ViewLauncher viewLauncher, ListManager<Recipe> recipeManager) {
+
+        if(viewLauncher == null) {
+            throw new IllegalArgumentException("'viewLauncher' must not be null");
+        }
+
+        if(recipeManager == null) {
+            throw new IllegalArgumentException("'recipeManager' must not be null");
+        }
 
         this.viewLauncher = viewLauncher;
-        this.recipeStorage = recipeStorage;
+        this.recipeManager = recipeManager;
 
         setRecipes(new ObservableArrayList<>(new ObservableArrayList.IdExtractor<Recipe, Integer>() {
             @Override
@@ -73,7 +78,8 @@ public class ListOfRecipesViewModel extends ViewModelBase {
         EventBus.getDefault().register(this);
         privateBus.register(this);
 
-        new LoadRecipeTask(recipeStorage, privateBus).execute();
+
+        this.recipes = new ObservableArrayList<>(new ListIdExtractor<Recipe>(), recipeManager.getLists());
     }
 
 
@@ -116,6 +122,7 @@ public class ListOfRecipesViewModel extends ViewModelBase {
         return listener;
     }
 
+    @SuppressWarnings("unused")
     public void onEventMainThread(RecipeChangedEvent ev) {
 
         switch (ev.getChangeType()) {
@@ -125,16 +132,33 @@ public class ListOfRecipesViewModel extends ViewModelBase {
                 break;
 
             case PropertiesModified:
-            case ItemsAdded:
-            case ItemsRemoved:
             case Added:
-                loadRecipeAsync(ev.getListId());
+                reloadRecipe(ev.getListId());
                 break;
 
             default:
                 break;
         }
     }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(ItemChangedEvent ev) {
+
+        if (ev.getListType() == ListType.Recipe) {
+            switch (ev.getChangeType()) {
+
+                case Deleted:
+                case Added:
+                    reloadRecipe(ev.getListId());
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+
 
     @Override
     public void finish() {
@@ -143,26 +167,17 @@ public class ListOfRecipesViewModel extends ViewModelBase {
     }
 
 
-    private void loadRecipeAsync(int id) {
-
-        AsyncTask<Object, Object, Collection<Recipe>> task = new LoadRecipeTask(recipeStorage, privateBus, id);
-        task.execute();
-    }
-
-    public void onEventMainThread(RecipeLoadedEvent event) {
-
-        Recipe loadedRecipe = event.getRecipe();
-
+    private void reloadRecipe(int listId) {
+        Recipe recipe = recipeManager.getList(listId);
         synchronized (this) {
 
-            int index = recipes.indexOfById(loadedRecipe.getId());
+            int index = recipes.indexOfById(recipe.getId());
             if (index >= 0) {
-                recipes.set(index, loadedRecipe);
+                recipes.set(index, recipe);
             } else {
-                recipes.add(loadedRecipe);
+                recipes.add(recipe);
             }
         }
-
     }
 
 

@@ -18,12 +18,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.LocalListStorage;
@@ -33,6 +37,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
+import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.SaveItemTask;
 import de.greenrobot.event.EventBus;
 
@@ -50,7 +55,9 @@ public class ReminderFragment extends Fragment {
     List<ShoppingList> shoppingLists;
 
     private RegularlyRepeatHelper repeatHelper;
-    private ListStorage<ShoppingList> listStorage;
+
+    @Inject
+    ListManager<ShoppingList> shoppingListManager;
 
     /* UI elements */
 
@@ -212,13 +219,7 @@ public class ReminderFragment extends Fragment {
     private void addToShoppingList() {
         Item newItem = new Item(item);
 
-        ShoppingList shoppingList = shoppingLists.get(shoppingList_spinner.getSelectedItemPosition());
-        shoppingList.addItem(newItem);
-
-        listStorage.saveList(shoppingList);
-
-        EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-        EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+        shoppingListManager.addListItem(listId, newItem);
 
         changeReminderDate(getString(R.string.reminder_itemAdded));
     }
@@ -244,7 +245,7 @@ public class ReminderFragment extends Fragment {
     }
 
     private void saveInDatabase() {
-        new SaveItemTask(listStorage, listId, false).execute(item);
+        shoppingListManager.saveList(listId);
     }
 
     private void changeReminderDate() {
@@ -290,7 +291,9 @@ public class ReminderFragment extends Fragment {
 
     private void setupUI() {
         repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
-        listStorage = ListStorageFragment.getLocalListStorage();
+
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        objectGraph.inject(this);
 
         item = repeatHelper.getItemForId(itemId);
 

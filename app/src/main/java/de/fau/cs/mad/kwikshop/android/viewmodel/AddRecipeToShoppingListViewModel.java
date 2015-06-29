@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
@@ -37,7 +38,7 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
     private final ViewLauncher viewLauncher;
     private final RecipeStorage recipeStorage;
     private final EventBus privateBus = EventBus.builder().build();
-    private final ListStorage<ShoppingList> listStorage;
+    private final ListManager<ShoppingList> shoppingListManager;
 
 
     private Listener listener;
@@ -48,7 +49,7 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
         @Override
         public void execute(Integer recipeId) {
 
-            ShoppingList shoppingList = listStorage.loadList(shoppingListId);
+            ShoppingList shoppingList = shoppingListManager.getList(shoppingListId);
             Recipe recipe = recipeStorage.loadList(recipeId);
             for(Item item : recipe.getItems()){
                 Item newItem = new Item();
@@ -59,12 +60,9 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
                 newItem.setHighlight(item.isHighlight());
                 newItem.setGroup(item.getGroup());
                 newItem.setUnit(item.getUnit());
-                shoppingList.addItem(newItem);
 
-                EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-                EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+                shoppingListManager.addListItem(shoppingListId, newItem);
             }
-            listStorage.saveList(shoppingList);
             viewLauncher.showShoppingList(shoppingListId);
         }
     };
@@ -74,11 +72,11 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
 
     @Inject
     public AddRecipeToShoppingListViewModel(ViewLauncher viewLauncher, RecipeStorage recipeStorage,
-                                            ListStorage<ShoppingList> listStorage) {
+                                            ListManager<ShoppingList> shoppingListManager) {
 
         this.viewLauncher = viewLauncher;
         this.recipeStorage = recipeStorage;
-        this.listStorage = listStorage;
+        this.shoppingListManager = shoppingListManager;
 
         setRecipes(new ObservableArrayList<>(new ObservableArrayList.IdExtractor<Recipe, Integer>() {
             @Override

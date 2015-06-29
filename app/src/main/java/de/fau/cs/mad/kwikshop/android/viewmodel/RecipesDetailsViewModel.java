@@ -6,9 +6,9 @@ import java.util.List;
 import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
@@ -45,7 +45,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
     private Listener compositeListener = new CompositeListener();
 
     private final Context context;
-    private final RecipeStorage recipeStorage;
+    private final ListStorage<Recipe> recipeStorage;
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
 
@@ -67,7 +67,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
     @Inject
     public RecipesDetailsViewModel(final Context context, final ViewLauncher viewLauncher,
                                         final ResourceProvider resourceProvider,
-                                        final RecipeStorage recipeStorage) {
+                                        final ListStorage<Recipe> recipeStorage) {
 
         if (context == null) {
             throw new IllegalArgumentException("'context' must not be null");
@@ -208,7 +208,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
             this.deleteCommand.setIsAvailable(true);
 
             //TODO: handle exception when list is not found
-            this.recipe = recipeStorage.loadRecipe(recipeId);
+            this.recipe = recipeStorage.loadList(recipeId);
             setScaleFactor(recipe.getScaleFactor());
             setScaleName(recipe.getScaleName());
             setName(recipe.getName());
@@ -218,19 +218,19 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
 
     private void saveCommandExecute() {
         if (isNewRecipe) {
-            this.recipeId = recipeStorage.createRecipe();
-            recipe = recipeStorage.loadRecipe(recipeId);
+            this.recipeId = recipeStorage.createList();
+            recipe = recipeStorage.loadList(recipeId);
         }
 
         recipe.setName(this.getName());
         recipe.setScaleFactor(scaleFactor);
         recipe.setScaleName(scaleName);
 
-        recipeStorage.saveRecipe(recipe);
+        recipeStorage.saveList(recipe);
 
-        ShoppingListChangeType changeType = isNewRecipe
-                ? ShoppingListChangeType.Added
-                : ShoppingListChangeType.PropertiesModified;
+        ListChangeType changeType = isNewRecipe
+                ? ListChangeType.Added
+                : ListChangeType.PropertiesModified;
 
         EventBus.getDefault().post(new RecipeChangedEvent(changeType, recipe.getId()));
 
@@ -263,8 +263,8 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
                     @Override
                     public void execute(Object parameter) {
 
-                        recipeStorage.deleteRecipe(recipeId);
-                        EventBus.getDefault().post(new RecipeChangedEvent(ShoppingListChangeType.Deleted, recipeId));
+                        recipeStorage.deleteList(recipeId);
+                        EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.Deleted, recipeId));
                         finish();
                     }
                 },

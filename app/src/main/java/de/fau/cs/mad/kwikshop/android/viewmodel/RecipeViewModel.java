@@ -13,14 +13,15 @@ import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.RecipeItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeItemLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -68,7 +69,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
     private boolean initialized = false;
 
     private final ViewLauncher viewLauncher;
-    private final RecipeStorage recipeStorage;
+    private final ListStorage<Recipe> recipeStorage;
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<Group> groupStorage;
     private final ItemParser itemParser;
@@ -102,7 +103,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
 
 
     @Inject
-    public RecipeViewModel(ViewLauncher viewLauncher, RecipeStorage recipeStorage,
+    public RecipeViewModel(ViewLauncher viewLauncher, ListStorage<Recipe> recipeStorage,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
                                  AutoCompletionHelper autoCompletionHelper) {
@@ -267,7 +268,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
 
         if(event.getListId() == this.recipeId) {
 
-            if(event.getChangeType() == ShoppingListChangeType.Deleted) {
+            if(event.getChangeType() == ListChangeType.Deleted) {
                 finish();
             }
         }
@@ -278,7 +279,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
 
         if(event.getListId() == this.recipeId) {
 
-            if(event.getChangeType() == ShoppingListChangeType.PropertiesModified) {
+            if(event.getChangeType() == ListChangeType.PropertiesModified) {
                 new LoadRecipeTask(recipeStorage, privateBus, recipeId).execute();
 
             }
@@ -289,9 +290,9 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
     }
 
     @SuppressWarnings("unused")
-    public void onEventBackgroundThread(RecipeItemChangedEvent event) {
+    public void onEventBackgroundThread(ItemChangedEvent event) {
 
-        if(event.getRecipeId() == this.recipeId) {
+        if(event.getListType() == ListType.Recipe && event.getListId() == this.recipeId) {
 
             switch (event.getChangeType()) {
 
@@ -309,9 +310,9 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(RecipeItemChangedEvent event) {
+    public void onEventMainThread(ItemChangedEvent event) {
 
-        if(event.getRecipeId() == this.recipeId) {
+        if(event.getListType() == ListType.Recipe && event.getListId() == this.recipeId) {
 
             switch (event.getChangeType()) {
 
@@ -362,15 +363,15 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
                     newItem = itemParser.parseAmountAndUnit(newItem);
                     newItem.setGroup(groupStorage.getDefaultValue());
 
-                    Recipe recipe = recipeStorage.loadRecipe(recipeId);
+                    Recipe recipe = recipeStorage.loadList(recipeId);
                     recipe.addItem(newItem);
 
-                    recipeStorage.saveRecipe(recipe);
+                    recipeStorage.saveList(recipe);
 
                     autoCompletionHelper.offerName(newItem.getName());
 
-                    EventBus.getDefault().post(new RecipeChangedEvent(ShoppingListChangeType.ItemsAdded, recipe.getId()));
-                    EventBus.getDefault().post(new RecipeItemChangedEvent(ItemChangeType.Added, recipe.getId(), newItem.getId()));
+                    EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.ItemsAdded, recipe.getId()));
+                    EventBus.getDefault().post(new ItemChangedEvent(ListType.Recipe, ItemChangeType.Added, recipe.getId(), newItem.getId()));
                 }
                 return null;
             }

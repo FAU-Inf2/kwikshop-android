@@ -9,22 +9,15 @@ import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.model.ListStorage;
-import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
-import de.fau.cs.mad.kwikshop.android.model.LocalListStorage;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewModelBase;
 import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadRecipeTask;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadShoppingListTask;
 import de.greenrobot.event.EventBus;
 
 public class AddRecipeToShoppingListViewModel extends ViewModelBase {
@@ -38,9 +31,9 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
 
     // infrastructure references
     private final ViewLauncher viewLauncher;
-    private final RecipeStorage recipeStorage;
+    private final ListStorage<Recipe> recipeStorage;
     private final EventBus privateBus = EventBus.builder().build();
-    private final ListStorage listStorage;
+    private final ListManager<ShoppingList> shoppingListManager;
 
 
     private Listener listener;
@@ -51,8 +44,7 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
         @Override
         public void execute(Integer recipeId) {
 
-            ShoppingList shoppingList = listStorage.loadList(shoppingListId);
-            Recipe recipe = recipeStorage.loadRecipe(recipeId);
+            Recipe recipe = recipeStorage.loadList(recipeId);
             for(Item item : recipe.getItems()){
                 Item newItem = new Item();
                 newItem.setName(item.getName());
@@ -62,12 +54,9 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
                 newItem.setHighlight(item.isHighlight());
                 newItem.setGroup(item.getGroup());
                 newItem.setUnit(item.getUnit());
-                shoppingList.addItem(newItem);
 
-                EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-                EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Added, shoppingList.getId(), newItem.getId()));
+                shoppingListManager.addListItem(shoppingListId, newItem);
             }
-            listStorage.saveList(shoppingList);
             viewLauncher.showShoppingList(shoppingListId);
         }
     };
@@ -76,11 +65,12 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
     private boolean initialized = false;
 
     @Inject
-    public AddRecipeToShoppingListViewModel(ViewLauncher viewLauncher, RecipeStorage recipeStorage, ListStorage listStorage) {
+    public AddRecipeToShoppingListViewModel(ViewLauncher viewLauncher, ListStorage<Recipe> recipeStorage,
+                                            ListManager<ShoppingList> shoppingListManager) {
 
         this.viewLauncher = viewLauncher;
         this.recipeStorage = recipeStorage;
-        this.listStorage = listStorage;
+        this.shoppingListManager = shoppingListManager;
 
         setRecipes(new ObservableArrayList<>(new ObservableArrayList.IdExtractor<Recipe, Integer>() {
             @Override

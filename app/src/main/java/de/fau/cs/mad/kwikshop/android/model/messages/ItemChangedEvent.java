@@ -4,20 +4,22 @@ public class ItemChangedEvent {
 
     //region Fields
 
-    private final ItemChangeType m_ChangeType;
-    private final int m_ShoppingListId;
-    private final int m_ItemId;
+    private final ListType listType;
+    private final ItemChangeType changeType;
+    private final int listId;
+    private final int itemId;
 
     //endregion
 
 
     //region Constructor
 
-    public ItemChangedEvent(ItemChangeType changeType, int shoppingListId, int itemId) {
+    public ItemChangedEvent(ListType listType, ItemChangeType changeType, int listId, int itemId) {
 
-        this.m_ChangeType = changeType;
-        this.m_ShoppingListId = shoppingListId;
-        this.m_ItemId = itemId;
+        this.listType = listType;
+        this.changeType = changeType;
+        this.listId = listId;
+        this.itemId = itemId;
     }
 
     //endregion
@@ -25,17 +27,20 @@ public class ItemChangedEvent {
 
     //region Getters
 
+    public ListType getListType() {
+        return this.listType;
+    }
+
     public ItemChangeType getChangeType() {
-        return m_ChangeType;
+        return changeType;
     }
 
-    public int getShoppingListId() {
-        return m_ShoppingListId;
+    public int getListId() {
+        return listId;
     }
-
 
     public int getItemId() {
-        return m_ItemId;
+        return itemId;
     }
 
     //endregion

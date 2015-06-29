@@ -9,8 +9,9 @@ import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 
-public class LocalListStorage extends ListStorage {
+public class LocalListStorage implements ListStorage<ShoppingList> {
 
     @Override
     public int createList() {
@@ -30,6 +31,21 @@ public class LocalListStorage extends ListStorage {
             ArrayList<ShoppingList> lists = new ArrayList<>();
             for(ShoppingList list : ListStorageFragment.getDatabaseHelper().getShoppingListDao()) {
                 lists.add(list);
+
+                if(list.getCalendarEventDate() != null) {
+                    ListStorageFragment.getDatabaseHelper().getCalendarDao().refresh(list.getCalendarEventDate());
+                }
+
+                for (Item i : list.getItems()) {
+
+                    if (i.getUnit() != null) {
+                        ListStorageFragment.getDatabaseHelper().getUnitDao().refresh(i.getUnit());
+                    }
+
+                    if (i.getGroup() != null) {
+                        ListStorageFragment.getDatabaseHelper().getGroupDao().refresh(i.getGroup());
+                    }
+                }
             }
             return Collections.unmodifiableList(lists);
 
@@ -41,7 +57,7 @@ public class LocalListStorage extends ListStorage {
     }
 
     @Override
-    public ShoppingList loadList(Integer listID) {
+    public ShoppingList loadList(int listID) {
         ShoppingList loadedList;
         try {
             loadedList = ListStorageFragment.getDatabaseHelper().getShoppingListDao().queryForId(listID);
@@ -69,7 +85,7 @@ public class LocalListStorage extends ListStorage {
     }
 
     @Override
-    public Boolean saveList(ShoppingList list) {
+    public boolean saveList(ShoppingList list) {
         try {
             // Update all Items first
             for (Item item : list.getItems()) {
@@ -84,7 +100,7 @@ public class LocalListStorage extends ListStorage {
     }
 
     @Override
-    public Boolean deleteList(Integer id) {
+    public boolean deleteList(int id) {
         try {
             deleteListItems(id);
             ListStorageFragment.getDatabaseHelper().getShoppingListDao().deleteById(id);
@@ -95,19 +111,11 @@ public class LocalListStorage extends ListStorage {
         return true;
     }
 
-    public void deleteItem(int id) {
-        try {
-            ListStorageFragment.getDatabaseHelper().getItemDao().deleteById(id);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void deleteListItems(Integer listid) {
+    private void deleteListItems(int listId) {
         DeleteBuilder db;
         try {
             db = ListStorageFragment.getDatabaseHelper().getItemDao().deleteBuilder();
-            db.where().eq(Item.FOREIGN_SHOPPINGLIST_FIELD_NAME, listid); // Delete all items that belong to this list
+            db.where().eq(Item.FOREIGN_SHOPPINGLIST_FIELD_NAME, listId); // Delete all items that belong to this list
             ListStorageFragment.getDatabaseHelper().getItemDao().delete(db.prepare());
         } catch (SQLException e) {
             e.printStackTrace();

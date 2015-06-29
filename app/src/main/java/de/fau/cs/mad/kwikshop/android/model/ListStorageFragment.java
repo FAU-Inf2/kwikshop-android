@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.widget.Toast;
 
 import java.sql.SQLException;
 
@@ -16,6 +15,7 @@ import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 
 public class ListStorageFragment extends Fragment {
@@ -35,7 +35,7 @@ public class ListStorageFragment extends Fragment {
     private static SimpleStorage<CalendarEventDate> m_CalendarEventStorage;
     private static ListStorageFragment m_ListStorageFragment;
     private static DatabaseHelper m_DatabaseHelper;
-    private static RecipeStorage m_RecipeStorage;
+    private static ListStorage<Recipe> m_RecipeStorage;
 
     //endregion
 
@@ -78,7 +78,7 @@ public class ListStorageFragment extends Fragment {
         return m_ListStorageFragment;
     }
 
-    public static RecipeStorage getRecipeStorage(){ return m_RecipeStorage;}
+    public static ListStorage<Recipe> getRecipeStorage(){ return m_RecipeStorage;}
 
     public void SetupLocalListStorageFragment(FragmentActivity activity) {
         FragmentManager fm = activity.getSupportFragmentManager();
@@ -177,10 +177,10 @@ public class ListStorageFragment extends Fragment {
             list.addItem(i2);
 
 
-            list.save();
+            getLocalListStorage().saveList(list);
         }
 
-        if(m_RecipeStorage.getAllRecipes().size() == 0){
+        if(m_RecipeStorage.getAllLists().size() == 0){
 
 
             //I couldn't find a better way
@@ -190,8 +190,8 @@ public class ListStorageFragment extends Fragment {
             Group meat = m_GroupStorage.getItems().get(11);
             Group vegetable = m_GroupStorage.getItems().get(10);
 
-            int id = m_RecipeStorage.createRecipe();
-            Recipe recipe1 = m_RecipeStorage.loadRecipe(id);
+            int id = m_RecipeStorage.createList();
+            Recipe recipe1 = m_RecipeStorage.loadList(id);
             recipe1.setName(context.getString(R.string.recipe_name_chili_con_carne));
 
             //4 persons
@@ -235,7 +235,7 @@ public class ListStorageFragment extends Fragment {
             item6.setGroup(vegetable);
             recipe1.addItem(item6);
 
-            recipe1.save();
+            m_RecipeStorage.saveList(recipe1);
         }
 
     }

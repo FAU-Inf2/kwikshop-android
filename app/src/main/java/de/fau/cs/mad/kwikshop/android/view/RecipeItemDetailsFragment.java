@@ -33,17 +33,15 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.RecipeItemChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.greenrobot.event.EventBus;
@@ -242,8 +240,8 @@ public class RecipeItemDetailsFragment extends Fragment {
 
             recipe.removeItem(itemId);
 
-            EventBus.getDefault().post(new RecipeChangedEvent(ShoppingListChangeType.ItemsRemoved, recipeId));
-            EventBus.getDefault().post(new RecipeItemChangedEvent(ItemChangeType.Deleted, recipeId, itemId));
+            EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.ItemsRemoved, recipeId));
+            EventBus.getDefault().post(new ItemChangedEvent(ListType.Recipe, ItemChangeType.Deleted, recipeId, itemId));
         }
 
         hideKeyboard();
@@ -260,8 +258,8 @@ public class RecipeItemDetailsFragment extends Fragment {
     }
 
 
-    public void onEventMainThread(RecipeItemChangedEvent event) {
-        if (recipe.getId() == event.getRecipeId() && event.getItemId() == item.getId()) {
+    public void onEventMainThread(ItemChangedEvent event) {
+        if (event.getListType() == ListType.Recipe && recipe.getId() == event.getListId() && event.getItemId() == item.getId()) {
             setupUI();
         }
     }
@@ -320,15 +318,15 @@ public class RecipeItemDetailsFragment extends Fragment {
             @Override
             protected Object doInBackground(Object[] params) {
 
-                ListStorageFragment.getRecipeStorage().saveRecipe(recipe);
+                ListStorageFragment.getRecipeStorage().saveList(recipe);
 
                 ItemChangeType itemChangeType = isNewItem
                         ? ItemChangeType.Added
                         : ItemChangeType.PropertiesModified;
-                EventBus.getDefault().post(new RecipeItemChangedEvent(itemChangeType, recipe.getId(), item.getId()));
+                EventBus.getDefault().post(new ItemChangedEvent(ListType.Recipe, itemChangeType, recipe.getId(), item.getId()));
 
                 if (isNewItem) {
-                    EventBus.getDefault().post(new RecipeChangedEvent(ShoppingListChangeType.ItemsAdded, recipe.getId()));
+                    EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.ItemsAdded, recipe.getId()));
                 }
                 return null;
             }
@@ -379,7 +377,7 @@ public class RecipeItemDetailsFragment extends Fragment {
         brand_text.setAdapter(autoCompletion.getBrandAdapter(getActivity()));
 
         // load shopping list and item and set values in UI
-        recipe = ListStorageFragment.getRecipeStorage().loadRecipe(recipeId);
+        recipe = ListStorageFragment.getRecipeStorage().loadList(recipeId);
         if (isNewItem) {
 
             productname_text.setText("");

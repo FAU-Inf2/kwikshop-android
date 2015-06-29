@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
@@ -98,7 +99,15 @@ public class DefaultViewLauncher implements ViewLauncher {
         alert.show();
     }
 
+    @Override
+    public void showToast(String message, int duration) {
+        Toast.makeText(activity, message, duration).show();
+    }
 
+    @Override
+    public void showToast(int resId, int duration) {
+        Toast.makeText(activity, resId, duration).show();
+    }
 
     @Override
     public void showItemDetailsView(int shoppingListId) {

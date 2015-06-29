@@ -1,7 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,25 +10,31 @@ import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.j256.ormlite.dao.Dao;
-
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
+import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.LocalListStorage;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
+import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
+import de.greenrobot.event.EventBus;
 
 public class ReminderFragment extends Fragment {
 
@@ -42,21 +47,12 @@ public class ReminderFragment extends Fragment {
     private Item item;
 
     private int listId;
+    List<ShoppingList> shoppingLists;
 
-    /*private int listId;
+    private RegularlyRepeatHelper repeatHelper;
 
-    private boolean isNewItem;
-
-    private ShoppingList shoppingList;
-    private List<Unit> units;
-    private int selectedUnitIndex = -1;
-    private List<Group> groups;
-    private int selectedGroupIndex = -1;
-
-    private String[] numbersForAmountPicker;
-    private int amount_numberPickerCalledWith;
-
-    private static AutoCompletionHelper autoCompletion;*/
+    @Inject
+    ListManager<ShoppingList> shoppingListManager;
 
     /* UI elements */
 
@@ -162,12 +158,17 @@ public class ReminderFragment extends Fragment {
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //if (productname_text.getText().length() > 0) {
-                    //    saveItem();
-                        getActivity().finish();
-                    //} else {
-                    //    Toast.makeText(getActivity(), getResources().getString(R.string.error_empty_productname), Toast.LENGTH_LONG).show();
-                    //}
+                    if (doNothing_radioButton.isChecked()) {
+                        skipThisReminder();
+                    } else if (deleteReminder_radioButton.isChecked()) {
+                        deleteReminder();
+                    } else if (addToShoppingList_radioButton.isChecked()) {
+                        addToShoppingList();
+                    } else if (later_radioButton.isChecked()) {
+                        remindLater();
+                    }
+                    //repeatHelper.checkIfReminderIsOver();
+                    getActivity().finish();
                 }
             });
 
@@ -184,8 +185,95 @@ public class ReminderFragment extends Fragment {
 
 
         }
+    }
 
+    private void skipThisReminder() {
+        if (item.isRemindFromNextPurchaseOn()) {
+            item.setLastBought(null);
+            item.setRemindAtDate(null);
+            repeatHelper.offerRepeatData(item);
 
+            saveInDatabase();
+
+            Toast.makeText(getActivity(), R.string.reminder_nextTimeBought_msg, Toast.LENGTH_LONG).show();
+        } else {
+            changeReminderDate();
+        }
+    }
+
+    private void deleteReminder() {
+        item.setRemindAtDate(null);
+        item.setLastBought(null);
+        item.setRegularlyRepeatItem(false);
+
+        saveInDatabase();
+
+        Toast.makeText(getActivity(), R.string.reminder_deleted_msg, Toast.LENGTH_LONG).show();
+    }
+
+    private void addToShoppingList() {
+        Item newItem = new Item(item);
+
+        shoppingListManager.addListItem(listId, newItem);
+
+        changeReminderDate(getString(R.string.reminder_itemAdded));
+    }
+
+    private void remindLater() {
+        int repeatSpinnerPos = period_spinner.getSelectedItemPosition();
+        switch (repeatSpinnerPos) {
+            case 0:
+                item.setPeriodType(TimePeriodsEnum.DAYS);
+                break;
+            case 1:
+                item.setPeriodType(TimePeriodsEnum.WEEKS);
+                break;
+            case 2:
+                item.setPeriodType(TimePeriodsEnum.MONTHS);
+                break;
+            default:
+                break;
+        }
+        item.setSelectedRepeatTime(period_numberPicker.getValue());
+        item.setRemindFromNowOn(true);
+        changeReminderDate();
+    }
+
+    private void saveInDatabase() {
+        shoppingListManager.saveList(listId);
+    }
+
+    private void changeReminderDate() {
+        changeReminderDate("");
+    }
+
+    private void changeReminderDate(String additionalMessage) {
+        Calendar remindDate = Calendar.getInstance();
+        remindDate.setTime(item.getRemindAtDate());
+
+        switch (item.getPeriodType()) {
+            case DAYS:
+                remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime());
+                break;
+            case WEEKS:
+                remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime() * 7);
+                break;
+            case MONTHS:
+                remindDate.add(Calendar.MONTH, item.getSelectedRepeatTime());
+                break;
+        }
+
+        item.setRemindAtDate(remindDate.getTime());
+        repeatHelper.offerRepeatData(item); // in order to re-sort the Priority Queue
+
+        saveInDatabase();
+
+        if (additionalMessage == null)
+            additionalMessage = "";
+
+        DateFormat dateFormat = new SimpleDateFormat(getString(R.string.time_format));
+        String message = additionalMessage + getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
     public void onDestroyView() {
@@ -197,28 +285,18 @@ public class ReminderFragment extends Fragment {
 
 
     private void setupUI() {
+        repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
 
-        //item = ListStorageFragment.getLocalListStorage().loadList(listId).getItem(itemId);
-
-        /*DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
-
-        SystemClock.sleep(1000);
-
-        try {
-            Dao<Item, Integer> itemDao = dbHelper.getItemDao();
-            item = itemDao.queryForId(listId);
-            if(item == null)
-                throw new RuntimeException("ASDF " + itemId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        if(item == null)
-            throw new RuntimeException("ASDFASDF");*/
-
-        RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        objectGraph.inject(this);
 
         item = repeatHelper.getItemForId(itemId);
+
+        if (item == null) {
+            // can happen if a reminder was set for the past
+            getActivity().finish();
+            return;
+        }
 
         question_text.append(getString(R.string.reminder_question_beginning));
         question_text.append("\"" + item.getName() + "\"");
@@ -250,7 +328,7 @@ public class ReminderFragment extends Fragment {
 
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
         LocalListStorage listStorage = new LocalListStorage();
-        List<ShoppingList> shoppingLists = listStorage.getAllLists();
+        shoppingLists = listStorage.getAllLists();
         ArrayList<String> namesOfShoppingLists = new ArrayList<>(shoppingLists.size());
         for(ShoppingList shoppingList : shoppingLists) {
             namesOfShoppingLists.add(shoppingList.getName());
@@ -259,7 +337,6 @@ public class ReminderFragment extends Fragment {
         ArrayAdapter<String> shoppingList_spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, namesOfShoppingLists);
         shoppingList_spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         shoppingList_spinner.setAdapter(shoppingList_spinnerAdapter);
-
     }
 
 }

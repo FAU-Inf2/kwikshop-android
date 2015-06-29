@@ -3,11 +3,12 @@ package de.fau.cs.mad.kwikshop.android.model.interfaces;
 import java.util.Collection;
 
 import de.fau.cs.mad.kwikshop.android.common.*;
+import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
 
 /**
  * Interface for storage to access lists of items (Shopping lists, recipes etc)
  */
-public interface ListManager<TList> {
+public interface ListManager<TList extends DomainListObject> {
 
     Collection<TList> getLists();
 
@@ -17,7 +18,7 @@ public interface ListManager<TList> {
 
     Item getListItem(int listId, int itemId);
 
-    TList addList(TList list);
+    int createList();
 
     TList saveList(int listId);
 

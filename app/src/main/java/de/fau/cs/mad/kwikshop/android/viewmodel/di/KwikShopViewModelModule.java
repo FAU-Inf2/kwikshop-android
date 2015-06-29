@@ -7,16 +7,21 @@ import dagger.Module;
 import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.Group;
+import de.fau.cs.mad.kwikshop.android.common.Recipe;
+import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
-import de.fau.cs.mad.kwikshop.android.model.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.RecipeManager;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
+import de.fau.cs.mad.kwikshop.android.model.ShoppingListManager;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.view.DefaultResourceProvider;
 import de.fau.cs.mad.kwikshop.android.view.DefaultViewLauncher;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
+import de.fau.cs.mad.kwikshop.android.view.ItemDetailsFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.AddRecipeToShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfRecipesViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfShoppingListsViewModel;
@@ -36,12 +41,15 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         RecipesDetailsViewModel.class,
         RecipeViewModel.class,
         AutoCompletionHelper.class,
-        AddRecipeToShoppingListViewModel.class
+        AddRecipeToShoppingListViewModel.class,
+        ItemDetailsFragment.class
 },
         library = true)
 @SuppressWarnings("unused")
 public class KwikShopViewModelModule {
 
+    private static ListManager<ShoppingList> shoppingListManager;
+    private static ListManager<Recipe> recipeManager;
     private final Activity currentActivity;
 
     public KwikShopViewModelModule(Activity currentActivity) {
@@ -59,14 +67,16 @@ public class KwikShopViewModelModule {
     }
 
     @Provides
-    public ListStorage provideListStorage() {
+    public ListStorage<ShoppingList> provideShoppingListStorage() {
         return ListStorageFragment.getLocalListStorage();
     }
 
     @Provides
-    public RecipeStorage provideRecipeStorage() {
+    @Deprecated
+    public ListStorage<Recipe> provideRecipeStorage() {
         return ListStorageFragment.getRecipeStorage();
     }
+
 
     @Provides
     public Context provideContext() {
@@ -106,5 +116,21 @@ public class KwikShopViewModelModule {
     @Provides
     public AutoCompletionHelper provideAutoCompletionHelper(Activity activity) {
         return AutoCompletionHelper.getAutoCompletionHelper(activity.getBaseContext());
+    }
+
+    @Provides
+    public ListManager<ShoppingList> provideShoppingListManager(ListStorage<ShoppingList> listStorage) {
+        if(shoppingListManager == null) {
+            shoppingListManager = new ShoppingListManager(listStorage);
+        }
+        return shoppingListManager;
+    }
+
+    @Provides
+    public ListManager<Recipe> provideRecipeManager(ListStorage<Recipe> listStorage) {
+        if(recipeManager == null) {
+            recipeManager = new RecipeManager(listStorage);
+        }
+        return recipeManager;
     }
 }

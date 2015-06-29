@@ -9,11 +9,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
+import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
 
 @DatabaseTable (tableName = "recipe")
-public class Recipe {
+public class Recipe implements DomainListObject {
 
     @DatabaseField(generatedId = true)
     private int id;
@@ -30,7 +29,7 @@ public class Recipe {
     @DatabaseField
     private String scaleName;
 
-    private RecipeStorage recipeStorage;
+
 
 
     public Recipe(int id) {
@@ -39,7 +38,7 @@ public class Recipe {
 
     public Recipe() {
         // Default no-arg constructor for generating Items, required for ORMLite
-        recipeStorage = ListStorageFragment.getRecipeStorage();
+
     }
 
     public int getId() {
@@ -68,13 +67,6 @@ public class Recipe {
         this.scaleName = scaleName;
     }
 
-    public void save() {
-        recipeStorage.saveRecipe(this);
-    }
-
-    public Boolean delete() {
-        return recipeStorage.deleteRecipe(this.getId());
-    }
 
     public void addItem(Item item) {
         this.items.add(item);
@@ -87,7 +79,6 @@ public class Recipe {
             Item currentItem = iterator.next();
             if (currentItem.getId() == id) {
                 items.remove(currentItem);
-                recipeStorage.deleteItem(id);
                 return true;
             }
         }

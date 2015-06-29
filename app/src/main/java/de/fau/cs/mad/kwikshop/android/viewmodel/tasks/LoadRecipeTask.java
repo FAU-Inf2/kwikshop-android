@@ -7,25 +7,22 @@ import java.util.Collection;
 import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.model.ListStorage;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListLoadedEvent;
 import de.greenrobot.event.EventBus;
 
 public class LoadRecipeTask extends AsyncTask<Object, Object, Collection<Recipe>> {
 
-    private RecipeStorage recipeStorage;
+    private ListStorage<Recipe> recipeStorage;
     private EventBus resultBus;
     private int recipeId;
     private final boolean loadAll;
 
-    public LoadRecipeTask(RecipeStorage recipeStorage, EventBus resultBus) {
+    public LoadRecipeTask(ListStorage<Recipe> recipeStorage, EventBus resultBus) {
         this(recipeStorage, resultBus, -1);
     }
 
-    public LoadRecipeTask(RecipeStorage recipeStorage, EventBus resultBus, int recipeId) {
+    public LoadRecipeTask(ListStorage<Recipe> recipeStorage, EventBus resultBus, int recipeId) {
 
         if (recipeStorage == null) {
             throw new IllegalArgumentException("'recipeStorage' must not be null");
@@ -47,7 +44,7 @@ public class LoadRecipeTask extends AsyncTask<Object, Object, Collection<Recipe>
 
         if (loadAll) {
 
-            List<Recipe> recipes = recipeStorage.getAllRecipes();
+            List<Recipe> recipes = recipeStorage.getAllLists();
             for (Recipe recipe : recipes) {
                 resultBus.post(new RecipeLoadedEvent(recipe));
             }
@@ -55,7 +52,7 @@ public class LoadRecipeTask extends AsyncTask<Object, Object, Collection<Recipe>
 
         } else {
 
-            Recipe recipe = recipeStorage.loadRecipe(recipeId);
+            Recipe recipe = recipeStorage.loadList(recipeId);
             resultBus.post(new RecipeLoadedEvent(recipe));
             return Arrays.asList(recipe);
         }

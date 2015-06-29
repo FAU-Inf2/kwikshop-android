@@ -1,7 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -31,8 +30,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
@@ -41,14 +43,13 @@ import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
+import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 import de.greenrobot.event.EventBus;
 
 public class ItemDetailsFragment extends Fragment {
@@ -63,7 +64,9 @@ public class ItemDetailsFragment extends Fragment {
     private int itemId;
     private boolean isNewItem;
 
-    private ShoppingList shoppingList;
+    @Inject
+    ListManager<ShoppingList> shoppingListManager;
+
     private Item item;
     private List<Unit> units;
     private int selectedUnitIndex = -1;
@@ -257,10 +260,7 @@ public class ItemDetailsFragment extends Fragment {
 
         if(!isNewItem){
 
-            shoppingList.removeItem(itemId);
-
-            EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsRemoved, listId));
-            EventBus.getDefault().post(new ItemChangedEvent(ItemChangeType.Deleted, listId, itemId));
+            shoppingListManager.deleteItem(listId, itemId);
         }
 
         hideKeyboard();
@@ -277,12 +277,14 @@ public class ItemDetailsFragment extends Fragment {
     }
 
 
+    @SuppressWarnings("unused")
     public void onEventMainThread(ItemChangedEvent event) {
-        if (shoppingList.getId() == event.getShoppingListId() && event.getItemId() == item.getId()) {
+        if (listId == event.getListId() && event.getItemId() == item.getId()) {
             setupUI();
         }
     }
 
+    @SuppressWarnings("unused")
     public void onEvent(AutoCompletionHistoryDeletedEvent event){
         if (autoCompletion != null) {
             productname_text.setAdapter(autoCompletion.getNameAdapter(getActivity()));
@@ -292,7 +294,6 @@ public class ItemDetailsFragment extends Fragment {
 
 
     private void saveItem() {
-
 
         if (isNewItem) {
             item = new Item();
@@ -387,32 +388,11 @@ public class ItemDetailsFragment extends Fragment {
         autoCompletion.offerNameAndGroup(productname_text.getText().toString(), item.getGroup());
         autoCompletion.offerBrand(brand_text.getText().toString());
 
-        if (isNewItem) {
-            shoppingList.addItem(item);
+        if(isNewItem) {
+            shoppingListManager.addListItem(listId, item);
+        } else {
+            shoppingListManager.saveListItem(listId, item);
         }
-
-
-        AsyncTask task = new AsyncTask() {
-
-            @Override
-            protected Object doInBackground(Object[] params) {
-
-                ListStorageFragment.getLocalListStorage().saveList(shoppingList);
-
-                ItemChangeType itemChangeType = isNewItem
-                        ? ItemChangeType.Added
-                        : ItemChangeType.PropertiesModified;
-                EventBus.getDefault().post(new ItemChangedEvent(itemChangeType, shoppingList.getId(), item.getId()));
-
-                if (isNewItem) {
-                    EventBus.getDefault().post(new ShoppingListChangedEvent(ShoppingListChangeType.ItemsAdded, shoppingList.getId()));
-                }
-                return null;
-            }
-        };
-        task.execute();
-
-
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved) + additionalToastText, Toast.LENGTH_LONG).show();
 
         hideKeyboard();
@@ -460,7 +440,10 @@ public class ItemDetailsFragment extends Fragment {
         brand_text.setAdapter(autoCompletion.getBrandAdapter(getActivity()));
 
         // load shopping list and item and set values in UI
-        shoppingList = ListStorageFragment.getLocalListStorage().loadList(listId);
+
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        objectGraph.inject(this);
+
         if (isNewItem) {
 
             productname_text.setText("");
@@ -469,7 +452,7 @@ public class ItemDetailsFragment extends Fragment {
             comment_text.setText("");
 
         } else {
-            item = shoppingList.getItem(itemId);
+            item = shoppingListManager.getListItem(listId, itemId);
 
             //thats not a pretty way to get it done, but the only one that came to my mind
             //amount_numberPicker.setValue(index) sets the picker to the index + amount_numberPicker.minValue()

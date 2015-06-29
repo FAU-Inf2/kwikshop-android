@@ -75,6 +75,20 @@ public class Item {
         // Default no-arg constructor for generating Items, required for ORMLite
     }
 
+    /**
+     * Copies an other item. Most fields are copied, but not order, recipe, shoppingList, id and all repeat-related fields
+     * @param item The item to copy
+     */
+    public Item(Item item) {
+        this.amount = item.amount;
+        this.name = item.name;
+        this.highlight = item.highlight;
+        this.brand = item.brand;
+        this.comment = item.comment;
+        this.group = item.group;
+        this.unit = item.unit;
+    }
+
     public int getId() {
         return id;
     }

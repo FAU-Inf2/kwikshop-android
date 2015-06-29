@@ -9,6 +9,7 @@ import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 
 public class LocalListStorage implements ListStorage<ShoppingList> {
 

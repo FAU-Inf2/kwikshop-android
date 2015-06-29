@@ -188,7 +188,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
             this.deleteCommand.setIsAvailable(true);
 
             //TODO: handle exception when list is not found
-            this.recipe = recipeStorage.loadRecipe(recipeId);
+            this.recipe = recipeStorage.loadList(recipeId);
             setName(recipe.getName());
         }
 
@@ -196,13 +196,13 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
 
     private void saveCommandExecute() {
         if (isNewRecipe) {
-            this.recipeId = recipeStorage.createRecipe();
-            recipe = recipeStorage.loadRecipe(recipeId);
+            this.recipeId = recipeStorage.createList();
+            recipe = recipeStorage.loadList(recipeId);
         }
 
         recipe.setName(this.getName());
 
-        recipeStorage.saveRecipe(recipe);
+        recipeStorage.saveList(recipe);
 
         ShoppingListChangeType changeType = isNewRecipe
                 ? ShoppingListChangeType.Added
@@ -239,7 +239,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
                     @Override
                     public void execute(Object parameter) {
 
-                        recipeStorage.deleteRecipe(recipeId);
+                        recipeStorage.deleteList(recipeId);
                         EventBus.getDefault().post(new RecipeChangedEvent(ShoppingListChangeType.Deleted, recipeId));
                         finish();
                     }

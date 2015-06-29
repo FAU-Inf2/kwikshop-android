@@ -1,4 +1,4 @@
-package de.fau.cs.mad.kwikshop.android.model;
+package de.fau.cs.mad.kwikshop.android.model.interfaces;
 
 import java.util.List;
 

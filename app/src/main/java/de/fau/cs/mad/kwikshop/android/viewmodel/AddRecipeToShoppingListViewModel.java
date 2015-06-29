@@ -9,9 +9,7 @@ import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.model.ListStorage;
-import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
-import de.fau.cs.mad.kwikshop.android.model.LocalListStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
@@ -24,7 +22,6 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewModelBase;
 import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadRecipeTask;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadShoppingListTask;
 import de.greenrobot.event.EventBus;
 
 public class AddRecipeToShoppingListViewModel extends ViewModelBase {
@@ -52,7 +49,7 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
         public void execute(Integer recipeId) {
 
             ShoppingList shoppingList = listStorage.loadList(shoppingListId);
-            Recipe recipe = recipeStorage.loadRecipe(recipeId);
+            Recipe recipe = recipeStorage.loadList(recipeId);
             for(Item item : recipe.getItems()){
                 Item newItem = new Item();
                 newItem.setName(item.getName());

@@ -3,7 +3,7 @@ package de.fau.cs.mad.kwikshop.android.model.tasks;
 import android.os.AsyncTask;
 
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.model.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 
 public class SaveShoppingListTask extends AsyncTask<ShoppingList, Void, Void> {
 

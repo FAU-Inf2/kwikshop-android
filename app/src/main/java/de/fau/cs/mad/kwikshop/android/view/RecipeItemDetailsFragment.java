@@ -33,17 +33,14 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.greenrobot.event.EventBus;
@@ -320,7 +317,7 @@ public class RecipeItemDetailsFragment extends Fragment {
             @Override
             protected Object doInBackground(Object[] params) {
 
-                ListStorageFragment.getRecipeStorage().saveRecipe(recipe);
+                ListStorageFragment.getRecipeStorage().saveList(recipe);
 
                 ItemChangeType itemChangeType = isNewItem
                         ? ItemChangeType.Added
@@ -379,7 +376,7 @@ public class RecipeItemDetailsFragment extends Fragment {
         brand_text.setAdapter(autoCompletion.getBrandAdapter(getActivity()));
 
         // load shopping list and item and set values in UI
-        recipe = ListStorageFragment.getRecipeStorage().loadRecipe(recipeId);
+        recipe = ListStorageFragment.getRecipeStorage().loadList(recipeId);
         if (isNewItem) {
 
             productname_text.setText("");

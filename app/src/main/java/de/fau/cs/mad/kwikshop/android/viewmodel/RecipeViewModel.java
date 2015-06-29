@@ -362,10 +362,10 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
                     newItem = itemParser.parseAmountAndUnit(newItem);
                     newItem.setGroup(groupStorage.getDefaultValue());
 
-                    Recipe recipe = recipeStorage.loadRecipe(recipeId);
+                    Recipe recipe = recipeStorage.loadList(recipeId);
                     recipe.addItem(newItem);
 
-                    recipeStorage.saveRecipe(recipe);
+                    recipeStorage.saveList(recipe);
 
                     autoCompletionHelper.offerName(newItem.getName());
 

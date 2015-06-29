@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.widget.Toast;
 
 import java.sql.SQLException;
 
@@ -180,7 +179,7 @@ public class ListStorageFragment extends Fragment {
             list.save();
         }
 
-        if(m_RecipeStorage.getAllRecipes().size() == 0){
+        if(m_RecipeStorage.getAllLists().size() == 0){
 
 
             //I couldn't find a better way
@@ -190,8 +189,8 @@ public class ListStorageFragment extends Fragment {
             Group meat = m_GroupStorage.getItems().get(11);
             Group vegetable = m_GroupStorage.getItems().get(10);
 
-            int id = m_RecipeStorage.createRecipe();
-            Recipe recipe1 = m_RecipeStorage.loadRecipe(id);
+            int id = m_RecipeStorage.createList();
+            Recipe recipe1 = m_RecipeStorage.loadList(id);
             recipe1.setName(context.getString(R.string.recipe_name_chili_con_carne));
 
             //4 persons

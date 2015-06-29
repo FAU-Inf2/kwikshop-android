@@ -38,7 +38,7 @@ public class RecipeSaveItemTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void[] params) {
 
         if (items.length > 0) {
-            Recipe recipe = recipeStorage.loadRecipe(recipeId);
+            Recipe recipe = recipeStorage.loadList(recipeId);
             if (recipe != null) {
 
                 for (Item i : items) {

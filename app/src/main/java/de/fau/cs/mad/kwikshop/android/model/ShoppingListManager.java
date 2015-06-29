@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.common.*;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.*;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.model.tasks.SaveShoppingListTask;
 import de.greenrobot.event.EventBus;

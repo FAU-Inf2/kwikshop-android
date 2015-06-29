@@ -55,11 +55,11 @@ public class Recipe {
     }
 
     public void save() {
-        recipeStorage.saveRecipe(this);
+        recipeStorage.saveList(this);
     }
 
     public Boolean delete() {
-        return recipeStorage.deleteRecipe(this.getId());
+        return recipeStorage.deleteList(this.getId());
     }
 
     public void addItem(Item item) {

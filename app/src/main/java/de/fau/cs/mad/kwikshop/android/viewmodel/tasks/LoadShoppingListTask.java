@@ -3,12 +3,11 @@ package de.fau.cs.mad.kwikshop.android.viewmodel.tasks;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.model.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListLoadedEvent;
 import de.greenrobot.event.EventBus;
 

@@ -6,7 +6,9 @@ import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.ItemNotFoundException;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.ListNotFoundException;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
+import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 
 public class RecipeManager extends AbstractListManager<Recipe> {
 
@@ -27,17 +29,17 @@ public class RecipeManager extends AbstractListManager<Recipe> {
 
     @Override
     protected Object getAddedListChangedEvent(int id) {
-        return null;
+        return new RecipeChangedEvent(ListChangeType.Added, id);
     }
 
     @Override
     protected Object getDeletedListChangedEvent(int id) {
-        return null;
+        return new RecipeChangedEvent(ListChangeType.Deleted, id);
     }
 
     @Override
     protected Object getPropertiesModifiedListChangedEvent(int id) {
-        return null;
+        return new RecipeChangedEvent(ListChangeType.PropertiesModified, id);
     }
 
     @Override

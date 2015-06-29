@@ -20,9 +20,6 @@ import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadItemTask;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadShoppingListTask;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.SaveItemTask;
 import de.greenrobot.event.EventBus;
 
 public class ShoppingListViewModel extends ShoppingListViewModelBase {

@@ -123,9 +123,6 @@ public class ShoppingList implements DomainListObject {
         return false;
     }
 
-    public boolean removeItem(Item item) {
-        return removeItem(item.getId());
-    }
 
     public int size() {
         return items.size();

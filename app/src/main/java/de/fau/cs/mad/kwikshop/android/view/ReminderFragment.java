@@ -32,13 +32,8 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.LocalListStorage;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.SaveItemTask;
 import de.greenrobot.event.EventBus;
 
 public class ReminderFragment extends Fragment {

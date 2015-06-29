@@ -46,7 +46,6 @@ public class ShoppingList implements DomainListObject {
     @ForeignCollectionField(eager = true)
     private ForeignCollection<Item> items; // TODO: is Collection fine for everyone?
 
-    private LocalListStorage listStorage;
     private Account owner;
 
     private enum visibility {
@@ -63,7 +62,6 @@ public class ShoppingList implements DomainListObject {
 
     public ShoppingList() {
         // Default no-arg constructor for generating Items, required for ORMLite
-        listStorage = ListStorageFragment.getLocalListStorage();
     }
 
     public int getId() {
@@ -106,13 +104,7 @@ public class ShoppingList implements DomainListObject {
         this.vis = visibility;
     }
 
-    public void save() {
-        listStorage.saveList(this);
-    }
 
-    public Boolean delete() {
-        return listStorage.deleteList(this.getId());
-    }
 
     public void addItem(Item item) {
         this.items.add(item);

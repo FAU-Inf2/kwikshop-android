@@ -176,7 +176,7 @@ public class ListStorageFragment extends Fragment {
             list.addItem(i2);
 
 
-            list.save();
+            getLocalListStorage().saveList(list);
         }
 
         if(m_RecipeStorage.getAllLists().size() == 0){

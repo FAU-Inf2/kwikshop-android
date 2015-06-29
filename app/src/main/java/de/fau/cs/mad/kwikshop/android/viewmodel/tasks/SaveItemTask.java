@@ -73,7 +73,7 @@ public class SaveItemTask extends AsyncTask<Item, Void, Void> {
                         }
                     }
                 }
-                list.save();
+                listStorage.saveList(list);
             }
         }
 

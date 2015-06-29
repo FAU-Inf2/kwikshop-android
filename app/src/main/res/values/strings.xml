@@ -26,7 +26,6 @@
 
 
     <!-- About screen-->
-    <string name="about_Branch_Title" translatable="false">Branch</string>
     <string name="about_Commit_Title" translatable="false">Commit</string>
     <string name="about_Version_Title" translatable="false">Version</string>
 
@@ -268,6 +267,7 @@
     <string name="intent_host" translatable="false">kwikshop.is.nice</string>
     <string name="intent_calendar_description" translatable="false">http://kwikshop.is.nice/#id=</string>
     <string name="intent_id_separator" translatable="false">/#id=</string>
+    <string name="about_Branch_Title" translatable="false">Branch</string>
 
 
 </resources>

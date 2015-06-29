@@ -16,7 +16,7 @@ import de.greenrobot.event.EventBus;
  */
 public class SaveItemTask extends AsyncTask<Item, Void, Void> {
 
-    private final ListStorage listStorage;
+    private final ListStorage<ShoppingList> listStorage;
     private final int shoppingListId;
     private final boolean postToEventBus;
 
@@ -26,7 +26,7 @@ public class SaveItemTask extends AsyncTask<Item, Void, Void> {
      * @param listStorage    The ListStorage instance to use
      * @param shoppingListId The id of the shopping list to save the items to
      */
-    public SaveItemTask(ListStorage listStorage, int shoppingListId) {
+    public SaveItemTask(ListStorage<ShoppingList> listStorage, int shoppingListId) {
         this(listStorage, shoppingListId, true);
     }
 
@@ -38,7 +38,7 @@ public class SaveItemTask extends AsyncTask<Item, Void, Void> {
      * @param postToEventBus Specifies whether appropriate events should be posted to EventBus
      *                       after the operation is complete (default: true)
      */
-    public SaveItemTask(ListStorage listStorage, int shoppingListId, boolean postToEventBus) {
+    public SaveItemTask(ListStorage<ShoppingList> listStorage, int shoppingListId, boolean postToEventBus) {
 
         if (listStorage == null) {
             throw new IllegalArgumentException("'listStorage' must not be null");

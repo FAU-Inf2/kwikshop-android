@@ -65,7 +65,7 @@ public class KwikShopViewModelModule {
     }
 
     @Provides
-    public ListStorage provideListStorage() {
+    public ListStorage<ShoppingList> provideShoppingListStorage() {
         return ListStorageFragment.getLocalListStorage();
     }
 
@@ -115,7 +115,7 @@ public class KwikShopViewModelModule {
     }
 
     @Provides
-    public ListManager<ShoppingList> provideShoppingListManager(ListStorage listStorage) {
+    public ListManager<ShoppingList> provideShoppingListManager(ListStorage<ShoppingList> listStorage) {
         if(shoppingListManager == null) {
             shoppingListManager = new ShoppingListManager(listStorage);
         }

@@ -51,7 +51,7 @@ public class ReminderFragment extends Fragment {
     List<ShoppingList> shoppingLists;
 
     private RegularlyRepeatHelper repeatHelper;
-    private ListStorage listStorage;
+    private ListStorage<ShoppingList> listStorage;
 
     /* UI elements */
 

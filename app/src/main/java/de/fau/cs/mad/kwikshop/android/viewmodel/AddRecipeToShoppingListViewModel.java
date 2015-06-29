@@ -40,7 +40,7 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
     private final ViewLauncher viewLauncher;
     private final RecipeStorage recipeStorage;
     private final EventBus privateBus = EventBus.builder().build();
-    private final ListStorage listStorage;
+    private final ListStorage<ShoppingList> listStorage;
 
 
     private Listener listener;
@@ -76,7 +76,8 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
     private boolean initialized = false;
 
     @Inject
-    public AddRecipeToShoppingListViewModel(ViewLauncher viewLauncher, RecipeStorage recipeStorage, ListStorage listStorage) {
+    public AddRecipeToShoppingListViewModel(ViewLauncher viewLauncher, RecipeStorage recipeStorage,
+                                            ListStorage<ShoppingList> listStorage) {
 
         this.viewLauncher = viewLauncher;
         this.recipeStorage = recipeStorage;

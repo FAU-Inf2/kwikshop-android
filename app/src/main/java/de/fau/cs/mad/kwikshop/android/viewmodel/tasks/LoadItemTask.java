@@ -15,12 +15,12 @@ import de.greenrobot.event.EventBus;
 public class LoadItemTask extends AsyncTask<Integer, Object, Collection<Item>> {
 
 
-    private ListStorage listStorage;
+    private ListStorage<ShoppingList> listStorage;
     private EventBus resultBus;
     private int shoppingListId;
 
 
-    public LoadItemTask(ListStorage listStorage, EventBus resultBus, int shoppingListId) {
+    public LoadItemTask(ListStorage<ShoppingList> listStorage, EventBus resultBus, int shoppingListId) {
 
         if (listStorage == null) {
             throw new IllegalArgumentException("'listStorage' must not be null");

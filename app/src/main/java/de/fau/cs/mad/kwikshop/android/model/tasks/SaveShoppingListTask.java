@@ -8,9 +8,9 @@ import de.fau.cs.mad.kwikshop.android.model.ListStorage;
 public class SaveShoppingListTask extends AsyncTask<ShoppingList, Void, Void> {
 
 
-    private final ListStorage listStorage;
+    private final ListStorage<ShoppingList> listStorage;
 
-    public SaveShoppingListTask(ListStorage listStorage) {
+    public SaveShoppingListTask(ListStorage<ShoppingList> listStorage) {
 
         if(listStorage == null) {
             throw new IllegalArgumentException("'listStorage' must not be null");

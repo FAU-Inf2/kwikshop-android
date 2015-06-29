@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 
-public abstract class ListStorage {
+public abstract class ListStorage<TList> {
 
   /** 
    *  returns a new unique id for the created list
@@ -14,17 +14,17 @@ public abstract class ListStorage {
   /** 
    *  returns a Vector of list ids
    */
-  public abstract List<ShoppingList> getAllLists();
+  public abstract List<TList> getAllLists();
 
   /** 
    *  returns the list identified by id
    */
-  public abstract ShoppingList loadList(Integer listId);
+  public abstract TList loadList(Integer listId);
 
   /** 
    *  saves a list in the storage
    */
-  public abstract Boolean saveList(ShoppingList list);
+  public abstract Boolean saveList(TList list);
 
   /** 
    *  deletes a list

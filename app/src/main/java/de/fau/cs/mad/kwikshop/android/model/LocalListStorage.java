@@ -10,7 +10,7 @@ import java.util.List;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 
-public class LocalListStorage extends ListStorage {
+public class LocalListStorage extends ListStorage<ShoppingList> {
 
     @Override
     public int createList() {

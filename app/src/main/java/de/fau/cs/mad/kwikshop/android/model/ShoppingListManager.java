@@ -17,7 +17,7 @@ import de.greenrobot.event.EventBus;
 public class ShoppingListManager implements ListManager<ShoppingList> {
 
 
-    private final ListStorage listStorage;
+    private final ListStorage<ShoppingList> listStorage;
     private final EventBus eventBus = EventBus.getDefault();
 
     private final Object loadLock = new Object();
@@ -30,7 +30,7 @@ public class ShoppingListManager implements ListManager<ShoppingList> {
 
 
     @Inject
-    public ShoppingListManager(ListStorage listStorage) {
+    public ShoppingListManager(ListStorage<ShoppingList> listStorage) {
         if (listStorage == null) {
             throw new IllegalArgumentException("'listStorage' must not be null");
         }

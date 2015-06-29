@@ -9,7 +9,7 @@ import de.fau.cs.mad.kwikshop.android.model.ListStorage;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 
-public class ListStorageMock extends ListStorage {
+public class ListStorageMock extends ListStorage<ShoppingList> {
 
     private static int nextId = 0;
     private static boolean defaultListCreated = false;

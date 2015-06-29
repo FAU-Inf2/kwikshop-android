@@ -144,7 +144,7 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
 
             case Deleted:
             case Added:
-                reloadList(ev.getShoppingListId());
+                reloadList(ev.getListId());
                 break;
 
             default:

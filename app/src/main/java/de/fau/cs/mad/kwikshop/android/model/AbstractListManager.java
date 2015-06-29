@@ -19,6 +19,7 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.tasks.SaveListTask;
 import de.greenrobot.event.EventBus;
 
@@ -145,7 +146,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
             listItems.get(listId).put(item.getId(), item);
         }
 
-        eventBus.post(new ItemChangedEvent(ItemChangeType.Added, listId, item.getId()));
+        eventBus.post(new ItemChangedEvent(getListType(), ItemChangeType.Added, listId, item.getId()));
 
         return item;
     }
@@ -164,7 +165,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         }
         saveListWithoutEvents(listId);
 
-        eventBus.post(new ItemChangedEvent(ItemChangeType.PropertiesModified, listId, item.getId()));
+        eventBus.post(new ItemChangedEvent(getListType(), ItemChangeType.PropertiesModified, listId, item.getId()));
 
         return item;
     }
@@ -189,7 +190,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         if (list.removeItem(itemId)) {
             saveListWithoutEvents(listId);
 
-            eventBus.post(new ItemChangedEvent(ItemChangeType.Deleted, listId, itemId));
+            eventBus.post(new ItemChangedEvent(getListType(),ItemChangeType.Deleted, listId, itemId));
             return true;
 
         } else {
@@ -287,4 +288,6 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
     protected abstract Object getDeletedListChangedEvent(int id);
 
     protected abstract Object getPropertiesModifiedListChangedEvent(int id);
+
+    protected abstract ListType getListType();
 }

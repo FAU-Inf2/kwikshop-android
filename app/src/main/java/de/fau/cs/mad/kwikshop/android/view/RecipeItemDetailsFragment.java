@@ -38,8 +38,9 @@ import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.RecipeItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
@@ -240,7 +241,7 @@ public class RecipeItemDetailsFragment extends Fragment {
             recipe.removeItem(itemId);
 
             EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.ItemsRemoved, recipeId));
-            EventBus.getDefault().post(new RecipeItemChangedEvent(ItemChangeType.Deleted, recipeId, itemId));
+            EventBus.getDefault().post(new ItemChangedEvent(ListType.Recipe, ItemChangeType.Deleted, recipeId, itemId));
         }
 
         hideKeyboard();
@@ -257,8 +258,8 @@ public class RecipeItemDetailsFragment extends Fragment {
     }
 
 
-    public void onEventMainThread(RecipeItemChangedEvent event) {
-        if (recipe.getId() == event.getRecipeId() && event.getItemId() == item.getId()) {
+    public void onEventMainThread(ItemChangedEvent event) {
+        if (event.getListType() == ListType.Recipe && recipe.getId() == event.getListId() && event.getItemId() == item.getId()) {
             setupUI();
         }
     }
@@ -322,7 +323,7 @@ public class RecipeItemDetailsFragment extends Fragment {
                 ItemChangeType itemChangeType = isNewItem
                         ? ItemChangeType.Added
                         : ItemChangeType.PropertiesModified;
-                EventBus.getDefault().post(new RecipeItemChangedEvent(itemChangeType, recipe.getId(), item.getId()));
+                EventBus.getDefault().post(new ItemChangedEvent(ListType.Recipe, itemChangeType, recipe.getId(), item.getId()));
 
                 if (isNewItem) {
                     EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.ItemsAdded, recipe.getId()));

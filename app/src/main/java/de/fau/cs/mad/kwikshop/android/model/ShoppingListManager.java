@@ -34,4 +34,9 @@ public class ShoppingListManager extends AbstractListManager<ShoppingList> {
         return new ShoppingListChangedEvent(ListChangeType.PropertiesModified, id);
     }
 
+    @Override
+    protected ListType getListType() {
+        return ListType.ShoppingList;
+    }
+
 }

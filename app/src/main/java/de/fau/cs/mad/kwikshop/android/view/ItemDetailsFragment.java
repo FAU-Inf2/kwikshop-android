@@ -279,7 +279,7 @@ public class ItemDetailsFragment extends Fragment {
 
     @SuppressWarnings("unused")
     public void onEventMainThread(ItemChangedEvent event) {
-        if (listId == event.getShoppingListId() && event.getItemId() == item.getId()) {
+        if (listId == event.getListId() && event.getItemId() == item.getId()) {
             setupUI();
         }
     }

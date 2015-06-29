@@ -44,7 +44,6 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
         @Override
         public void execute(Integer recipeId) {
 
-            ShoppingList shoppingList = shoppingListManager.getList(shoppingListId);
             Recipe recipe = recipeStorage.loadList(recipeId);
             for(Item item : recipe.getItems()){
                 Item newItem = new Item();

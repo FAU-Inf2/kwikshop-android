@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.model;
 
 import android.os.AsyncTask;
+import android.util.SparseArray;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
     private final Object listLock = new Object();
     private Map<Integer, TList> lists;
-    private Map<Integer, Map<Integer, Item>> listItems;
+    private SparseArray<SparseArray<Item>> listItems;
 
 
 
@@ -88,7 +89,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
                 throw listNotFound(listId);
             }
 
-            if (!listItems.get(listId).containsKey(itemId)) {
+            if (listItems.get(listId).get(itemId) == null) {
                 throw itemNotFound(listId, itemId);
             }
 
@@ -109,7 +110,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         int listId = list.getId();
         synchronized (listLock) {
             lists.put(listId, list);
-            listItems.put(listId, new HashMap<Integer, Item>());
+            listItems.put(listId, new SparseArray<Item>());
         }
 
         eventBus.post(getAddedListChangedEvent(list.getId()));
@@ -157,7 +158,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
                 throw listNotFound(listId);
             }
 
-            if (!listItems.get(listId).containsKey(item.getId())) {
+            if (listItems.get(listId).get(item.getId()) == null) {
                 throw itemNotFound(listId, item.getId());
             }
         }
@@ -177,7 +178,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
                 return false;
             }
 
-            if (!listItems.get(listId).containsKey(itemId)) {
+            if (listItems.get(listId).get(itemId) == null) {
                 return false;
             }
 
@@ -225,13 +226,13 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
                     protected Void doInBackground(Void... params) {
 
                         lists = new HashMap<>();
-                        listItems = new HashMap<>();
+                        listItems = new SparseArray<>();
 
                         List<TList> lists = listStorage.getAllLists();
 
                         for (TList list : lists) {
 
-                            Map<Integer, Item> items = new HashMap<>();
+                            SparseArray<Item> items = new SparseArray<>();
                             for (Item item : list.getItems()) {
                                 items.put(item.getId(), item);
                             }

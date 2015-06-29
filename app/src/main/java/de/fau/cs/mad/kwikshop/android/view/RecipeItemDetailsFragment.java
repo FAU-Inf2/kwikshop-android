@@ -27,8 +27,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
@@ -36,6 +39,7 @@ import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
@@ -44,6 +48,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
+import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 import de.greenrobot.event.EventBus;
 
 public class RecipeItemDetailsFragment extends Fragment {
@@ -53,12 +58,10 @@ public class RecipeItemDetailsFragment extends Fragment {
 
     private View rootView;
 
-
     private int recipeId;
     private int itemId;
     private boolean isNewItem;
 
-    private Recipe recipe;
     private Item item;
     private List<Unit> units;
     private int selectedUnitIndex = -1;
@@ -93,6 +96,9 @@ public class RecipeItemDetailsFragment extends Fragment {
     @InjectView(R.id.highlight_checkBox)
     CheckBox highlight_checkbox;
 
+
+    @Inject
+    ListManager<Recipe> recipeManager;
 
     /**
      * Creates a new instance of RecipeItemDetailsFragment for a new recipe item in the specified recipe
@@ -237,11 +243,7 @@ public class RecipeItemDetailsFragment extends Fragment {
     private void removeItemFromRecipe() {
 
         if(!isNewItem){
-
-            recipe.removeItem(itemId);
-
-            EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.ItemsRemoved, recipeId));
-            EventBus.getDefault().post(new ItemChangedEvent(ListType.Recipe, ItemChangeType.Deleted, recipeId, itemId));
+            recipeManager.deleteItem(recipeId, itemId);
         }
 
         hideKeyboard();
@@ -259,7 +261,7 @@ public class RecipeItemDetailsFragment extends Fragment {
 
 
     public void onEventMainThread(ItemChangedEvent event) {
-        if (event.getListType() == ListType.Recipe && recipe.getId() == event.getListId() && event.getItemId() == item.getId()) {
+        if (event.getListType() == ListType.Recipe && event.getListId() == recipeId && event.getItemId() == item.getId()) {
             setupUI();
         }
     }
@@ -308,31 +310,12 @@ public class RecipeItemDetailsFragment extends Fragment {
         autoCompletion.offerNameAndGroup(productname_text.getText().toString(), item.getGroup());
         autoCompletion.offerBrand(brand_text.getText().toString());
 
-        if (isNewItem) {
-            recipe.addItem(item);
+
+        if(isNewItem) {
+            recipeManager.addListItem(recipeId, item);
+        } else {
+            recipeManager.saveListItem(recipeId, item);
         }
-
-
-        AsyncTask task = new AsyncTask() {
-
-            @Override
-            protected Object doInBackground(Object[] params) {
-
-                ListStorageFragment.getRecipeStorage().saveList(recipe);
-
-                ItemChangeType itemChangeType = isNewItem
-                        ? ItemChangeType.Added
-                        : ItemChangeType.PropertiesModified;
-                EventBus.getDefault().post(new ItemChangedEvent(ListType.Recipe, itemChangeType, recipe.getId(), item.getId()));
-
-                if (isNewItem) {
-                    EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.ItemsAdded, recipe.getId()));
-                }
-                return null;
-            }
-        };
-        task.execute();
-
 
         Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
 
@@ -376,8 +359,10 @@ public class RecipeItemDetailsFragment extends Fragment {
         productname_text.setTokenizer(new SpaceTokenizer());
         brand_text.setAdapter(autoCompletion.getBrandAdapter(getActivity()));
 
-        // load shopping list and item and set values in UI
-        recipe = ListStorageFragment.getRecipeStorage().loadList(recipeId);
+
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        objectGraph.inject(this);
+
         if (isNewItem) {
 
             productname_text.setText("");
@@ -386,7 +371,7 @@ public class RecipeItemDetailsFragment extends Fragment {
             comment_text.setText("");
 
         } else {
-            item = recipe.getItem(itemId);
+            item = recipeManager.getListItem(recipeId, itemId);
 
             //thats not a pretty way to get it done, but the only one that came to my mind
             //numberPicker.setValue(index) sets the picker to the index + numberPicker.minValue()

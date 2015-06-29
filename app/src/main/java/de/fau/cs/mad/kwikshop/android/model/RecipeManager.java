@@ -44,6 +44,6 @@ public class RecipeManager extends AbstractListManager<Recipe> {
 
     @Override
     protected ListType getListType() {
-        return null;
+        return ListType.Recipe;
     }
 }

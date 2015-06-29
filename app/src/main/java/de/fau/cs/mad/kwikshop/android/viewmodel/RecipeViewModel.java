@@ -230,23 +230,6 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
     }
 
 
-    @SuppressWarnings("unused")
-    public void onEventMainThread(RecipeLoadedEvent event) {
-
-        //on the main thread, update the displayed shopping list after is has been (re-) loaded
-
-        Recipe recipe = event.getRecipe();
-
-        if(recipe.getId() == this.recipeId) {
-
-
-            this.setName(recipe.getName());
-
-            for(Item item : event.getRecipe().getItems()) {
-                updateItem(item);
-            }
-        }
-    }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(RecipeChangedEvent event) {

@@ -3,14 +3,15 @@ package de.fau.cs.mad.kwikshop.android.model.tasks;
 import android.os.AsyncTask;
 
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 
-public class SaveShoppingListTask extends AsyncTask<ShoppingList, Void, Void> {
+public class SaveListTask<TList extends DomainListObject> extends AsyncTask<TList, Void, Void> {
 
 
-    private final ListStorage<ShoppingList> listStorage;
+    private final ListStorage<TList> listStorage;
 
-    public SaveShoppingListTask(ListStorage<ShoppingList> listStorage) {
+    public SaveListTask(ListStorage<TList> listStorage) {
 
         if(listStorage == null) {
             throw new IllegalArgumentException("'listStorage' must not be null");
@@ -21,9 +22,9 @@ public class SaveShoppingListTask extends AsyncTask<ShoppingList, Void, Void> {
 
 
     @Override
-    protected Void doInBackground(ShoppingList... params) {
+    protected Void doInBackground(TList... params) {
 
-        for(ShoppingList list : params) {
+        for(TList list : params) {
             listStorage.saveList(list);
         }
 

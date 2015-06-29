@@ -6,7 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -45,7 +45,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
     private Listener compositeListener = new CompositeListener();
 
     private final Context context;
-    private final RecipeStorage recipeStorage;
+    private final ListStorage<Recipe> recipeStorage;
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
 
@@ -65,7 +65,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
     @Inject
     public RecipesDetailsViewModel(final Context context, final ViewLauncher viewLauncher,
                                         final ResourceProvider resourceProvider,
-                                        final RecipeStorage recipeStorage) {
+                                        final ListStorage<Recipe> recipeStorage) {
 
         if (context == null) {
             throw new IllegalArgumentException("'context' must not be null");

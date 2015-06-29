@@ -13,7 +13,7 @@ import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
@@ -69,7 +69,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
     private boolean initialized = false;
 
     private final ViewLauncher viewLauncher;
-    private final RecipeStorage recipeStorage;
+    private final ListStorage<Recipe> recipeStorage;
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<Group> groupStorage;
     private final ItemParser itemParser;
@@ -103,7 +103,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
 
 
     @Inject
-    public RecipeViewModel(ViewLauncher viewLauncher, RecipeStorage recipeStorage,
+    public RecipeViewModel(ViewLauncher viewLauncher, ListStorage<Recipe> recipeStorage,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
                                  AutoCompletionHelper autoCompletionHelper) {

@@ -20,6 +20,12 @@ public class ShoppingListManager extends AbstractListManager<ShoppingList> {
     }
 
     @Override
+    protected ItemNotFoundException itemNotFound(int listId, int itemId) {
+        return new ItemNotFoundException(String.format("Could not find item with id %s in shopping list %s", listId, itemId));
+    }
+
+
+    @Override
     protected Object getAddedListChangedEvent(int id) {
         return new ShoppingListChangedEvent(ListChangeType.Added, id);
     }

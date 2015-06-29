@@ -10,7 +10,7 @@ import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -31,7 +31,7 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
 
     // infrastructure references
     private final ViewLauncher viewLauncher;
-    private final RecipeStorage recipeStorage;
+    private final ListStorage<Recipe> recipeStorage;
     private final EventBus privateBus = EventBus.builder().build();
     private final ListManager<ShoppingList> shoppingListManager;
 
@@ -65,7 +65,7 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
     private boolean initialized = false;
 
     @Inject
-    public AddRecipeToShoppingListViewModel(ViewLauncher viewLauncher, RecipeStorage recipeStorage,
+    public AddRecipeToShoppingListViewModel(ViewLauncher viewLauncher, ListStorage<Recipe> recipeStorage,
                                             ListManager<ShoppingList> shoppingListManager) {
 
         this.viewLauncher = viewLauncher;

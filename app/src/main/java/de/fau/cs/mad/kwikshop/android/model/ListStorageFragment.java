@@ -15,6 +15,7 @@ import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 
 public class ListStorageFragment extends Fragment {
@@ -34,7 +35,7 @@ public class ListStorageFragment extends Fragment {
     private static SimpleStorage<CalendarEventDate> m_CalendarEventStorage;
     private static ListStorageFragment m_ListStorageFragment;
     private static DatabaseHelper m_DatabaseHelper;
-    private static RecipeStorage m_RecipeStorage;
+    private static ListStorage<Recipe> m_RecipeStorage;
 
     //endregion
 
@@ -77,7 +78,7 @@ public class ListStorageFragment extends Fragment {
         return m_ListStorageFragment;
     }
 
-    public static RecipeStorage getRecipeStorage(){ return m_RecipeStorage;}
+    public static ListStorage<Recipe> getRecipeStorage(){ return m_RecipeStorage;}
 
     public void SetupLocalListStorageFragment(FragmentActivity activity) {
         FragmentManager fm = activity.getSupportFragmentManager();
@@ -234,7 +235,7 @@ public class ListStorageFragment extends Fragment {
             item6.setGroup(vegetable);
             recipe1.addItem(item6);
 
-            recipe1.save();
+            m_RecipeStorage.saveList(recipe1);
         }
 
     }

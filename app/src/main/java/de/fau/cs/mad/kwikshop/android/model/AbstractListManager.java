@@ -260,10 +260,6 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         }
     }
 
-    private ItemNotFoundException itemNotFound(int listId, int itemId) {
-        return new ItemNotFoundException(String.format("Could not find item with id %s in shopping list %s", listId, itemId));
-    }
-
     private TList saveListWithoutEvents(int listId) {
 
         TList list;
@@ -282,6 +278,8 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
 
     protected abstract ListNotFoundException listNotFound(int listId);
+
+    protected abstract ItemNotFoundException itemNotFound(int listId, int itemId);
 
     protected abstract Object getAddedListChangedEvent(int id);
 

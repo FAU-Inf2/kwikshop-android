@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
@@ -14,12 +14,12 @@ import de.greenrobot.event.EventBus;
 
 public class RecipeSaveItemTask extends AsyncTask<Void, Void, Void> {
 
-    private final RecipeStorage recipeStorage;
+    private final ListStorage<Recipe> recipeStorage;
     private final int recipeId;
     private final Item[] items;
 
 
-    public RecipeSaveItemTask(RecipeStorage recipeStorage, int recipeId, Item... items) {
+    public RecipeSaveItemTask(ListStorage<Recipe> recipeStorage, int recipeId, Item... items) {
 
         if (recipeStorage == null) {
             throw new IllegalArgumentException("'recipeStorage' must not be null");

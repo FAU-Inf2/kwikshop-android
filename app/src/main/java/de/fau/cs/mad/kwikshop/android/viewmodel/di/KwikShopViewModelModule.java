@@ -7,13 +7,14 @@ import dagger.Module;
 import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.Group;
+import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
+import de.fau.cs.mad.kwikshop.android.model.RecipeManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
 import de.fau.cs.mad.kwikshop.android.model.ShoppingListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
@@ -48,6 +49,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 public class KwikShopViewModelModule {
 
     private static ListManager<ShoppingList> shoppingListManager;
+    private static ListManager<Recipe> recipeManager;
     private final Activity currentActivity;
 
     public KwikShopViewModelModule(Activity currentActivity) {
@@ -70,9 +72,11 @@ public class KwikShopViewModelModule {
     }
 
     @Provides
-    public RecipeStorage provideRecipeStorage() {
+    @Deprecated
+    public ListStorage<Recipe> provideRecipeStorage() {
         return ListStorageFragment.getRecipeStorage();
     }
+
 
     @Provides
     public Context provideContext() {
@@ -120,5 +124,13 @@ public class KwikShopViewModelModule {
             shoppingListManager = new ShoppingListManager(listStorage);
         }
         return shoppingListManager;
+    }
+
+    @Provides
+    public ListManager<Recipe> provideRecipeManager(ListStorage<Recipe> listStorage) {
+        if(recipeManager == null) {
+            recipeManager = new RecipeManager(listStorage);
+        }
+        return recipeManager;
     }
 }

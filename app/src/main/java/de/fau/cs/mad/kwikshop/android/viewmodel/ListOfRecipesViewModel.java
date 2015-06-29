@@ -7,7 +7,7 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.model.RecipeStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -28,7 +28,7 @@ public class ListOfRecipesViewModel extends ViewModelBase {
 
     // infrastructure references
     private final ViewLauncher viewLauncher;
-    private final RecipeStorage recipeStorage;
+    private final ListStorage<Recipe> recipeStorage;
     private final EventBus privateBus = EventBus.builder().build();
 
 
@@ -58,7 +58,7 @@ public class ListOfRecipesViewModel extends ViewModelBase {
 
 
     @Inject
-    public ListOfRecipesViewModel(ViewLauncher viewLauncher, RecipeStorage recipeStorage) {
+    public ListOfRecipesViewModel(ViewLauncher viewLauncher, ListStorage<Recipe> recipeStorage) {
 
         this.viewLauncher = viewLauncher;
         this.recipeStorage = recipeStorage;

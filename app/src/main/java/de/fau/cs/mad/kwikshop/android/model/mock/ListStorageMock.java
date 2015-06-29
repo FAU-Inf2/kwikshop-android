@@ -9,7 +9,7 @@ import de.fau.cs.mad.kwikshop.android.model.ListStorage;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 
-public class ListStorageMock extends ListStorage<ShoppingList> {
+public class ListStorageMock implements ListStorage<ShoppingList> {
 
     private static int nextId = 0;
     private static boolean defaultListCreated = false;
@@ -59,7 +59,7 @@ public class ListStorageMock extends ListStorage<ShoppingList> {
     }
 
     @Override
-    public ShoppingList loadList(Integer listId) {
+    public ShoppingList loadList(int listId) {
         for(ShoppingList list : m_Lists) {
             if(list.getId() == listId) {
                 return  list;
@@ -70,7 +70,7 @@ public class ListStorageMock extends ListStorage<ShoppingList> {
     }
 
     @Override
-    public Boolean saveList(ShoppingList list) {
+    public boolean saveList(ShoppingList list) {
 
         deleteList(list.getId());
         m_Lists.add(list);
@@ -79,7 +79,7 @@ public class ListStorageMock extends ListStorage<ShoppingList> {
     }
 
     @Override
-    public Boolean deleteList(Integer id) {
+    public boolean deleteList(int id) {
 
         ShoppingList listToRemove = null;
         for (ShoppingList existingList : m_Lists) {

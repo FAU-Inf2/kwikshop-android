@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
@@ -44,8 +45,8 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
     private List<Listener> listeners = new LinkedList<>();
     private Listener compositeListener = new CompositeListener();
 
-    private final Context context;
-    private final ListStorage<Recipe> recipeStorage;
+
+    private final ListManager<Recipe> recipeManager;
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
 
@@ -63,13 +64,10 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
      * (will modify the recipe on save)
      */
     @Inject
-    public RecipesDetailsViewModel(final Context context, final ViewLauncher viewLauncher,
-                                        final ResourceProvider resourceProvider,
-                                        final ListStorage<Recipe> recipeStorage) {
+    public RecipesDetailsViewModel(final ViewLauncher viewLauncher,
+                                   final ResourceProvider resourceProvider,
+                                   final ListManager<Recipe> recipeManager) {
 
-        if (context == null) {
-            throw new IllegalArgumentException("'context' must not be null");
-        }
 
         if (viewLauncher == null) {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
@@ -79,14 +77,13 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
             throw new IllegalArgumentException("'resourceProvider' must not be null");
         }
 
-        if (recipeStorage == null) {
+        if (recipeManager == null) {
             throw new IllegalArgumentException("'recipeStorage' must not be null");
         }
 
-        this.context = context;
         this.viewLauncher = viewLauncher;
         this.resourceProvider = resourceProvider;
-        this.recipeStorage = recipeStorage;
+        this.recipeManager = recipeManager;
 
     }
 
@@ -188,7 +185,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
             this.deleteCommand.setIsAvailable(true);
 
             //TODO: handle exception when list is not found
-            this.recipe = recipeStorage.loadList(recipeId);
+            this.recipe = recipeManager.getList(recipeId);
             setName(recipe.getName());
         }
 
@@ -196,19 +193,13 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
 
     private void saveCommandExecute() {
         if (isNewRecipe) {
-            this.recipeId = recipeStorage.createList();
-            recipe = recipeStorage.loadList(recipeId);
+            recipeId = recipeManager.createList();
+            recipe = recipeManager.getList(recipeId);
         }
 
         recipe.setName(this.getName());
 
-        recipeStorage.saveList(recipe);
-
-        ListChangeType changeType = isNewRecipe
-                ? ListChangeType.Added
-                : ListChangeType.PropertiesModified;
-
-        EventBus.getDefault().post(new RecipeChangedEvent(changeType, recipe.getId()));
+        recipeManager.saveList(recipeId);
 
         // if we just created a recipe, open it right away,
         // when a existing recipe was edited, just close the current view and go back to
@@ -217,9 +208,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
             viewLauncher.showRecipe(recipeId);
         }
 
-
         finish();
-
     }
 
     private void cancelCommandExecute() {
@@ -239,8 +228,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
                     @Override
                     public void execute(Object parameter) {
 
-                        recipeStorage.deleteList(recipeId);
-                        EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.Deleted, recipeId));
+                        recipeManager.deleteList(recipeId);
                         finish();
                     }
                 },

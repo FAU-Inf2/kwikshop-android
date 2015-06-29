@@ -331,7 +331,6 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
                         }
 
                         shoppingListManager.deleteList(shoppingListId);
-                        EventBus.getDefault().post(new ShoppingListChangedEvent(ListChangeType.Deleted, shoppingListId));
                         finish();
                     }
                 },

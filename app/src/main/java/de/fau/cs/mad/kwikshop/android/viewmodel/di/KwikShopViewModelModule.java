@@ -22,6 +22,7 @@ import de.fau.cs.mad.kwikshop.android.view.DefaultResourceProvider;
 import de.fau.cs.mad.kwikshop.android.view.DefaultViewLauncher;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemDetailsFragment;
+import de.fau.cs.mad.kwikshop.android.view.RecipeItemDetailsFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.AddRecipeToShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfRecipesViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfShoppingListsViewModel;
@@ -42,7 +43,8 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         RecipeViewModel.class,
         AutoCompletionHelper.class,
         AddRecipeToShoppingListViewModel.class,
-        ItemDetailsFragment.class
+        ItemDetailsFragment.class,
+        RecipeItemDetailsFragment.class
 },
         library = true)
 @SuppressWarnings("unused")

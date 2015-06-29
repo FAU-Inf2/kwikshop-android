@@ -31,6 +31,17 @@ public class RecipeStorage implements ListStorage<Recipe> {
             ArrayList<Recipe> recipes = new ArrayList<>();
             for(Recipe recipe : ListStorageFragment.getDatabaseHelper().getRecipeDao()) {
                 recipes.add(recipe);
+
+                for (Item i : recipe.getItems()) {
+
+                    if (i.getUnit() != null) {
+                        ListStorageFragment.getDatabaseHelper().getUnitDao().refresh(i.getUnit());
+                    }
+
+                    if (i.getGroup() != null) {
+                        ListStorageFragment.getDatabaseHelper().getGroupDao().refresh(i.getGroup());
+                    }
+                }
             }
             return Collections.unmodifiableList(recipes);
 

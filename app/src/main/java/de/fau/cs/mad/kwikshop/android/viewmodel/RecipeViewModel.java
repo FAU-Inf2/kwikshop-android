@@ -13,23 +13,18 @@ import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
-import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.RecipeItemLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ItemIdExtractor;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadRecipeTask;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.RecipeLoadItemTask;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.RecipeSaveItemTask;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
@@ -69,7 +64,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
     private boolean initialized = false;
 
     private final ViewLauncher viewLauncher;
-    private final ListStorage<Recipe> recipeStorage;
+    private final ListManager<Recipe> recipeManager;
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<Group> groupStorage;
     private final ItemParser itemParser;
@@ -103,7 +98,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
 
 
     @Inject
-    public RecipeViewModel(ViewLauncher viewLauncher, ListStorage<Recipe> recipeStorage,
+    public RecipeViewModel(ViewLauncher viewLauncher, ListManager<Recipe> recipeManager,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
                                  AutoCompletionHelper autoCompletionHelper) {
@@ -111,8 +106,8 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
         if(viewLauncher == null) {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
         }
-        if(recipeStorage == null) {
-            throw new IllegalArgumentException("'recipeStorage' must not be null");
+        if(recipeManager == null) {
+            throw new IllegalArgumentException("'recipeManager' must not be null");
         }
         if(unitStorage == null) {
             throw new IllegalArgumentException("'unitStorage' must not be null");
@@ -131,7 +126,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
         }
 
         this.viewLauncher = viewLauncher;
-        this.recipeStorage = recipeStorage;
+        this.recipeManager = recipeManager;
         this.unitStorage = unitStorage;
         this.groupStorage = groupStorage;
         this.itemParser = itemParser;
@@ -151,7 +146,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
             privateBus.register(this);
             EventBus.getDefault().register(this);
 
-            new LoadRecipeTask(this.recipeStorage, privateBus, this.recipeId).execute();
+            loadRecipe();
 
             initialized = true;
         }
@@ -230,38 +225,11 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
         item1.setOrder(position2);
         item2.setOrder(position1);
 
-        new RecipeSaveItemTask(recipeStorage, recipeId, item1, item2).execute();
+        recipeManager.saveListItem(recipeId, item1);
+        recipeManager.saveListItem(recipeId, item2);
     }
 
 
-    @SuppressWarnings("unused")
-    public void onEventMainThread(RecipeLoadedEvent event) {
-
-        //on the main thread, update the displayed shopping list after is has been (re-) loaded
-
-        Recipe recipe = event.getRecipe();
-
-        if(recipe.getId() == this.recipeId) {
-
-
-            this.setName(recipe.getName());
-
-            for(Item item : event.getRecipe().getItems()) {
-                updateItem(item);
-            }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(RecipeItemLoadedEvent event) {
-
-        // on the main thread, update an displayed item after it has been loaded
-
-        if(event.getRecipeId() == this.recipeId) {
-            updateItem(event.getItem());
-        }
-
-    }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(RecipeChangedEvent event) {
@@ -270,44 +238,13 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
 
             if(event.getChangeType() == ListChangeType.Deleted) {
                 finish();
+            } else  if(event.getChangeType() == ListChangeType.PropertiesModified) {
+                loadRecipe();
             }
         }
     }
 
-    @SuppressWarnings("unused")
-    public void onEventBackgroundThread(RecipeChangedEvent event) {
 
-        if(event.getListId() == this.recipeId) {
-
-            if(event.getChangeType() == ListChangeType.PropertiesModified) {
-                new LoadRecipeTask(recipeStorage, privateBus, recipeId).execute();
-
-            }
-
-            //other change types should already be covered by other event handlers
-
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventBackgroundThread(ItemChangedEvent event) {
-
-        if(event.getListType() == ListType.Recipe && event.getListId() == this.recipeId) {
-
-            switch (event.getChangeType()) {
-
-                case  Added:
-                case PropertiesModified:
-                    new RecipeLoadItemTask(recipeStorage, privateBus, recipeId, event.getItemId()).execute();
-                    break;
-
-                case  Deleted:
-                    // ignore (handled on background thread)
-                    break;
-
-            }
-        }
-    }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(ItemChangedEvent event) {
@@ -318,8 +255,9 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
 
                 case  Added:
                 case PropertiesModified:
-                    // ignore (handled on background thread)
+                    loadRecipe();
                     break;
+
                 case  Deleted:
                     items.removeById(event.getItemId());
                     break;
@@ -327,6 +265,7 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
             }
         }
     }
+
 
 
     @Override
@@ -363,15 +302,9 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
                     newItem = itemParser.parseAmountAndUnit(newItem);
                     newItem.setGroup(groupStorage.getDefaultValue());
 
-                    Recipe recipe = recipeStorage.loadList(recipeId);
-                    recipe.addItem(newItem);
-
-                    recipeStorage.saveList(recipe);
+                    recipeManager.addListItem(recipeId, newItem);
 
                     autoCompletionHelper.offerName(newItem.getName());
-
-                    EventBus.getDefault().post(new RecipeChangedEvent(ListChangeType.ItemsAdded, recipe.getId()));
-                    EventBus.getDefault().post(new ItemChangedEvent(ListType.Recipe, ItemChangeType.Added, recipe.getId(), newItem.getId()));
                 }
                 return null;
             }
@@ -398,11 +331,19 @@ public class RecipeViewModel extends ShoppingListViewModelBase {
     }
 
     private void updateItem(Item item) {
-
-        int id = item.getId();
-
         items.setOrAddById(item);
+    }
 
+
+    private void loadRecipe() {
+
+        Recipe recipe = recipeManager.getList(this.recipeId);
+
+        this.setName(recipe.getName());
+
+        for(Item item : recipe.getItems()) {
+            updateItem(item);
+        }
     }
 }
 

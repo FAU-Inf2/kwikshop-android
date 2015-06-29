@@ -10,14 +10,14 @@ import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
-import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ListIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewModelBase;
-import de.fau.cs.mad.kwikshop.android.viewmodel.tasks.LoadRecipeTask;
 import de.greenrobot.event.EventBus;
 
 public class AddRecipeToShoppingListViewModel extends ViewModelBase {
@@ -31,10 +31,8 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
 
     // infrastructure references
     private final ViewLauncher viewLauncher;
-    private final ListStorage<Recipe> recipeStorage;
-    private final EventBus privateBus = EventBus.builder().build();
+    private final ListManager<Recipe> recipeManager;
     private final ListManager<ShoppingList> shoppingListManager;
-
 
     private Listener listener;
 
@@ -44,7 +42,7 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
         @Override
         public void execute(Integer recipeId) {
 
-            Recipe recipe = recipeStorage.loadList(recipeId);
+            Recipe recipe = recipeManager.getList(recipeId);
             for(Item item : recipe.getItems()){
                 Item newItem = new Item();
                 newItem.setName(item.getName());
@@ -65,11 +63,11 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
     private boolean initialized = false;
 
     @Inject
-    public AddRecipeToShoppingListViewModel(ViewLauncher viewLauncher, ListStorage<Recipe> recipeStorage,
+    public AddRecipeToShoppingListViewModel(ViewLauncher viewLauncher, ListManager<Recipe> recipeManager,
                                             ListManager<ShoppingList> shoppingListManager) {
 
         this.viewLauncher = viewLauncher;
-        this.recipeStorage = recipeStorage;
+        this.recipeManager = recipeManager;
         this.shoppingListManager = shoppingListManager;
 
         setRecipes(new ObservableArrayList<>(new ObservableArrayList.IdExtractor<Recipe, Integer>() {
@@ -80,9 +78,8 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
         }));
 
         EventBus.getDefault().register(this);
-        privateBus.register(this);
 
-        new LoadRecipeTask(recipeStorage, privateBus).execute();
+        this.recipes = new ObservableArrayList<>(new ListIdExtractor<Recipe>(), recipeManager.getLists());
     }
 
     public void initialize(int shoppingListId) {
@@ -124,6 +121,7 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
         return listener;
     }
 
+    @SuppressWarnings("unused")
     public void onEventMainThread(RecipeChangedEvent ev) {
 
         switch (ev.getChangeType()) {
@@ -133,15 +131,32 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
                 break;
 
             case PropertiesModified:
-            case ItemsAdded:
-            case ItemsRemoved:
             case Added:
-                loadRecipeAsync(ev.getListId());
+                loadRecipe(ev.getListId());
                 break;
 
             default:
                 break;
         }
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(ItemChangedEvent ev) {
+
+        if (ev.getListType() == ListType.Recipe) {
+
+            switch (ev.getChangeType()) {
+
+                case Added:
+                case Deleted:
+                    loadRecipe(ev.getListId());
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
     }
 
     @Override
@@ -151,16 +166,9 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
     }
 
 
-    private void loadRecipeAsync(int id) {
+    private void loadRecipe(int id) {
 
-        AsyncTask<Object, Object, Collection<Recipe>> task = new LoadRecipeTask(recipeStorage, privateBus, id);
-        task.execute();
-    }
-
-    public void onEventMainThread(RecipeLoadedEvent event) {
-
-        Recipe loadedRecipe = event.getRecipe();
-
+        Recipe loadedRecipe = recipeManager.getList(id);
         synchronized (this) {
 
             int index = recipes.indexOfById(loadedRecipe.getId());
@@ -170,7 +178,6 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
                 recipes.add(loadedRecipe);
             }
         }
-
     }
 
 

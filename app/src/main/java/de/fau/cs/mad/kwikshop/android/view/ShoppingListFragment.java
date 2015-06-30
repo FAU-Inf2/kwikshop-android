@@ -195,6 +195,8 @@ public class ShoppingListFragment
                 //IMPORTANT: reenable events of the observable list after drag and drop has finished
                 viewModel.getItems().enableEvents();
 
+
+                viewModel.setLocationOnStartingShopping();
             }
         });
 
@@ -411,16 +413,12 @@ public class ShoppingListFragment
     public void onItemRemoved(Item removedItem) {
         justifyListViewHeightBasedOnChildren(shoppingListView);
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);
-        sizeBoughtItems = viewModel.getBoughtItems().size();
-        cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
 
     @Override
     public void onItemModified(Item modifiedItem) {
         justifyListViewHeightBasedOnChildren(shoppingListView);
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);
-        sizeBoughtItems = viewModel.getBoughtItems().size();
-        cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
 
 

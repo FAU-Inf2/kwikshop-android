@@ -14,13 +14,18 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
+import de.fau.cs.mad.kwikshop.android.common.LastLocation;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
 
 
-public class LocationFinder implements LocationListener {
+public class LocationFinderHelper implements LocationListener {
 
     private static final String TAG = LocationActivity.class.getSimpleName();
     private LocationManager locationManager;
@@ -35,6 +40,9 @@ public class LocationFinder implements LocationListener {
     private boolean isGPSEnabled = false;
     private boolean isNetworkEnabled = false;
 
+    private SimpleStorage<LastLocation> lastLocationSimpleStorage;
+    private DatabaseHelper databaseHelper;
+
 
 
     // The minimum distance to change updates in meters
@@ -44,10 +52,29 @@ public class LocationFinder implements LocationListener {
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
     private Location location;
 
-    public LocationFinder(Context context){
+    @Inject
+    public LocationFinderHelper(Context context){
+
+        if (context == null) {
+            throw new IllegalArgumentException("'context' must not be null");
+        }
 
         this.context = context;
+
         getLocation();
+
+    }
+
+
+    public LastLocation setLocation(){
+
+        LastLocation lastLocation = new LastLocation();
+        lastLocation.setLatitude(latitude);
+        lastLocation.setLongitude(longitude);
+        lastLocation.setVisited(true);
+        lastLocation.setAddress(getAddressConverted());
+
+        return lastLocation;
     }
 
     public Location getLocation() {
@@ -106,27 +133,39 @@ public class LocationFinder implements LocationListener {
     }
 
 
-    public String getAddressFromLastLocation(){
+    public boolean isThereALastLocation(){
+        return getLatitude() != 0.0 && getLongitude() != 0.0;
+    }
+
+
+
+    public String getAddressConverted() {
+
+        String address = "";
+        int maxLines = getAddress().getMaxAddressLineIndex();
+        for (int i = 0; i <= maxLines; i++) {
+            address = address + getAddress().getAddressLine(i) + " ";
+        }
+
+        return "No Address found";
+    }
+
+    public Address getAddress(){
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         List<Address> addresses;
         try {
             addresses = geocoder.getFromLocation(location.getLatitude(),  location.getLongitude(), 1);
             if (addresses.size() > 0){
-                String address = "";
-                int maxLines =  addresses.get(0).getMaxAddressLineIndex();
-                for(int i = 0; i <= maxLines; i++){
-                    address = address + addresses.get(0).getAddressLine(i) + " ";
-                }
-              return address;
+                return addresses.get(0);
             }
         } catch (IOException e) {
-            Log.e(TAG,e.getMessage().toString());
+         // nothing to do
         }
-        return "No Address found";
+        return null;
     }
 
 
-    public static String getAddress(LatLng coord, Context context){
+    public static String getAddressConverted(LatLng coord, Context context){
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         List<Address> addresses;
         try {

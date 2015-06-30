@@ -1,9 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
@@ -18,26 +16,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
-
-import org.apache.http.HttpException;
 
 import java.util.List;
 
@@ -45,14 +36,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
-import de.fau.cs.mad.kwikshop.android.model.LocationFinder;
-import se.walkercrou.places.Day;
+import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import se.walkercrou.places.GooglePlaces;
-import se.walkercrou.places.Hours;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
 import se.walkercrou.places.Status;
-import se.walkercrou.places.exception.NoResultsFoundException;
 
 
 public class LocationFragment extends Fragment implements  OnMapReadyCallback {
@@ -60,7 +48,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
     private View rootView;
     private GoogleMap map;
     private AlertDialog alert;
-    private LocationFinder lastLocation;
+    private LocationFinderHelper lastLocation;
     double lastLat;
     double lastLng;
     String address;
@@ -121,7 +109,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                LocationFinder location = new LocationFinder(getActivity());
+                LocationFinderHelper location = new LocationFinderHelper(getActivity());
                 lat = location.getLatitude();
                 lng = location.getLongitude();
 
@@ -132,14 +120,12 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
                 String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
                 if (InternetHelper.checkInternetConnection(getActivity())) {
 
-                    GooglePlaces client  = new GooglePlaces(googleBrowserApiKey);
+                    GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
 
-                    if (client != null) {
-                        try {
-                            places = client.getNearbyPlaces(lat, lng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
-                        } catch (Exception e) {
-                            Log.e(LOG_TAG, "Exception: " + e.getMessage());
-                        }
+                    try {
+                        places = client.getNearbyPlaces(lat, lng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
+                    } catch (Exception e) {
+                        Log.e(LOG_TAG, "Exception: " + e.getMessage());
                     }
 
                 }
@@ -174,10 +160,10 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
         }
 
         // get last/current location
-        lastLocation = new LocationFinder(getActivity().getApplicationContext());
+        lastLocation = new LocationFinderHelper(getActivity().getApplicationContext());
         lastLat = lastLocation.getLatitude();
         lastLng = lastLocation.getLongitude();
-        address = lastLocation.getAddressFromLastLocation();
+        address = lastLocation.getAddressConverted();
 
         // set up map
         MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
@@ -203,7 +189,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
             public boolean onMarkerClick(Marker marker) {
 
                 final Place clickedPlace = findCorrespondPlaceToMarker(marker, places);
-                final String clickedAdress = LocationFinder.getAddress(new LatLng(clickedPlace.getLatitude(),clickedPlace.getLongitude()),
+                final String clickedAdress = LocationFinderHelper.getAddressConverted(new LatLng(clickedPlace.getLatitude(), clickedPlace.getLongitude()),
                         getActivity().getApplicationContext());
 
                 if(clickedPlace != null){

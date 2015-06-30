@@ -193,6 +193,9 @@ public class ShoppingListFragment
                 viewModel.itemsSwapped(i, i1);
                 //IMPORTANT: reenable events of the observable list after drag and drop has finished
                 viewModel.getItems().enableEvents();
+
+
+                viewModel.setLocationOnStartingShopping();
             }
         });
 

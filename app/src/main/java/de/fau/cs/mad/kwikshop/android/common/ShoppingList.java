@@ -51,7 +51,8 @@ public class ShoppingList implements DomainListObject {
     /**
      * last shopping location
      */
-    private Location location;
+    @DatabaseField
+    private LastLocation location;
 
 
     private enum visibility {
@@ -86,7 +87,7 @@ public class ShoppingList implements DomainListObject {
         return this.sortTypeInt;
     }
 
-    public Location getLocation(){ return this.location;}
+    public LastLocation getLocation(){ return this.location;}
 
 
     public void setSortTypeInt(int sortTypeInt){
@@ -113,7 +114,7 @@ public class ShoppingList implements DomainListObject {
         this.vis = visibility;
     }
 
-    public void setLocation(Location location){this.location = location;}
+    public void setLocation(LastLocation location){this.location = location;}
 
 
 

@@ -4,7 +4,7 @@ import android.location.Address;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class Location {
+public class LastLocation {
 
     private LatLng coordinates;
 

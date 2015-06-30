@@ -48,6 +48,12 @@ public class ShoppingList implements DomainListObject {
 
     private Account owner;
 
+    /**
+     * last shopping location
+     */
+    private Location location;
+
+
     private enum visibility {
         PRIVATE
     }
@@ -80,6 +86,9 @@ public class ShoppingList implements DomainListObject {
         return this.sortTypeInt;
     }
 
+    public Location getLocation(){ return this.location;}
+
+
     public void setSortTypeInt(int sortTypeInt){
         this.sortTypeInt = sortTypeInt;
     }
@@ -103,6 +112,10 @@ public class ShoppingList implements DomainListObject {
     public void setVisibility(visibility visibility) {
         this.vis = visibility;
     }
+
+    public void setLocation(Location location){this.location = location;}
+
+
 
 
 

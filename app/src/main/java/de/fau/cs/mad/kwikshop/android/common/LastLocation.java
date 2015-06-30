@@ -3,30 +3,50 @@ package de.fau.cs.mad.kwikshop.android.common;
 import android.location.Address;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
+
+@DatabaseTable(tableName = "location")
 public class LastLocation {
 
-    private LatLng coordinates;
+    @DatabaseField(generatedId = true)
+    private int id;
 
-    private Address address;
+    @DatabaseField
+    private double latitude;
 
+    @DatabaseField
+    private double longitude;
+
+    @DatabaseField
+    private String Address;
+
+    @DatabaseField
     private boolean visited;
 
-
-    public LatLng getCoordinates() {
-        return coordinates;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setCoordinates(LatLng coordinates) {
-        this.coordinates = coordinates;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public Address getAddress() {
-        return address;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
     }
 
     public boolean isVisited() {

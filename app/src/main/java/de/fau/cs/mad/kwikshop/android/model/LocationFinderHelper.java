@@ -61,6 +61,8 @@ public class LocationFinderHelper implements LocationListener {
 
         this.context = context;
 
+        getLocation();
+
     }
 
 
@@ -129,6 +131,12 @@ public class LocationFinderHelper implements LocationListener {
 
         return location != null ? location.getLongitude() : 0.0;
     }
+
+
+    public boolean isThereALastLocation(){
+        return getLatitude() != 0.0 && getLongitude() != 0.0;
+    }
+
 
 
     public String getAddressConverted() {

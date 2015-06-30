@@ -72,6 +72,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     private final ItemParser itemParser;
     protected final DisplayHelper displayHelper;
     private final AutoCompletionHelper autoCompletionHelper;
+    private final LocationFinderHelper locationFinderHelper;
     private EventBus privateBus = EventBus.builder().build();
     private final ResourceProvider resourceProvider;
 
@@ -114,8 +115,9 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     public ShoppingListViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> shoppingListManager,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
-                                 AutoCompletionHelper autoCompletionHelper,
+                                 AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper,
                                  final ResourceProvider resourceProvider) {
+
 
         if(viewLauncher == null) {
             throw new IllegalArgumentException("'viewLauncher' must not be null");
@@ -138,6 +140,10 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         if(autoCompletionHelper == null) {
             throw new IllegalArgumentException("'autoCompletionHelper' must not be null");
         }
+        if(autoCompletionHelper == null) {
+            throw new IllegalArgumentException("'locationFinderHelper' must not be null");
+        }
+
 
         if (resourceProvider == null) {
             throw new IllegalArgumentException("'resourceProvider' must not be null");
@@ -151,6 +157,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         this.itemParser = itemParser;
         this.displayHelper = displayHelper;
         this.autoCompletionHelper = autoCompletionHelper;
+        this.locationFinderHelper = locationFinderHelper;
         this.resourceProvider = resourceProvider;
     }
 
@@ -284,6 +291,17 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
         shoppingListManager.saveListItem(shoppingListId, item1);
         shoppingListManager.saveListItem(shoppingListId, item2);
+    }
+
+    public void setLocationOnStartingShopping(){
+
+        ShoppingList shoppingList = shoppingListManager.getList(this.shoppingListId);
+
+        if(!shoppingList.getLocation().isVisited()){
+            shoppingList.setLocation(locationFinderHelper.setLocation());
+            shoppingListManager.saveList(shoppingListId);
+        }
+
     }
 
 

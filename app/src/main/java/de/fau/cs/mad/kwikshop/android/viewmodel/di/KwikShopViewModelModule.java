@@ -12,6 +12,7 @@ import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
+import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.RecipeManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
@@ -42,6 +43,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         RecipesDetailsViewModel.class,
         RecipeViewModel.class,
         AutoCompletionHelper.class,
+        LocationFinderHelper.class,
         AddRecipeToShoppingListViewModel.class,
         ItemDetailsFragment.class,
         RecipeItemDetailsFragment.class
@@ -119,6 +121,11 @@ public class KwikShopViewModelModule {
     public AutoCompletionHelper provideAutoCompletionHelper(Activity activity) {
         return AutoCompletionHelper.getAutoCompletionHelper(activity.getBaseContext());
     }
+
+    @Provides
+    public LocationFinderHelper provideLocationFinderHelper(Context context) {
+        return new LocationFinderHelper(context); }
+
 
     @Provides
     public ListManager<ShoppingList> provideShoppingListManager(ListStorage<ShoppingList> listStorage) {

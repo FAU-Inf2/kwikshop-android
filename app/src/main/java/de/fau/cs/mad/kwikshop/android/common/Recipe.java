@@ -49,8 +49,22 @@ public class Recipe implements DomainListObject {
         return name;
     }
 
+    public int getScaleFactor(){ return scaleFactor; }
+
+    public String getScaleName(){
+        return scaleName;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setScaleFactor(int scaleFactor){
+        this.scaleFactor = scaleFactor;
+    }
+
+    public void setScaleName( String scaleName){
+        this.scaleName = scaleName;
     }
 
 

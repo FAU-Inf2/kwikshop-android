@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -50,6 +51,9 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
     private int recipeId;
     private boolean isNewRecipe;
     private Recipe recipe;
+    private int scaleFactor;
+    private int oldScaleFactor;
+    private String scaleName;
 
     // backing fields for properties
     private Command saveCommand;
@@ -137,6 +141,22 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
         return this.deleteCommand;
     }
 
+    public int getScaleFactor(){
+        return scaleFactor;
+    }
+
+    public String getScaleName(){
+        return scaleName;
+    }
+
+    public void setScaleFactor(int scaleFactor){
+        this.scaleFactor = scaleFactor;
+    }
+
+    public void setScaleName(String scaleName){
+        this.scaleName = scaleName;
+    }
+
 
     @Override
     public void setName(String value) {
@@ -176,6 +196,8 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
 
             this.deleteCommand.setIsAvailable(false);
             setName("");
+            setScaleFactor(1);
+            setScaleName(resourceProvider.getString(R.string.recipe_scaleName_person));
 
         } else {
 
@@ -183,8 +205,11 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
 
             //TODO: handle exception when list is not found
             this.recipe = recipeManager.getList(recipeId);
+            setScaleFactor(recipe.getScaleFactor());
+            setScaleName(recipe.getScaleName());
             setName(recipe.getName());
         }
+        oldScaleFactor = scaleFactor;
 
     }
 
@@ -195,6 +220,13 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
         }
 
         recipe.setName(this.getName());
+        recipe.setScaleFactor(scaleFactor);
+        recipe.setScaleName(scaleName);
+
+        for(Item item : recipe.getItems()){
+            item.setAmount(item.getAmount() * getScaleFactor()/oldScaleFactor);
+        }
+
 
         recipeManager.saveList(recipeId);
 

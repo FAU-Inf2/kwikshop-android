@@ -24,18 +24,27 @@
         android:singleLine="true"
         android:inputType="textCapSentences"/>
 
-    <NumberPicker
-        android:layout_width="wrap_content"
+    <TableRow
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/recipe_detail_number_picker"
-        android:layout_below="@+id/textView_RecipeName"/>
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/textView_RecipeName"
+        android:weightSum="1">
 
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/recipe_detail_spinner"
-        android:layout_alignRight="@+id/textView_RecipeName"
-        android:layout_alignEnd="@+id/textView_RecipeName"
-        android:layout_toRightOf="@+id/recipe_detail_number_picker" />
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:id="@+id/recipe_detail_numberPicker"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="10dp"/>
+
+        <Spinner
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:id="@+id/recipe_detail_spinner"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"/>
+
+    </TableRow>
 
 </RelativeLayout>

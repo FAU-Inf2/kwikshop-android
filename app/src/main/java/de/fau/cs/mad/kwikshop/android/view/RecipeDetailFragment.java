@@ -8,12 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.InjectViews;
+import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
@@ -31,11 +37,11 @@ public class RecipeDetailFragment extends FragmentWithViewModel implements Recip
     @InjectView(R.id.textView_RecipeName)
     TextView textView_RecipeName;
 
-    @InjectView(R.id.recipe_detail_number_picker)
-    NumberPicker scaleNumberPicker;
+    @InjectView(R.id.recipe_detail_numberPicker)
+    NumberPicker numberPicker;
 
     @InjectView(R.id.recipe_detail_spinner)
-    Spinner scaleNameSpinner;
+    Spinner recipe_detail_spinner;
 
     private RecipesDetailsViewModel viewModel;
     private boolean updatingViewModel = false;
@@ -78,6 +84,53 @@ public class RecipeDetailFragment extends FragmentWithViewModel implements Recip
             bindButton(saveCancelActivity.getSaveButton(), viewModel.getSaveCommand());
             bindButton(saveCancelActivity.getDeleteButton(), viewModel.getDeleteCommand());
         }
+
+
+
+        //initialize numberPicker
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(50);
+        numberPicker.setValue(viewModel.getScaleFactor());
+
+        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                viewModel.setScaleFactor(newVal);
+            }
+        });
+
+        ArrayList<String> spinner_entries = new ArrayList<String>(2);
+        spinner_entries.add(0, getString(R.string.recipe_scaleName_person));
+        spinner_entries.add(1, getString(R.string.recipe_scaleName_piece));
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinner_entries);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        recipe_detail_spinner.setAdapter(spinnerAdapter);
+        if(viewModel.getScaleName().equals(getActivity().getString(R.string.recipe_scaleName_piece))){
+            recipe_detail_spinner.setSelection(1);
+        }
+        recipe_detail_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position){
+                    case 0:
+                        viewModel.setScaleName(getString(R.string.recipe_scaleName_person));
+                        break;
+                    case 1:
+                        viewModel.setScaleName(getString(R.string.recipe_scaleName_piece));
+                        break;
+                    default:
+                        viewModel.setScaleName(getString(R.string.recipe_scaleName_person));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+
 
         viewModel.addListener(this);
 
@@ -131,6 +184,7 @@ public class RecipeDetailFragment extends FragmentWithViewModel implements Recip
         updatingViewModel = false;
 
     }
+
 
     private void initializeViewModel() {
 

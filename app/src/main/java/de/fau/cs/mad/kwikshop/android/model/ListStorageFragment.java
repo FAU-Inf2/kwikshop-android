@@ -193,8 +193,9 @@ public class ListStorageFragment extends Fragment {
             int id = m_RecipeStorage.createList();
             Recipe recipe1 = m_RecipeStorage.loadList(id);
             recipe1.setName(context.getString(R.string.recipe_name_chili_con_carne));
+            recipe1.setScaleFactor(4);
+            recipe1.setScaleName(context.getString(R.string.recipe_scaleName_person));
 
-            //4 persons
             Item item1 = new Item();
             item1.setName(context.getString(R.string.recipe_mince));
             item1.setAmount(600);

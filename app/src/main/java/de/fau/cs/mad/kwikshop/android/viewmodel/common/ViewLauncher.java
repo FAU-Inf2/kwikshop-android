@@ -1,5 +1,10 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
+import android.widget.Button;
+import android.widget.NumberPicker;
+
+import de.fau.cs.mad.kwikshop.android.common.Recipe;
+
 public interface ViewLauncher {
 
     void showAddShoppingListView();
@@ -31,4 +36,6 @@ public interface ViewLauncher {
     void RecipeShowItemDetailsView(int recipeId, int itemId);
 
     void showReminderView(int listId, int itemID);
+
+    void showAddRecipeDialog(final Recipe recipe);
 }

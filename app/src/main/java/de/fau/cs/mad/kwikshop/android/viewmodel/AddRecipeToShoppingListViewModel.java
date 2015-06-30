@@ -1,15 +1,12 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
-import android.os.AsyncTask;
-
-import java.util.Collection;
-
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
+import de.fau.cs.mad.kwikshop.android.model.messages.DialogFinishedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
@@ -43,6 +40,12 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
         public void execute(Integer recipeId) {
 
             Recipe recipe = recipeManager.getList(recipeId);
+            scaleFactor = recipe.getScaleFactor();
+            scaleName = recipe.getScaleName();
+
+            viewLauncher.showAddRecipeDialog(recipe);
+
+/*
             for(Item item : recipe.getItems()){
                 Item newItem = new Item();
                 newItem.setName(item.getName());
@@ -56,11 +59,16 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
                 shoppingListManager.addListItem(shoppingListId, newItem);
             }
             viewLauncher.showShoppingList(shoppingListId);
+*/
         }
     };
 
     private int shoppingListId;
     private boolean initialized = false;
+    private int scaleFactor;
+    private String scaleName;
+    //value after scaling
+    private double scaledValue;
 
     @Inject
     public AddRecipeToShoppingListViewModel(ViewLauncher viewLauncher, ListManager<Recipe> recipeManager,
@@ -97,6 +105,27 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
 
 
     // Getters / Setters
+
+    public int getScaleFactor(){
+        return scaleFactor;
+    }
+
+    public String getScaleName(){
+        return scaleName;
+    }
+
+    public void setScaleFactor(int scaleFactor){
+        this.scaleFactor = scaleFactor;
+    }
+
+    public void setScaleName(String scaleName){
+        this.scaleName = scaleName;
+    }
+
+    public void setScaledValue(double scaledValue){
+        this.scaledValue = scaledValue;
+    }
+
 
     public ObservableArrayList<Recipe, Integer> getRecipes() {
         return this.recipes;
@@ -138,6 +167,23 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
             default:
                 break;
         }
+    }
+
+    public void onEvent(DialogFinishedEvent event){
+        Recipe recipe = event.getRecipe();
+        for(Item item : recipe.getItems()){
+            Item newItem = new Item();
+            newItem.setName(item.getName());
+            newItem.setAmount((int)event.getScaledValue() * item.getAmount());
+            newItem.setBrand(item.getBrand());
+            newItem.setComment(item.getComment());
+            newItem.setHighlight(item.isHighlight());
+            newItem.setGroup(item.getGroup());
+            newItem.setUnit(item.getUnit());
+
+            shoppingListManager.addListItem(shoppingListId, newItem);
+        }
+        viewLauncher.showShoppingList(shoppingListId);
     }
 
     @SuppressWarnings("unused")

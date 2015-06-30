@@ -67,6 +67,7 @@ public class ShoppingListFragment
 
     private AutoCompletionHelper autoCompletion;
 
+    private Integer sizeBoughtItems;
     private ShoppingListViewModel viewModel;
     private boolean updatingViewModel;
 
@@ -136,8 +137,8 @@ public class ShoppingListFragment
         viewModel.addListener(this);
         viewModel.getItems().addListener(this);
         viewModel.getBoughtItems().addListener(this);
-
-       // cartCounter.setText(viewModel.getBoughtItems().size());
+        sizeBoughtItems = viewModel.getBoughtItems().size();
+        cartCounter.setText(String.valueOf(sizeBoughtItems));
 
         ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);
@@ -193,6 +194,7 @@ public class ShoppingListFragment
                 viewModel.itemsSwapped(i, i1);
                 //IMPORTANT: reenable events of the observable list after drag and drop has finished
                 viewModel.getItems().enableEvents();
+
             }
         });
 
@@ -409,12 +411,16 @@ public class ShoppingListFragment
     public void onItemRemoved(Item removedItem) {
         justifyListViewHeightBasedOnChildren(shoppingListView);
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);
+        sizeBoughtItems = viewModel.getBoughtItems().size();
+        cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
 
     @Override
     public void onItemModified(Item modifiedItem) {
         justifyListViewHeightBasedOnChildren(shoppingListView);
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);
+        sizeBoughtItems = viewModel.getBoughtItems().size();
+        cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
 
 

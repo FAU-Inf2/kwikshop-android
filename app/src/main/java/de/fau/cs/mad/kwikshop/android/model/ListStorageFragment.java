@@ -176,7 +176,6 @@ public class ListStorageFragment extends Fragment {
             i2.setGroup(defaultGroup);
             list.addItem(i2);
 
-
             getLocalListStorage().saveList(list);
         }
 

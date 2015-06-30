@@ -106,7 +106,7 @@ public class LocationFinder implements LocationListener {
     }
 
 
-    public String getAddressFromLastLocation(){
+    public String getAddress(){
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         List<Address> addresses;
         try {

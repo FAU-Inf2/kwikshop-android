@@ -14,12 +14,14 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.LastLocation;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
 
 
@@ -37,6 +39,9 @@ public class LocationFinderHelper implements LocationListener {
 
     private boolean isGPSEnabled = false;
     private boolean isNetworkEnabled = false;
+
+    private SimpleStorage<LastLocation> lastLocationSimpleStorage;
+    private DatabaseHelper databaseHelper;
 
 
 
@@ -62,9 +67,10 @@ public class LocationFinderHelper implements LocationListener {
     public LastLocation setLocation(){
 
         LastLocation lastLocation = new LastLocation();
-        lastLocation.setCoordinates(new LatLng(latitude,longitude));
+        lastLocation.setLatitude(latitude);
+        lastLocation.setLongitude(longitude);
         lastLocation.setVisited(true);
-        lastLocation.setAddress(getAddress());
+        lastLocation.setAddress(getAddressConverted());
 
         return lastLocation;
     }

@@ -2,6 +2,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
@@ -101,56 +102,55 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
     private void whereIsTheNextSupermarketRequest(){
 
         AsyncTask<Void, Void, Void> aTask = new AsyncTask<Void, Void, Void>(){
-            double lat;
-            double lng;
             List<Place> places;
-            boolean isConnectionLost = false;
+            private final String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
+            ProgressDialog progress;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                LocationFinderHelper location = new LocationFinderHelper(getActivity());
-                lat = location.getLatitude();
-                lng = location.getLongitude();
-
+                progress = ProgressDialog.show(getActivity(), "Locating",
+                        "Find nearby Supermarket. Pleas wait", true);
             }
 
             @Override
             protected Void doInBackground(Void... params) {
-                String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
+                // check connection to internet
                 if (InternetHelper.checkInternetConnection(getActivity())) {
-
                     GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-
                     try {
-                        places = client.getNearbyPlaces(lat, lng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
+                        places = client.getNearbyPlaces(lastLat, lastLng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
                     } catch (Exception e) {
                         Log.e(LOG_TAG, "Exception: " + e.getMessage());
                     }
-
                 }
-
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                if(places != null){
-                    initiateMap(places);
-                } else {
-                    notificationOfNoConnection();
-                }
+                initiateMap(places);
+                progress.dismiss();
             }
+
         };
 
-        // no connection to internet
-        if(!InternetHelper.checkInternetConnection(getActivity())){
-            notificationOfNoConnection();
+        // retrieve last location from gps or mobile internet
+        lastLocation = new LocationFinderHelper(getActivity());
+
+        // no last location was found
+        if(!lastLocation.isThereALastLocation()){
+            //notificationOfNoConnection();
         } else {
+            lastLat = lastLocation.getLatitude();
+            lastLng = lastLocation.getLongitude();
+            address = lastLocation.getAddressConverted();
             aTask.execute();
         }
+
     }
+
 
     private void initiateMap(final List<Place> places){
 

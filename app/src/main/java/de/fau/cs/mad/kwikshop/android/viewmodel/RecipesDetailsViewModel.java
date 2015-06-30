@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -51,6 +52,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
     private boolean isNewRecipe;
     private Recipe recipe;
     private int scaleFactor;
+    private int oldScaleFactor;
     private String scaleName;
 
     // backing fields for properties
@@ -207,6 +209,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
             setScaleName(recipe.getScaleName());
             setName(recipe.getName());
         }
+        oldScaleFactor = scaleFactor;
 
     }
 
@@ -219,6 +222,11 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
         recipe.setName(this.getName());
         recipe.setScaleFactor(scaleFactor);
         recipe.setScaleName(scaleName);
+
+        for(Item item : recipe.getItems()){
+            item.setAmount(item.getAmount() * getScaleFactor()/oldScaleFactor);
+        }
+
 
         recipeManager.saveList(recipeId);
 

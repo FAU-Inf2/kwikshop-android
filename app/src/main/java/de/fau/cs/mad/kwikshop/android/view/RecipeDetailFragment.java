@@ -105,7 +105,7 @@ public class RecipeDetailFragment extends FragmentWithViewModel implements Recip
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinner_entries);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         recipe_detail_spinner.setAdapter(spinnerAdapter);
-        if(viewModel.getScaleName().equals(getString(R.string.recipe_scaleName_piece))){
+        if(viewModel.getScaleName().equals(getActivity().getString(R.string.recipe_scaleName_piece))){
             recipe_detail_spinner.setSelection(1);
         }
         recipe_detail_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

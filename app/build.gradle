@@ -11,9 +11,9 @@ android {
 
     defaultConfig {
         applicationId "de.fau.cs.mad.kwikshop.android"
-        //minSdkVersion 14
-        //targetSdkVersion 21
-        //multiDexEnabled true
+        minSdkVersion 14
+        targetSdkVersion 21
+        multiDexEnabled true
         versionCode 2
         versionName "1.0.1"
         resValue "string", "BuildInfo_Git_Branch", getGitBranchName()
@@ -28,7 +28,7 @@ android {
             keyPassword "unknown"
         }
     }
-
+    /*
     productFlavors {
         // Define separate dev and prod product flavors.
         dev {
@@ -42,6 +42,7 @@ android {
             minSdkVersion 14
         }
     }
+    */
 
     buildTypes {
         release {

@@ -299,6 +299,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
         if(!shoppingList.getLocation().isVisited()){
             shoppingList.setLocation(locationFinderHelper.setLocation());
+            shoppingListManager.saveList(shoppingListId);
         }
 
     }

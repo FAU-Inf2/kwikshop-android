@@ -51,7 +51,7 @@ public class ShoppingList implements DomainListObject {
     /**
      * last shopping location
      */
-    @DatabaseField
+    @DatabaseField(foreign = true, canBeNull = true)
     private LastLocation location;
 
 

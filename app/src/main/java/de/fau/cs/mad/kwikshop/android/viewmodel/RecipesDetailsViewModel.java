@@ -195,7 +195,7 @@ public class RecipesDetailsViewModel extends ShoppingListViewModelBase {
             this.deleteCommand.setIsAvailable(false);
             setName("");
             setScaleFactor(1);
-            setScaleName(context.getString(R.string.recipe_scaleName_person));
+            setScaleName(resourceProvider.getString(R.string.recipe_scaleName_person));
 
         } else {
 

@@ -4,15 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/text_icons"
-    tools:context=".MainActivity$PlaceholderFragment">
+    tools:context=".MainActivity$PlaceholderFragment"
+                android:nestedScrollingEnabled="false">
 
 
     <!--Other content of the view-->
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#00ffffff">
 
         <!--Quick add bar-->
         <RelativeLayout
@@ -49,120 +45,103 @@
 
         </RelativeLayout>
 
-        <ScrollView
+    <View
+        android:id="@+id/divider_top"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_color"
+        android:layout_below="@+id/quickAdd"/>
+
+    <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+        android:id="@+id/list_shoppingList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/divider_top"
+        android:nestedScrollingEnabled="false"/>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_shoppingList"
+        android:id="@+id/divider_table"
+        android:background="@color/accent_material_light">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/shoppinglist_divider_textview"
+            android:id="@+id/textview_divider"
+            android:layout_marginLeft="20dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/text_icons"
+            android:singleLine="true"/>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/shoppinglist_scrollview">
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:text="0"
+            android:id="@+id/cartCounter"
+            android:layout_marginLeft="140dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/text_icons" />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#FFB6B6B6"
-                >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:text="@string/items"
+            android:id="@+id/textview_items"
+            android:textColor="@color/text_icons"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp" />
 
-                <View
-                    android:id="@+id/divider_top"
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/divider_color"/>
+    </TableRow>
 
-                <!--List of not-bought items-->
-                <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
-                    android:id="@+id/list_shoppingList"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/divider_top"
-                    />
+    <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+        android:id="@+id/list_shoppingListBought"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="false"
+        android:layout_below="@+id/divider_table"
+        />
 
+    <View
+        android:id="@+id/divider_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_color"
+        android:layout_below="@+id/list_shoppingListBought"/>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/list_shoppingList"
-                    android:id="@+id/divider_table"
-                    android:background="@color/accent_material_light">
+    <View
+        android:id="@+id/space_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/divider_bottom"
+        android:background="@color/text_icons"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:text="@string/shoppinglist_divider_textview"
-                        android:id="@+id/textview_divider"
-                        android:layout_marginLeft="20dp"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-                        android:layout_marginTop="3dp"
-                        android:layout_marginBottom="3dp"
-                        android:textColor="@color/text_icons"
-                        android:singleLine="true"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-                        android:text="0"
-                        android:id="@+id/cartCounter"
-                        android:layout_marginLeft="140dp"
-                        android:layout_marginTop="3dp"
-                        android:layout_marginBottom="3dp"
-                        android:textColor="@color/text_icons" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-                        android:text="@string/items"
-                        android:id="@+id/textview_items"
-                        android:textColor="@color/text_icons"
-                        android:layout_marginTop="3dp"
-                        android:layout_marginBottom="3dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="20dp" />
-
-                </TableRow>
-
-                <!--List of bought items-->
-                <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
-                    android:id="@+id/list_shoppingListBought"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="false"
-                    android:layout_alignParentRight="false"
-                    android:layout_below="@+id/divider_table"
-                    />
-
-                <View
-                    android:id="@+id/divider_bottom"
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/divider_color"
-                    android:layout_below="@+id/list_shoppingListBought"/>
-
-                <View
-                    android:id="@+id/space_bottom"
-                    android:layout_width="fill_parent"
-                    android:layout_height="100dp"
-                    android:layout_below="@+id/divider_bottom"
-                    android:background="@color/text_icons"/>
-
-            </RelativeLayout>
-        </ScrollView>
-
-    </LinearLayout>
+    <view
+            android:id="@+id/fab"
+            class="com.melnykov.fab.FloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
+            android:layout_weight="10"
+            android:src="@drawable/ic_action_add"
+            fab:fab_colorNormal="@color/fab_Normal"
+            fab:fab_colorPressed="@color/fab_Pressed"
+            fab:fab_colorRipple="@color/fab_Ripple" />
 
     <!--Floating Action button-->
-    <view
-        android:id="@+id/fab"
-        class="com.melnykov.fab.FloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
-        android:layout_weight="10"
-        android:src="@drawable/ic_action_add"
-        fab:fab_colorNormal="@color/fab_Normal"
-        fab:fab_colorPressed="@color/fab_Pressed"
-        fab:fab_colorRipple="@color/fab_Ripple" />
 
 
 </RelativeLayout>

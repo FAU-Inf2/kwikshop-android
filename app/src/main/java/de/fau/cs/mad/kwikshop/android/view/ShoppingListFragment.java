@@ -3,16 +3,12 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 //import android.app.Fragment;
 
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
@@ -20,19 +16,16 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ListAdapter;
 import android.support.v4.app.Fragment;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.dragdrop.OnItemMovedListener;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 
 
@@ -85,9 +78,6 @@ public class ShoppingListFragment
     @InjectView(R.id.button_quickAdd)
     View button_QuickAdd;
 
-    @InjectView(R.id.shoppinglist_scrollview)
-    ScrollView scrollView;
-
     @InjectView(R.id.quickAdd)
     RelativeLayout quickAddLayout;
     @InjectView(R.id.cartCounter)
@@ -139,8 +129,12 @@ public class ShoppingListFragment
 
        // cartCounter.setText(viewModel.getBoughtItems().size());
 
+        // Get items, add bought items add the bottom
+        ObservableArrayList list = viewModel.getItems();
+        list.addAll(viewModel.getBoughtItems());
+
         ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
-                viewModel.getItems(), displayHelper);
+                list, displayHelper);
         shoppingListView.setAdapter(shoppingListAdapter);
 
         new ListViewItemCommandBinding(ListViewItemCommandBinding.ListViewItemCommandType.Click,
@@ -179,7 +173,7 @@ public class ShoppingListFragment
                         //disable events on observable list during drag&drop to prevent lag
                         //IMPORTANT: Make sure to reenable events afterwards
                         viewModel.getItems().disableEvents();
-                        scrollView.requestDisallowInterceptTouchEvent(true);
+                        //scrollView.requestDisallowInterceptTouchEvent(true);
                         shoppingListView.startDragging(position);
                         //sets value of the Spinner to the first entry, in this case Manual
                         return true;
@@ -199,7 +193,7 @@ public class ShoppingListFragment
         justifyListViewHeightBasedOnChildren(shoppingListView);
 
 
-        shoppingListViewBought.enableSwipeToDismiss(
+        /*shoppingListViewBought.enableSwipeToDismiss(
                 new OnDismissCallback() {
                     @Override
                     public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
@@ -223,7 +217,7 @@ public class ShoppingListFragment
         });
         shoppingListViewBought.enableDragAndDrop();
 
-        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
+        justifyListViewHeightBasedOnChildren(shoppingListViewBought);*/
 
 
         new ButtonBinding(floatingActionButton, viewModel.getAddItemCommand(), false);

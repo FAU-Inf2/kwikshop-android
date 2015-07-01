@@ -515,6 +515,8 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
         int id = item.getId();
 
+        items.setOrAddById(item);
+
         if(item.isBought()) {
 
             items.removeById(id);

@@ -115,7 +115,8 @@
                         android:layout_marginTop="3dp"
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginRight="20dp" />
+                        android:textAlignment="textEnd"
+                        android:layout_gravity="center_vertical|right" />
 
                 </TableRow>
 

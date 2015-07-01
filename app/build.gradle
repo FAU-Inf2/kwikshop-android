@@ -13,7 +13,7 @@ android {
         applicationId "de.fau.cs.mad.kwikshop.android"
         //minSdkVersion 14
         //targetSdkVersion 21
-        //multiDexEnabled true
+       // multiDexEnabled true
         versionCode 2
         versionName "1.0.1"
         resValue "string", "BuildInfo_Git_Branch", getGitBranchName()
@@ -42,6 +42,7 @@ android {
             minSdkVersion 14
         }
     }
+
 
     buildTypes {
         release {

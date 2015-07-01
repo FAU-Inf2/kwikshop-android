@@ -19,6 +19,7 @@ import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
 import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
+import de.fau.cs.mad.kwikshop.android.common.LastLocation;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
@@ -58,6 +59,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private Dao<Recipe, Integer> recipeDao = null;
     private RuntimeExceptionDao<Recipe, Integer> recipeRunTimeDao = null;
 
+    private Dao<LastLocation, Integer> locationDao = null;
+    private RuntimeExceptionDao<LastLocation, Integer> locationRunTimeDao = null;
+
     public DatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -73,6 +77,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.createTable(connectionSource, Group.class);
             TableUtils.createTable(connectionSource, CalendarEventDate.class);
             TableUtils.createTable(connectionSource, AutoCompletionData.class);
+            TableUtils.createTable(connectionSource, LastLocation.class);
             TableUtils.createTable(connectionSource, AutoCompletionBrandData.class);
             TableUtils.createTable(connectionSource, Recipe.class);
         } catch (SQLException e) {
@@ -252,6 +257,21 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         return recipeRunTimeDao;
     }
 
+    public Dao<LastLocation, Integer> getLocationDao() throws SQLException {
+        if (locationDao == null) {
+            locationDao = getDao(LastLocation.class);
+        }
+        return locationDao;
+    }
+
+    public RuntimeExceptionDao<LastLocation, Integer> getLocationRuntimeDao() {
+        if (locationRunTimeDao == null) {
+            locationRunTimeDao = getRuntimeExceptionDao(LastLocation.class);
+        }
+        return locationRunTimeDao;
+    }
+
+
     @Override
     public void close() {
         super.close();
@@ -281,6 +301,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
         recipeDao = null;
         recipeRunTimeDao = null;
+
+        locationDao = null;
+        locationRunTimeDao = null;
 
         //itemRepeatDao = null;
         //itemRepeatRunTimeDao = null;

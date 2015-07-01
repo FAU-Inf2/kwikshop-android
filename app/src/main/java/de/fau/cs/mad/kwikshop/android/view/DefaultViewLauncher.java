@@ -2,14 +2,22 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.common.Recipe;
+import de.fau.cs.mad.kwikshop.android.model.messages.DialogFinishedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+import de.greenrobot.event.EventBus;
 
 public class DefaultViewLauncher implements ViewLauncher {
 
@@ -58,6 +66,7 @@ public class DefaultViewLauncher implements ViewLauncher {
         activity.startActivity(RecipeActivity.getIntent(activity, recipeId));
     }
 
+    @Override
     public void showDatePicker(int year, int month, int day, int hour, int minute) {
 
         DialogFragment newFragment = new DatePickerFragment();
@@ -137,5 +146,36 @@ public class DefaultViewLauncher implements ViewLauncher {
     public void showReminderView(int listId, int itemId) {
         Intent intent = ReminderActivity.getIntent(activity, listId, itemId);
         activity.startActivity(intent);
+    }
+
+    @Override
+    public void showAddRecipeDialog(final Recipe recipe){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(recipe.getName());
+        builder.setMessage(activity.getString(R.string.recipe_choose_amount) + " " + recipe.getScaleName() + ":");
+
+        final NumberPicker numberPicker = new NumberPicker(activity);
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(50);
+        numberPicker.setValue(recipe.getScaleFactor());
+        builder.setView(numberPicker);
+
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+
+                double scaledValue = (double) numberPicker.getValue() / recipe.getScaleFactor();
+                EventBus.getDefault().post(new DialogFinishedEvent(scaledValue, recipe));
+
+            }
+        });
+        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+
     }
 }

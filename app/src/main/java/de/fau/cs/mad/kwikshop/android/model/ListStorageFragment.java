@@ -12,6 +12,7 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
+import de.fau.cs.mad.kwikshop.android.common.LastLocation;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
@@ -33,6 +34,7 @@ public class ListStorageFragment extends Fragment {
     private static SimpleStorage<Group> m_GroupStorage;
     private static SimpleStorage<Unit> m_UnitStorage;
     private static SimpleStorage<CalendarEventDate> m_CalendarEventStorage;
+    private static SimpleStorage<LastLocation> m_LastLocationStorage;
     private static ListStorageFragment m_ListStorageFragment;
     private static DatabaseHelper m_DatabaseHelper;
     private static ListStorage<Recipe> m_RecipeStorage;
@@ -63,6 +65,10 @@ public class ListStorageFragment extends Fragment {
 
     public static SimpleStorage<CalendarEventDate> getCalendarEventStorage() {
         return m_CalendarEventStorage;
+    }
+
+    public static SimpleStorage<LastLocation> getLastLocationStorage(){
+        return m_LastLocationStorage;
     }
 
 
@@ -118,6 +124,8 @@ public class ListStorageFragment extends Fragment {
             createUnitsInDatabase(activity, m_UnitStorage);
 
             m_CalendarEventStorage = new SimpleStorageBase<>(m_DatabaseHelper.getCalendarDao());
+
+            m_LastLocationStorage = new SimpleStorageBase<>(m_DatabaseHelper.getLocationDao());
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -175,7 +183,6 @@ public class ListStorageFragment extends Fragment {
             i2.setBought(true);
             i2.setGroup(defaultGroup);
             list.addItem(i2);
-
 
             getLocalListStorage().saveList(list);
         }

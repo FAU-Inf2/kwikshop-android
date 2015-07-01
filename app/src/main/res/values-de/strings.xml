@@ -152,6 +152,9 @@
     <string name="deleteRecipe_DialogText">Sind Sie sicher, dass sie dieses Rezept löschen möchten?</string>
     <string name="overflow_action_menu_recipes">Rezepte verwalten</string>
     <string name="overflow_action_menu_add_recipes">Rezept zur Liste hinzufügen</string>
+    <string name="recipe_scaleName_person">Personen</string>
+    <string name="recipe_scaleName_piece">Stücke</string>
+    <string name="recipe_choose_amount">Wähle Anzahl der </string>
 
     <!-- Example Recipes -->
     <string name="recipe_name_chili_con_carne">Chili con Carne</string>

@@ -175,6 +175,9 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
 
     @SuppressWarnings("unused")
     public void onEvent(ReminderTimeIsOverEvent e) {
+
+        EventBus.getDefault().cancelEventDelivery(e);
+
         int itemId = e.getItemId();
         int listId = e.getListId();
         viewLauncher.showReminderView(listId, itemId);

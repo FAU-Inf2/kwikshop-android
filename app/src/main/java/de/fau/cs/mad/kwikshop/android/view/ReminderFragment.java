@@ -212,8 +212,9 @@ public class ReminderFragment extends Fragment {
 
     private void addToShoppingList() {
         Item newItem = new Item(item);
+        ShoppingList selectedList = shoppingLists.get(shoppingList_spinner.getSelectedItemPosition());
 
-        shoppingListManager.addListItem(listId, newItem);
+        shoppingListManager.addListItem(selectedList.getId(), newItem);
 
         changeReminderDate(getString(R.string.reminder_itemAdded));
     }

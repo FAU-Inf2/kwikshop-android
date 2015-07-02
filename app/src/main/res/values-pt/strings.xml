@@ -120,7 +120,7 @@
     <string name="deleteRecipe_DialogTitle">Deletar receita</string>
     <string name="settings_option_3_createUnits">Criar unidades</string>
     <string name="settings_option_4_createGroups">Criar categorias</string>
-    <string name="settings_option_3_desc2">Crie unidades para quantidade em itens</string>
+    <string name="settings_option_3_desc2">Crie unidades e categorias</string>
     <string name="settings_option_4_desc">Crie categorias para itens</string>
     <string name="disconnect">Disconnect</string>
     <string name="retry">Tentar novamente</string>
@@ -171,4 +171,5 @@
     <string name="title_activity_reminder">Lembrete</string>
     <string name="item_divider">próximo</string>
     <string name="time_format">dd.MM.yyyy HH:mm</string>
+    <string name="settings_option_3_manageUnits">Gerenciar unidades e categorias</string>
 </resources>

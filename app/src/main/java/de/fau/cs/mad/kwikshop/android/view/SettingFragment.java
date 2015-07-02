@@ -20,6 +20,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
@@ -28,7 +30,7 @@ import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.SimpleStorageBase;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
-
+import android.widget.Spinner;
 
 public class SettingFragment extends Fragment {
 
@@ -36,8 +38,7 @@ public class SettingFragment extends Fragment {
     public static String SETTINGS = "settings";
     public static String OPTION_1 = "locale";
     public static String OPTION_2 = "autocomplete";
-    public static String OPTION_3 = "create units";
-    public static String OPTION_4 = "create groups";
+    public static String OPTION_3 = "manage units and groups";
     public static CharSequence[] localeSelectionNames = {"Default", "English", "German", "Portuguese"};
     public static CharSequence[] localeIds = {"default", "en", "de", "pt"};
 
@@ -45,6 +46,10 @@ public class SettingFragment extends Fragment {
     private AlertDialog alert;
     private ArrayList setList;
     private ListView listView;
+    @InjectView(R.layout.fragment_unit_settings)
+    View fragment_unit_settings;
+    @InjectView(R.id.unit_spinner)
+    Spinner unit_spinner;
 
 
 
@@ -76,6 +81,9 @@ public class SettingFragment extends Fragment {
                 // delete history of autocompletion
                 deleteAutoCompletionHistoryOption(position);
 
+                //manage units
+                manageUnits(position);
+
             }
         });
 
@@ -87,7 +95,6 @@ public class SettingFragment extends Fragment {
         setList.add(OPTION_1);
         setList.add(OPTION_2);
         setList.add(OPTION_3);
-        setList.add(OPTION_4);
 
         SettingAdapter objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, setList);
         listView.setAdapter(objAdapter);
@@ -105,6 +112,7 @@ public class SettingFragment extends Fragment {
             //int currentLocaleIdIndex = getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).getInt(OPTION_1, 0);
             int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(OPTION_1, 0, getActivity());
             builder.setTitle(R.string.settings_option_2_setlocale);
+
             builder.setSingleChoiceItems(localeSelectionNames, currentLocaleIdIndex, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -194,5 +202,26 @@ public class SettingFragment extends Fragment {
 
         Toast.makeText(getActivity(), getResources().getString(R.string.settings_option_3_success), Toast.LENGTH_LONG).show();
     }
-
+    private void manageUnits(int position){
+        if (setList.get(position).equals(OPTION_3)) {
+          /*  AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.settings_option_3_createUnits);
+            builder.setView(fragment_unit_settings);
+            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int position) {
+                            deleteAutoCompletionHistory();
+                    }
+            });
+               builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
+                public void onClick(DialogInterface dialog, int position) {
+                    // don't delete history of autocompletion
+                    return;
+                }
+            });
+            alert = builder.create();
+            alert.show();*/
+            //Intent intent = new Intent(getActivity(), ManageUnitsGroupsActivity.class);
+            ((SettingActivity) getActivity()).replaceFragments();
+        }
+    }
 }

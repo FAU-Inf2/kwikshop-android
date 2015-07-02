@@ -83,7 +83,7 @@
     <string name="settings_option_3_success">Successfully deleted history</string>
     <string name="settings_option_3_createUnits">Create units</string>
     <string name="settings_option_4_createGroups">Create groups</string>
-    <string name="settings_option_3_desc2">Create units for amount in items</string>
+    <string name="settings_option_3_desc2">Create units and groups</string>
     <string name="settings_option_4_desc">Create groups for items</string>
 
     <!-- Overflow Action Menu -->
@@ -270,6 +270,7 @@
     <string name="intent_calendar_description" translatable="false">http://kwikshop.is.nice/#id=</string>
     <string name="intent_id_separator" translatable="false">/#id=</string>
     <string name="about_Branch_Title" translatable="false">Branch</string>
+    <string name="settings_option_3_manageUnits">Manage units and groups</string>
 
 
 </resources>

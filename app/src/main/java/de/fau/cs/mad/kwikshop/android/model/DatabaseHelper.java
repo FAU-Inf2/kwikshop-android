@@ -30,7 +30,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 19; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 20; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -89,6 +89,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 
+
+        //todo put try catch around the if cases?
         //version of the play store release
         if(oldVersion == 7){
             try {
@@ -125,6 +127,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             }
         }
         if(oldVersion < 20){
+            try {
+                TableUtils.createTable(connectionSource,LastLocation.class);
+                shoppingListDao = ListStorageFragment.getDatabaseHelper().getShoppingListDao();
+                shoppingListDao.executeRaw("ALTER TABLE 'shoppingList' ADD COLUMN location LASTLOCATION;");
+
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        if(oldVersion < 21){
             //put next changes here
         }
 

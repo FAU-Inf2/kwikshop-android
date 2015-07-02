@@ -126,13 +126,13 @@ public class ShoppingListFragment
 
         viewModel.addListener(this);
         viewModel.getItems().addListener(this);
-        viewModel.getBoughtItems().addListener(this);
-        sizeBoughtItems = viewModel.getBoughtItems().size();
+        //viewModel.getBoughtItems().addListener(this);
+        //sizeBoughtItems = viewModel.getBoughtItems().size();
         cartCounter.setText(String.valueOf(sizeBoughtItems));
 
         // Get items, add bought items add the bottom
         ObservableArrayList list = viewModel.getItems();
-        list.addAll(viewModel.getBoughtItems());
+        //list.addAll(viewModel.getBoughtItems());
 
         ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
                 list, displayHelper);

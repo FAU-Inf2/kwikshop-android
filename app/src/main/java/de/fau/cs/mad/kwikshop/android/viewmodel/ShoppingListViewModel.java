@@ -279,7 +279,7 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
 
     /**
-     * To be called by teh view after two items have been swapped
+     * To be called by the view after two items have been swapped
      */
     public void itemsSwapped(int position1, int position2) {
 
@@ -297,11 +297,12 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
         ShoppingList shoppingList = shoppingListManager.getList(this.shoppingListId);
 
-        if(!shoppingList.getLocation().isVisited()){
-            shoppingList.setLocation(locationFinderHelper.setLocation());
-            shoppingListManager.saveList(shoppingListId);
+        if(shoppingList.getLocation() != null) {
+            if (!shoppingList.getLocation().isVisited()) {
+                shoppingList.setLocation(locationFinderHelper.setLocation());
+                shoppingListManager.saveList(shoppingListId);
+            }
         }
-
     }
 
 
@@ -368,15 +369,15 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
             switch (event.getChangeType()) {
 
-                case  Added:
+                case Added:
                 case PropertiesModified:
                     Item item = shoppingListManager.getListItem(shoppingListId, event.getItemId());
                     updateItem(item);
 
                     break;
-                case  Deleted:
+                case Deleted:
                     items.removeById(event.getItemId());
-                    boughtItems.removeById(event.getItemId());
+                    //boughtItems.removeById(event.getItemId());
                     break;
 
             }
@@ -427,9 +428,9 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
     private void toggleIsBoughtCommandExecute(final int id) {
         Item item = items.getById(id);
-        if(item == null) {
+        /*if(item == null) {
             item = boughtItems.getById(id);
-        }
+        }*/
 
         if(item != null) {
 
@@ -531,11 +532,11 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
     private void updateItem(Item item) {
 
-        int id = item.getId();
+        //int id = item.getId();
 
         items.setOrAddById(item);
 
-        if(item.isBought()) {
+        /*if(item.isBought()) {
 
             items.removeById(id);
             boughtItems.setOrAddById(item);
@@ -548,6 +549,6 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
             boughtItems.notifyItemModifiedById(id);
 
-        }
+        }*/
     }
 }

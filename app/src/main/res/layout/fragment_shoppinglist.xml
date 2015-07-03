@@ -80,7 +80,8 @@
                     android:layout_height="match_parent"
                     android:layout_below="@+id/list_shoppingList"
                     android:id="@+id/divider_table"
-                    android:background="@color/accent_material_light">
+                    android:background="@color/accent_material_light"
+                    android:weightSum="1">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -94,28 +95,41 @@
                         android:textColor="@color/text_icons"
                         android:singleLine="true"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-                        android:text="0"
-                        android:id="@+id/cartCounter"
-                        android:layout_marginLeft="140dp"
-                        android:layout_marginTop="3dp"
-                        android:layout_marginBottom="3dp"
-                        android:textColor="@color/text_icons" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="right"
+                        android:gravity="right"
+                        android:textAlignment="gravity">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-                        android:text="@string/items"
-                        android:id="@+id/textview_items"
-                        android:textColor="@color/text_icons"
-                        android:layout_marginTop="3dp"
-                        android:layout_marginBottom="3dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="20dp" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                            android:text="0"
+                            android:id="@+id/cartCounter"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginBottom="3dp"
+                            android:textColor="@color/text_icons"
+                            android:layout_gravity="center_vertical|right"
+                            android:textAlignment="gravity"
+                            android:gravity="right" />
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                            android:text="@string/items"
+                            android:id="@+id/textview_items"
+                            android:textColor="@color/text_icons"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginBottom="3dp"
+                            android:textAlignment="gravity"
+                            android:gravity="right"
+                            android:layout_gravity="center_vertical|right"
+                            android:layout_marginRight="10dp" />
+                    </LinearLayout>
 
                 </TableRow>
 
@@ -138,7 +152,7 @@
 
                 <View
                     android:id="@+id/space_bottom"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="100dp"
                     android:layout_below="@+id/divider_bottom"
                     android:background="@color/text_icons"/>

@@ -32,7 +32,7 @@ The project makes use of several third-party libraries:
 
 
 The build-process is based on gradle and uses the following third-party
-plugins (as well as the standard android build plugin)
+plugins (as well as the standard android build plugin):
 
 - [gradle-git](https://github.com/ajoberstar/gradle-git),
   licensed under the Apache License, Version 2.0

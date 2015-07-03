@@ -23,6 +23,7 @@ import java.util.Locale;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
+import de.fau.cs.mad.kwikshop.android.common.Setting;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.SimpleStorageBase;
@@ -36,35 +37,30 @@ public class SettingFragment extends Fragment {
     public static String SETTINGS = "settings";
     public static String OPTION_1 = "locale";
     public static String OPTION_2 = "autocomplete";
-    public static String OPTION_3 = "manage units and groups";
-    public static CharSequence[] localeSelectionNames = {"Default", "English", "German", "Portuguese"};
-    public static CharSequence[] localeIds = {"default", "en", "de", "pt"};
+    public static String OPTION_3 = "create units";
+    public static String OPTION_4 = "create groups";
+    public static CharSequence[] localeSelectionNames = {"Default", "English", "German", "Portuguese", " Russian"};
+    public static CharSequence[] localeIds = {"default", "en", "de", "pt", "ru"};
 
     private View rootView;
     private AlertDialog alert;
     private ArrayList setList;
     private ListView listView;
-    @InjectView(R.layout.fragment_unit_settings)
-    View fragment_unit_settings;
-    @InjectView(R.id.unit_spinner)
-    Spinner unit_spinner;
-
+    private Context context;
+    private ArrayList<Setting> settingsList;
 
 
     public static SettingFragment newInstance(int sectionNumber) {
-
         SettingFragment fragment = new SettingFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
         return fragment;
-
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        context = getActivity().getApplicationContext();
 
         rootView = inflater.inflate(R.layout.fragment_setting, container, false);
         listView = (ListView) rootView.findViewById(android.R.id.list);
@@ -74,13 +70,16 @@ public class SettingFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 // local change
-                changeLocalOption(position);
+                if (settingsList.get(position).getName().equals(getString(R.string.settings_option_2_setlocale)))
+                    changeLocalOption(position);
 
                 // delete history of autocompletion
-                deleteAutoCompletionHistoryOption(position);
+                if (settingsList.get(position).getName().equals(getString(R.string.settings_option_3_deleteHistory)))
+                    deleteAutoCompletionHistoryOption(position);
 
                 //manage units
-                manageUnits(position);
+                if (settingsList.get(position).getName().equals(getString(R.string.settings_option_3_manageUnits)))
+                    manageUnits(position);
 
             }
         });
@@ -89,13 +88,29 @@ public class SettingFragment extends Fragment {
         // set title for actionbar
         getActivity().setTitle(R.string.title_activity_settings);
 
-        setList = new ArrayList<String>();
-        setList.add(OPTION_1);
-        setList.add(OPTION_2);
-        setList.add(OPTION_3);
-        setList.add(OPTION_4);
+        // list of settings
+        settingsList = new ArrayList<>();
 
-        SettingAdapter objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, setList);
+        // Locale Setting
+        Setting setLocale = new Setting(context);
+        setLocale.setName(R.string.settings_option_2_setlocale);
+        setLocale.setCaption(R.string.settings_option_2_desc);
+        settingsList.add(setLocale);
+
+        // Autocompletion deletion
+        Setting setAutoCompletionDeletion = new Setting(context);
+        setAutoCompletionDeletion.setName(R.string.settings_option_3_deleteHistory);
+        setAutoCompletionDeletion.setCaption(R.string.settings_option_3_desc);
+        settingsList.add(setAutoCompletionDeletion);
+
+        // manage units
+        Setting setManageUnits = new Setting(context);
+        setManageUnits.setName(R.string.settings_option_3_manageUnits);
+        setManageUnits.setCaption(R.string.settings_option_3_desc2);
+        settingsList.add(setManageUnits);
+
+        // Adapter for settings view
+        SettingAdapter objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, settingsList);
         listView.setAdapter(objAdapter);
 
         return rootView;
@@ -103,29 +118,28 @@ public class SettingFragment extends Fragment {
 
     }
 
-    private void changeLocalOption(int position){
+    private void changeLocalOption(int position) {
 
-        if (setList.get(position).equals(OPTION_1)) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            //int currentLocaleIdIndex = getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).getInt(OPTION_1, 0);
-            int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(OPTION_1, 0, getActivity());
-            builder.setTitle(R.string.settings_option_2_setlocale);
-            builder.setSingleChoiceItems(localeSelectionNames, currentLocaleIdIndex, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        //int currentLocaleIdIndex = getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).getInt(OPTION_1, 0);
+        int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(OPTION_1, 0, getActivity());
+        builder.setTitle(R.string.settings_option_2_setlocale);
+        builder.setSingleChoiceItems(localeSelectionNames, currentLocaleIdIndex, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-                    setLocale(localeIds[which].toString());
-                    SharedPreferencesHelper.saveInt(OPTION_1, which, getActivity());
-                    //getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).edit().putInt(OPTION_1, which).apply();
+                setLocale(localeIds[which].toString());
+                SharedPreferencesHelper.saveInt(OPTION_1, which, getActivity());
+                //getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).edit().putInt(OPTION_1, which).apply();
 
-                }
+            }
 
-            });
+        });
 
-            alert = builder.create();
-            alert.show();
-        }
+        alert = builder.create();
+        alert.show();
+
 
     }
 
@@ -134,7 +148,7 @@ public class SettingFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        if(alert != null)
+        if (alert != null)
             alert.dismiss();
 
     }
@@ -142,7 +156,7 @@ public class SettingFragment extends Fragment {
     public void setLocale(String lang) {
 
         Locale setLocale = new Locale(lang);
-        if(lang.equals("default"))
+        if (lang.equals("default"))
             setLocale = Locale.getDefault();
         Resources res = getActivity().getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
@@ -157,26 +171,26 @@ public class SettingFragment extends Fragment {
 
 
     public void deleteAutoCompletionHistoryOption(int position) {
-        if (setList.get(position).equals(OPTION_2)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(R.string.settings_option_3_check_title);
-            builder.setMessage(R.string.settings_option_3_check_text);
-            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int position) {
-                    // delete history of autocompletion
-                    deleteAutoCompletionHistory();
-                }
-            });
-            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int position) {
-                    // don't delete history of autocompletion
-                    return;
-                }
-            });
 
-            alert = builder.create();
-            alert.show();
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.settings_option_3_check_title);
+        builder.setMessage(R.string.settings_option_3_check_text);
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+                // delete history of autocompletion
+                deleteAutoCompletionHistory();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+                // don't delete history of autocompletion
+                return;
+            }
+        });
+
+        alert = builder.create();
+        alert.show();
+
     }
 
     private void deleteAutoCompletionHistory() {
@@ -200,26 +214,29 @@ public class SettingFragment extends Fragment {
 
         Toast.makeText(getActivity(), getResources().getString(R.string.settings_option_3_success), Toast.LENGTH_LONG).show();
     }
-    private void manageUnits(int position){
-        if (setList.get(position).equals(OPTION_3)) {
-          /*  AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(R.string.settings_option_3_createUnits);
-            builder.setView(fragment_unit_settings);
-            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int position) {
-                            deleteAutoCompletionHistory();
-                    }
-            });
-               builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int position) {
-                    // don't delete history of autocompletion
-                    return;
-                }
-            });
-            alert = builder.create();
-            alert.show();*/
-            //Intent intent = new Intent(getActivity(), ManageUnitsGroupsActivity.class);
-            ((SettingActivity) getActivity()).replaceFragments();
-        }
+
+
+    private void manageUnits(int position) {
+
+                      /*  AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
++            builder.setTitle(R.string.settings_option_3_createUnits);
++            builder.setView(fragment_unit_settings);
++            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
++                public void onClick(DialogInterface dialog, int position) {
++                            deleteAutoCompletionHistory();
++                    }
++            });
++               builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
++                public void onClick(DialogInterface dialog, int position) {
++                    // don't delete history of autocompletion
++                    return;
++                }
++            });
++            alert = builder.create();
++            alert.show();*/
+        //Intent intent = new Intent(getActivity(), ManageUnitsGroupsActivity.class);
+        ((SettingActivity) getActivity()).replaceFragments();
+
     }
+
 }

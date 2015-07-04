@@ -35,6 +35,7 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
 
     // backing fields for properties
     private ObservableArrayList<Recipe, Integer> recipes;
+
     private final Command<Integer> selectRecipeCommand = new Command<Integer>() {
         @Override
         public void execute(Integer recipeId) {

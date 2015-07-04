@@ -6,6 +6,7 @@
               android:orientation="vertical"
               android:paddingBottom="5dp">
 
+    <!--Header to be displayed when sorting by group (will be set to hidden/visible in list adapter)-->
     <TableRow
         android:id="@+id/group_header"
         android:layout_width="match_parent"
@@ -19,6 +20,7 @@
 
     </TableRow>
 
+    <!-- Actual list row -->
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -26,6 +28,7 @@
         android:paddingRight="20dp"
         android:paddingTop="5dp">
 
+        <!--Main content (name, amount/unit and a delete button)-->
         <RelativeLayout
             android:id="@+id/list_row_main"
             android:layout_width="match_parent"
@@ -70,7 +73,7 @@
 
         </RelativeLayout>
 
-
+        <!--Brand text view-->
         <TextView
             android:id="@+id/list_row_textView_brand"
             android:layout_width="match_parent"
@@ -84,7 +87,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/secondary_text"/>
 
-
+        <!--Comment text view -->
         <TextView
             android:id="@+id/list_row_textView_comment"
             android:layout_width="match_parent"
@@ -92,8 +95,6 @@
             android:layout_below="@id/list_row_textView_brand"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="-10dp"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="Your comments go here"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/secondary_text_default_material_light"/>

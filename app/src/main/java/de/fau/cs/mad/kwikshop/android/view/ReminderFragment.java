@@ -298,20 +298,16 @@ public class ReminderFragment extends Fragment {
             return;
         }
 
-        question_text.append(getString(R.string.reminder_question_beginning));
-        question_text.append("\"" + item.getName() + "\"");
-        question_text.append(getString(R.string.reminder_question_second));
-
         DateFormat dateFormat = new SimpleDateFormat(getString(R.string.time_format));
         String date;
-        if (item.getRemindAtDate() != null)
+        if (item.getRemindAtDate() != null) {
             date = dateFormat.format(item.getRemindAtDate().getTime());
-        else
+        } else {
             date = getString(R.string.now);
+        }
 
-        question_text.append(date);
-        question_text.append(getString(R.string.reminder_question_third));
-        question_text.append(getString(R.string.reminder_question_end));
+        String question = String.format(getString(R.string.reminder_question), item.getName(), date);
+        question_text.setText(question);
 
         period_numberPicker.setMinValue(1);
         period_numberPicker.setMaxValue(10);

@@ -48,27 +48,7 @@
     <string name="every">every</string>
     <string name="from_now_on">from now on</string>
     <string name="from_time_of_next_purchase_on">from time of next purchase on</string>
-    <string-array name="measures">//TODO importing units from a library of units
-        <item>millimeters</item>
-        <item>centimeters</item>
-        <item>decimeters</item>
-        <item>meters</item>
-        <item>dekameters</item>
-        <item>hectometers</item>
-        <item>milliliters</item>
-        <item>centiliters</item>
-        <item>deciliters</item>
-        <item>liters</item>
-        <item>dekaliters</item>
-        <item>hectoliters</item>
-        <item>milligrams</item>
-        <item>centigrams</item>
-        <item>decigrams</item>
-        <item>grams</item>
-        <item>dekagrams</item>
-        <item>hectograms</item>
-        <item>kilograms</item>
-    </string-array>
+
 
     <!-- Settings -->
     <string name="settings_option_1_name">Option 1</string>
@@ -229,10 +209,7 @@
 
     
     <!--Reminder-->
-    <string name="reminder_question_beginning">"A reminder for the item "</string>
-    <string name="reminder_question_second">" was set for "</string>
-    <string name="reminder_question_third">". "</string>
-    <string name="reminder_question_end">What would you like to do now?</string>
+    <string name="reminder_question">A reminder for the item '%s' was set for %s. What would you like to do now?</string>
     <string name="reminder_set_msg">Reminder set for</string>
     <string name="reminder_nextTimeBought_msg">Reminder will be started when the item is marked as bought.</string>
     <string name="reminder_deleted_msg">Reminder deleted.</string>
@@ -241,7 +218,7 @@
     <string name="reminder_addItemToShoppingList">Add this Item to a shopping list</string>
     <string name="reminder_remindLater">Remind me again</string>
     <string name="reminder_in">in</string>
-    <string name="reminder_itemAdded">"Item added to specified shopping list. "</string>
+    <string name="reminder_itemAdded">Item added to specified shopping list. </string>
 
     <!-- Login -->
     <string name="login_server_client_id">974373376910-mg6fm7feie2rn0v9qj2nmi1jpeftr47u.apps.googleusercontent.com</string>

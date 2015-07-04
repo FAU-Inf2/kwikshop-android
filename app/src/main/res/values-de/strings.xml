@@ -51,7 +51,7 @@
     <string name="settings_option_1_name">Option1</string>
     <string name="shoppinglist_divider_textview">Einkaufswagen</string>
     <string name="sort_by">Sortieren nach</string>
-    <string name="taptoundo">ZURÜCK<!--rückgängig machen--></string>
+    <string name="taptoundo">ZURÜCK</string>
     <string name="title_activity_about">Über</string>
     <string name="title_activity_list_of_shopping_list">Einkaufslisten</string>
     <string name="title_activity_reminder">Erinnerung</string>
@@ -187,10 +187,6 @@
     <string name="place_status_closed">geschlossen</string>
 
     <!--Reminder-->
-    <string name="reminder_question_beginning">"Eine Erinnerung für den Gegenstand "</string>
-    <string name="reminder_question_second">" wurde für "</string>
-    <string name="reminder_question_third">" gesetzt. "</string>
-    <string name="reminder_question_end">Was möchten Sie nun machen?</string>
     <string name="reminder_set_msg">Erinnerung gesetzt für</string>
     <string name="reminder_nextTimeBought_msg">Die Erinnerung wird gestartet, wenn der Gegenstand als gekauft markiert wird.</string>
     <string name="reminder_deleted_msg">Erinnerung gelöscht.</string>
@@ -199,7 +195,7 @@
     <string name="reminder_addItemToShoppingList">Einer Einkaufsliste hinzufügen</string>
     <string name="reminder_remindLater">Erneut erinnern</string>
     <string name="reminder_in">in</string>
-    <string name="reminder_itemAdded">"Gegenstand der angegebenen Einkaufsliste hinzugefügt. "</string>
+    <string name="reminder_itemAdded">Gegenstand der angegebenen Einkaufsliste hinzugefügt. </string>
 
     <!-- Login -->
     <string name="login_skip">Jetzt nicht einloggen</string>
@@ -212,5 +208,9 @@
     <string name="disconnect">Disconnect</string>
     <string name="retry">Login erneut versuchen</string>
     <string name="login_skip_message">Login wirklich überspringen? Du kannst dich jederzeit im Menü einloggen.</string>
+    <string name="reminder_question">Eine Erinnerung für das Element '%s' wurde für %s gesetzt. Was möchten Sie nun machen?</string>
+    <string name="title_activity_recipe">Rezept</string>
+    <string name="title_activity_recipe_detail">Rezept-Details</string>
+    <string name="title_activity_recipe_item_details">Rezept-Element-Details</string>
 
 </resources>

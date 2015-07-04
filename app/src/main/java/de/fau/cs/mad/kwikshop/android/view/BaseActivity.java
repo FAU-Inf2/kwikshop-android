@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -107,13 +108,15 @@ public class BaseActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, this)){
+
+        if (SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, this)) {
             SharedPreferencesHelper.saveBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getApplicationContext());
             Intent intent = getIntent();
             finish();
             startActivity(intent);
+            return;
         }
+        super.onBackPressed();
     }
 
 

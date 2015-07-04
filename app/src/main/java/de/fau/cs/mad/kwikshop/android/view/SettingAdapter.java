@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;

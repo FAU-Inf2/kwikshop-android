@@ -132,16 +132,17 @@ public class ShoppingListActivity extends BaseActivity {
         super.onConfigurationChanged(newConfig);
 
        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-           Log.i("Rotated: ", "Config changed");
            SharedPreferencesHelper.saveBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, true, getApplicationContext());
         }
     }
 
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SharedPreferencesHelper.saveBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getApplicationContext());
+    public void onBackPressed() {
+        super.onBackPressed();
     }
+
+
 
 
 }

@@ -1,0 +1,37 @@
+apply plugin: 'java'
+
+version = '1.0'
+def dropwizardVersion = '0.8.1'
+
+// jar name is required, because project name starts with ../ this causes the buildscript to fail
+archivesBaseName = 'kwikshop-common'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    // jackson is required for the generated POJOs
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.1.4'
+    compile 'commons-lang:commons-lang:2.6'
+    compile 'javax.ws.rs:javax.ws.rs-api:2.0'
+    compile 'org.eclipse.persistence:javax.persistence:2.1.0'
+    compile 'io.dropwizard:dropwizard-hibernate:' + dropwizardVersion
+    compile 'com.j256.ormlite:ormlite-core:4.48'
+    compile 'com.wordnik:swagger-jersey2-jaxrs:1.5.0-M2'
+}
+
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java-gen'
+        }
+    }
+}

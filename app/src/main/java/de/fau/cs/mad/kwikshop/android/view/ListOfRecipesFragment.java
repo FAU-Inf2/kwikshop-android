@@ -11,15 +11,13 @@ import butterknife.InjectView;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfRecipesViewModel;
-import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfShoppingListsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 
-public class ListOfRecipesFragment extends FragmentWithViewModel implements ListOfRecipesViewModel.Listener {
+public class ListOfRecipesFragment extends FragmentWithViewModel implements ListOfRecipesViewModel.Listener<Recipe> {
 
     @InjectView(android.R.id.list)
     ListView listView_Recipes;
@@ -56,7 +54,7 @@ public class ListOfRecipesFragment extends FragmentWithViewModel implements List
 
 
         // create adapter for list
-        listAdapter = new ListOfRecipesRowAdapter(getActivity(), viewModel.getRecipes());
+        listAdapter = new ListOfRecipesRowAdapter(getActivity(), viewModel.getLists());
         listView_Recipes.setAdapter(listAdapter);
 
         // bind view to view model
@@ -74,11 +72,11 @@ public class ListOfRecipesFragment extends FragmentWithViewModel implements List
 
 
     @Override
-    public void onRecipeChanged(final ObservableArrayList<Recipe, Integer> oldValue,
-                                       final ObservableArrayList<Recipe, Integer> newValue) {
+    public void onListsChanged(final ObservableArrayList<Recipe, Integer> oldValue,
+                               final ObservableArrayList<Recipe, Integer> newValue) {
 
         oldValue.removeListener(listAdapter);
-        listAdapter = new ListOfRecipesRowAdapter(getActivity(), viewModel.getRecipes());
+        listAdapter = new ListOfRecipesRowAdapter(getActivity(), viewModel.getLists());
         listView_Recipes.setAdapter(listAdapter);
     }
 

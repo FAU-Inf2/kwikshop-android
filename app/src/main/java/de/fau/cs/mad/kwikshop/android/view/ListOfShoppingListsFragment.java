@@ -20,7 +20,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 /**
  * Fragment for list of shopping lists
  */
-public class ListOfShoppingListsFragment extends FragmentWithViewModel implements ListOfShoppingListsViewModel.Listener {
+public class ListOfShoppingListsFragment extends FragmentWithViewModel implements ListOfShoppingListsViewModel.Listener<ShoppingList> {
 
 
     @InjectView(android.R.id.list)
@@ -62,7 +62,7 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
 
 
         // create adapter for list
-        listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists());
+        listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getLists());
         listView_ShoppingLists.setAdapter(listAdapter);
 
         // bind view to view model
@@ -80,11 +80,11 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
 
 
     @Override
-    public void onShoppingListsChanged(final ObservableArrayList<ShoppingList, Integer> oldValue,
-                                       final ObservableArrayList<ShoppingList, Integer> newValue) {
+    public void onListsChanged(final ObservableArrayList<ShoppingList, Integer> oldValue,
+                               final ObservableArrayList<ShoppingList, Integer> newValue) {
 
         oldValue.removeListener(listAdapter);
-        listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getShoppingLists());
+        listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getLists());
         listView_ShoppingLists.setAdapter(listAdapter);
     }
 

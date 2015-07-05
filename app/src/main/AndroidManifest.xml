@@ -144,7 +144,7 @@
         </activity>
         <activity
             android:name=".view.LocationActivity"
-            android:label="@string/find_nearby_supermarket"
+            android:label="@string/supermarket_finder"
             android:parentActivityName=".view.ListOfShoppingListsActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->

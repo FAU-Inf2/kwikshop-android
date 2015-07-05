@@ -77,7 +77,9 @@ dependencies {
     // you also need to add it to the string array acknowledgements_Items in values/strings.xml
 
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile fileTree(dir: '../../kwikshop-common/build/classes', include: '*.class')
+    //compile fileTree(dir: '../../kwikshop-common/build/classes', include: '*.class')
+    //compile project(':kwikshop-common')
+    compile files('../../kwikshop-common/build/libs/kwikshop-common-1.0.jar')
 
     //Google support libaries for older android version
     compile 'com.android.support:appcompat-v7:21.0.+'

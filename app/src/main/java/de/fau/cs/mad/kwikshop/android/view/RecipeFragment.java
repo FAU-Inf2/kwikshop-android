@@ -280,6 +280,11 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
     }
 
     @Override
+    public void onItemSortTypeChanged() {
+        //Nothing to do
+    }
+
+    @Override
     public void onNameChanged(String value) {
         // set title for actionbar
         getActivity().setTitle(viewModel.getName());

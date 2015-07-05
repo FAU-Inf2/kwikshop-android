@@ -14,4 +14,16 @@ public class StringHelper {
             return value.trim().length() == 0;
         }
     }
+
+
+    public static String removeSpacesAtEndOfWord(String word) {
+        if (null == word || word.isEmpty())
+            return word;
+
+        while (word.charAt(word.length() - 1) == ' ') {
+            word = word.substring(0,word.length() - 1);
+        }
+
+        return word;
+    }
 }

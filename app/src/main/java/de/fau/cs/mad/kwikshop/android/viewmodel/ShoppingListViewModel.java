@@ -22,9 +22,9 @@ import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.greenrobot.event.EventBus;
 
-public class ShoppingListViewModel extends ShoppingListViewModelBase {
+public class ShoppingListViewModel extends ListViewModelBase {
 
-    public interface Listener extends ShoppingListViewModelBase.Listener {
+    public interface Listener extends ListViewModelBase.Listener {
 
         void onQuickAddTextChanged();
 

@@ -18,7 +18,6 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.RecipeLoadedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
@@ -28,9 +27,9 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
-public class RecipeViewModel extends ShoppingListViewModelBase {
+public class RecipeViewModel extends ListViewModelBase {
 
-    public interface Listener extends ShoppingListViewModelBase.Listener {
+    public interface Listener extends ListViewModelBase.Listener {
 
         void onQuickAddTextChanged();
     }

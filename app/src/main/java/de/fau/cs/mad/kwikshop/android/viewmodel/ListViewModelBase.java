@@ -1,12 +1,13 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
+import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewModelBase;
 
 /**
  * Base class for all view models used to display a shopping list.
  * Offers to get the name of the shopping list
  */
-public abstract class ShoppingListViewModelBase extends ViewModelBase {
+public abstract class ListViewModelBase extends ViewModelBase {
 
     private String name;
 

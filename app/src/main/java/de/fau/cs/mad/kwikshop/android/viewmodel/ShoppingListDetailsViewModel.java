@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 
 import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
@@ -19,62 +17,26 @@ import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
-import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
+import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
-public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
-
-    //listener interface
-    public interface Listener extends ShoppingListViewModelBase.Listener {
-
-    }
-
-    private class CompositeListener implements Listener {
-
-        @Override
-        public void onNameChanged(String value) {
-            for (Listener l : listeners) {
-                l.onNameChanged(value);
-            }
-        }
-
-        @Override
-        public void onFinish() {
-            for (Listener l : listeners) {
-                l.onFinish();
-            }
-        }
-    }
-
+public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingList> {
 
     //other fields
-    private List<Listener> listeners = new LinkedList<>();
-    private Listener compositeListener = new CompositeListener();
-
     private final Context context;
-    private final ListManager<ShoppingList> shoppingListManager;
     private final SimpleStorage<CalendarEventDate> calendarEventStorage;
-    private final ViewLauncher viewLauncher;
-    private final ResourceProvider resourceProvider;
 
-    private int shoppingListId;
-    private boolean isNewShoppingList;
     private ShoppingList shoppingList;
 
     // backing fields for properties
-    private Command saveCommand;
-    private Command cancelCommand;
-    private Command deleteCommand;
     private Command editCalendarEventCommand;
     private Command createCalendarEventCommand;
     private Command deleteCalendarEventCommand;
     private CalendarEventDate calendarEventDate;
-
 
 
     /**
@@ -82,24 +44,16 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
      * (will modify the shopping list on save)
      */
     @Inject
-    public ShoppingListDetailsViewModel(final Context context, final ViewLauncher viewLauncher,
+    public ShoppingListDetailsViewModel(final Context context,
+                                        final ViewLauncher viewLauncher,
                                         final ResourceProvider resourceProvider,
-                                        final ListManager<ShoppingList> shoppingListManager, final SimpleStorage<CalendarEventDate> calendarEventStorage) {
+                                        final ListManager<ShoppingList> listManager,
+                                        final SimpleStorage<CalendarEventDate> calendarEventStorage) {
+
+        super(viewLauncher, resourceProvider, listManager);
 
         if (context == null) {
             throw new IllegalArgumentException("'context' must not be null");
-        }
-
-        if (viewLauncher == null) {
-            throw new IllegalArgumentException("'viewLauncher' must not be null");
-        }
-
-        if (resourceProvider == null) {
-            throw new IllegalArgumentException("'resourceProvider' must not be null");
-        }
-
-        if (shoppingListManager == null) {
-            throw new IllegalArgumentException("'shoppingListManager' must not be null");
         }
 
         if(calendarEventStorage == null) {
@@ -107,39 +61,57 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         }
 
         this.context = context;
-        this.viewLauncher = viewLauncher;
-        this.resourceProvider = resourceProvider;
-        this.shoppingListManager = shoppingListManager;
         this.calendarEventStorage = calendarEventStorage;
 
     }
 
-    public void initialize() {
-        initialize(-1);
+
+    // Getters / Setters
+
+    public Command getEditCalendarEventCommand() {
+        return this.editCalendarEventCommand;
     }
 
-    public void initialize(int shoppingListId) {
-        this.shoppingListId = shoppingListId;
-        this.isNewShoppingList = shoppingListId == -1;
+    public Command getCreateCalendarEventCommand() {
+        return this.createCalendarEventCommand;
+    }
 
-        this.saveCommand = new Command() {
-            @Override
-            public void execute(Object parameter) {
-                saveCommandExecute();
-            }
-        };
-        this.cancelCommand = new Command() {
-            @Override
-            public void execute(Object parameter) {
-                cancelCommandExecute();
-            }
-        };
-        this.deleteCommand = new Command() {
-            @Override
-            public void execute(Object parameter) {
-                deleteCommandExecute();
-            }
-        };
+    public Command getDeleteCalendarEventCommand() {
+        return deleteCalendarEventCommand;
+    }
+
+
+    private CalendarEventDate getCalendarEventDate() {
+        return this.calendarEventDate;
+    }
+
+    private void setCalendarEventDate(CalendarEventDate value) {
+        this.calendarEventDate = value;
+    }
+
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(CalendarEventDate eventDate) {
+
+        if(getCalendarEventDate() != null) {
+            eventDate.setAndroidCalendarId(getCalendarEventDate().getAndroidCalendarId());
+            calendarEventStorage.deleteSingleItem(getCalendarEventDate());
+        }
+        setCalendarEventDate(eventDate);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
+
+    @Override
+    protected void initializeCommands() {
+
+        super.initializeCommands();
+
         this.editCalendarEventCommand = new Command() {
             @Override
             public void execute(Object parameter) {
@@ -158,99 +130,14 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
                 deleteCalendarEventCommandExecute();
             }
         };
-
-
-        setUp();
-    }
-
-    public void addListener(Listener value) {
-        this.listeners.add(value);
-    }
-
-    public void removeListener(Listener listener) {
-        this.listeners.remove(listener);
-    }
-
-
-    // Getters / Setters
-
-    public Command getSaveCommand() {
-        return saveCommand;
-    }
-
-    public Command getCancelCommand() {
-        return cancelCommand;
-    }
-
-    public Command getDeleteCommand() {
-        return this.deleteCommand;
-    }
-
-    public Command getEditCalendarEventCommand() {
-        return this.editCalendarEventCommand;
-    }
-
-    public Command getCreateCalendarEventCommand() {
-        return this.createCalendarEventCommand;
-    }
-
-    public Command getDeleteCalendarEventCommand() {
-        return deleteCalendarEventCommand;
-    }
-
-    private CalendarEventDate getCalendarEventDate() {
-        return this.calendarEventDate;
-    }
-
-    private void setCalendarEventDate(CalendarEventDate value) {
-        this.calendarEventDate = value;
     }
 
     @Override
-    public void setName(String value) {
-        super.setName(value);
-        getSaveCommand().setCanExecute(getName() != null && getName().trim().length() > 0);
-    }
+    protected void setUp() {
 
-    public boolean getIsNewList() {
-        return isNewShoppingList;
-    }
+        super.setUp();
 
-
-    @Override
-    public void finish() {
-        EventBus.getDefault().unregister(this);
-        super.finish();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(CalendarEventDate eventDate) {
-
-        if(getCalendarEventDate() != null) {
-            eventDate.setAndroidCalendarId(getCalendarEventDate().getAndroidCalendarId());
-            calendarEventStorage.deleteSingleItem(getCalendarEventDate());
-        }
-        setCalendarEventDate(eventDate);
-    }
-
-    @Override
-    protected ShoppingListViewModelBase.Listener getListener() {
-        return compositeListener;
-    }
-
-
-    private void setUp() {
-
-        this.saveCommand.setIsAvailable(true);
-        this.cancelCommand.setIsAvailable(true);
-
-        if (isNewShoppingList) {
+        if (isNewList) {
 
             this.deleteCommand.setIsAvailable(false);
             this.editCalendarEventCommand.setIsAvailable(false);
@@ -264,7 +151,7 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
             this.deleteCommand.setIsAvailable(true);
 
             //TODO: handle exception when list is not found
-            this.shoppingList = shoppingListManager.getList(shoppingListId);
+            this.shoppingList = listManager.getList(listId);
             setName(shoppingList.getName());
             setCalendarEventDate(shoppingList.getCalendarEventDate());
 
@@ -278,10 +165,12 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         EventBus.getDefault().register(this);
     }
 
-    private void saveCommandExecute() {
-        if (isNewShoppingList) {
-            shoppingListId = shoppingListManager.createList();
-            shoppingList = shoppingListManager.getList(shoppingListId);
+
+    @Override
+    protected void saveCommandExecute() {
+        if (isNewList) {
+            listId = listManager.createList();
+            shoppingList = listManager.getList(listId);
         }
 
         shoppingList.setName(this.getName());
@@ -295,27 +184,22 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
 
         shoppingList.setCalendarEventDate(getCalendarEventDate());
 
-        shoppingListManager.saveList(shoppingListId);
-
-
+        listManager.saveList(listId);
 
         // if we just created a shopping list, open it right away,
         // when a existing shopping list was edited, just close the current view and go back to
         // whatever the previous screen was
-        if (isNewShoppingList) {
-            viewLauncher.showShoppingList(shoppingListId);
+        if (isNewList) {
+            viewLauncher.showShoppingList(listId);
         }
 
         finish();
     }
 
-    private void cancelCommandExecute() {
-        finish();
-    }
+    @Override
+    protected void deleteCommandExecute() {
 
-    private void deleteCommandExecute() {
-
-        if (isNewShoppingList) {
+        if (isNewList) {
             throw new UnsupportedOperationException();
         }
 
@@ -330,12 +214,13 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
                             deleteCalendarEventCommandExecute();
                         }
 
-                        shoppingListManager.deleteList(shoppingListId);
+                        listManager.deleteList(listId);
                         finish();
                     }
                 },
                 NullCommand.Instance);
     }
+
 
     private void editCalendarEventCommandExecute() {
         createCalendarEventCommandExecute();
@@ -448,4 +333,5 @@ public class ShoppingListDetailsViewModel extends ShoppingListViewModelBase {
         }
 
     }
+
 }

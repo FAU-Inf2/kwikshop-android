@@ -53,6 +53,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
     double lastLat;
     double lastLng;
     String address;
+    ProgressDialog progress;
 
     @InjectView(R.id.map_infobox)
     RelativeLayout mapInfoBox;
@@ -104,13 +105,31 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
         AsyncTask<Void, Void, Void> aTask = new AsyncTask<Void, Void, Void>(){
             List<Place> places;
             private final String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
-            ProgressDialog progress;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progress = ProgressDialog.show(getActivity(), "Locating",
-                        "Find nearby Supermarket. Pleas wait", true);
+
+                progress = new ProgressDialog(getActivity());
+                progress.setMessage(getString(R.string.supermarket_finder_progress_dialog_message));
+                progress.setCancelable(true);
+                progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        Intent intent = new Intent(getActivity(), ListOfShoppingListsActivity.class);
+                        getActivity().finish();
+                        startActivity(intent);
+                    }
+                });
+                progress.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getActivity(), ListOfShoppingListsActivity.class);
+                        getActivity().finish();
+                        startActivity(intent);
+                    }
+                });
+                progress.show();
             }
 
             @Override
@@ -134,6 +153,8 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
                 progress.dismiss();
             }
 
+
+
         };
 
         // retrieve last location from gps or mobile internet
@@ -151,6 +172,14 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (progress != null) {
+            progress.dismiss();
+            progress = null;
+        }
+    }
 
     private void initiateMap(final List<Place> places){
 

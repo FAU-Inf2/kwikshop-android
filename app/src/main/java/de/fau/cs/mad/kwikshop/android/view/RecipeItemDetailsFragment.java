@@ -47,6 +47,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
+import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 import de.greenrobot.event.EventBus;
@@ -494,7 +495,7 @@ public class RecipeItemDetailsFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String name = AutoCompletionHelper.removeSpacesAtEndOfWord(s.toString());
+                String name = StringHelper.removeSpacesAtEndOfWord(s.toString());
                 Group group = autoCompletion.getGroup(name);
 
                 if (group != null) {

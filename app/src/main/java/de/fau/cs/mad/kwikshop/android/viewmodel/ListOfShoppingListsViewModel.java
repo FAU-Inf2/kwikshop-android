@@ -1,39 +1,22 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
+
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ListIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewModelBase;
 import de.greenrobot.event.EventBus;
 
-public class ListOfShoppingListsViewModel extends ViewModelBase {
+public class ListOfShoppingListsViewModel extends ListOfListsViewModel<ShoppingList> {
 
-    // listener interface
-    public interface Listener extends ViewModelBase.Listener {
-
-        void onShoppingListsChanged(final ObservableArrayList<ShoppingList, Integer> oldValue,
-                                    final ObservableArrayList<ShoppingList, Integer> newValue);
-    }
-
-    // infrastructure references
-    private final ViewLauncher viewLauncher;
-    private final ListManager<ShoppingList> shoppingListManager;
-    private final EventBus privateBus = EventBus.builder().build();
-
-
-    private Listener listener;
 
     // backing fields for properties
-    private ObservableArrayList<ShoppingList, Integer> shoppingLists;
+
     private final Command addShoppingListCommand = new Command<Object>() {
         @Override
         public void execute(Object parameter) {
@@ -46,7 +29,7 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
             viewLauncher.showShoppingList(shoppingListId);
         }
     };
-    private final Command selectShoppingListDetailsCommand = new Command<Integer>() {
+    private final Command<Integer> selectShoppingListDetailsCommand = new Command<Integer>() {
         @Override
         public void execute(Integer shoppingListId) {
             viewLauncher.showShoppingListDetailsView(shoppingListId);
@@ -55,51 +38,13 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
 
 
     @Inject
-    public ListOfShoppingListsViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> shoppingListManager) {
+    public ListOfShoppingListsViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> listManager) {
 
-        if (viewLauncher == null) {
-            throw new IllegalArgumentException("'viewLauncher' must not be null");
-        }
-
-        if (shoppingListManager == null) {
-            throw new IllegalArgumentException("'shoppingListManager' must not be null");
-        }
-
-        this.viewLauncher = viewLauncher;
-        this.shoppingListManager = shoppingListManager;
-
-        setShoppingLists(new ObservableArrayList<>(new ObservableArrayList.IdExtractor<ShoppingList, Integer>() {
-            @Override
-            public Integer getId(ShoppingList object) {
-                return object.getId();
-            }
-        }));
-
-        EventBus.getDefault().register(this);
-        this.shoppingLists = new ObservableArrayList<>(new ListIdExtractor(), shoppingListManager.getLists());
-    }
-
-
-    public void setListener(final Listener listener) {
-        this.listener = listener;
+        super(viewLauncher, listManager);
     }
 
 
     // Getters / Setters
-
-    public ObservableArrayList<ShoppingList, Integer> getShoppingLists() {
-        return this.shoppingLists;
-    }
-
-    private void setShoppingLists(final ObservableArrayList<ShoppingList, Integer> value) {
-        if (value != shoppingLists) {
-            ObservableArrayList<ShoppingList, Integer> oldValue = this.shoppingLists;
-            this.shoppingLists = value;
-            if (listener != null) {
-                listener.onShoppingListsChanged(oldValue, value);
-            }
-        }
-    }
 
     public Command getAddShoppingListCommand() {
         return this.addShoppingListCommand;
@@ -113,10 +58,6 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         return this.selectShoppingListDetailsCommand;
     }
 
-    @Override
-    protected Listener getListener() {
-        return listener;
-    }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(ShoppingListChangedEvent ev) {
@@ -124,7 +65,7 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         switch (ev.getChangeType()) {
 
             case Deleted:
-                shoppingLists.removeById(ev.getListId());
+                getLists().removeById(ev.getListId());
                 break;
 
             case PropertiesModified:
@@ -138,42 +79,6 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(ItemChangedEvent ev) {
-
-        if (ev.getListType() == ListType.ShoppingList) {
-            switch (ev.getChangeType()) {
-
-                case Deleted:
-                case Added:
-                    reloadList(ev.getListId());
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        EventBus.getDefault().unregister(this);
-    }
-
-
-    private void reloadList(int listId) {
-        ShoppingList list = shoppingListManager.getList(listId);
-        synchronized (this) {
-
-            int index = shoppingLists.indexOfById(list.getId());
-            if (index >= 0) {
-                shoppingLists.set(index, list);
-            } else {
-                shoppingLists.add(list);
-            }
-        }
-    }
-
-    @SuppressWarnings("unused")
     public void onEvent(ReminderTimeIsOverEvent e) {
 
         EventBus.getDefault().cancelEventDelivery(e);
@@ -181,6 +86,12 @@ public class ListOfShoppingListsViewModel extends ViewModelBase {
         int itemId = e.getItemId();
         int listId = e.getListId();
         viewLauncher.showReminderView(listId, itemId);
+    }
+
+
+    @Override
+    protected ListType getListType() {
+        return ListType.ShoppingList;
     }
 
 }

@@ -18,8 +18,6 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.InjectViews;
-import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
@@ -144,7 +142,7 @@ public class RecipeDetailFragment extends FragmentWithViewModel implements Recip
 
         Window window = getActivity().getWindow();
 
-        if (viewModel.getIsNewRecipe()) {
+        if (viewModel.getIsNewList()) {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             textView_RecipeName.requestFocus();
         } else {

@@ -12,26 +12,33 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.common.Setting;
 
 
-public class SettingAdapter extends ArrayAdapter<String>  {
+public class SettingAdapter extends ArrayAdapter<Setting> {
 
-    private ArrayList<String> setList;
+    private ArrayList<Setting> settingsList;
     private int row;
     private Activity activity;
 
+    @InjectView(R.id.tvsetname)
+    TextView tvSetname;
 
-    private TextView tvSetname;
-    private TextView tvSetdesc;
-    private CheckBox checkbox;
+    @InjectView(R.id.tvsetdesc)
+    TextView tvSetdesc;
 
-    public SettingAdapter(Activity act, int resource,
-                          ArrayList<String> setList) {
-        super(act, resource, setList);
+    @InjectView(R.id.setcheckbox)
+    CheckBox checkbox;
+
+    public SettingAdapter(Activity act, int resource, ArrayList<Setting> settingsList) {
+        super(act, resource, settingsList);
         this.activity = act;
         this.row = resource;
-        this.setList = setList;
+        this.settingsList = settingsList;
 
     }
 
@@ -44,41 +51,13 @@ public class SettingAdapter extends ArrayAdapter<String>  {
             LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(row, null);
         }
+        ButterKnife.inject(this, view);
 
-        tvSetname = (TextView) view.findViewById(R.id.tvsetname);
-        tvSetdesc = (TextView) view.findViewById(R.id.tvsetdesc);
-        checkbox = (CheckBox) view.findViewById(R.id.setcheckbox);
+        tvSetname.setText(settingsList.get(position).getName());
+        tvSetdesc.setText(settingsList.get(position).getCaption());
+        checkbox.setVisibility(View.INVISIBLE);
 
-
-        if (setList.get(position).equals(SettingFragment.OPTION_1)) {
-
-            tvSetname.setText(R.string.settings_option_2_setlocale);
-            tvSetdesc.setText(R.string.settings_option_2_desc);
-            checkbox.setVisibility(View.INVISIBLE);
-        }
-
-        if (setList.get(position).equals(SettingFragment.OPTION_2)) {
-            tvSetname.setText(R.string.settings_option_3_deleteHistory);
-            tvSetdesc.setText(R.string.settings_option_3_desc);
-            checkbox.setVisibility(View.INVISIBLE);
-        }
-        if (setList.get(position).equals(SettingFragment.OPTION_3)){
-            tvSetname.setText(R.string.settings_option_3_createUnits);
-            tvSetdesc.setText(R.string.settings_option_3_desc2);
-            checkbox.setVisibility(View.INVISIBLE);
-        }
-        if (setList.get(position).equals(SettingFragment.OPTION_4)){
-            tvSetname.setText(R.string.settings_option_4_createGroups);
-            tvSetdesc.setText(R.string.settings_option_4_desc);
-            checkbox.setVisibility(View.INVISIBLE);
-        }
         return view;
     }
-
-
-
-
-
-
 
 }

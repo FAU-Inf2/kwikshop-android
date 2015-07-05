@@ -116,14 +116,14 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
             @Override
             protected Void doInBackground(Void... params) {
                 // check connection to internet
-                if (InternetHelper.checkInternetConnection(getActivity())) {
-                    GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-                    try {
-                        places = client.getNearbyPlaces(lastLat, lastLng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
-                    } catch (Exception e) {
-                        Log.e(LOG_TAG, "Exception: " + e.getMessage());
-                    }
+
+                GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
+                try {
+                    places = client.getNearbyPlaces(lastLat, lastLng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "Exception: " + e.getMessage());
                 }
+
                 return null;
             }
 

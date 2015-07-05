@@ -1,6 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
-import android.os.AsyncTask;
+
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -16,91 +16,19 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
-import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
-import de.greenrobot.event.EventBus;
 
-public class ShoppingListViewModel extends ShoppingListViewModelBase {
+public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
-    public interface Listener extends ShoppingListViewModelBase.Listener {
-
-        void onQuickAddTextChanged();
-
-        void onItemSortTypeChanged();
-    }
-
-    private class CompositeListener implements Listener {
-
-        @Override
-        public void onQuickAddTextChanged() {
-            for(Listener listener : listeners) {
-                listener.onQuickAddTextChanged();
-            }
-        }
-
-        @Override
-        public void onItemSortTypeChanged() {
-            for(Listener listener : listeners) {
-                listener.onItemSortTypeChanged();
-            }
-        }
-
-        @Override
-        public void onNameChanged(String value) {
-            for(Listener listener : listeners) {
-                listener.onNameChanged(value);
-            }
-        }
-
-        @Override
-        public void onFinish() {
-            for(Listener listener : listeners) {
-                listener.onFinish();
-            }
-        }
-    }
-
-
-    private boolean initialized = false;
-
-    private final ViewLauncher viewLauncher;
-    private final ListManager<ShoppingList> shoppingListManager;
-    private final SimpleStorage<Unit> unitStorage;
-    private final SimpleStorage<Group> groupStorage;
-    private final ItemParser itemParser;
-    protected final DisplayHelper displayHelper;
-    private final AutoCompletionHelper autoCompletionHelper;
     private final LocationFinderHelper locationFinderHelper;
-    private EventBus privateBus = EventBus.builder().build();
     private final ResourceProvider resourceProvider;
 
-    private int shoppingListId;
-
-    private final List<Listener> listeners = new ArrayList<>();
-    private final Listener listener = new CompositeListener();
-
-    private final ObservableArrayList<Item, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
     private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
-    private String quickAddText = "";
     private ItemSortType itemSortType = ItemSortType.MANUAL;
 
-    private final Command<Void> addItemCommand = new Command<Void>() {
-        @Override
-        public void execute(Void parameter) {
-            addItemCommandExecute();
-        }
-    };
-    private final Command<Void> quickAddCommand = new Command<Void>() {
-        @Override
-        public void execute(Void parameter) {quickAddCommandExecute();
-        }
-    };
-    private final Command<Integer> selectItemCommand = new Command<Integer>() {
-        @Override
-        public void execute(Integer parameter) { selectItemCommandExecute(parameter); }
-    };
+
     private final Command<Integer> toggleIsBoughtCommand = new Command<Integer>() {
         @Override
         public void execute(Integer parameter) { toggleIsBoughtCommandExecute(parameter); }
@@ -112,116 +40,38 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
 
     @Inject
-    public ShoppingListViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> shoppingListManager,
-                                 SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
-                                 ItemParser itemParser, DisplayHelper displayHelper,
-                                 AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper,
-                                 final ResourceProvider resourceProvider) {
+    public ShoppingListViewModel(ViewLauncher viewLauncher,
+                                 ListManager<ShoppingList> shoppingListManager,
+                                 SimpleStorage<Unit> unitStorage,
+                                 SimpleStorage<Group> groupStorage,
+                                 ItemParser itemParser,
+                                 DisplayHelper displayHelper,
+                                 AutoCompletionHelper autoCompletionHelper,
+                                 LocationFinderHelper locationFinderHelper,
+                                 ResourceProvider resourceProvider) {
 
 
-        if(viewLauncher == null) {
-            throw new IllegalArgumentException("'viewLauncher' must not be null");
-        }
-        if(shoppingListManager == null) {
-            throw new IllegalArgumentException("'shoppingListManager' must not be null");
-        }
-        if(unitStorage == null) {
-            throw new IllegalArgumentException("'unitStorage' must not be null");
-        }
-        if(groupStorage == null) {
-            throw new IllegalArgumentException("'groupStorage' must not be null");
-        }
-        if(itemParser == null) {
-            throw new IllegalArgumentException("'itemParser' must not be null");
-        }
-        if(displayHelper == null) {
-            throw new IllegalArgumentException("'displayHelper' must not be null");
-        }
-        if(autoCompletionHelper == null) {
-            throw new IllegalArgumentException("'autoCompletionHelper' must not be null");
-        }
-        if(autoCompletionHelper == null) {
+        super(viewLauncher, shoppingListManager, unitStorage, groupStorage, itemParser, displayHelper,
+                autoCompletionHelper);
+
+        if(locationFinderHelper == null) {
             throw new IllegalArgumentException("'locationFinderHelper' must not be null");
         }
-
 
         if (resourceProvider == null) {
             throw new IllegalArgumentException("'resourceProvider' must not be null");
         }
 
-
-        this.viewLauncher = viewLauncher;
-        this.shoppingListManager = shoppingListManager;
-        this.unitStorage = unitStorage;
-        this.groupStorage = groupStorage;
-        this.itemParser = itemParser;
-        this.displayHelper = displayHelper;
-        this.autoCompletionHelper = autoCompletionHelper;
         this.locationFinderHelper = locationFinderHelper;
         this.resourceProvider = resourceProvider;
     }
 
 
     /**
-     * Initializes the view model. You need to call this before an instance can be used
-     * @param shoppingListId The id of the shopping list to be displayed by the view model
-     */
-    public void initialize(int shoppingListId) {
-
-        if(!initialized) {
-            this.shoppingListId = shoppingListId;
-            privateBus.register(this);
-            EventBus.getDefault().register(this);
-
-            loadShoppingList();
-            initialized = true;
-        }
-    }
-
-
-    /**
-     * Adds a listener to be notified when changes in the view model occcur
-     */
-    public void addListener(Listener listener) {
-        this.listeners.add(listener);
-    }
-
-    /**
-     * Gets the shopping list items that have not yet been bought
-     */
-    public ObservableArrayList<Item, Integer> getItems() {
-        return items;
-    }
-
-    /**
      * Gets the shopping list items that have already been bought
      */
     public ObservableArrayList<Item, Integer> getBoughtItems() {
         return boughtItems;
-    }
-
-    /**
-     * Gets the current value for the quick-add text field
-     */
-    public String getQuickAddText() {
-        return quickAddText;
-    }
-
-    /**
-     * Sets the value of the quick-add text field
-     */
-    public void setQuickAddText(String value) {
-
-        if(value == null) {
-            value = "";
-        }
-
-        if(!value.equals(quickAddText)) {
-            quickAddText = value;
-            quickAddCommand.setCanExecute(!StringHelper.isNullOrWhiteSpace(quickAddText));
-
-            listener.onQuickAddTextChanged();
-        }
     }
 
     /**
@@ -243,27 +93,6 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     }
 
     /**
-     * Gets the command to be executed when the view's add button is pressed
-     */
-    public Command<Void> getAddItemCommand() {
-        return addItemCommand;
-    }
-
-    /**
-     * Gets the command to be executed when the view's quick-add button is pressed
-     */
-    public Command<Void> getQuickAddCommand() {
-        return quickAddCommand;
-    }
-
-    /**
-     * Gets the command to be executed when a shopping list item in the view is selected
-     */
-    public Command<Integer> getSelectItemCommand() {
-        return selectItemCommand;
-    }
-
-    /**
      * Gets the command to be executed when a item in the view is swiped
      */
     public Command<Integer> getToggleIsBoughtCommand() {
@@ -278,33 +107,17 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
     }
 
 
-    /**
-     * To be called by the view after two items have been swapped
-     */
-    public void itemsSwapped(int position1, int position2) {
-
-        Item item1 = items.get(position1);
-        Item item2 = items.get(position2);
-
-        item1.setOrder(position2);
-        item2.setOrder(position1);
-
-        shoppingListManager.saveListItem(shoppingListId, item1);
-        shoppingListManager.saveListItem(shoppingListId, item2);
-    }
-
     public void setLocationOnStartingShopping(){
 
-        ShoppingList shoppingList = shoppingListManager.getList(this.shoppingListId);
+        ShoppingList shoppingList = listManager.getList(this.listId);
 
         if(shoppingList.getLocation() != null) {
             if (!shoppingList.getLocation().isVisited()) {
                 shoppingList.setLocation(locationFinderHelper.setLocation());
-                shoppingListManager.saveList(shoppingListId);
+            listManager.saveList(listId);
             }
         }
     }
-
 
     public void boughtItemsSwapped(int position1, int position2) {
 
@@ -314,14 +127,90 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         item1.setOrder(position2);
         item2.setOrder(position1);
 
-        shoppingListManager.saveListItem(shoppingListId, item1);
-        shoppingListManager.saveListItem(shoppingListId, item2);
+        listManager.saveListItem(listId, item1);
+        listManager.saveListItem(listId, item2);
     }
 
 
-    private void loadShoppingList() {
+    @SuppressWarnings("unused")
+    public void onEventMainThread(ShoppingListChangedEvent event) {
 
-        ShoppingList shoppingList = shoppingListManager.getList(this.shoppingListId);
+        if(event.getListId() == this.listId) {
+
+            if(event.getChangeType() == ListChangeType.Deleted) {
+                finish();
+            } else if(event.getChangeType() == ListChangeType.PropertiesModified) {
+                loadList();
+            }
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(ItemChangedEvent event) {
+
+        if(event.getListId() == this.listId) {
+
+            switch (event.getChangeType()) {
+
+                case Added:
+                case PropertiesModified:
+                    Item item = listManager.getListItem(listId, event.getItemId());
+                    updateItem(item);
+
+                    break;
+                case Deleted:
+                    items.removeById(event.getItemId());
+                    //boughtItems.removeById(event.getItemId());
+                    break;
+
+            }
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventBackgroundThread(MoveAllItemsEvent event) {
+
+        boolean isBoughtNew = event.isMoveAllToBought();
+        ShoppingList list = listManager.getList(listId);
+
+        List<Item> changedItems = new LinkedList<>();
+
+        for(Item item : list.getItems()) {
+            if(item.isBought() != isBoughtNew) {
+                item.setBought(isBoughtNew);
+                changedItems.add(item);
+            }
+        }
+
+        for(Item item : changedItems) {
+            listManager.saveListItem(listId, item);
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(ItemSortType sortType) {
+        setItemSortType(sortType);
+    }
+
+
+    @Override
+    protected void addItemCommandExecute() {
+        ensureIsInitialized();
+        getItems().enableEvents();
+        viewLauncher.showItemDetailsView(this.listId);
+    }
+
+    @Override
+    protected void selectItemCommandExecute(int itemId) {
+        ensureIsInitialized();
+        viewLauncher.showItemDetailsView(this.listId, itemId);
+    }
+
+    @Override
+    protected void loadList() {
+
+        ShoppingList shoppingList = listManager.getList(this.listId);
 
         int  sortTypeInt = shoppingList.getSortTypeInt();
         switch (sortTypeInt){
@@ -342,87 +231,6 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
         for(Item item : shoppingList.getItems()) {
             updateItem(item);
         }
-    }
-
-
-
-
-
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(ShoppingListChangedEvent event) {
-
-        if(event.getListId() == this.shoppingListId) {
-
-            if(event.getChangeType() == ListChangeType.Deleted) {
-                finish();
-            } else if(event.getChangeType() == ListChangeType.PropertiesModified) {
-                loadShoppingList();
-            }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(ItemChangedEvent event) {
-
-        if(event.getListId() == this.shoppingListId) {
-
-            switch (event.getChangeType()) {
-
-                case Added:
-                case PropertiesModified:
-                    Item item = shoppingListManager.getListItem(shoppingListId, event.getItemId());
-                    updateItem(item);
-
-                    break;
-                case Deleted:
-                    items.removeById(event.getItemId());
-                    //boughtItems.removeById(event.getItemId());
-                    break;
-
-            }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventBackgroundThread(MoveAllItemsEvent event) {
-
-        boolean isBoughtNew = event.isMoveAllToBought();
-        ShoppingList list = shoppingListManager.getList(shoppingListId);
-
-        List<Item> changedItems = new LinkedList<>();
-
-        for(Item item : list.getItems()) {
-            if(item.isBought() != isBoughtNew) {
-                item.setBought(isBoughtNew);
-                changedItems.add(item);
-            }
-        }
-
-        for(Item item : changedItems) {
-            shoppingListManager.saveListItem(shoppingListId, item);
-        }
-
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(ItemSortType sortType) {
-        setItemSortType(sortType);
-    }
-
-
-
-
-
-    @Override
-    protected Listener getListener() {
-        return this.listener;
-    }
-
-    @Override
-    public void onDestroyView() {
-        privateBus.unregister(this);
-        EventBus.getDefault().unregister(this);
     }
 
 
@@ -462,72 +270,13 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
                 }
             }
 
-            shoppingListManager.saveListItem(shoppingListId, item);
+            listManager.saveListItem(listId, item);
         }
     }
 
     private void deleteItemCommandExecute(final int id) {
 
-        shoppingListManager.deleteItem(shoppingListId, id);
-    }
-
-    private synchronized void quickAddCommandExecute() {
-
-        ensureIsInitialized();
-
-        final String text = getQuickAddText();
-        //reset quick add text
-        setQuickAddText("");
-
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void[] params) {
-
-                if(!StringHelper.isNullOrWhiteSpace(text)) {
-
-                    ArrayList<String> listOfItems = itemParser.parseSeveralItems(text);
-                    for(int i = 0; i < listOfItems.size(); i++){
-                        Item newItem = new Item();
-                        newItem.setName(listOfItems.get(i));
-                        newItem.setUnit(unitStorage.getDefaultValue());
-                        newItem = itemParser.parseAmountAndUnit(newItem);
-                        Group group = AutoCompletionHelper.getInstance().getGroup(AutoCompletionHelper.removeSpacesAtEndOfWord(text));
-                        if (group == null) {
-                            newItem.setGroup(groupStorage.getDefaultValue());
-                        } else {
-                            newItem.setGroup(group);
-                        }
-
-                        shoppingListManager.addListItem(shoppingListId, newItem);
-
-                        autoCompletionHelper.offerName(newItem.getName());
-                    }
-
-                }
-                return null;
-            }
-        }.execute();
-
-
-    }
-
-    private void addItemCommandExecute() {
-        ensureIsInitialized();
-        getItems().enableEvents();
-        viewLauncher.showItemDetailsView(this.shoppingListId);
-    }
-
-    private void selectItemCommandExecute(int itemId) {
-        ensureIsInitialized();
-        viewLauncher.showItemDetailsView(this.shoppingListId, itemId);
-    }
-
-
-    private void ensureIsInitialized() {
-        if(!initialized) {
-            throw new UnsupportedOperationException("You need to call initialized before view model can perform commands");
-        }
+        listManager.deleteItem(listId, id);
     }
 
     private void updateItem(Item item) {
@@ -551,4 +300,5 @@ public class ShoppingListViewModel extends ShoppingListViewModelBase {
 
         }*/
     }
+
 }

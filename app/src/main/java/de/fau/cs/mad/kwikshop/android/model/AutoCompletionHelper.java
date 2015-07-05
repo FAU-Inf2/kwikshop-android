@@ -14,6 +14,7 @@ import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
+import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.greenrobot.event.EventBus;
 
 public class AutoCompletionHelper{
@@ -119,12 +120,12 @@ public class AutoCompletionHelper{
      */
     public void offerName(String name) {
         //offer(name, autocompleteNameSuggestions, autoCompletionNameStorage);
-        name = removeSpacesAtEndOfWord(name);
+        name = StringHelper.removeSpacesAtEndOfWord(name);
         putNameAndGroupIntoStorageAndArray(name, null);
     }
 
     public void offerNameAndGroup(String name, Group group){
-        name = removeSpacesAtEndOfWord(name);
+        name = StringHelper.removeSpacesAtEndOfWord(name);
         if (autoGroup.containsKey(name)){
             updateGroupForName(name, group);
             return;
@@ -180,23 +181,14 @@ public class AutoCompletionHelper{
      */
     public void offerBrand(String brand) {
         //offer(brand, autocompleteBrandSuggestions, autoCompletionBrandStorage);
-        brand = removeSpacesAtEndOfWord(brand);
+        brand = StringHelper.removeSpacesAtEndOfWord(brand);
         if(!autocompleteBrandSuggestions.contains(brand)){
             autocompleteBrandSuggestions.add(brand);
             autoCompletionBrandStorage.addItem(new AutoCompletionBrandData(brand));
         }
     }
 
-    public static String removeSpacesAtEndOfWord(String word) {
-        if (null == word || word.isEmpty())
-            return word;
 
-        while (word.charAt(word.length() - 1) == ' ') {
-            word = word.substring(0,word.length() - 1);
-        }
-
-        return word;
-    }
 
     public void reloadFromDatabase(){
         if (instance == null)

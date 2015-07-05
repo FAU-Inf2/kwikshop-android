@@ -190,6 +190,6 @@
     <string name="title_activity_recipe">Rezept</string>
     <string name="title_activity_recipe_detail">Rezept-Details</string>
     <string name="title_activity_recipe_item_details">Rezept-Element-Details</string>
-    <string name="supermarket_finder_progress_dialog_message">Suche Supermärkte in der Nähe. Bitte warten.</string>
+    <string name="supermarket_finder_progress_dialog_message">Suche Supermärkte in der Nähe. </string>
 
 </resources>

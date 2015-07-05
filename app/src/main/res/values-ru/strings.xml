@@ -30,7 +30,7 @@
     <string name="disconnect">Disconnect</string>
     <string name="error_empty_productname">Пожалуйста, введите название продукта</string>
     <string name="every">все</string>
-    <string name="find_nearby_supermarket">Supermarkt Finder</string>
+    <string name="supermarket_finder">Supermarkt Finder</string>
     <string name="from_now_on">впредь</string>
     <string name="from_time_of_next_purchase_on">от времени следующей покупки на</string>
     <string name="unit_gram_short">г</string>

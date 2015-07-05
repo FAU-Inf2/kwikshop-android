@@ -90,27 +90,7 @@
     <string name="sortby_alphabetically">Alphabetisch</string>
     <string name="item_divider">weiter</string>
     <string name="remove">Löschen</string>
-    <string-array name="measures">//TODO importing units from a library of units
-        <item>millimeters</item>
-        <item>centimeters</item>
-        <item>decimeters</item>
-        <item>meters</item>
-        <item>dekameters</item>
-        <item>hectometers</item>
-        <item>milliliters</item>
-        <item>centiliters</item>
-        <item>deciliters</item>
-        <item>liters</item>
-        <item>dekaliters</item>
-        <item>hectoliters</item>
-        <item>milligrams</item>
-        <item>centigrams</item>
-        <item>decigrams</item>
-        <item>grams</item>
-        <item>dekagrams</item>
-        <item>hectograms</item>
-        <item>kilograms</item>
-    </string-array>
+
 
     <string-array name="sort_by_array">
         <item>manuell</item>
@@ -134,16 +114,14 @@
     <string name="descr_sweets">Süßigkeiten</string>
     <string name="descr_coke">Cola</string>
 
-    <string name="descr_quickadd1">Schreibe in die Box um Gegenstände</string>
-    <string name="descr_quickadd2">hinzuzufügen</string>
-    <string name="descr_drag_and_drop1">Drücke ein bisschen länger und bewege</string>
-    <string name="descr_drag_and_drop2">den Gegenstand um deine Liste zu sortieren</string>
-    <string name="descr_fab1">Du kannst Gegenstände mit Details</string>
-    <string name="descr_fab2">durch den Knopf unten rechts hinzufügen</string>
-    <string name="descr_details1">Zum Beispiel kannst du wichtige</string>
-    <string name="descr_details2">Gegenstände wie diesen hervorheben</string>
-    <string name="descr_swipe1">Wische über einen Gegenstand</string>
-    <string name="descr_swipe2">um ihn als gekauft zu markieren</string>
+    <string name="descr_quickadd">Schreibe in die Box um Gegenstände hinzuzufügen</string>
+    <string name="descr_drag_and_drop">Drücke ein bisschen länger und bewege den Gegenstand um deine Liste zu sortieren</string>
+    <string name="descr_fab">Du kannst Gegenstände mit Details durch den Knopf unten rechts hinzufügen</string>
+
+    <string name="descr_details">Zum Beispiel kannst du wichtige Gegenstände wie diesen hervorheben</string>
+
+    <string name="descr_swipe">Wische über einen Gegenstand um ihn als gekauft zu markieren</string>
+
 
 
     <!--Recipes-->
@@ -208,7 +186,7 @@
     <string name="disconnect">Disconnect</string>
     <string name="retry">Login erneut versuchen</string>
     <string name="login_skip_message">Login wirklich überspringen? Du kannst dich jederzeit im Menü einloggen.</string>
-    <string name="reminder_question">Eine Erinnerung für das Element '%s' wurde für %s gesetzt. Was möchten Sie nun machen?</string>
+    <string name="reminder_question">Eine Erinnerung für das Element \'%1$s\' wurde für %2$s gesetzt. Was möchten Sie nun machen?</string>
     <string name="title_activity_recipe">Rezept</string>
     <string name="title_activity_recipe_detail">Rezept-Details</string>
     <string name="title_activity_recipe_item_details">Rezept-Element-Details</string>

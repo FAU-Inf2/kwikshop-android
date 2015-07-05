@@ -85,15 +85,11 @@
     <string name="descr_already_bought">O item já foi comprado</string>
     <string name="descr_apple">Maçã</string>
     <string name="descr_coke">Coca</string>
-    <string name="descr_details1">Por exemplo você pode ressaltar</string>
-    <string name="descr_details2">itens importantes como papel higiênico</string>
-    <string name="descr_drag_and_drop1">Click por mais tempo e então mova seu item </string>
-    <string name="descr_drag_and_drop2">para ordenar a lista da sua forma</string>
-    <string name="descr_fab1">Você pode adicionar detalhe aos itens</string>
-    <string name="descr_fab2">com o botão a direita abaixo</string>
+    <string name="descr_details">Por exemplo você pode ressaltar itens importantes como papel higiênico</string>
+    <string name="descr_drag_and_drop">Click por mais tempo e então mova seu item para ordenar a lista da sua forma</string>
+    <string name="descr_fab">Você pode adicionar detalhe aos itens com o botão a direita abaixo</string>
     <string name="descr_my_first_shopping_list">Minha primeira lista de compras</string>
-    <string name="descr_quickadd1">Escreva na caixa acima para adicionar itens</string>
-    <string name="descr_quickadd2"></string>
+    <string name="descr_quickadd">Escreva na caixa acima para adicionar itens</string>
     <string name="descr_spaghettis">Spaghetti</string>
     <string name="descr_sweets">Doces</string>
     <string name="descr_swipe1">Swipe os itens para marcar como</string>
@@ -169,5 +165,5 @@
     <string name="item_divider">próximo</string>
     <string name="time_format">dd.MM.yyyy HH:mm</string>
     <string name="settings_option_3_manageUnits">Gerenciar unidades e categorias</string>
-    <string name="reminder_question">Um lembrete para o item %s foi agendado para %s. O que você gostaria de fazer agora?</string>
+    <string name="reminder_question">"Um lembrete para o item '%1$s' foi agendado para %2$s. O que você gostaria de fazer agora?"</string>
 </resources>

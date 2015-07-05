@@ -141,22 +141,19 @@ public class ListStorageFragment extends Fragment {
 
             Item i1 = new Item();
             i1.setName(context.getString(R.string.descr_apple));
-            i1.setBrand(context.getString(R.string.descr_quickadd1));
-            i1.setComment(context.getString(R.string.descr_quickadd2));
+            i1.setComment(context.getString(R.string.descr_quickadd));
             i1.setGroup(defaultGroup);
             list.addItem(i1);
 
             Item i5 = new Item();
             i5.setName(context.getString(R.string.descr_sweets));
-            i5.setBrand(context.getString(R.string.descr_drag_and_drop1));
-            i5.setComment(context.getString(R.string.descr_drag_and_drop2));
+            i5.setComment(context.getString(R.string.descr_drag_and_drop));
             i5.setGroup(defaultGroup);
             list.addItem(i5);
 
             Item i6 = new Item();
             i6.setName(context.getString(R.string.descr_coke));
-            i6.setBrand(context.getString(R.string.descr_swipe1));
-            i6.setComment(context.getString(R.string.descr_swipe2));
+            i6.setComment(context.getString(R.string.descr_swipe));
             i6.setAmount(5);
             i6.setGroup(defaultGroup);
             list.addItem(i6);
@@ -164,16 +161,14 @@ public class ListStorageFragment extends Fragment {
 
             Item i3 = new Item();
             i3.setName(context.getString(R.string.descr_spaghettis));
-            i3.setBrand(context.getString(R.string.descr_fab1));
-            i3.setComment(context.getString(R.string.descr_fab2));
+            i3.setComment(context.getString(R.string.descr_fab));
             i3.setAmount(3);
             i3.setGroup(defaultGroup);
             list.addItem(i3);
 
             Item i4 = new Item();
             i4.setName(context.getString(R.string.descr_toilet_paper));
-            i4.setBrand(context.getString(R.string.descr_details1));
-            i4.setComment(context.getString(R.string.descr_details2));
+            i4.setComment(context.getString(R.string.descr_details));
             i4.setHighlight(true);
             i4.setGroup(defaultGroup);
             list.addItem(i4);

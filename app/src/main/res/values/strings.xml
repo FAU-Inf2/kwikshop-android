@@ -153,16 +153,12 @@
     <string name="descr_sweets">Sweets</string>
     <string name="descr_coke">Coke</string>
 
-    <string name="descr_quickadd1">Type in the box above to add items</string>
-    <string name="descr_quickadd2"></string>
-    <string name="descr_drag_and_drop1">Click a bit longer and then move your item</string>
-    <string name="descr_drag_and_drop2">to sort your list as you want</string>
-    <string name="descr_fab1">You can add detailed items</string>
-    <string name="descr_fab2">with the button down right</string>
-    <string name="descr_details1">For example you can highlight</string>
-    <string name="descr_details2">important items like toilet paper</string>
-    <string name="descr_swipe1">Swipe items to mark them as bought</string>
-    <string name="descr_swipe2"></string>
+    <string name="descr_quickadd">Type in the box above to add items</string>
+
+    <string name="descr_drag_and_drop">Click a bit longer and then move your item to sort your list as you want</string>
+    <string name="descr_fab">You can add detailed items with the button down right</string>
+    <string name="descr_details">For example you can highlight important items like toilet paper</string>
+    <string name="descr_swipe">Swipe items to mark them as bought</string>
 
     <!--Recipes-->
     <string name="recipes">Recipes</string>
@@ -173,6 +169,7 @@
     <string name="recipe_scaleName_person">persons</string>
     <string name="recipe_scaleName_piece">pieces</string>
     <string name="recipe_choose_amount">Choose amount of </string>
+
     <!--Example Recipes -->
     <string name="recipe_name_chili_con_carne">Chili con carne</string>
     <string name="recipe_onion">Onion</string>
@@ -205,11 +202,9 @@
     <string name="place_status_closed">closed</string>
 
 
-
-
     
     <!--Reminder-->
-    <string name="reminder_question">A reminder for the item '%s' was set for %s. What would you like to do now?</string>
+    <string name="reminder_question">"A reminder for the item '%1$s' was set for %2$s. What would you like to do now?"</string>
     <string name="reminder_set_msg">Reminder set for</string>
     <string name="reminder_nextTimeBought_msg">Reminder will be started when the item is marked as bought.</string>
     <string name="reminder_deleted_msg">Reminder deleted.</string>

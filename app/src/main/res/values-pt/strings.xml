@@ -126,7 +126,7 @@
     <string name="alphabetically">Alfabeticamente</string>
     <string name="alert_dialog_connection_label">Rede</string>
     <string name="action_settings">Configurações</string>
-    <string name="find_nearby_supermarket">Localizador de Supermercados</string>
+    <string name="supermarket_finder">Localizador de Supermercados</string>
     <string name="from_now_on">A partir de agora</string>
     <string name="from_time_of_next_purchase_on">A partir da próxima compra</string>
     <string name="login_skip">Pular Login</string>

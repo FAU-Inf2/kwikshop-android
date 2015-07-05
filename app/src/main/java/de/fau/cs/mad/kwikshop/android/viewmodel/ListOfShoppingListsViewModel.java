@@ -1,16 +1,14 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
+
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ListIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
@@ -31,7 +29,7 @@ public class ListOfShoppingListsViewModel extends ListOfListsViewModel<ShoppingL
             viewLauncher.showShoppingList(shoppingListId);
         }
     };
-    private final Command selectShoppingListDetailsCommand = new Command<Integer>() {
+    private final Command<Integer> selectShoppingListDetailsCommand = new Command<Integer>() {
         @Override
         public void execute(Integer shoppingListId) {
             viewLauncher.showShoppingListDetailsView(shoppingListId);

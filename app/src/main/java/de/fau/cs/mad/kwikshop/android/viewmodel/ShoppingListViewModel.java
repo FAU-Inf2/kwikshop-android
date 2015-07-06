@@ -25,7 +25,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     private final LocationFinderHelper locationFinderHelper;
     private final ResourceProvider resourceProvider;
 
-    private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
+    //private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
     private ItemSortType itemSortType = ItemSortType.MANUAL;
 
 
@@ -70,9 +70,9 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     /**
      * Gets the shopping list items that have already been bought
      */
-    public ObservableArrayList<Item, Integer> getBoughtItems() {
+    /*public ObservableArrayList<Item, Integer> getBoughtItems() {
         return boughtItems;
-    }
+    }*/
 
     /**
      * Gets how items are supposed to be sorted for the current shopping list
@@ -119,10 +119,11 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         }
     }
 
-    public void boughtItemsSwapped(int position1, int position2) {
+    @Override
+    public void itemsSwapped(int position1, int position2) {
 
-        Item item1 = boughtItems.get(position1);
-        Item item2 = boughtItems.get(position2);
+        Item item1 = items.get(position1);
+        Item item2 = items.get(position2);
 
         item1.setOrder(position2);
         item2.setOrder(position1);

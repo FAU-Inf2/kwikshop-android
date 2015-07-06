@@ -131,13 +131,9 @@ public class ShoppingListFragment
         //sizeBoughtItems = viewModel.getBoughtItems().size();
         cartCounter.setText(String.valueOf(sizeBoughtItems));
 
-        // Get items, add bought items add the bottom
-        ObservableArrayList list = viewModel.getItems();
-        //list.addAll(viewModel.getBoughtItems());
-
         ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
-                list, displayHelper);
-        shoppingListView.setAdapter(shoppingListAdapter);
+                viewModel.getItems(), displayHelper);
+        //shoppingListView.setAdapter(shoppingListAdapter);
 
         new ListViewItemCommandBinding(ListViewItemCommandBinding.ListViewItemCommandType.Click,
                 shoppingListView,
@@ -413,7 +409,8 @@ public class ShoppingListFragment
     public void onItemRemoved(Item removedItem) {
         justifyListViewHeightBasedOnChildren(shoppingListView);
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);
-        sizeBoughtItems = viewModel.getBoughtItems().size();
+        //TODO: Update number of bought items
+        //sizeBoughtItems = viewModel.getBoughtItems().size();
         cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
 
@@ -421,7 +418,8 @@ public class ShoppingListFragment
     public void onItemModified(Item modifiedItem) {
         justifyListViewHeightBasedOnChildren(shoppingListView);
         justifyListViewHeightBasedOnChildren(shoppingListViewBought);
-        sizeBoughtItems = viewModel.getBoughtItems().size();
+        //TODO: Update number of bought items
+        //sizeBoughtItems = viewModel.getBoughtItems().size();
         cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
 

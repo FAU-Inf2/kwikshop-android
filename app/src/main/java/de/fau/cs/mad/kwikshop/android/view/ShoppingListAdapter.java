@@ -225,18 +225,14 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         return view.findViewById(R.id.undo_row_undobutton);
     }
 
-//    // Used by drag and drop
-//    @Override
-//    public void swapItems(final int positionOne, final int positionTwo) {
-//
-//        items.disableEvents();
-//
-//        shoppingListViewModel.itemsSwapped(positionOne, positionTwo);
-//
-//        super.swapItems(positionOne, positionTwo);
-//
-//        items.enableEvents();
-//    }
+    // Used by drag and drop
+    /*@Override
+    public void swapItems(final int positionOne, final int positionTwo) {
+        items.disableEvents();
+        shoppingListViewModel.itemsSwapped(positionOne, positionTwo);
+        super.swapItems(positionOne, positionTwo);
+        items.enableEvents();
+   }*/
 
     @Override
     public void onItemAdded(Item newItem) {

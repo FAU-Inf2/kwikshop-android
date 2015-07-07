@@ -15,7 +15,7 @@ import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfRecipesViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
-import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 
 public class ListOfRecipesFragment extends FragmentWithViewModel implements ListOfRecipesViewModel.Listener<Recipe> {
 
@@ -45,7 +45,7 @@ public class ListOfRecipesFragment extends FragmentWithViewModel implements List
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
         // get view model (injected using dagger)
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         viewModel = objectGraph.get(ListOfRecipesViewModel.class);
         viewModel.setListener(this);
 

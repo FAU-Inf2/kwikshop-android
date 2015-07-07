@@ -1,4 +1,4 @@
-package de.fau.cs.mad.kwikshop.android.viewmodel.di;
+package de.fau.cs.mad.kwikshop.android.di;
 
 import android.app.Activity;
 import android.content.Context;
@@ -52,13 +52,13 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 },
         library = true)
 @SuppressWarnings("unused")
-public class KwikShopViewModelModule {
+public class KwikShopModule {
 
     private static ListManager<ShoppingList> shoppingListManager;
     private static ListManager<Recipe> recipeManager;
     private final Activity currentActivity;
 
-    public KwikShopViewModelModule(Activity currentActivity) {
+    public KwikShopModule(Activity currentActivity) {
         this.currentActivity = currentActivity;
     }
 

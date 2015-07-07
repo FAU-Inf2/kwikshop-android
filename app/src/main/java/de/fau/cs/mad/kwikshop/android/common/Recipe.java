@@ -69,10 +69,12 @@ public class Recipe implements DomainListObject {
         this.scaleName = scaleName;
     }
 
+    @Override
     public Date getLastModifiedDate() {
         return lastModifiedDate != null ? lastModifiedDate : new Date(0);
     }
 
+    @Override
     public void setLastModifiedDate(Date value) {
         lastModifiedDate = value;
     }

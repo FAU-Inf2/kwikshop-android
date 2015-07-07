@@ -53,7 +53,7 @@ import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.greenrobot.event.EventBus;
 
-public class ItemDetailsFragment extends Fragment {
+public class ShoppingListItemDetailsFragment extends Fragment {
 
     private static final String ARG_LISTID = "list_id";
     private static final String ARG_ITEMID = "item_id";
@@ -123,7 +123,7 @@ public class ItemDetailsFragment extends Fragment {
      * @param listID
      * @return
      */
-    public static ItemDetailsFragment newInstance(int listID) {
+    public static ShoppingListItemDetailsFragment newInstance(int listID) {
         return newInstance(listID, -1);
     }
 
@@ -134,8 +134,8 @@ public class ItemDetailsFragment extends Fragment {
      * @param itemID
      * @return
      */
-    public static ItemDetailsFragment newInstance(int listID, int itemID) {
-        ItemDetailsFragment fragment = new ItemDetailsFragment();
+    public static ShoppingListItemDetailsFragment newInstance(int listID, int itemID) {
+        ShoppingListItemDetailsFragment fragment = new ShoppingListItemDetailsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_LISTID, listID);
         args.putInt(ARG_ITEMID, itemID);
@@ -145,7 +145,7 @@ public class ItemDetailsFragment extends Fragment {
     }
 
 
-    public ItemDetailsFragment() {
+    public ShoppingListItemDetailsFragment() {
         // Required empty public constructor
     }
 

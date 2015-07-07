@@ -22,7 +22,7 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.view.DefaultResourceProvider;
 import de.fau.cs.mad.kwikshop.android.view.DefaultViewLauncher;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
-import de.fau.cs.mad.kwikshop.android.view.ItemDetailsFragment;
+import de.fau.cs.mad.kwikshop.android.view.ShoppingListItemDetailsFragment;
 import de.fau.cs.mad.kwikshop.android.view.RecipeItemDetailsFragment;
 import de.fau.cs.mad.kwikshop.android.view.ReminderFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.AddRecipeToShoppingListViewModel;
@@ -46,7 +46,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         AutoCompletionHelper.class,
         LocationFinderHelper.class,
         AddRecipeToShoppingListViewModel.class,
-        ItemDetailsFragment.class,
+        ShoppingListItemDetailsFragment.class,
         RecipeItemDetailsFragment.class,
         ReminderFragment.class
 },

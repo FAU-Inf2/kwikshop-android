@@ -14,6 +14,7 @@ import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.RecipeManager;
+import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.ShoppingListManager;
@@ -143,5 +144,10 @@ public class KwikShopModule {
             recipeManager = new RecipeManager(listStorage);
         }
         return recipeManager;
+    }
+
+    @Provides
+    public RegularlyRepeatHelper provideRegularlyRepeatHelper(Context context) {
+        return RegularlyRepeatHelper.getRegularlyRepeatHelper(context);
     }
 }

@@ -3,8 +3,6 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +19,7 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.common.primitives.Chars;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -40,14 +33,12 @@ import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
-import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
-import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
@@ -104,6 +95,12 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     @Inject
     DisplayHelper displayHelper;
+
+    @Inject
+    SimpleStorage<Unit> unitStorage;
+
+    @Inject
+    SimpleStorage<Group> groupStorage;
 
 
     @Override
@@ -215,14 +212,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             Unit u = units.get(selectedUnitIndex);
             item.setUnit(u);
         } else {
-            item.setUnit(ListStorageFragment.getUnitStorage().getDefaultValue());
+            item.setUnit(unitStorage.getDefaultValue());
         }
 
         if (selectedGroupIndex >= 0) {
             Group g = groups.get(selectedGroupIndex);
             item.setGroup(g);
         } else {
-            item.setGroup(ListStorageFragment.getGroupStorage().getDefaultValue());
+            item.setGroup(groupStorage.getDefaultValue());
         }
 
         setAdditionalItemProperties();
@@ -316,7 +313,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
 
         //get units from the database and sort them by name
-        units = ListStorageFragment.getUnitStorage().getItems();
+        units = unitStorage.getItems();
         Collections.sort(units, new Comparator<Unit>() {
             @Override
             public int compare(Unit lhs, Unit rhs) {
@@ -332,7 +329,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         }
 
 
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         unit_spinner.setAdapter(spinnerArrayAdapter);
         unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -348,7 +345,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         });
 
         Unit selectedUnit = isNewItem || item.getUnit() == null
-                ? ListStorageFragment.getUnitStorage().getDefaultValue()
+                ? unitStorage.getDefaultValue()
                 : item.getUnit();
 
         if (selectedUnit != null) {
@@ -356,7 +353,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         }
 
         //get groups from the database and populate group spinner
-        groups = ListStorageFragment.getGroupStorage().getItems();
+        groups = groupStorage.getItems();
         ArrayList<String> groupNames = new ArrayList<>();
         for (Group g : groups) {
             groupNames.add(displayHelper.getDisplayName(g));
@@ -380,7 +377,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
 
         Group selectedGroup = isNewItem || item.getGroup() == null
-                ? ListStorageFragment.getGroupStorage().getDefaultValue()
+                ? groupStorage.getDefaultValue()
                 : item.getGroup();
 
         if (selectedGroup != null) {

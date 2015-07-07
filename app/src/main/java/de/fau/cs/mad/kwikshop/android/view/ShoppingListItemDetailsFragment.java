@@ -74,6 +74,8 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
     @InjectView(R.id.repeat_fromNextPurchase_radioButton)
     RadioButton repeat_fromNextPurchase_radioButton;
 
+    @Inject
+    RegularlyRepeatHelper repeatHelper;
 
     private String additionalToastText;
 
@@ -214,7 +216,6 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
                 additionalToastText += ". " + getString(R.string.reminder_nextTimeBought_msg);
             }
 
-            RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
             repeatHelper.offerRepeatData(item);
 
         } else { // repeat_checkbox is not checked
@@ -222,7 +223,6 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
             item.setRegularlyRepeatItem(false);
             if (wasRegularRepeat) { //repeat_checkbox was checked before
                 item.setRemindAtDate(null);
-                RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
                 repeatHelper.delete(item);
                 additionalToastText += ". " + getString(R.string.reminder_deleted_msg);
             }

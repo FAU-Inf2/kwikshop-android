@@ -93,7 +93,7 @@ public class ShoppingList implements DomainListObject {
     public LastLocation getLocation(){ return this.location;}
 
     public Date getLastModifiedDate() {
-        return lastModifiedDate;
+        return lastModifiedDate != null ? lastModifiedDate : new Date(0);
     }
 
     public void setLastModifiedDate(Date value) {

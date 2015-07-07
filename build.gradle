@@ -97,6 +97,6 @@ license {
 
 project(':app') {
     dependencies {
-        project(':kwikshop-common')
+        project(':../kwikshop-common')
     }
 }

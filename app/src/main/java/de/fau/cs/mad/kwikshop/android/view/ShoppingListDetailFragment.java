@@ -3,7 +3,6 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,7 @@ import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
-import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 
 public class ShoppingListDetailFragment extends FragmentWithViewModel implements ShoppingListDetailsViewModel.Listener {
 
@@ -57,7 +56,7 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         viewModel = objectGraph.get(ShoppingListDetailsViewModel.class);
         initializeViewModel();
 

@@ -24,7 +24,7 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipesDetailsViewModel;
-import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 
 public class RecipeDetailFragment extends FragmentWithViewModel implements RecipesDetailsViewModel.Listener {
 
@@ -58,7 +58,7 @@ public class RecipeDetailFragment extends FragmentWithViewModel implements Recip
 
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         viewModel = objectGraph.get(RecipesDetailsViewModel.class);
         initializeViewModel();
 

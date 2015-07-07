@@ -3,7 +3,6 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -16,9 +15,8 @@ import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.AddRecipeToShoppingListViewModel;
-import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfRecipesViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
-import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 
 public class AddRecipeToShoppingListFragment extends FragmentWithViewModel implements AddRecipeToShoppingListViewModel.Listener {
 
@@ -65,7 +63,7 @@ public class AddRecipeToShoppingListFragment extends FragmentWithViewModel imple
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
         // get view model (injected using dagger)
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         viewModel = objectGraph.get(AddRecipeToShoppingListViewModel.class);
         viewModel.setListener(this);
         viewModel.initialize(shoppingListId);

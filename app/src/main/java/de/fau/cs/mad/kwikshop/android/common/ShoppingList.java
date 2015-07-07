@@ -7,6 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 
 import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
@@ -54,6 +55,8 @@ public class ShoppingList implements DomainListObject {
     @DatabaseField(foreign = true, canBeNull = true)
     private LastLocation location;
 
+    @DatabaseField (canBeNull = true)
+    private Date lastModifiedDate;
 
     private enum visibility {
         PRIVATE
@@ -89,6 +92,13 @@ public class ShoppingList implements DomainListObject {
 
     public LastLocation getLocation(){ return this.location;}
 
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Date value) {
+        lastModifiedDate = value;
+    }
 
     public void setSortTypeInt(int sortTypeInt){
         this.sortTypeInt = sortTypeInt;

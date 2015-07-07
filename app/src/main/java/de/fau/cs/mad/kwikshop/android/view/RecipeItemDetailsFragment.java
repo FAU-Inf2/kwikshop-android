@@ -1,27 +1,16 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import javax.inject.Inject;
 
-import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
-import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
-import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
-import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+
 
 public class RecipeItemDetailsFragment extends ItemDetailsFragment<Recipe> {
 

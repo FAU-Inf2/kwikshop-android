@@ -1,16 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
@@ -22,32 +12,17 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
-import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.Group;
-import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
-import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
-import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
-import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
-import de.fau.cs.mad.kwikshop.android.util.StringHelper;
-import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
-import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
-import de.greenrobot.event.EventBus;
+
 
 public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<ShoppingList> {
 
@@ -149,11 +124,11 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
         repeat_numberPicker.setMaxValue(10);
         repeat_numberPicker.setWrapSelectorWheel(false);
 
-        ArrayList<String> repeat_spinner_entries = new ArrayList<String>(3);
+        ArrayList<String> repeat_spinner_entries = new ArrayList<>(3);
         repeat_spinner_entries.add(0, getString(R.string.days));
         repeat_spinner_entries.add(1, getString(R.string.weeks));
         repeat_spinner_entries.add(2, getString(R.string.months));
-        ArrayAdapter<String> repeat_spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, repeat_spinner_entries);
+        ArrayAdapter<String> repeat_spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, repeat_spinner_entries);
         repeat_spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         repeat_spinner.setAdapter(repeat_spinnerAdapter);
 

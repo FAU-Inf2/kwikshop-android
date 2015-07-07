@@ -190,7 +190,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
             notificationOfNoConnection();
             return;
         }
-        
+
 
         // get last/current location
         lastLocation = new LocationFinderHelper(getActivity().getApplicationContext());

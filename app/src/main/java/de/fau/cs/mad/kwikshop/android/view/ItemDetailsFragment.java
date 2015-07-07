@@ -414,6 +414,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     protected abstract ListType getListType();
 
+    //work-around: right list manager cannot be injected because Dagger does not know final type
+    // probably because of generics in java are broken
     protected abstract ListManager<TList> getListManager();
 
     /**

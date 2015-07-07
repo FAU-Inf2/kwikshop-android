@@ -50,7 +50,7 @@ public abstract class ListOfListsViewModel<TList extends DomainListObject> exten
         return this.lists;
     }
 
-    private void setLists(final ObservableArrayList<TList, Integer> value) {
+    protected void setLists(final ObservableArrayList<TList, Integer> value) {
         if (value != lists) {
             ObservableArrayList<TList, Integer> oldValue = this.lists;
             this.lists = value;
@@ -68,16 +68,7 @@ public abstract class ListOfListsViewModel<TList extends DomainListObject> exten
     public void onEventMainThread(ItemChangedEvent ev) {
 
         if (ev.getListType() == getListType()) {
-            switch (ev.getChangeType()) {
-
-                case Deleted:
-                case Added:
-                    reloadList(ev.getListId());
-                    break;
-
-                default:
-                    break;
-            }
+            reloadList(ev.getListId());
         }
     }
 

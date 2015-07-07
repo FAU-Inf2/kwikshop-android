@@ -398,6 +398,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @OnTextChanged(R.id.productname_text)
     @SuppressWarnings("unused")
     void onProductNameChanged(CharSequence text) {
+
+        if(groups == null) {
+            return;
+        }
+
         String name = StringHelper.removeSpacesAtEndOfWord(text.toString());
         Group group = autoCompletionHelper.getGroup(name);
 

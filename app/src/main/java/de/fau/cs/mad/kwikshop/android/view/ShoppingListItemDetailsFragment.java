@@ -1,6 +1,9 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
@@ -34,6 +37,9 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
 
     /* UI elements */
 
+    @InjectView(R.id.repeat_container)
+    View repeat_Container;
+
     @InjectView(R.id.repeat_checkBox)
     CheckBox repeat_checkbox;
 
@@ -48,6 +54,9 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
 
     @InjectView(R.id.repeat_fromNextPurchase_radioButton)
     RadioButton repeat_fromNextPurchase_radioButton;
+
+
+
 
     @Inject
     RegularlyRepeatHelper repeatHelper;
@@ -79,6 +88,16 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
         // Required empty public constructor
     }
 
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        repeat_Container.setVisibility(View.VISIBLE);
+
+        return view;
+    }
 
     @Override
     protected void saveItem() {

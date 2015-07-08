@@ -24,8 +24,6 @@
     <string name="create_calendar_event">Create calendar event</string>
     <string name="edit_calendar_event">Edit calendar event</string>
 
-    <string name="dateDescription_just_now">just now</string>
-    <string name="dateDescription_minutes_ago">%1$s minutes ago</string>
 
     <!-- About screen-->
     <string name="about_Commit_Title" translatable="false">Commit</string>
@@ -139,8 +137,6 @@
               &lt;br>&lt;a href="https://hc.apache.org/httpcomponents-client-4.3.x/android-port.html">Project Site&lt;/a></item>
         <item>&lt;b>Java client for Google Places API &lt;/b>, licensed under the MIT License
               &lt;br>&lt;a href="https://github.com/windy1/google-places-api-java#quickstart">Project Site&lt;/a></item>
-        <item>&lt;b>Joda Time&lt;/b>, licensed under the Apache License, Version 2.0
-              &lt;br>&lt;a href="http://www.joda.org/joda-time/">Project Site&lt;/a></item>
     </string-array>
 
 

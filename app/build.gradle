@@ -17,7 +17,7 @@ android {
         applicationId "de.fau.cs.mad.kwikshop.android"
         //minSdkVersion 14
         //targetSdkVersion 21
-        multiDexEnabled true
+       // multiDexEnabled true
         versionCode 2
         versionName "1.0.1"
         resValue "string", "BuildInfo_Git_Branch", getGitBranchName()
@@ -78,11 +78,6 @@ android {
         exclude 'license.html'
         exclude 'readme.html'
         exclude 'META-INF/services/org.glassfish.jersey.internal.spi.ForcedAutoDiscoverable'
-    }
-
-
-    dexOptions {
-        javaMaxHeapSize "4g"
     }
 }
 
@@ -150,10 +145,6 @@ dependencies {
     compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.5.1'
     compile 'com.wordnik:swagger-annotations:1.5.0-M2'
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
-
-
-    //Joda Time
-    compile 'joda-time:joda-time:2.8.1'
 }
 
 allprojects {

@@ -9,14 +9,14 @@ It is currently developed as student project of the
 
 [![Build Status](https://travis-ci.org/FAU-Inf2/kwikshop-android.svg?branch=master)](https://magnum.travis-ci.com/FAU-Inf2/kwikshop-android)
 
-The latest release of Kwik Shop is available in the [Play Store](https://play.google.com/store/apps/details?id=de.cs.fau.mad.kwikshop_android)
+The latest release of Kwik Shop is available in the [Play Store](https://play.google.com/store/apps/details?id=de.cs.fau.mad.kwikshop_android) 
 
 
 Acknowledgements
 ----------------
 The project makes use of several third-party libraries:
 
-- [Android Support Library](http://developer.android.com/tools/support-library/index.html),
+- [Android Support Library](http://developer.android.com/tools/support-library/index.html), 
   which is part of the Android Open Source Project
 - [ORMLite](http://ormlite.com/), licensed under the ISC license
 - [FloatingActionButton](https://github.com/makovkastar/FloatingActionButton),
@@ -29,8 +29,7 @@ The project makes use of several third-party libraries:
   Version 2.0
 - [Butter Knife](http://jakewharton.github.io/butterknife/), licensed under the
   Apache License, Version 2.0
-- [Joda Time](http://www.joda.org/joda-time/), licensed under the Apache
-  License, Version 2.0
+
 
 The build-process is based on gradle and uses the following third-party
 plugins (as well as the standard android build plugin):

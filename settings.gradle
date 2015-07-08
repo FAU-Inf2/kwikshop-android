@@ -13,6 +13,4 @@ if (!dir.exists()) {
 
 
 include ':app'
-include ':kwikshop-common'
-
-project(":kwikshop-common").projectDir = file("../kwikshop-common")
+include ':../kwikshop-common'

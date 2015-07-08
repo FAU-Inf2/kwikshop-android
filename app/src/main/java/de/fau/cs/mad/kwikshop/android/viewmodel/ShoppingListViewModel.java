@@ -96,7 +96,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
      * Gets the command to be executed when a item in the view is swiped
      */
     public Command<Integer> getToggleIsBoughtCommand() {
-        return  toggleIsBoughtCommand;
+        return toggleIsBoughtCommand;
     }
 
     /**
@@ -121,7 +121,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     @Override
     public void itemsSwapped(int position1, int position2) {
-
         Item item1 = items.get(position1);
         Item item2 = items.get(position2);
 
@@ -137,7 +136,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     public void onEventMainThread(ShoppingListChangedEvent event) {
 
         if(event.getListId() == this.listId) {
-
             if(event.getChangeType() == ListChangeType.Deleted) {
                 finish();
             } else if(event.getChangeType() == ListChangeType.PropertiesModified) {
@@ -157,11 +155,9 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 case PropertiesModified:
                     Item item = listManager.getListItem(listId, event.getItemId());
                     updateItem(item);
-
                     break;
                 case Deleted:
                     items.removeById(event.getItemId());
-                    //boughtItems.removeById(event.getItemId());
                     break;
 
             }
@@ -234,16 +230,13 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         }
     }
 
-
     private void toggleIsBoughtCommandExecute(final int id) {
         Item item = items.getById(id);
-        /*if(item == null) {
-            item = boughtItems.getById(id);
-        }*/
 
         if(item != null) {
 
             item.setBought(!item.isBought());
+
             if (item.isBought()) {
                 if (item.isRegularlyRepeatItem() && item.isRemindFromNextPurchaseOn() && item.getLastBought() == null) {
                     Calendar now = Calendar.getInstance();
@@ -276,30 +269,14 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
     private void deleteItemCommandExecute(final int id) {
-
         listManager.deleteItem(listId, id);
     }
 
     private void updateItem(Item item) {
-
-        //int id = item.getId();
-
+        //items.removeById(item.getId());
         items.setOrAddById(item);
-
-        /*if(item.isBought()) {
-
-            items.removeById(id);
-            boughtItems.setOrAddById(item);
-            boughtItems.notifyItemModifiedById(id);
-
-        } else {
-
-            boughtItems.removeById(id);
-            items.setOrAddById(item);
-
-            boughtItems.notifyItemModifiedById(id);
-
-        }*/
+        items.notifyItemModified(item);
     }
+
 
 }

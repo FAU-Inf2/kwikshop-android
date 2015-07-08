@@ -6,6 +6,12 @@
               android:orientation="vertical"
               android:paddingBottom="5dp">
 
+    <ViewStub
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/shoppinglist_divider"
+        android:focusable="true" />
+
     <!--Header to be displayed when sorting by group (will be set to hidden/visible in list adapter)-->
     <TableRow
         android:id="@+id/group_header"
@@ -26,7 +32,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="5dp">
+        android:paddingTop="5dp"
+        android:id="@+id/listentry">
 
         <!--Main content (name, amount/unit and a delete button)-->
         <RelativeLayout

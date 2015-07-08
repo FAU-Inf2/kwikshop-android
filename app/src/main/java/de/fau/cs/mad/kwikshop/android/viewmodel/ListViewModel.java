@@ -228,6 +228,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         listManager.saveListItem(listId, item2);
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

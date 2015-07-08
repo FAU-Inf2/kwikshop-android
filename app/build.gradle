@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
+
+def appSourcesDir = file('src/main/java')
+def commonSourcesDir = rootProject.file('../kwikshop-common/src/main/java')
+
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
@@ -13,7 +17,7 @@ android {
         applicationId "de.fau.cs.mad.kwikshop.android"
         //minSdkVersion 14
         //targetSdkVersion 21
-       // multiDexEnabled true
+        multiDexEnabled true
         versionCode 2
         versionName "1.0.1"
         resValue "string", "BuildInfo_Git_Branch", getGitBranchName()
@@ -53,6 +57,16 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            java {
+                srcDir appSourcesDir
+                srcDir commonSourcesDir
+            }
+        }
+    }
+
+
     packagingOptions {
         exclude 'LICENSE.txt'
         exclude 'META-INF/LICENSE.txt'
@@ -64,6 +78,11 @@ android {
         exclude 'license.html'
         exclude 'readme.html'
         exclude 'META-INF/services/org.glassfish.jersey.internal.spi.ForcedAutoDiscoverable'
+    }
+
+
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 }
 
@@ -77,7 +96,7 @@ dependencies {
     // you also need to add it to the string array acknowledgements_Items in values/strings.xml
 
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('../../kwikshop-common/build/libs/kwikshop-common-1.0.jar')
+    //compile files('../../kwikshop-common/build/libs/kwikshop-common-1.0.jar')
 
     //Google support libraries for older android version
     compile 'com.android.support:appcompat-v7:21.0.+'
@@ -131,6 +150,10 @@ dependencies {
     compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.5.1'
     compile 'com.wordnik:swagger-annotations:1.5.0-M2'
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
+
+
+    //Joda Time
+    compile 'joda-time:joda-time:2.8.1'
 }
 
 allprojects {

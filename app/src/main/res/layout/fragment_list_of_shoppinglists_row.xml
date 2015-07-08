@@ -9,16 +9,39 @@
     android:background="@android:color/transparent"
     >
 
-    <TextView
-        android:id="@+id/list_row_textView_Main"
-        android:layout_width="match_parent"
+
+    <RelativeLayout
+        android:id="@+id/list_row_Main"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:textColor="@color/primary_text"
-        android:text="Shopping list Name"
-        />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/list_row_textView_Main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:gravity="center_vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:textColor="@color/primary_text"
+            android:text="Shopping list Name"
+            />
+
+        <TextView
+            android:id="@+id/shoppinglist_textView_lastModifiedDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="08/07/2016"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:textColor="@color/secondary_text"
+         />
+    </RelativeLayout>
+
 
 
     <TextView
@@ -27,7 +50,7 @@
         android:layout_height="match_parent"
         android:text="Number of items"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@id/list_row_textView_Main"
+        android:layout_below="@id/list_row_Main"
         android:textColor="@color/secondary_text"
         android:layout_marginTop="-10dp"
         android:layout_marginBottom="5dp" />

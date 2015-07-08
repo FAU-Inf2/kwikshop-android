@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
@@ -26,6 +28,8 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
 
 
     //region Fields
+
+    private final DateFormatter dateFormatter;
 
     private final Activity parentActivity;
     private final ObservableArrayList<ShoppingList, Integer> lists;
@@ -50,6 +54,7 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
         this.parentActivity = parentActivity;
         this.lists = lists;
         this.lists.addListener(this);
+        this.dateFormatter = new DateFormatter(new DefaultResourceProvider(parentActivity));
     }
 
     //endregion
@@ -57,23 +62,22 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
     @Override
     public View getView(int position, View view, ViewGroup parent) {
 
+        ViewHolder viewHolder;
+        if (view == null) {
+            view = getLayoutInflater().inflate(LAYOUT_ID, null);
+            viewHolder = new ViewHolder(view);
+            view.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) view.getTag();
+        }
+
         //get the appropriate shopping list
         ShoppingList list = lists.get(position);
 
-        //if view is null, inflate a new one
-        if (view == null) {
-
-            LayoutInflater inflater = getLayoutInflater();
-            view = inflater.inflate(LAYOUT_ID, null);
-
-        }
-
         //display the list's name and number of items in the list
-        TextView shoppingListNameView = (TextView) view.findViewById(R.id.list_row_textView_Main);
-        shoppingListNameView.setText(list.getName());
-
-        TextView itemCountView = (TextView) view.findViewById(R.id.list_row_textView_Secondary);
-        itemCountView.setText(list.getItems().size() + " " + parentActivity.getString(R.string.items));
+        viewHolder.textView_ShoppingListName.setText(list.getName());
+        viewHolder.textView_LastModified.setText(dateFormatter.formatDate(list.getLastModifiedDate()));
+        viewHolder.textView_ItemCount.setText(list.getItems().size() + " " + parentActivity.getString(R.string.items));
 
         return view;
     }
@@ -110,6 +114,23 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
     @Override
     public void onItemModified(ShoppingList modifiedItem) {
         notifyDataSetChanged();
+    }
+
+    static class ViewHolder {
+
+        @InjectView(R.id.list_row_textView_Main)
+        TextView textView_ShoppingListName;
+
+        @InjectView(R.id.list_row_textView_Secondary)
+        TextView textView_ItemCount;
+
+        @InjectView(R.id.shoppinglist_textView_lastModifiedDate)
+        TextView textView_LastModified;
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
+
     }
 
 }

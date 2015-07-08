@@ -33,7 +33,7 @@ import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
-import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.greenrobot.event.EventBus;
 
 public class RecipeFragment  extends Fragment implements RecipeViewModel.Listener, ObservableArrayList.Listener<Item> {
@@ -95,7 +95,7 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
         View rootView = inflater.inflate(R.layout.fragment_recipe, container, false);
         ButterKnife.inject(this, rootView);
 
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
 
         DisplayHelper displayHelper = objectGraph.get(DisplayHelper.class);
 

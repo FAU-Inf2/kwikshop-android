@@ -13,4 +13,4 @@ if (!dir.exists()) {
 
 
 include ':app'
-include ':../kwikshop-common'
+include '../kwikshop-common'

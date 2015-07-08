@@ -29,8 +29,6 @@ public class LocationFinderHelper implements LocationListener {
 
     private static final String TAG = LocationActivity.class.getSimpleName();
     private LocationManager locationManager;
-    private Criteria criteria;
-    private String provider;
     Context context;
 
     // coordinates of location
@@ -39,10 +37,6 @@ public class LocationFinderHelper implements LocationListener {
 
     private boolean isGPSEnabled = false;
     private boolean isNetworkEnabled = false;
-
-    private SimpleStorage<LastLocation> lastLocationSimpleStorage;
-    private DatabaseHelper databaseHelper;
-
 
 
     // The minimum distance to change updates in meters
@@ -141,10 +135,15 @@ public class LocationFinderHelper implements LocationListener {
 
     public String getAddressConverted() {
 
-        String address = "";
-        int maxLines = getAddress().getMaxAddressLineIndex();
-        for (int i = 0; i <= maxLines; i++) {
-            address = address + getAddress().getAddressLine(i) + " ";
+        try {
+            String address = "";
+            int maxLines = getAddress().getMaxAddressLineIndex();
+            for (int i = 0; i <= maxLines; i++) {
+                address = address + getAddress().getAddressLine(i) + " ";
+            }
+            return address;
+        } catch (NullPointerException e){
+            Log.e(TAG, "getAddressConverted()");
         }
 
         return "No Address found";
@@ -179,7 +178,7 @@ public class LocationFinderHelper implements LocationListener {
                 return address;
             }
         } catch (IOException e) {
-            Log.e(TAG,e.getMessage().toString());
+            Log.e(TAG,"getAddressConverted()");
         }
         return "No Address found";
     }

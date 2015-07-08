@@ -32,8 +32,7 @@ import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.LocalListStorage;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
-import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
-import de.greenrobot.event.EventBus;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 
 public class ReminderFragment extends Fragment {
 
@@ -287,7 +286,7 @@ public class ReminderFragment extends Fragment {
     private void setupUI() {
         repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
 
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         objectGraph.inject(this);
 
         item = repeatHelper.getItemForId(itemId);

@@ -7,6 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 
 import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
@@ -29,7 +30,8 @@ public class Recipe implements DomainListObject {
     @DatabaseField
     private String scaleName;
 
-
+    @DatabaseField (canBeNull = true)
+    private Date lastModifiedDate;
 
 
     public Recipe(int id) {
@@ -67,6 +69,15 @@ public class Recipe implements DomainListObject {
         this.scaleName = scaleName;
     }
 
+    @Override
+    public Date getLastModifiedDate() {
+        return lastModifiedDate != null ? lastModifiedDate : new Date(0);
+    }
+
+    @Override
+    public void setLastModifiedDate(Date value) {
+        lastModifiedDate = value;
+    }
 
     public void addItem(Item item) {
         this.items.add(item);

@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.SparseArray;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +107,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
         int id = listStorage.createList();
         TList list = listStorage.loadList(id);
+        list.setLastModifiedDate(new Date());
         listStorage.saveList(list);
 
         int listId = list.getId();
@@ -140,6 +142,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         }
 
         list.addItem(item);
+        list.setLastModifiedDate(new Date());
         listStorage.saveList(list);
 
         synchronized (listLock) {
@@ -270,6 +273,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
             }
             list = lists.get(listId);
         }
+        list.setLastModifiedDate(new Date());
         new SaveListTask<>(listStorage).execute(list);
 
         return list;

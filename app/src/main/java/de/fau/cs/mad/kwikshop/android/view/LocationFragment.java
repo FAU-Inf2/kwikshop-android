@@ -162,7 +162,8 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
         // no last location was found
         if(!lastLocation.isThereALastLocation()){
-            //notificationOfNoConnection();
+            progress.dismiss();
+            notificationOfNoConnection();
         } else {
             lastLat = lastLocation.getLatitude();
             lastLng = lastLocation.getLongitude();
@@ -185,8 +186,11 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
         // no connection to internet
         if(!InternetHelper.checkInternetConnection(getActivity())){
+            progress.dismiss();
             notificationOfNoConnection();
+            return;
         }
+
 
         // get last/current location
         lastLocation = new LocationFinderHelper(getActivity().getApplicationContext());

@@ -32,12 +32,12 @@ public class ItemDetailsActivity extends DetailsActivity {
             Intent intent = getIntent();
             int listId = ((Long) intent.getExtras().get(EXTRA_SHOPPINGLISTID)).intValue();
 
-            ItemDetailsFragment fragment;
+            ShoppingListItemDetailsFragment fragment;
             if (intent.hasExtra(EXTRA_ITEMID)) {
                 int itemId = ((Long) intent.getExtras().get(EXTRA_ITEMID)).intValue();
-                fragment = ItemDetailsFragment.newInstance(listId, itemId);
+                fragment = ShoppingListItemDetailsFragment.newInstance(listId, itemId);
             } else {
-                fragment = ItemDetailsFragment.newInstance(listId);
+                fragment = ShoppingListItemDetailsFragment.newInstance(listId);
             }
 
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();

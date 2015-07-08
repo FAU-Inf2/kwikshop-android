@@ -57,7 +57,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/divider_top"
-        android:nestedScrollingEnabled="false"/>
+        android:footerDividersEnabled="false"/>
 
     <TableRow
         android:layout_width="match_parent"
@@ -115,14 +115,6 @@
         </LinearLayout>
 
     </TableRow>
-
-    <View
-        android:id="@+id/space_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:background="@color/text_icons"
-        android:layout_below="@+id/listentry"
-        android:visibility="gone" />
 
     <view
             android:id="@+id/fab"

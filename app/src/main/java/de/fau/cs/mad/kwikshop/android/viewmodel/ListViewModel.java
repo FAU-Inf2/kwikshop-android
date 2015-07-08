@@ -94,6 +94,11 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         public void execute(Void parameter) {quickAddCommandExecute();
         }
     };
+    private final Command<Void> quickAddUnitCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {quickAddUnitsCommandExecute();
+        }
+    };
     private final Command<Integer> selectItemCommand = new Command<Integer>() {
         @Override
         public void execute(Integer parameter) { selectItemCommandExecute(parameter); }
@@ -167,7 +172,6 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     public ObservableArrayList<Item, Integer> getItems() {
         return items;
     }
-
     /**
      * Gets the command to be executed when the view's add button is pressed
      */
@@ -181,7 +185,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     public Command<Void> getQuickAddCommand() {
         return quickAddCommand;
     }
-
+    public Command<Void> getQuickAddUnitCommand() { return quickAddUnitCommand;}
     /**
      * Gets the command to be executed when a shopping list item in the view is selected
      */
@@ -289,6 +293,29 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
     }
 
+    protected synchronized  void quickAddUnitsCommandExecute(){
+
+
+        final String text = getQuickAddText();
+        //reset quick add text
+        setQuickAddText("");
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void[] params) {
+
+                if(!StringHelper.isNullOrWhiteSpace(text)) {
+                    Unit newUnit = new Unit();
+                    newUnit.setName(text);
+
+
+                }
+                return null;
+            }
+        }.execute();
+
+    }
 
     protected abstract void loadList();
 

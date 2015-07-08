@@ -1,7 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 
-;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -46,16 +45,21 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
 import de.greenrobot.event.EventBus;
 
 /**
  * Created by Nicolas on 01/07/2015.
  */
-public class ManageUnitsGroupsFragment extends Fragment {
+public class ManageUnitsGroupsFragment
+        extends Fragment
+        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Item> {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
+    private ShoppingListViewModel viewModel;
     @InjectView(R.id.quickAddUnit)
     MultiAutoCompleteTextView quickAddUnit;
     @InjectView(R.id.quickAddGroup)
@@ -72,7 +76,11 @@ public class ManageUnitsGroupsFragment extends Fragment {
     private int selectedUnitIndex = -1;
     private List<Group> groups;
     private int selectedGroupIndex = -1;
+    private boolean updatingViewModel;
 
+    private int listID = -1;
+
+    private AutoCompletionHelper autoCompletion;
     private View rootView;
 
     public static ManageUnitsGroupsFragment newInstance() {
@@ -161,9 +169,13 @@ public class ManageUnitsGroupsFragment extends Fragment {
     private void setupUI() {
 
 
-
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
         //populate unit picker with units from database
         DisplayHelper displayHelper = new DisplayHelper(getActivity());
+
+        viewModel = objectGraph.get(ShoppingListViewModel.class);
+        autoCompletion = objectGraph.get(AutoCompletionHelper.class);
+
 
 
         //get units from the database and sort them by name
@@ -223,7 +235,7 @@ public class ManageUnitsGroupsFragment extends Fragment {
             }
         });
 
-      /*  new ButtonBinding(button_qaunit, viewModel.getQuickAddCommand());
+        new ButtonBinding(button_qaunit, viewModel.getQuickAddUnitCommand());
 
         //TODO: quick add long click
 
@@ -235,7 +247,7 @@ public class ManageUnitsGroupsFragment extends Fragment {
                 synchronized (viewModel) {
                     // If the event is a key-down event on the "enter" button
                     if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                        viewModel.getQuickAddCommand().execute(null);
+                        viewModel.getQuickAddUnitCommand().execute(null);
                         return true;
                     }
                     return false;
@@ -243,9 +255,54 @@ public class ManageUnitsGroupsFragment extends Fragment {
             }
         });
         quickAddUnit.setTokenizer(new SpaceTokenizer());
-*/
+
+
+
+    }
+    /**
+     * call this method to initialize or refresh the data used by QuickAdd's auto completion
+     */
+    private void refreshQuickAddAutoCompletion() {
+        quickAddUnit.setAdapter(autoCompletion.getNameAdapter(getActivity()));
+    }
+
+    @Override
+    public void onItemSortTypeChanged() {
+
+    }
+    @Override
+    public void onQuickAddTextChanged() {
+        if (!updatingViewModel) {
+            this.quickAddUnit.setText(viewModel.getQuickAddText());
+        }
+    }
+    @Override
+    public void onNameChanged(String value) {
+        // set title for actionbar
+        getActivity().setTitle(viewModel.getName());
+    }
+    @Override
+    public void onFinish() {
+
+    }
+    @Override
+    public void onItemModified(Item modifiedItem) {
+
+    }
+    @Override
+    public void onItemAdded(Item newItem) {
+
+        //TODO: It might make sense to move autocompletion handling to the view model
+        //IMPORTANT
+        if(autoCompletion != null) {
+            refreshQuickAddAutoCompletion();
+        }
 
 
     }
 
+    @Override
+    public void onItemRemoved(Item removedItem) {
+
+    }
 }

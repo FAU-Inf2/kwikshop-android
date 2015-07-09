@@ -2,26 +2,22 @@ package de.fau.cs.mad.kwikshop.android.model;
 
 import android.content.Context;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
-import de.fau.cs.mad.kwikshop.android.common.LastLocation;
-import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
 
 
@@ -29,8 +25,6 @@ public class LocationFinderHelper implements LocationListener {
 
     private static final String TAG = LocationActivity.class.getSimpleName();
     private LocationManager locationManager;
-    private Criteria criteria;
-    private String provider;
     Context context;
 
     // coordinates of location
@@ -39,10 +33,6 @@ public class LocationFinderHelper implements LocationListener {
 
     private boolean isGPSEnabled = false;
     private boolean isNetworkEnabled = false;
-
-    private SimpleStorage<LastLocation> lastLocationSimpleStorage;
-    private DatabaseHelper databaseHelper;
-
 
 
     // The minimum distance to change updates in meters
@@ -66,12 +56,14 @@ public class LocationFinderHelper implements LocationListener {
     }
 
 
-    public LastLocation setLocation(){
+    public LastLocation getLastLocation(){
 
         LastLocation lastLocation = new LastLocation();
         lastLocation.setLatitude(latitude);
+
         lastLocation.setLongitude(longitude);
         lastLocation.setVisited(true);
+
         lastLocation.setAddress(getAddressConverted());
 
         return lastLocation;
@@ -141,10 +133,15 @@ public class LocationFinderHelper implements LocationListener {
 
     public String getAddressConverted() {
 
-        String address = "";
-        int maxLines = getAddress().getMaxAddressLineIndex();
-        for (int i = 0; i <= maxLines; i++) {
-            address = address + getAddress().getAddressLine(i) + " ";
+        try {
+            String address = "";
+            int maxLines = getAddress().getMaxAddressLineIndex();
+            for (int i = 0; i <= maxLines; i++) {
+                address = address + getAddress().getAddressLine(i) + " ";
+            }
+            return address;
+        } catch (NullPointerException e){
+            Log.e(TAG, "getAddressConverted()");
         }
 
         return "No Address found";
@@ -179,7 +176,7 @@ public class LocationFinderHelper implements LocationListener {
                 return address;
             }
         } catch (IOException e) {
-            Log.e(TAG,e.getMessage().toString());
+            Log.e(TAG,"getAddressConverted()");
         }
         return "No Address found";
     }

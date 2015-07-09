@@ -1,30 +1,33 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import android.os.AsyncTask;
-import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
+import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
+import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
+import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ItemIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
 public abstract class ListViewModel<TList extends DomainListObject> extends ListViewModelBase {
-
 
     public interface Listener extends ListViewModelBase.Listener {
 
@@ -77,6 +80,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     protected final ItemParser itemParser;
     protected final DisplayHelper displayHelper;
     protected final AutoCompletionHelper autoCompletionHelper;
+    protected final ItemMerger itemMerger;
+    protected final LocationFinderHelper locationFinderHelper;
 
     public ArrayAdapter<String> adapter;
     protected int listId;
@@ -118,7 +123,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     public ListViewModel(ViewLauncher viewLauncher, ListManager<TList> listManager,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
-                                 AutoCompletionHelper autoCompletionHelper) {
+                                 AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper) {
 
 
         if(viewLauncher == null) {
@@ -141,6 +146,10 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         }
         if(autoCompletionHelper == null) {
             throw new IllegalArgumentException("'autoCompletionHelper' must not be null");
+        }
+
+        if(locationFinderHelper == null) {
+            throw new IllegalArgumentException("'locationFinderHelper' must not be null");
         }
 
         this.viewLauncher = viewLauncher;
@@ -182,6 +191,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     public ObservableArrayList<Item, Integer> getItems() {
         return items;
     }
+
     /**
      * Gets the command to be executed when the view's add button is pressed
      */
@@ -233,14 +243,28 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
      */
     public void itemsSwapped(int position1, int position2) {
 
+        setLocationOnItemSwapped(position1);
+
         Item item1 = items.get(position1);
         Item item2 = items.get(position2);
 
         item1.setOrder(position2);
         item2.setOrder(position1);
 
+
         listManager.saveListItem(listId, item1);
         listManager.saveListItem(listId, item2);
+
+    }
+
+    public void setLocationOnItemSwapped(int pos){
+
+        Item item = items.get(pos);
+
+        item.setLocation(locationFinderHelper.getLastLocation());
+        listManager.saveListItem(listId, item);
+
+
     }
 
     @Override

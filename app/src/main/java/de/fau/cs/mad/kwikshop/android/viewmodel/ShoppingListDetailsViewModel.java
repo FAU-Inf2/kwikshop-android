@@ -13,8 +13,8 @@ import java.util.TimeZone;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;

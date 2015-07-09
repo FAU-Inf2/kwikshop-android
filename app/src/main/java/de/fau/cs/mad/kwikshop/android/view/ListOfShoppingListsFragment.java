@@ -10,12 +10,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import dagger.ObjectGraph;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ListOfShoppingListsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
-import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 
 /**
  * Fragment for list of shopping lists
@@ -52,7 +52,7 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
         // get view model (injected using dagger)
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         viewModel = objectGraph.get(ListOfShoppingListsViewModel.class);
         viewModel.setListener(this);
 

@@ -7,15 +7,16 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
-import de.fau.cs.mad.kwikshop.android.common.Group;
-import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.LastLocation;
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
+import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 
@@ -135,6 +136,7 @@ public class ListStorageFragment extends Fragment {
             int m = m_LocalListStorage.createList();
             ShoppingList list = m_LocalListStorage.loadList(m);
             list.setName(context.getString(R.string.descr_my_first_shopping_list));
+            list.setLastModifiedDate(new Date());
 
             Group defaultGroup = m_GroupStorage.getDefaultValue();
 

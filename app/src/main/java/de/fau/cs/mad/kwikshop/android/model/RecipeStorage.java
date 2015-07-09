@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 
 public class RecipeStorage implements ListStorage<Recipe> {

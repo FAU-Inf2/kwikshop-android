@@ -1,7 +1,5 @@
 package de.fau.cs.mad.kwikshop.android.model.messages;
 
-import de.fau.cs.mad.kwikshop.android.common.Item;
-
 public class ReminderTimeIsOverEvent {
 
     private int itemId;

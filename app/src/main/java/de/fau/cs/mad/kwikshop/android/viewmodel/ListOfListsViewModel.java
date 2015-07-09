@@ -1,8 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
+import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
@@ -50,7 +48,7 @@ public abstract class ListOfListsViewModel<TList extends DomainListObject> exten
         return this.lists;
     }
 
-    private void setLists(final ObservableArrayList<TList, Integer> value) {
+    protected void setLists(final ObservableArrayList<TList, Integer> value) {
         if (value != lists) {
             ObservableArrayList<TList, Integer> oldValue = this.lists;
             this.lists = value;
@@ -68,16 +66,7 @@ public abstract class ListOfListsViewModel<TList extends DomainListObject> exten
     public void onEventMainThread(ItemChangedEvent ev) {
 
         if (ev.getListType() == getListType()) {
-            switch (ev.getChangeType()) {
-
-                case Deleted:
-                case Added:
-                    reloadList(ev.getListId());
-                    break;
-
-                default:
-                    break;
-            }
+            reloadList(ev.getListId());
         }
     }
 

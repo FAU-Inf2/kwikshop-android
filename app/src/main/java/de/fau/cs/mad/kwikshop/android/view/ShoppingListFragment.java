@@ -3,16 +3,12 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 //import android.app.Fragment;
 
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
@@ -21,7 +17,6 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ListAdapter;
 import android.support.v4.app.Fragment;
@@ -33,7 +28,6 @@ import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.dragdrop.OnItemMovedListener;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 
 
@@ -41,7 +35,6 @@ import butterknife.ButterKnife;
 import butterknife.*;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.*;
 import de.fau.cs.mad.kwikshop.android.model.*;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
@@ -51,7 +44,8 @@ import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
-import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.greenrobot.event.EventBus;
 
 
@@ -126,7 +120,7 @@ public class ShoppingListFragment
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ButterKnife.inject(this, rootView);
 
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         DisplayHelper displayHelper = objectGraph.get(DisplayHelper.class);
         viewModel = objectGraph.get(ShoppingListViewModel.class);
         autoCompletion = objectGraph.get(AutoCompletionHelper.class);
@@ -196,8 +190,6 @@ public class ShoppingListFragment
                 //IMPORTANT: reenable events of the observable list after drag and drop has finished
                 viewModel.getItems().enableEvents();
 
-
-                viewModel.setLocationOnStartingShopping();
             }
         });
 

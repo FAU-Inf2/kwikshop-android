@@ -3,6 +3,8 @@ package de.fau.cs.mad.kwikshop.android.common;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import de.fau.cs.mad.kwikshop.common.Group;
+
 @DatabaseTable(tableName = "autoCompletionData")
 public class AutoCompletionData {
 

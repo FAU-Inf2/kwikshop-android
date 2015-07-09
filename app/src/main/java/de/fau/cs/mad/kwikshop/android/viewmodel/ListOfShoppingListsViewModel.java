@@ -1,19 +1,24 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 
+import java.util.Collections;
+
 import javax.inject.Inject;
 
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
 public class ListOfShoppingListsViewModel extends ListOfListsViewModel<ShoppingList> {
 
+    //needs to be static because it is accessed indirectly in the constructor of the super-class
+    private static final ListLastModifiedDateComparator<ShoppingList> listComparator = new ListLastModifiedDateComparator<>();
 
     // backing fields for properties
 
@@ -58,6 +63,12 @@ public class ListOfShoppingListsViewModel extends ListOfListsViewModel<ShoppingL
         return this.selectShoppingListDetailsCommand;
     }
 
+    @Override
+    protected void setLists(final ObservableArrayList<ShoppingList, Integer> value) {
+
+        super.setLists(value);
+        Collections.sort(value, listComparator);
+    }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(ShoppingListChangedEvent ev) {
@@ -93,5 +104,12 @@ public class ListOfShoppingListsViewModel extends ListOfListsViewModel<ShoppingL
     protected ListType getListType() {
         return ListType.ShoppingList;
     }
+
+    @Override
+    protected void reloadList(int listId) {
+        super.reloadList(listId);
+        Collections.sort(getLists(), listComparator);
+    }
+
 
 }

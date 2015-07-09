@@ -1,19 +1,20 @@
-package de.fau.cs.mad.kwikshop.android.viewmodel.di;
+package de.fau.cs.mad.kwikshop.android.di;
 
 import android.app.Activity;
 import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
-import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
-import de.fau.cs.mad.kwikshop.android.common.Group;
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.RecipeManager;
+import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.ShoppingListManager;
@@ -22,7 +23,7 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.view.DefaultResourceProvider;
 import de.fau.cs.mad.kwikshop.android.view.DefaultViewLauncher;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
-import de.fau.cs.mad.kwikshop.android.view.ItemDetailsFragment;
+import de.fau.cs.mad.kwikshop.android.view.ShoppingListItemDetailsFragment;
 import de.fau.cs.mad.kwikshop.android.view.RecipeItemDetailsFragment;
 import de.fau.cs.mad.kwikshop.android.view.ReminderFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.AddRecipeToShoppingListViewModel;
@@ -46,19 +47,19 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         AutoCompletionHelper.class,
         LocationFinderHelper.class,
         AddRecipeToShoppingListViewModel.class,
-        ItemDetailsFragment.class,
+        ShoppingListItemDetailsFragment.class,
         RecipeItemDetailsFragment.class,
         ReminderFragment.class
 },
         library = true)
 @SuppressWarnings("unused")
-public class KwikShopViewModelModule {
+public class KwikShopModule {
 
     private static ListManager<ShoppingList> shoppingListManager;
     private static ListManager<Recipe> recipeManager;
     private final Activity currentActivity;
 
-    public KwikShopViewModelModule(Activity currentActivity) {
+    public KwikShopModule(Activity currentActivity) {
         this.currentActivity = currentActivity;
     }
 
@@ -143,5 +144,10 @@ public class KwikShopViewModelModule {
             recipeManager = new RecipeManager(listStorage);
         }
         return recipeManager;
+    }
+
+    @Provides
+    public RegularlyRepeatHelper provideRegularlyRepeatHelper(Context context) {
+        return RegularlyRepeatHelper.getRegularlyRepeatHelper(context);
     }
 }

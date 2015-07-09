@@ -3,12 +3,13 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import javax.inject.Inject;
 
-import de.fau.cs.mad.kwikshop.android.common.Group;
-import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
+import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
@@ -25,9 +26,9 @@ public class RecipeViewModel extends ListViewModel<Recipe> {
     public RecipeViewModel(ViewLauncher viewLauncher, ListManager<Recipe> recipeManager,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
-                                 AutoCompletionHelper autoCompletionHelper) {
+                                 AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper) {
 
-        super(viewLauncher, recipeManager, unitStorage, groupStorage, itemParser, displayHelper, autoCompletionHelper);
+        super(viewLauncher, recipeManager, unitStorage, groupStorage, itemParser, displayHelper, autoCompletionHelper, locationFinderHelper);
     }
 
 

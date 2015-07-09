@@ -2,14 +2,15 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import javax.inject.Inject;
 
-import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.DialogFinishedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
+import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ListIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
@@ -172,17 +173,19 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
 
     public void onEvent(DialogFinishedEvent event){
         Recipe recipe = event.getRecipe();
+        ItemMerger itemMerger = new ItemMerger(shoppingListManager);
         for(Item item : recipe.getItems()){
             Item newItem = new Item();
             newItem.setName(item.getName());
-            newItem.setAmount((int)event.getScaledValue() * item.getAmount());
+            newItem.setAmount((int) event.getScaledValue() * item.getAmount());
             newItem.setBrand(item.getBrand());
             newItem.setComment(item.getComment());
             newItem.setHighlight(item.isHighlight());
             newItem.setGroup(item.getGroup());
             newItem.setUnit(item.getUnit());
-
-            shoppingListManager.addListItem(shoppingListId, newItem);
+            if(!itemMerger.mergeItem(shoppingListId, newItem)) {
+                shoppingListManager.addListItem(shoppingListId, newItem);
+            }
         }
         viewLauncher.showShoppingList(shoppingListId);
     }

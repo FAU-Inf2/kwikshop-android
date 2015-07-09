@@ -1,5 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
+import de.fau.cs.mad.kwikshop.common.Recipe;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.NumberPicker;

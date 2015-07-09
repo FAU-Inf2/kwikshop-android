@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 
 public class ListOfRecipesRowAdapter extends ArrayAdapter<Recipe> implements ObservableArrayList.Listener<Recipe> {

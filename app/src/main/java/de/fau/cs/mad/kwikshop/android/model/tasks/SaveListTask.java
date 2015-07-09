@@ -2,8 +2,7 @@ package de.fau.cs.mad.kwikshop.android.model.tasks;
 
 import android.os.AsyncTask;
 
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
+import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 
 public class SaveListTask<TList extends DomainListObject> extends AsyncTask<TList, Void, Void> {

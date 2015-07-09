@@ -164,78 +164,84 @@
 
             </LinearLayout>
 
-            <Space
-                android:layout_width="wrap_content"
+            <LinearLayout android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="25dp"/>
+                android:orientation="vertical" android:visibility="gone"
+                android:id="@+id/repeat_container">
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/regular_repeat"
-                android:id="@+id/repeat_checkBox"
-                android:layout_marginLeft="25dp"
-                android:checked="false" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="1"
-                android:layout_marginLeft="30dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="@string/every"
-                    android:id="@+id/every_textview"
-                    android:layout_marginLeft="30dp"
-                    android:textColor="@color/primary_text"
-                    android:gravity="center_vertical"/>
-
-                <NumberPicker
-                    android:layout_width="wrap_content"
-                    android:layout_height="76dp"
-                    android:id="@+id/repeat_numberPicker"
-                    android:layout_marginLeft="20dp" />
-
-                <Spinner
-                    android:layout_width="135dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/repeat_spinner"
-                    android:focusable="false"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center_vertical" />
-
-            </TableRow>
-
-            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="25dp">
-                <RadioButton
+                <Space
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/from_now_on"
-                    android:id="@+id/repeat_fromNow_radioButton"
-                    android:checked="true" />
-                <RadioButton
+                    android:layout_marginBottom="25dp"/>
+
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/from_time_of_next_purchase_on"
-                    android:id="@+id/repeat_fromNextPurchase_radioButton"
+                    android:text="@string/regular_repeat"
+                    android:id="@+id/repeat_checkBox"
+                    android:layout_marginLeft="25dp"
                     android:checked="false" />
-            </RadioGroup>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="1"
+                    android:layout_marginLeft="30dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="@string/every"
+                        android:id="@+id/every_textview"
+                        android:layout_marginLeft="30dp"
+                        android:textColor="@color/primary_text"
+                        android:gravity="center_vertical"/>
+
+                    <NumberPicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="76dp"
+                        android:id="@+id/repeat_numberPicker"
+                        android:layout_marginLeft="20dp" />
+
+                    <Spinner
+                        android:layout_width="135dp"
+                        android:layout_height="match_parent"
+                        android:id="@+id/repeat_spinner"
+                        android:focusable="false"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical" />
+
+                </TableRow>
+
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="25dp">
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/from_now_on"
+                        android:id="@+id/repeat_fromNow_radioButton"
+                        android:checked="true" />
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/from_time_of_next_purchase_on"
+                        android:id="@+id/repeat_fromNextPurchase_radioButton"
+                        android:checked="false" />
+                </RadioGroup>
 
 
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="50dp"/>
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="50dp"/>
 
 
-
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

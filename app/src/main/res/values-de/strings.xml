@@ -192,8 +192,7 @@
     <string name="title_activity_recipe_item_details">Rezept-Element-Details</string>
     <string name="supermarket_finder_progress_dialog_message">Suche Supermärkte in der Nähe. </string>
     <string name="itemdetails_last_bought">Gefunden bei</string>
-    <string name="date_days">Tage</string>
-    <string name="date_today">Heute</string>
+    <string name="today">Heute</string>
     <string name="day">Tag</string>
 
 </resources>

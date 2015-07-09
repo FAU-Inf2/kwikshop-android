@@ -271,19 +271,23 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         LastLocation location = getListManager().getListItem(listId, itemId).getLocation();
 
         if(location != null){
-            long days = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - location.getTimestamp());
-            String duration;
-            if(days < 1){
-                duration =  getString(R.string.today);
+            if(location.getName() != null){
+                long days = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - location.getTimestamp());
+                String duration;
+                if(days < 1){
+                    duration =  getString(R.string.today);
+                } else {
+                    if(days == 1)
+                        duration = days + " " + getString(R.string.day);
+                    else
+                        duration = days + " " + getString(R.string.days);
+                }
+                lastbought_location.setText(location.getName() + " (" + duration + ") ");
             } else {
-                if(days == 1)
-                    duration = days + " " + getString(R.string.day);
-                 else
-                    duration = days + " " + getString(R.string.days);
+                // hide information about last bought item
+                ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);
             }
-            lastbought_location.setText(location.getName() + " (" + duration + ") ");
         } else {
-
             // hide information about last bought item
             ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);
         }

@@ -3,8 +3,8 @@ package de.fau.cs.mad.kwikshop.android.model;
 import android.content.Context;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.Group;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Unit;
 
 public class DefaultDataProvider {
 

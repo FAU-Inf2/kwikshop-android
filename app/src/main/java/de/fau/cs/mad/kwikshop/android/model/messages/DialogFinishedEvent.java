@@ -1,6 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.model.messages;
 
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.Recipe;
 
 public class DialogFinishedEvent {
 

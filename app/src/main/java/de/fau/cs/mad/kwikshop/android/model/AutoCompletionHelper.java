@@ -11,7 +11,7 @@ import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
-import de.fau.cs.mad.kwikshop.android.common.Group;
+import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;

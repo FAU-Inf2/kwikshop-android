@@ -1,5 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.common;
 
+import de.fau.cs.mad.kwikshop.common.Account;
+
 public class LocalAccount extends Account {
     @Override
     public Boolean delete() {

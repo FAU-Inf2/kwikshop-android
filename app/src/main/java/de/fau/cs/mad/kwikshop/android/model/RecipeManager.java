@@ -2,7 +2,7 @@ package de.fau.cs.mad.kwikshop.android.model;
 
 import javax.inject.Inject;
 
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.ItemNotFoundException;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.ListNotFoundException;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;

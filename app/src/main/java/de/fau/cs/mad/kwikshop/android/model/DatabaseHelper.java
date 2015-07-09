@@ -13,16 +13,16 @@ import android.util.Log;
 
 import java.sql.SQLException;
 
-import de.fau.cs.mad.kwikshop.android.common.AccountID;
+import de.fau.cs.mad.kwikshop.common.AccountID;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
-import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
-import de.fau.cs.mad.kwikshop.android.common.Group;
-import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.LastLocation;
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
+import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.Unit;
 
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper{

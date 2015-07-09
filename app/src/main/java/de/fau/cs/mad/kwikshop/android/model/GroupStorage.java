@@ -2,7 +2,7 @@ package de.fau.cs.mad.kwikshop.android.model;
 
 import com.j256.ormlite.dao.Dao;
 
-import de.fau.cs.mad.kwikshop.android.common.Group;
+import de.fau.cs.mad.kwikshop.common.Group;
 
 public class GroupStorage extends SimpleStorageBase<Group> {
 

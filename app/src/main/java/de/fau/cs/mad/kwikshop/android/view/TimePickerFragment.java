@@ -8,7 +8,7 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
-import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
+import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.greenrobot.event.EventBus;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {

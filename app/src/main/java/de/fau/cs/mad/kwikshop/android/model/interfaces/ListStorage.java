@@ -2,8 +2,6 @@ package de.fau.cs.mad.kwikshop.android.model.interfaces;
 
 import java.util.List;
 
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-
 public interface ListStorage<TList> {
 
   /** 

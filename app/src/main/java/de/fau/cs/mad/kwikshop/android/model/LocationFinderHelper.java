@@ -60,12 +60,14 @@ public class LocationFinderHelper implements LocationListener {
     }
 
 
-    public LastLocation setLocation(){
+    public LastLocation getLastLocation(){
 
         LastLocation lastLocation = new LastLocation();
         lastLocation.setLatitude(latitude);
+
         lastLocation.setLongitude(longitude);
         lastLocation.setVisited(true);
+
         lastLocation.setAddress(getAddressConverted());
 
         return lastLocation;

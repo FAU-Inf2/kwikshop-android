@@ -6,6 +6,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -190,8 +191,6 @@ public class ShoppingListFragment
                 //IMPORTANT: reenable events of the observable list after drag and drop has finished
                 viewModel.getItems().enableEvents();
 
-
-                viewModel.setLocationOnStartingShopping();
             }
         });
 

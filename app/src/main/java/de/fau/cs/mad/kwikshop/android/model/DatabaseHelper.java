@@ -30,7 +30,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 22; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 23; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -153,6 +153,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         }
 
         if(oldVersion < 23) {
+            //add next upgrade step here
+            try {
+                TableUtils.createTable(connectionSource,LastLocation.class);
+                itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN location LASTLOCATION;");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if(oldVersion < 24){
             //add next upgrade step here
         }
 

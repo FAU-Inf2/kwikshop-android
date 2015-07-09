@@ -71,6 +71,9 @@ public class Item {
     @DatabaseField(canBeNull = true)
     private Date remindAtDate;
 
+    @DatabaseField(foreign = true, canBeNull = true)
+    private LastLocation location;
+
     public Item() {
         // Default no-arg constructor for generating Items, required for ORMLite
     }
@@ -87,6 +90,7 @@ public class Item {
         this.comment = item.comment;
         this.group = item.group;
         this.unit = item.unit;
+        this.location = item.location;
     }
 
     public int getId() {
@@ -231,6 +235,15 @@ public class Item {
         this.remindFromNextPurchaseOn = remindFromNextPurchaseOn;
     }
 
+
+    public LastLocation getLocation() {
+        return location;
+    }
+
+    public void setLocation(LastLocation location) {
+        this.location = location;
+    }
+
     public void setRemindFromNowOn(boolean remindFromNowOn) {
         this.remindFromNextPurchaseOn = !remindFromNowOn;
     }
@@ -251,4 +264,5 @@ public class Item {
     public int hashCode() {
         return id;
     }
+
 }

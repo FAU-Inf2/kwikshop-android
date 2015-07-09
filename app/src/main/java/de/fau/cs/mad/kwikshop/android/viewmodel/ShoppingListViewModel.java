@@ -22,7 +22,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 
 public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
-    private final LocationFinderHelper locationFinderHelper;
+
     private final ResourceProvider resourceProvider;
 
     private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
@@ -52,17 +52,14 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
 
         super(viewLauncher, shoppingListManager, unitStorage, groupStorage, itemParser, displayHelper,
-                autoCompletionHelper);
+                autoCompletionHelper, locationFinderHelper);
 
-        if(locationFinderHelper == null) {
-            throw new IllegalArgumentException("'locationFinderHelper' must not be null");
-        }
 
         if (resourceProvider == null) {
             throw new IllegalArgumentException("'resourceProvider' must not be null");
         }
 
-        this.locationFinderHelper = locationFinderHelper;
+
         this.resourceProvider = resourceProvider;
     }
 
@@ -106,17 +103,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         return deleteItemCommand;
     }
 
-
-    public void setLocationOnStartingShopping(){
-
-        ShoppingList shoppingList = listManager.getList(this.listId);
-
-        if(!shoppingList.getLocation().isVisited()){
-            shoppingList.setLocation(locationFinderHelper.setLocation());
-            listManager.saveList(listId);
-        }
-
-    }
 
     public void boughtItemsSwapped(int position1, int position2) {
 

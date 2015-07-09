@@ -1,9 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
-import android.widget.Button;
-import android.widget.NumberPicker;
-
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.Recipe;
 
 public interface ViewLauncher {
 

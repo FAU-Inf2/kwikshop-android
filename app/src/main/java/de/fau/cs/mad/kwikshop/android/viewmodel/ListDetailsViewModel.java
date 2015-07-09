@@ -3,7 +3,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
+import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;

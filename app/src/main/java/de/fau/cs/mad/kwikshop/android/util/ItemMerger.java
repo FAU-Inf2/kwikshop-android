@@ -1,9 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.util;
 
-import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
-import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 
 public class ItemMerger<TList extends DomainListObject> {

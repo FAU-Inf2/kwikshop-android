@@ -1,6 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.model.messages;
 
-import de.fau.cs.mad.kwikshop.android.common.Item;
+import de.fau.cs.mad.kwikshop.common.Item;
 
 public class RecipeItemLoadedEvent {
 

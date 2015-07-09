@@ -1,6 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
-import de.fau.cs.mad.kwikshop.android.common.Item;
+import de.fau.cs.mad.kwikshop.common.Item;
 
 /**
  * IdExtractor implementation for use in ObservableArrayList

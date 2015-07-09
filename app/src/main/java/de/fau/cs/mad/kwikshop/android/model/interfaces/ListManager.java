@@ -2,8 +2,8 @@ package de.fau.cs.mad.kwikshop.android.model.interfaces;
 
 import java.util.Collection;
 
-import de.fau.cs.mad.kwikshop.android.common.*;
-import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 
 /**
  * Interface for storage to access lists of items (Shopping lists, recipes etc)

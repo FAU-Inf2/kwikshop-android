@@ -3,7 +3,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import java.util.Comparator;
 import java.util.Date;
 
-import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
+import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 
 public class ListLastModifiedDateComparator<TList extends DomainListObject> implements Comparator<TList> {
 

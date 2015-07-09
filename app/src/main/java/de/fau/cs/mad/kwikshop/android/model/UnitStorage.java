@@ -2,8 +2,7 @@ package de.fau.cs.mad.kwikshop.android.model;
 
 import com.j256.ormlite.dao.Dao;
 
-import de.fau.cs.mad.kwikshop.android.common.Unit;
-import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
+import de.fau.cs.mad.kwikshop.common.Unit;
 
 public class UnitStorage extends SimpleStorageBase<Unit> {
 

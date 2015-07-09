@@ -10,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.view.ViewTreeObserver;
@@ -18,7 +17,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.ListAdapter;
 import android.support.v4.app.Fragment;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -80,8 +78,6 @@ public class ShoppingListFragment
 
     @InjectView(R.id.quickAdd)
     RelativeLayout quickAddLayout;
-    @InjectView(R.id.cartCounter)
-    TextView cartCounter;
 
 
     public static ShoppingListFragment newInstance(int listID) {
@@ -127,7 +123,7 @@ public class ShoppingListFragment
         viewModel.getItems().addListener(this);
         //viewModel.getBoughtItems().addListener(this);
         //sizeBoughtItems = viewModel.getBoughtItems().size();
-        cartCounter.setText(String.valueOf(sizeBoughtItems));
+        //cartCounter.setText(String.valueOf(sizeBoughtItems));
 
         //ObservableArrayList list = (ObservableArrayList)viewModel.getItems().clone();
         //list.addAll(viewModel.getBoughtItems());
@@ -151,13 +147,13 @@ public class ShoppingListFragment
                                 try {
                                     //Item item = viewModel.getItems().get(position);
                                     Item item = shoppingListAdapter.getItem(position);
-                                    Toast.makeText(getActivity(), "Name:"+item.getName()+" - Pos:"+position, Toast.LENGTH_LONG).show();
                                     command.execute(item.getId());
                                 } catch (IndexOutOfBoundsException ex) {
                                     //nothing to do
                                 }
                             }
                         }
+                        viewModel.moveBoughtItemsToEnd();
                     }
                 });
 
@@ -178,7 +174,6 @@ public class ShoppingListFragment
                         //disable events on observable list during drag&drop to prevent lag
                         //IMPORTANT: Make sure to reenable events afterwards
                         viewModel.getItems().disableEvents();
-                        updateViewOnDrag(view);
                         shoppingListView.startDragging(position);
                         return true;
                     }
@@ -188,9 +183,11 @@ public class ShoppingListFragment
         shoppingListView.setOnItemMovedListener(new OnItemMovedListener() {
             @Override
             public void onItemMoved(int i, int i1) {
-                viewModel.itemsSwapped(i, i1);
+
                 //IMPORTANT: reenable events of the observable list after drag and drop has finished
                 viewModel.getItems().enableEvents();
+                viewModel.itemsSwapped(i, i1);
+                viewModel.moveBoughtItemsToEnd();
 
                 viewModel.setLocationOnStartingShopping();
             }
@@ -239,14 +236,6 @@ public class ShoppingListFragment
         }
 
         return rootView;
-    }
-
-    // When the user starts dragging an Item, we want to hide the bottom space / top ShoppingList divider
-    private void updateViewOnDrag(View v){
-        if(v == null)
-            return;
-
-        //TODO
     }
 
     @Override
@@ -391,7 +380,7 @@ public class ShoppingListFragment
         //justifyListViewHeightBasedOnChildren(shoppingListView);
 
         //sizeBoughtItems = viewModel.getBoughtItems().size();
-        cartCounter.setText(String.valueOf(sizeBoughtItems));
+        //cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
 
     @Override
@@ -399,6 +388,6 @@ public class ShoppingListFragment
         //justifyListViewHeightBasedOnChildren(shoppingListView);
 
         //sizeBoughtItems = viewModel.getBoughtItems().size();
-        cartCounter.setText(String.valueOf(sizeBoughtItems));
+        //cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
 }

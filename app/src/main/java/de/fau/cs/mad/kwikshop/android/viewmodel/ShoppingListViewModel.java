@@ -28,7 +28,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     //private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
     private ItemSortType itemSortType = ItemSortType.MANUAL;
 
-
     private final Command<Integer> toggleIsBoughtCommand = new Command<Integer>() {
         @Override
         public void execute(Integer parameter) { toggleIsBoughtCommandExecute(parameter); }
@@ -85,11 +84,13 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
      * Sets how items are supposed to be sorted for the current shopping list
      */
     public void setItemSortType(ItemSortType value) {
-        if(value != itemSortType) {
-            itemSortType = value;
-            Collections.sort(getItems(), new ItemComparator(displayHelper, value));
-            listener.onItemSortTypeChanged();
-        }
+        this.itemSortType = value;
+    }
+
+    public void sortItems() {
+        Collections.sort(getItems(), new ItemComparator(displayHelper, getItemSortType()));
+        updateOrderOfItems();
+        listener.onItemSortTypeChanged();
     }
 
     /**
@@ -107,14 +108,14 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
 
-    public void setLocationOnStartingShopping(){
+    public void setLocationOnStartingShopping() {
 
         ShoppingList shoppingList = listManager.getList(this.listId);
 
         if(shoppingList.getLocation() != null) {
             if (!shoppingList.getLocation().isVisited()) {
                 shoppingList.setLocation(locationFinderHelper.setLocation());
-            listManager.saveList(listId);
+                listManager.saveList(listId);
             }
         }
     }
@@ -124,8 +125,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         Item item1 = items.get(position1);
         Item item2 = items.get(position2);
 
-        item1.setOrder(position2);
-        item2.setOrder(position1);
+        item1.setOrder(position1);
+        item2.setOrder(position2);
 
         listManager.saveListItem(listId, item1);
         listManager.saveListItem(listId, item2);
@@ -155,6 +156,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 case PropertiesModified:
                     Item item = listManager.getListItem(listId, event.getItemId());
                     updateItem(item);
+                    //sortItems();
+                    updateOrderOfItems();
                     break;
                 case Deleted:
                     items.removeById(event.getItemId());
@@ -206,11 +209,14 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     @Override
     protected void loadList() {
-
         ShoppingList shoppingList = listManager.getList(this.listId);
 
+        for(Item item : shoppingList.getItems()) {
+            updateItem(item);
+        }
+
         int  sortTypeInt = shoppingList.getSortTypeInt();
-        switch (sortTypeInt){
+        switch (sortTypeInt) {
             case 1:
                 setItemSortType(ItemSortType.GROUP);
                 break;
@@ -221,13 +227,10 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 setItemSortType(ItemSortType.MANUAL);
                 break;
         }
-
+        sortItems();
+        moveBoughtItemsToEnd();
 
         this.setName(shoppingList.getName());
-
-        for(Item item : shoppingList.getItems()) {
-            updateItem(item);
-        }
     }
 
     private void toggleIsBoughtCommandExecute(final int id) {
@@ -272,9 +275,35 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         listManager.deleteItem(listId, id);
     }
 
+    public int getBoughtItemsCount() {
+        ListIterator li = items.listIterator(items.size());
+        int i = 0;
+
+        while(li.hasPrevious()) {
+            Item item = (Item)li.previous();
+            if(item.isBought())
+                i++;
+            else
+                break;
+        }
+        return i;
+    }
+
+    public void moveBoughtItemsToEnd() {
+        Collections.sort(getItems(), new ItemComparator(displayHelper, ItemSortType.BOUGHTITEMS));
+    }
+
     private void updateItem(Item item) {
-        //items.removeById(item.getId());
-        items.setOrAddById(item);
+        if(item.isBought()) { // Add bought items at the end of the list
+            if (items.size() - 1 >= 0) {
+                items.setOrAddById(items.size() - 1, item);
+            } else {
+                items.setOrAddById(item);
+            }
+        } else {
+            items.setOrAddById(item);
+        }
+
         items.notifyItemModified(item);
     }
 

@@ -162,7 +162,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
 
     /**
-     * Gets the shopping list items that have not yet been bought
+     * Gets the shopping list items
      */
     public ObservableArrayList<Item, Integer> getItems() {
         return items;
@@ -214,7 +214,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     }
 
     /**
-     * To be called by teh view after two items have been swapped
+     * To be called by the view after two items have been swapped
      */
     public void itemsSwapped(int position1, int position2) {
 
@@ -228,6 +228,21 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         listManager.saveListItem(listId, item2);
     }
 
+    /**
+     * Updates the current order of Items
+     */
+    public void updateOrderOfItems() {
+        int i = 0;
+        for(Item item: getItems()) {
+            item.setOrder(i);
+
+            // Break on first bought Item - we don't care about their order.
+            if(item.isBought())
+                break;
+
+            i++;
+        }
+    }
 
     @Override
     public void onDestroyView() {

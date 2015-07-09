@@ -7,12 +7,13 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
+
+import org.w3c.dom.Text;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -75,7 +76,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
-
         ViewHolder viewHolder;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.fragment_shoppinglist_row, parent, false);
@@ -85,21 +85,48 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder = (ViewHolder) view.getTag();
         }
 
+
         Item item = items.get(position);
 
-        if (!item.isBought()) {
+        boolean showDivider = false;
+        Item before = null;
+        if(position > 0)
+            before = items.get(position-1);
 
+        // Determine if we need to show the divider. We also need 'before2' if the user drags
+        // an Item into the cart to make sure that only one divider is displayed.
+        if(before != null) {
+            Item before2 = null;
+            if(position > 1)
+                before2 = items.get(position-2);
+
+            if(before2 != null) {
+                if (!before2.isBought() && !before.isBought() && item.isBought())
+                    showDivider = true;
+            } else
+                if (!before.isBought() && item.isBought())
+                    showDivider = true;
+                else
+                    showDivider = false;
+        } else if(item.isBought())
+            showDivider = true;
+
+        if(showDivider) {
+            viewHolder.tableRow_divider_table.setVisibility(View.VISIBLE);
+            //viewHolder.textView_CartCounter.setText(shoppingListViewModel.getBoughtItemsCount());
+        } else {
+            viewHolder.tableRow_divider_table.setVisibility(View.GONE);
         }
 
         // If item is highlighted, set color to red
         if (item.isHighlight()) {
-            viewHolder.textView_ShoppingListName.setTextColor(Color.RED);
+            viewHolder.textView_Name.setTextColor(Color.RED);
         } else {
-            viewHolder.textView_ShoppingListName.setTextColor(context.getResources().getColor(R.color.primary_text));
+            viewHolder.textView_Name.setTextColor(context.getResources().getColor(R.color.primary_text));
         }
 
         // Item name
-        viewHolder.textView_ShoppingListName.setText(item.getName());
+        viewHolder.textView_Name.setText(item.getName() + " - " + item.getOrder());
 
         // Comment
         String comment = item.getComment();
@@ -167,8 +194,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         // Specific changes for bought Items
         if (item.isBought()) {
-            viewHolder.textView_ShoppingListName.setPaintFlags(viewHolder.textView_ShoppingListName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
+            viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
 
             // Hide details - maybe allow the user to toggle this
             viewHolder.textView_Comment.setVisibility(View.GONE);
@@ -198,8 +225,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.imageView_delete.setOnClickListener(null);
 
             // Remove strikethrough, reset text appearance
-            viewHolder.textView_ShoppingListName.setPaintFlags(viewHolder.textView_ShoppingListName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-            viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_Medium);
+            viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+            viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_Medium);
         }
 
         return view;
@@ -260,8 +287,14 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             ButterKnife.inject(this, view);
         }
 
+        @InjectView(R.id.divider_table)
+        TableRow tableRow_divider_table;
+
+        @InjectView(R.id.textView_cartCounter)
+        TextView textView_CartCounter;
+
         @InjectView(R.id.list_row_textView_Main)
-        TextView textView_ShoppingListName;
+        TextView textView_Name;
 
         @InjectView(R.id.list_row_textView_comment)
         TextView textView_Comment;

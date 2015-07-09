@@ -35,10 +35,12 @@ import butterknife.InjectView;
 import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
+import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Unit;
-import de.fau.cs.mad.kwikshop.android.common.Group;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
@@ -46,7 +48,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
-import de.fau.cs.mad.kwikshop.android.viewmodel.di.KwikShopViewModelModule;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -170,7 +172,7 @@ public class ManageUnitsFragment
     private void setupUI() {
 
 
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopViewModelModule(getActivity()));
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         //populate unit picker with units from database
         DisplayHelper displayHelper = new DisplayHelper(getActivity());
 
@@ -238,7 +240,7 @@ public class ManageUnitsFragment
             }
         });
 
-        new ButtonBinding(button_qaunit, viewModel.getQuickAddUnitCommand(spinnerArrayAdapter));
+        new ButtonBinding(button_qaunit, viewModel.getQuickAddUnitCommand(spinnerArrayAdapter, quickAddUnit));
 
         //TODO: quick add long click
 
@@ -250,7 +252,7 @@ public class ManageUnitsFragment
                 synchronized (viewModel) {
                     // If the event is a key-down event on the "enter" button
                     if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                        viewModel.getQuickAddUnitCommand(spinnerArrayAdapter).execute(null);
+                        viewModel.getQuickAddUnitCommand(spinnerArrayAdapter, quickAddUnit).execute(null);
                        // updateSpinnerList();
                         return true;
                     }
@@ -260,7 +262,7 @@ public class ManageUnitsFragment
         });
         quickAddUnit.setTokenizer(new SpaceTokenizer());
 
-        new ButtonBinding(button_qagroup, viewModel.getQuickAddGroupCommand(groupSpinnerArrayAdapter));
+        new ButtonBinding(button_qagroup, viewModel.getQuickAddGroupCommand(groupSpinnerArrayAdapter, quickAddGroup));
 
         //TODO: quick add long click
 
@@ -272,7 +274,7 @@ public class ManageUnitsFragment
                 synchronized (viewModel) {
                     // If the event is a key-down event on the "enter" button
                     if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                        viewModel.getQuickAddGroupCommand(groupSpinnerArrayAdapter).execute(null);
+                        viewModel.getQuickAddGroupCommand(groupSpinnerArrayAdapter, quickAddGroup).execute(null);
                         // updateSpinnerList();
                         return true;
                     }

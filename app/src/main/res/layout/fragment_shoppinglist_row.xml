@@ -6,6 +6,62 @@
               android:orientation="vertical"
               android:paddingBottom="5dp">
 
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/divider_table"
+        android:background="@color/accent_material_light"
+        android:weightSum="1"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/shoppinglist_divider_textview"
+            android:id="@+id/textview_divider"
+            android:layout_marginLeft="20dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/text_icons"
+            android:singleLine="true"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:layout_marginRight="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                android:text="0"
+                android:id="@+id/textView_cartCounter"
+                android:layout_marginLeft="140dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:textColor="@color/text_icons" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                android:text="@string/items"
+                android:id="@+id/textview_items"
+                android:textColor="@color/text_icons"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginLeft="10dp"
+                android:textAlignment="textEnd"
+                android:layout_gravity="center_vertical|right" />
+        </LinearLayout>
+
+    </TableRow>
+
     <!--Header to be displayed when sorting by group (will be set to hidden/visible in list adapter)-->
     <TableRow
         android:id="@+id/group_header"
@@ -26,7 +82,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="5dp">
+        android:paddingTop="5dp"
+        android:id="@+id/listentry">
 
         <!--Main content (name, amount/unit and a delete button)-->
         <RelativeLayout

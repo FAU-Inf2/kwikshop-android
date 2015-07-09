@@ -328,6 +328,14 @@ public class ObservableArrayList<T, K> extends ArrayList<T> {
 
     }
 
+    public T setOrAddById(int position, T item) {
+        K id = idExtractor.getId(item);
+        removeById(id);
+        add(position, item);
+        return item;
+
+    }
+
     public synchronized void enableEvents() {
         enableEvents = true;
     }

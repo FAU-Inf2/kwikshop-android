@@ -1,11 +1,5 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-
 import android.os.Bundle;
 
 
@@ -31,7 +25,7 @@ public class SettingActivity extends BaseActivity {
 
     public void replaceFragments() {
         // Create new fragment and transaction
-        ManageUnitsGroupsFragment newFragment = new ManageUnitsGroupsFragment();
+        ManageUnitGroupFragment newFragment = new ManageUnitGroupFragment();
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // Replace whatever is in the fragment_container view with this fragment,

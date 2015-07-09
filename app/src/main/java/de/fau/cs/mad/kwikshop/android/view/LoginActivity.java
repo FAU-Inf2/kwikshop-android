@@ -2,11 +2,9 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 import android.accounts.Account;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +27,7 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
 import org.glassfish.jersey.client.proxy.WebResourceFactory;
+
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
@@ -38,7 +37,6 @@ import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
-
 import de.fau.cs.mad.kwikshop.common.UserResource;
 
 public class LoginActivity extends FragmentActivity implements

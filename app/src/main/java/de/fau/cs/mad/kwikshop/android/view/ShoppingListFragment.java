@@ -10,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.view.ViewTreeObserver;
@@ -18,11 +17,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.ListAdapter;
 import android.support.v4.app.Fragment;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
@@ -70,9 +68,6 @@ public class ShoppingListFragment
     @InjectView(R.id.list_shoppingList)
     DynamicListView shoppingListView;
 
-    @InjectView(R.id.list_shoppingListBought)
-    DynamicListView shoppingListViewBought;
-
     @InjectView(R.id.textView_quickAdd)
     MultiAutoCompleteTextView textView_QuickAdd;
 
@@ -82,13 +77,8 @@ public class ShoppingListFragment
     @InjectView(R.id.button_quickAdd)
     View button_QuickAdd;
 
-    @InjectView(R.id.shoppinglist_scrollview)
-    ScrollView scrollView;
-
     @InjectView(R.id.quickAdd)
     RelativeLayout quickAddLayout;
-    @InjectView(R.id.cartCounter)
-    TextView cartCounter;
 
 
     public static ShoppingListFragment newInstance(int listID) {
@@ -134,11 +124,14 @@ public class ShoppingListFragment
 
         viewModel.addListener(this);
         viewModel.getItems().addListener(this);
-        viewModel.getBoughtItems().addListener(this);
-        sizeBoughtItems = viewModel.getBoughtItems().size();
-        cartCounter.setText(String.valueOf(sizeBoughtItems));
+        //viewModel.getBoughtItems().addListener(this);
+        //sizeBoughtItems = viewModel.getBoughtItems().size();
+        //cartCounter.setText(String.valueOf(sizeBoughtItems));
 
-        ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
+        //ObservableArrayList list = (ObservableArrayList)viewModel.getItems().clone();
+        //list.addAll(viewModel.getBoughtItems());
+
+        final ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);
         shoppingListView.setAdapter(shoppingListAdapter);
 
@@ -146,7 +139,7 @@ public class ShoppingListFragment
                 shoppingListView,
                 viewModel.getSelectItemCommand());
 
-        TimedUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
+        /*TimedUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
                 new OnDismissCallback() {
                     @Override
                     public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
@@ -155,7 +148,8 @@ public class ShoppingListFragment
 
                             if (command.getCanExecute()) {
                                 try {
-                                    Item item = viewModel.getItems().get(position);
+                                    //Item item = viewModel.getItems().get(position);
+                                    Item item = shoppingListAdapter.getItem(position);
                                     command.execute(item.getId());
                                     viewModel.setLocationOnItemBought(item.getId(), googleBrowserApiKey);
                                 } catch (IndexOutOfBoundsException ex) {
@@ -163,25 +157,50 @@ public class ShoppingListFragment
                                 }
                             }
                         }
+                        viewModel.moveBoughtItemsToEnd();
                     }
                 });
 
         swipeUndoAdapter.setAbsListView(shoppingListView);
         swipeUndoAdapter.setTimeoutMs(1000);
         shoppingListView.setAdapter(swipeUndoAdapter);
-        shoppingListView.enableSimpleSwipeUndo();
+        shoppingListView.enableSimpleSwipeUndo();*/
+
+        shoppingListView.enableSwipeToDismiss(
+                new OnDismissCallback() {
+                    @Override
+                    public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
+                        Command<Integer> command = viewModel.getToggleIsBoughtCommand();
+                        for (int position : reverseSortedPositions) {
+                            if (command.getCanExecute()) {
+                                try {
+                                    //Item item = viewModel.getItems().get(position);
+                                    Item item = shoppingListAdapter.getItem(position);
+                                    command.execute(item.getId());
+                                } catch (IndexOutOfBoundsException ex) {
+                                    //nothing to do
+                                }
+                            }
+                        }
+                        viewModel.moveBoughtItemsToEnd();
+                    }
+                }
+        );
+
         shoppingListView.enableDragAndDrop();
         shoppingListView.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(final AdapterView<?> parent, final View view,
                                                    final int position, final long id) {
+                        // Bought Items are not draggable
+                        if(shoppingListAdapter.getItem(position).isBought())
+                            return true;
+
                         //disable events on observable list during drag&drop to prevent lag
                         //IMPORTANT: Make sure to reenable events afterwards
                         viewModel.getItems().disableEvents();
-                        scrollView.requestDisallowInterceptTouchEvent(true);
                         shoppingListView.startDragging(position);
-                        //sets value of the Spinner to the first entry, in this case Manual
                         return true;
                     }
                 }
@@ -190,42 +209,17 @@ public class ShoppingListFragment
         shoppingListView.setOnItemMovedListener(new OnItemMovedListener() {
             @Override
             public void onItemMoved(int i, int i1) {
-                viewModel.itemsSwapped(i, i1);
                 //IMPORTANT: reenable events of the observable list after drag and drop has finished
                 viewModel.getItems().enableEvents();
-
+                viewModel.itemsSwapped(i, i1);
+                viewModel.moveBoughtItemsToEnd();
             }
         });
 
-        justifyListViewHeightBasedOnChildren(shoppingListView);
+        View footer = inflater.inflate(R.layout.listview_footerspace, container, false);
+        shoppingListView.addFooterView(footer);
 
-
-        shoppingListViewBought.enableSwipeToDismiss(
-                new OnDismissCallback() {
-                    @Override
-                    public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
-                        Command<Integer> command = viewModel.getToggleIsBoughtCommand();
-                        for (int position : reverseSortedPositions) {
-                            if (command.getCanExecute()) {
-                                Item item = viewModel.getBoughtItems().get(position);
-                                command.execute(item.getId());
-                            }
-                        }
-                    }
-                });
-
-
-        shoppingListViewBought.setAdapter(new ShoppingListAdapter(getActivity(), viewModel, viewModel.getBoughtItems(), displayHelper));
-        shoppingListViewBought.setOnItemMovedListener(new OnItemMovedListener() {
-            @Override
-            public void onItemMoved(int i, int i1) {
-                viewModel.boughtItemsSwapped(i, i1);
-            }
-        });
-        shoppingListViewBought.enableDragAndDrop();
-
-        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
-
+        //justifyListViewHeightBasedOnChildren(shoppingListView);
 
         new ButtonBinding(floatingActionButton, viewModel.getAddItemCommand(), false);
         new ButtonBinding(button_QuickAdd, viewModel.getQuickAddCommand());
@@ -256,7 +250,6 @@ public class ShoppingListFragment
         disableFloatingButtonWhileSoftKeyboardIsShown();
 
 
-
         // shopping mode is on
         if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getActivity())){
              // remove quick add view
@@ -267,10 +260,6 @@ public class ShoppingListFragment
 
         return rootView;
     }
-
-
-
-
 
     @Override
     public void onResume() {
@@ -329,7 +318,7 @@ public class ShoppingListFragment
 
     }
 
-    public void justifyListViewHeightBasedOnChildren(DynamicListView listView) {
+    /*public void justifyListViewHeightBasedOnChildren(DynamicListView listView) {
         ListAdapter adapter = listView.getAdapter();
 
         if (adapter == null) {
@@ -351,7 +340,7 @@ public class ShoppingListFragment
         par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
         listView.setLayoutParams(par);
         listView.requestLayout();
-    }
+    }*/
 
     @SuppressWarnings("unused")
     public void onEvent(AutoCompletionHistoryDeletedEvent event) {
@@ -400,33 +389,28 @@ public class ShoppingListFragment
 
     @Override
     public void onItemAdded(Item newItem) {
-
         //TODO: It might make sense to move autocompletion handling to the view model
         //IMPORTANT
         if(autoCompletion != null) {
             refreshQuickAddAutoCompletion();
         }
 
-        justifyListViewHeightBasedOnChildren(shoppingListView);
-        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
+        //justifyListViewHeightBasedOnChildren(shoppingListView);
     }
 
     @Override
     public void onItemRemoved(Item removedItem) {
-        justifyListViewHeightBasedOnChildren(shoppingListView);
-        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
-        sizeBoughtItems = viewModel.getBoughtItems().size();
-        cartCounter.setText(String.valueOf(sizeBoughtItems));
+        //justifyListViewHeightBasedOnChildren(shoppingListView);
+
+        //sizeBoughtItems = viewModel.getBoughtItems().size();
+        //cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
 
     @Override
     public void onItemModified(Item modifiedItem) {
-        justifyListViewHeightBasedOnChildren(shoppingListView);
-        justifyListViewHeightBasedOnChildren(shoppingListViewBought);
-        sizeBoughtItems = viewModel.getBoughtItems().size();
-        cartCounter.setText(String.valueOf(sizeBoughtItems));
+        //justifyListViewHeightBasedOnChildren(shoppingListView);
+
+        //sizeBoughtItems = viewModel.getBoughtItems().size();
+        //cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
-
-
-
 }

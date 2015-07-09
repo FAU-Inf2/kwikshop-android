@@ -52,7 +52,7 @@ public class RecipeViewModel extends ListViewModel<Recipe> {
 
             switch (event.getChangeType()) {
 
-                case  Added:
+                case Added:
                 case PropertiesModified:
                     loadList();
                     break;

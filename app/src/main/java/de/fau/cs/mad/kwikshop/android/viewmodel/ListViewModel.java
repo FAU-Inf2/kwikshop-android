@@ -1,7 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,7 +224,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
      */
     public void itemsSwapped(int position1, int position2) {
 
-
+        setLocationOnItemSwapped(position1);
 
         Item item1 = items.get(position1);
         Item item2 = items.get(position2);
@@ -239,7 +238,15 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
     }
 
+    public void setLocationOnItemSwapped(int pos){
 
+        Item item = items.get(pos);
+
+        item.setLocation(locationFinderHelper.getLastLocation());
+        listManager.saveListItem(listId, item);
+
+
+    }
 
     @Override
     public void onDestroyView() {

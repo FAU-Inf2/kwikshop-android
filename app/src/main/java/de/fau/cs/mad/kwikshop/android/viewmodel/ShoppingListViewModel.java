@@ -125,7 +125,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     public void setLocationOnItemBought(final int id){
 
-        new AsyncTask<Void, Void, Void>() {
+         new AsyncTask<Void, Void, Void>() {
 
             Item item;
             LastLocation location;
@@ -142,7 +142,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
             @Override
             protected Void doInBackground(Void... params) {
-                location = locationFinderHelper.getLastLocation();
+                if(listManager.getListItem(listId, id).getLocation().getLatitude() == 0.0)
+                    location = locationFinderHelper.getLastLocation();
                 return null;
             }
 
@@ -153,7 +154,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 listManager.saveListItem(listId, item);
             }
         }.execute();
-
     }
 
 

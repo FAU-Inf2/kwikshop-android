@@ -242,6 +242,8 @@ public class ManageUnitsFragment
 
         new ButtonBinding(button_qaunit, viewModel.getQuickAddUnitCommand(spinnerArrayAdapter, quickAddUnit));
 
+
+
         //TODO: quick add long click
 
         quickAddUnit.setFocusableInTouchMode(true);

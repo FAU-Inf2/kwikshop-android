@@ -35,7 +35,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     private final ResourceProvider resourceProvider;
 
-    //private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
+    private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
     private ItemSortType itemSortType = ItemSortType.MANUAL;
 
     private final Command<Integer> toggleIsBoughtCommand = new Command<Integer>() {
@@ -97,7 +97,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     public void sortItems() {
         Collections.sort(getItems(), new ItemComparator(displayHelper, getItemSortType()));
         moveBoughtItemsToEnd();
-        updateOrderOfItems();
+        //updateOrderOfItems();
         listener.onItemSortTypeChanged();
     }
 
@@ -207,12 +207,12 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     Item item = listManager.getListItem(listId, event.getItemId());
                     updateItem(item);
                     sortItems();
-                    updateOrderOfItems();
+                    //updateOrderOfItems();
                     break;
                 case PropertiesModified:
                     Item item1 = listManager.getListItem(listId, event.getItemId());
                     updateItem(item1);
-                    updateOrderOfItems();
+                    //updateOrderOfItems();
                     break;
                 case Deleted:
                     items.removeById(event.getItemId());

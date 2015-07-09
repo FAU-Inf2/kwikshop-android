@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
 import de.fau.cs.mad.kwikshop.common.Recipe;
+import android.widget.ArrayAdapter;
 
 public interface ViewLauncher {
 
@@ -35,4 +36,8 @@ public interface ViewLauncher {
     void showReminderView(int listId, int itemID);
 
     void showAddRecipeDialog(final Recipe recipe);
+
+    void notifyUnitSpinnerChange(ArrayAdapter<String> adapter);
+
+    void notifyGroupSpinnerChange(ArrayAdapter<String> adapter);
 }

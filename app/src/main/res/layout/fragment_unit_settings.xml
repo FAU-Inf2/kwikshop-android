@@ -61,10 +61,20 @@
             android:layout_height="wrap_content"
             android:id="@+id/unit_spinner"
             android:focusable="false"
-            android:gravity="center_vertical"
             android:layout_below="@+id/quickAddUnit"
             android:layout_alignParentLeft="true"
-            android:layout_alignRight="@+id/quickAddUnit" />
+            android:layout_toLeftOf="@+id/button_qaunit"
+            android:layout_alignBottom="@+id/button_qrunit" />
+
+        <ImageButton
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/button_qrunit"
+            android:layout_width="40dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_item_delete"
+            android:layout_below="@+id/quickAddUnit"
+            android:layout_toRightOf="@+id/unit_spinner" />
 
     </RelativeLayout>
 
@@ -102,7 +112,15 @@
         android:layout_gravity="right"
         android:layout_below="@+id/unit_spinner"
         android:layout_alignRight="@+id/quickAddUnit"
-        android:layout_weight="0.12">
+        android:layout_weight="0.04">
+
+        <MultiAutoCompleteTextView
+            android:id="@+id/quickAddGroup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:inputType="textCapSentences" />
 
         <ImageButton
             style="?android:attr/borderlessButtonStyle"
@@ -116,14 +134,6 @@
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_action_add" />
 
-        <MultiAutoCompleteTextView
-            android:id="@+id/quickAddGroup"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:inputType="textCapSentences" />
-
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -131,7 +141,18 @@
             android:focusable="false"
             android:layout_below="@+id/button_qagroup"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/button_qagroup" />
+
+        <ImageButton
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/button_qrgroup"
+            android:layout_width="40dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_item_delete"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/quickAddGroup" />
 
     </RelativeLayout>
 

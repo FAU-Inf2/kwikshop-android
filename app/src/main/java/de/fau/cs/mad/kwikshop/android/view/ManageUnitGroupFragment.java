@@ -5,6 +5,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,25 +26,37 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnTextChanged;
+import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
+import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Unit;
+import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
+import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.greenrobot.event.EventBus;
 
 /**
  * Created by Nicolas on 01/07/2015.
  */
-public class ManageUnitsGroupsFragment extends Fragment {
+public class ManageUnitGroupFragment
+        extends Fragment
+        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Unit> {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
+    private ShoppingListViewModel viewModel;
     @InjectView(R.id.quickAddUnit)
     MultiAutoCompleteTextView quickAddUnit;
     @InjectView(R.id.quickAddGroup)
-    MultiAutoCompleteTextView getQuickAddGroup;
+    MultiAutoCompleteTextView quickAddGroup;
     @InjectView(R.id.button_qaunit)
     ImageButton button_qaunit;
     @InjectView(R.id.button_qagroup)
@@ -52,16 +65,22 @@ public class ManageUnitsGroupsFragment extends Fragment {
     Spinner unit_spinner;
     @InjectView(R.id.group_spinner)
     Spinner group_spinner;
+
     private List<Unit> units;
     private int selectedUnitIndex = -1;
     private List<Group> groups;
     private int selectedGroupIndex = -1;
+    private boolean updatingViewModel;
 
+    ArrayAdapter<String> spinnerArrayAdapter;
+    private int listID = -1;
+
+    private AutoCompletionHelper autoCompletion;
     private View rootView;
 
-    public static ManageUnitsGroupsFragment newInstance() {
+    public static ManageUnitGroupFragment newInstance() {
 
-        ManageUnitsGroupsFragment fragment = new ManageUnitsGroupsFragment();
+        ManageUnitGroupFragment fragment = new ManageUnitGroupFragment();
         return fragment;
 
     }
@@ -145,9 +164,13 @@ public class ManageUnitsGroupsFragment extends Fragment {
     private void setupUI() {
 
 
-
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         //populate unit picker with units from database
         DisplayHelper displayHelper = new DisplayHelper(getActivity());
+
+        viewModel = objectGraph.get(ShoppingListViewModel.class);
+        autoCompletion = objectGraph.get(AutoCompletionHelper.class);
+
 
 
         //get units from the database and sort them by name
@@ -166,7 +189,7 @@ public class ManageUnitsGroupsFragment extends Fragment {
             unitNames.add(displayHelper.getDisplayName(u));
         }
 
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
+        spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         unit_spinner.setAdapter(spinnerArrayAdapter);
         unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -179,6 +202,8 @@ public class ManageUnitsGroupsFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {
                 selectedUnitIndex = -1;
             }
+
+
         });
 
 
@@ -192,7 +217,7 @@ public class ManageUnitsGroupsFragment extends Fragment {
             groupNames.add(displayHelper.getDisplayName(g));
         }
 
-        ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groupNames);
+        final ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groupNames);
         groupSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         group_spinner.setAdapter(groupSpinnerArrayAdapter);
         group_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -207,7 +232,7 @@ public class ManageUnitsGroupsFragment extends Fragment {
             }
         });
 
-      /*  new ButtonBinding(button_qaunit, viewModel.getQuickAddCommand());
+        new ButtonBinding(button_qaunit, viewModel.getQuickAddUnitCommand(spinnerArrayAdapter, quickAddUnit));
 
         //TODO: quick add long click
 
@@ -219,7 +244,8 @@ public class ManageUnitsGroupsFragment extends Fragment {
                 synchronized (viewModel) {
                     // If the event is a key-down event on the "enter" button
                     if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                        viewModel.getQuickAddCommand().execute(null);
+                        viewModel.getQuickAddUnitCommand(spinnerArrayAdapter, quickAddUnit).execute(null);
+                       // updateSpinnerList();
                         return true;
                     }
                     return false;
@@ -227,8 +253,100 @@ public class ManageUnitsGroupsFragment extends Fragment {
             }
         });
         quickAddUnit.setTokenizer(new SpaceTokenizer());
-*/
 
+        new ButtonBinding(button_qagroup, viewModel.getQuickAddGroupCommand(groupSpinnerArrayAdapter, quickAddGroup));
+
+        //TODO: quick add long click
+
+        quickAddGroup.setFocusableInTouchMode(true);
+        quickAddGroup.requestFocus();
+
+        quickAddGroup.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                synchronized (viewModel) {
+                    // If the event is a key-down event on the "enter" button
+                    if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                        viewModel.getQuickAddGroupCommand(groupSpinnerArrayAdapter, quickAddGroup).execute(null);
+                        // updateSpinnerList();
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        });
+        quickAddGroup.setTokenizer(new SpaceTokenizer());
+        RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity()); // to make sure it is initialized when needed in ShoppingListViewModel
+
+        refreshQuickAddAutoCompletion();
+
+
+    }
+    /**
+     * call this method to initialize or refresh the data used by QuickAdd's auto completion
+     */
+    private void refreshQuickAddAutoCompletion() {
+        quickAddUnit.setAdapter(autoCompletion.getNameAdapter(getActivity()));
+    }
+
+    @Override
+    public void onItemSortTypeChanged() {
+
+    }
+    @OnTextChanged(R.id.quickAddUnit)
+    @SuppressWarnings("unused")
+    public void textView_ManageUnits_OnTextChanged(CharSequence s) {
+
+        synchronized (viewModel) {
+            //send updated value for shopping list name to the view model
+            updatingViewModel = true;
+            viewModel.setQuickAddText(s != null ? s.toString() : "");
+            updatingViewModel = false;
+        }
+    }
+
+    @Override
+    public void onQuickAddTextChanged() {
+        if (!updatingViewModel) {
+            this.quickAddUnit.setText(viewModel.getQuickAddText());
+        }
+    }
+    @Override
+    public void onNameChanged(String value) {
+        // set title for actionbar
+        getActivity().setTitle(viewModel.getName());
+    }
+    @Override
+    public void onFinish() {
+
+    }
+    @Override
+    public void onItemModified(Unit modifiedItem) {
+
+    }
+    @Override
+    public void onItemAdded(Unit newItem) {
+
+        //TODO: It might make sense to move autocompletion handling to the view model
+        //IMPORTANT
+        if(autoCompletion != null) {
+            refreshQuickAddAutoCompletion();
+        }
+
+
+    }
+    @OnTextChanged(R.id.quickAddGroup)
+    @SuppressWarnings("unused")
+    public void textView_ManageGroups_OnTextChanged(CharSequence s) {
+
+        synchronized (viewModel) {
+            //send updated value for shopping list name to the view model
+            updatingViewModel = true;
+            viewModel.setQuickAddText(s != null ? s.toString() : "");
+            updatingViewModel = false;
+        }
+    }
+    @Override
+    public void onItemRemoved(Unit removedItem) {
 
     }
 

@@ -1,12 +1,18 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import android.os.AsyncTask;
+import android.widget.ArrayAdapter;
+import android.widget.MultiAutoCompleteTextView;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
@@ -20,6 +26,7 @@ import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ItemIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
@@ -76,10 +83,13 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     protected final ItemParser itemParser;
     protected final DisplayHelper displayHelper;
     protected final AutoCompletionHelper autoCompletionHelper;
-    protected final ItemMerger itemMerger;
-    protected final LocationFinderHelper locationFinderHelper;
+    protected ItemMerger itemMerger;
+    protected LocationFinderHelper locationFinderHelper;
 
-
+    public ArrayAdapter<String> unitAdapter;
+    public ArrayAdapter<String> groupAdapter;
+    public MultiAutoCompleteTextView qAddUnit;
+    public MultiAutoCompleteTextView qAddGroup;
     protected int listId;
     protected final ObservableArrayList<Item, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
     private String quickAddText = "";
@@ -92,6 +102,38 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     private final Command<Void> quickAddCommand = new Command<Void>() {
         @Override
         public void execute(Void parameter) {quickAddCommandExecute();
+        }
+    };
+    private final Command<Void> quickAddUnitCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+
+            quickAddUnitsCommandExecute(unitAdapter, qAddUnit);
+
+        }
+    };
+    private final Command<Void> quickAddGroupCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+
+            quickAddGroupsCommandExecute(groupAdapter, qAddGroup);
+
+        }
+    };
+    private final Command<Void> quickRemoveGroupCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+
+            quickRemoveGroupCommandExecute(groupAdapter);
+
+        }
+    };
+    private final Command<Void> quickRemoveUnitCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+
+            quickRemoveUnitCommandExecute(unitAdapter);
+
         }
     };
     private final Command<Integer> selectItemCommand = new Command<Integer>() {
@@ -139,8 +181,6 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         this.itemParser = itemParser;
         this.displayHelper = displayHelper;
         this.autoCompletionHelper = autoCompletionHelper;
-        this.itemMerger = new ItemMerger(listManager);
-        this.locationFinderHelper = locationFinderHelper;
     }
 
 
@@ -187,7 +227,10 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     public Command<Void> getQuickAddCommand() {
         return quickAddCommand;
     }
-
+    public Command<Void> getQuickAddUnitCommand(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddUnit) { this.unitAdapter = adapter; this.qAddUnit = qAddUnit; return quickAddUnitCommand;}
+    public Command<Void> getQuickAddGroupCommand(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddGroup) { this.groupAdapter = adapter; this.qAddGroup = qAddGroup; return quickAddGroupCommand;}
+    public Command<Void> getQuickRemoveGroupCommand(ArrayAdapter<String> adapter){this.groupAdapter = adapter; return quickRemoveGroupCommand;}
+    public Command<Void> getQuickRemoveUnitCommand(ArrayAdapter<String> adapter){this.unitAdapter = adapter; return quickRemoveUnitCommand;}
     /**
      * Gets the command to be executed when a shopping list item in the view is selected
      */
@@ -311,9 +354,9 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
                         } else {
                             newItem.setGroup(group);
                         }
-                        if(!itemMerger.mergeItem(listId, newItem)) {
-                            listManager.addListItem(listId, newItem);
-                        }
+
+                        listManager.addListItem(listId, newItem);
+
                         autoCompletionHelper.offerName(newItem.getName());
                     }
 
@@ -325,7 +368,59 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
     }
 
+    protected void quickAddUnitsCommandExecute(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddUnit){
 
+
+
+
+        final String text = getQuickAddText();
+        //reset quick add text
+
+
+
+                if (!StringHelper.isNullOrWhiteSpace(text)) {
+                    Unit newUnit = new Unit();
+                    newUnit.setName(text);
+                    unitStorage.addItem(newUnit);
+
+                    autoCompletionHelper.offerName(newUnit.getName());
+
+                    viewLauncher.notifyUnitSpinnerChange(adapter);
+                }
+
+
+        qAddUnit.setText("");
+    }
+    protected void quickAddGroupsCommandExecute(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddGroup){
+
+
+
+
+        final String text = getQuickAddText();
+        //reset quick add text
+        setQuickAddText("");
+
+
+        if (!StringHelper.isNullOrWhiteSpace(text)) {
+            Group newGroup = new Group();
+            newGroup.setName(text);
+            groupStorage.addItem(newGroup);
+
+            autoCompletionHelper.offerName(newGroup.getName());
+
+            viewLauncher.notifyGroupSpinnerChange(adapter);
+        }
+
+        qAddGroup.setText("");
+
+    }
+
+    protected void quickRemoveUnitCommandExecute(ArrayAdapter<String> adapter){
+
+    }
+    protected void quickRemoveGroupCommandExecute(ArrayAdapter<String> adapter){
+
+    }
     protected abstract void loadList();
 
     protected abstract void addItemCommandExecute();

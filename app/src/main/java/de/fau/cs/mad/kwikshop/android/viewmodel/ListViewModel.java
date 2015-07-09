@@ -81,6 +81,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     protected final DisplayHelper displayHelper;
     protected final AutoCompletionHelper autoCompletionHelper;
     protected final ItemMerger itemMerger;
+    protected final LocationFinderHelper locationFinderHelper;
+
 
     protected int listId;
     protected final ObservableArrayList<Item, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
@@ -105,7 +107,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     public ListViewModel(ViewLauncher viewLauncher, ListManager<TList> listManager,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
-                                 AutoCompletionHelper autoCompletionHelper) {
+                                 AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper) {
 
 
         if(viewLauncher == null) {
@@ -130,6 +132,10 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
             throw new IllegalArgumentException("'autoCompletionHelper' must not be null");
         }
 
+        if(locationFinderHelper == null) {
+            throw new IllegalArgumentException("'locationFinderHelper' must not be null");
+        }
+
         this.viewLauncher = viewLauncher;
         this.listManager = listManager;
         this.unitStorage = unitStorage;
@@ -138,6 +144,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         this.displayHelper = displayHelper;
         this.autoCompletionHelper = autoCompletionHelper;
         this.itemMerger = new ItemMerger(listManager);
+        this.locationFinderHelper = locationFinderHelper;
     }
 
 
@@ -221,14 +228,28 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
      */
     public void itemsSwapped(int position1, int position2) {
 
+        setLocationOnItemSwapped(position1);
+
         Item item1 = items.get(position1);
         Item item2 = items.get(position2);
 
         item1.setOrder(position2);
         item2.setOrder(position1);
 
+
         listManager.saveListItem(listId, item1);
         listManager.saveListItem(listId, item2);
+
+    }
+
+    public void setLocationOnItemSwapped(int pos){
+
+        Item item = items.get(pos);
+
+        item.setLocation(locationFinderHelper.getLastLocation());
+        listManager.saveListItem(listId, item);
+
+
     }
 
     @Override

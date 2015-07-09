@@ -17,6 +17,7 @@ import de.fau.cs.mad.kwikshop.android.model.ItemParser;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
+import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -79,6 +80,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     protected final ItemParser itemParser;
     protected final DisplayHelper displayHelper;
     protected final AutoCompletionHelper autoCompletionHelper;
+    protected final ItemMerger itemMerger;
 
     protected int listId;
     protected final ObservableArrayList<Item, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
@@ -135,6 +137,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         this.itemParser = itemParser;
         this.displayHelper = displayHelper;
         this.autoCompletionHelper = autoCompletionHelper;
+        this.itemMerger = new ItemMerger(listManager);
     }
 
 
@@ -275,9 +278,9 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
                         } else {
                             newItem.setGroup(group);
                         }
-
-                        listManager.addListItem(listId, newItem);
-
+                        if(!itemMerger.mergeItem(listId, newItem)) {
+                            listManager.addListItem(listId, newItem);
+                        }
                         autoCompletionHelper.offerName(newItem.getName());
                     }
 

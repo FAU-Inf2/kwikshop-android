@@ -33,6 +33,7 @@ import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
+import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
@@ -43,6 +44,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDelete
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
+import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.greenrobot.event.EventBus;
@@ -227,8 +229,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         autoCompletionHelper.offerNameAndGroup(item.getName(), item.getGroup());
         autoCompletionHelper.offerBrand(item.getBrand());
 
+        ItemMerger itemMerger = new ItemMerger((ListManager) getListManager());
         if(isNewItem) {
-            getListManager().addListItem(listId, item);
+            if(!itemMerger.mergeItem(listId, item)) {
+                getListManager().addListItem(listId, item);
+            }
         } else {
             getListManager().saveListItem(listId, item);
         }

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.CalendarEventDate;
@@ -135,6 +136,7 @@ public class ListStorageFragment extends Fragment {
             int m = m_LocalListStorage.createList();
             ShoppingList list = m_LocalListStorage.loadList(m);
             list.setName(context.getString(R.string.descr_my_first_shopping_list));
+            list.setLastModifiedDate(new Date());
 
             Group defaultGroup = m_GroupStorage.getDefaultValue();
 

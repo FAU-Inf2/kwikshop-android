@@ -8,9 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
+
+import org.w3c.dom.Text;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -38,7 +41,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
      */
     public ShoppingListAdapter(Context context, ShoppingListViewModel shoppingListViewModel, ObservableArrayList<Item, Integer> items,
                                DisplayHelper displayHelper) {
-
         super(items);
 
         if(context == null) {
@@ -62,7 +64,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         this.items = items;
         this.displayHelper = displayHelper;
 
-        items.addListener(this);
+        shoppingListViewModel.getItems().addListener(this);
     }
 
 
@@ -74,7 +76,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
-
         ViewHolder viewHolder;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.fragment_shoppinglist_row, parent, false);
@@ -84,24 +85,48 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder = (ViewHolder) view.getTag();
         }
 
+
         Item item = items.get(position);
 
-        if (!item.isBought()) {
-            viewHolder.textView_ShoppingListName.setPaintFlags(viewHolder.textView_ShoppingListName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-            viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_Medium);
-        }
+        boolean showDivider = false;
+        Item before = null;
+        if(position > 0)
+            before = items.get(position-1);
 
-        //if item is highlighted, set color to red
-        if (item.isHighlight()) {
-            viewHolder.textView_ShoppingListName.setTextColor(Color.RED);
+        // Determine if we need to show the divider. We also need 'before2' if the user drags
+        // an Item into the cart to make sure that only one divider is displayed.
+        if(before != null) {
+            Item before2 = null;
+            if(position > 1)
+                before2 = items.get(position-2);
+
+            if(before2 != null) {
+                if (!before2.isBought() && !before.isBought() && item.isBought())
+                    showDivider = true;
+            } else
+                if (!before.isBought() && item.isBought())
+                    showDivider = true;
+                else
+                    showDivider = false;
+        } else if(item.isBought())
+            showDivider = true;
+
+        if(showDivider) {
+            viewHolder.tableRow_divider_table.setVisibility(View.VISIBLE);
+            //viewHolder.textView_CartCounter.setText(shoppingListViewModel.getBoughtItemsCount());
         } else {
-            viewHolder.textView_ShoppingListName.setTextColor(context.getResources().getColor(R.color.primary_text));
+            viewHolder.tableRow_divider_table.setVisibility(View.GONE);
         }
 
-        // Fill Views
+        // If item is highlighted, set color to red
+        if (item.isHighlight()) {
+            viewHolder.textView_Name.setTextColor(Color.RED);
+        } else {
+            viewHolder.textView_Name.setTextColor(context.getResources().getColor(R.color.primary_text));
+        }
 
         // Item name
-        viewHolder.textView_ShoppingListName.setText(item.getName());
+        viewHolder.textView_Name.setText(item.getName());
 
         // Comment
         String comment = item.getComment();
@@ -112,7 +137,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_Comment.setText(comment);
         }
 
-        // brand
+        // Brand
         String brand = item.getBrand();
         if (StringHelper.isNullOrWhiteSpace(brand)) {
             viewHolder.textView_Brand.setVisibility(View.GONE);
@@ -121,7 +146,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_Brand.setText(brand);
         }
 
-        // amount
+        // Amount
         int amount = item.getAmount();
         boolean unitIsPieces = false;
         if (item.getUnit() != null) {
@@ -141,9 +166,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_Amount.setText(String.format("%d %s", amount, unitStr));
         }
 
-        // group header
-        //determine if we have to show the group header (above the item)
-        //TODO: that's super ugly
+        // Group header
+        // determine if we have to show the group header (above the item)
+        // TODO: that's super ugly
         boolean showHeader = false;
         if (shoppingListViewModel.getItemSortType() == ItemSortType.GROUP && !item.isBought()) {
             if (position == 0) {
@@ -169,8 +194,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         // Specific changes for bought Items
         if (item.isBought()) {
-            viewHolder.textView_ShoppingListName.setPaintFlags(viewHolder.textView_ShoppingListName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            viewHolder.textView_ShoppingListName.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
+            viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
 
             // Hide details - maybe allow the user to toggle this
             viewHolder.textView_Comment.setVisibility(View.GONE);
@@ -189,14 +214,19 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                         return;
                     }
                     Command<Integer> deleteCommand = shoppingListViewModel.getDeleteItemCommand();
-                    if(deleteCommand.getCanExecute()) {
+                    if (deleteCommand.getCanExecute()) {
                         deleteCommand.execute(itemId);
                     }
                 }
             });
         } else {
+            // Remove delete button
             viewHolder.imageView_delete.setVisibility(View.GONE);
             viewHolder.imageView_delete.setOnClickListener(null);
+
+            // Remove strikethrough, reset text appearance
+            viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+            viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_Medium);
         }
 
         return view;
@@ -225,18 +255,15 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         return view.findViewById(R.id.undo_row_undobutton);
     }
 
-//    // Used by drag and drop
-//    @Override
-//    public void swapItems(final int positionOne, final int positionTwo) {
-//
-//        items.disableEvents();
-//
-//        shoppingListViewModel.itemsSwapped(positionOne, positionTwo);
-//
-//        super.swapItems(positionOne, positionTwo);
-//
-//        items.enableEvents();
-//    }
+    // Used by drag and drop
+    /*@Override
+    public void swapItems(final int positionOne, final int positionTwo) {
+        Toast.makeText(context, "1:" + positionOne + " - 2:" + positionTwo, Toast.LENGTH_LONG).show();
+        items.disableEvents();
+        super.swapItems(positionOne, positionTwo);
+        shoppingListViewModel.itemsSwappedById(getItem(positionOne).getId(), getItem(positionTwo).getId());
+        items.enableEvents();
+   }*/
 
     @Override
     public void onItemAdded(Item newItem) {
@@ -260,8 +287,14 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             ButterKnife.inject(this, view);
         }
 
+        @InjectView(R.id.divider_table)
+        TableRow tableRow_divider_table;
+
+        @InjectView(R.id.textView_cartCounter)
+        TextView textView_CartCounter;
+
         @InjectView(R.id.list_row_textView_Main)
-        TextView textView_ShoppingListName;
+        TextView textView_Name;
 
         @InjectView(R.id.list_row_textView_comment)
         TextView textView_Comment;
@@ -280,6 +313,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         @InjectView(R.id.list_row_imageView_delete)
         ImageView imageView_delete;
+
     }
 
 }

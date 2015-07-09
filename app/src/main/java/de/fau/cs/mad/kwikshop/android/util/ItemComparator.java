@@ -28,6 +28,13 @@ public class ItemComparator implements Comparator<Item> {
         int res = 0;
 
         switch(comparatorType) {
+            case BOUGHTITEMS:
+                if(item1.isBought() && !item2.isBought())
+                    res = 1;
+                if(item2.isBought() && !item1.isBought())
+                    res = -1;
+                break;
+
             case MANUAL:
                 res = item1.getOrder() - item2.getOrder();
                 break;

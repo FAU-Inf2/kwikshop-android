@@ -28,9 +28,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     private final ResourceProvider resourceProvider;
 
-    private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
+    //private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
     private ItemSortType itemSortType = ItemSortType.MANUAL;
-
 
     private final Command<Integer> toggleIsBoughtCommand = new Command<Integer>() {
         @Override
@@ -70,9 +69,9 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     /**
      * Gets the shopping list items that have already been bought
      */
-    public ObservableArrayList<Item, Integer> getBoughtItems() {
+    /*public ObservableArrayList<Item, Integer> getBoughtItems() {
         return boughtItems;
-    }
+    }*/
 
     /**
      * Gets how items are supposed to be sorted for the current shopping list
@@ -85,18 +84,21 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
      * Sets how items are supposed to be sorted for the current shopping list
      */
     public void setItemSortType(ItemSortType value) {
-        if(value != itemSortType) {
-            itemSortType = value;
-            Collections.sort(getItems(), new ItemComparator(displayHelper, value));
-            listener.onItemSortTypeChanged();
-        }
+        this.itemSortType = value;
+    }
+
+    public void sortItems() {
+        Collections.sort(getItems(), new ItemComparator(displayHelper, getItemSortType()));
+        moveBoughtItemsToEnd();
+        updateOrderOfItems();
+        listener.onItemSortTypeChanged();
     }
 
     /**
      * Gets the command to be executed when a item in the view is swiped
      */
     public Command<Integer> getToggleIsBoughtCommand() {
-        return  toggleIsBoughtCommand;
+        return toggleIsBoughtCommand;
     }
 
     /**
@@ -107,13 +109,13 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
 
-    public void boughtItemsSwapped(int position1, int position2) {
+    @Override
+    public void itemsSwapped(int position1, int position2) {
+        Item item1 = items.get(position1);
+        Item item2 = items.get(position2);
 
-        Item item1 = boughtItems.get(position1);
-        Item item2 = boughtItems.get(position2);
-
-        item1.setOrder(position2);
-        item2.setOrder(position1);
+        item1.setOrder(position1);
+        item2.setOrder(position2);
 
         listManager.saveListItem(listId, item1);
         listManager.saveListItem(listId, item2);
@@ -124,7 +126,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     public void onEventMainThread(ShoppingListChangedEvent event) {
 
         if(event.getListId() == this.listId) {
-
             if(event.getChangeType() == ListChangeType.Deleted) {
                 finish();
             } else if(event.getChangeType() == ListChangeType.PropertiesModified) {
@@ -140,15 +141,19 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
             switch (event.getChangeType()) {
 
-                case  Added:
-                case PropertiesModified:
+                case Added: // TODO: New Items are moved to the top of the list, maybe we want to change this
                     Item item = listManager.getListItem(listId, event.getItemId());
                     updateItem(item);
-
+                    sortItems();
+                    updateOrderOfItems();
                     break;
-                case  Deleted:
+                case PropertiesModified:
+                    Item item1 = listManager.getListItem(listId, event.getItemId());
+                    updateItem(item1);
+                    updateOrderOfItems();
+                    break;
+                case Deleted:
                     items.removeById(event.getItemId());
-                    boughtItems.removeById(event.getItemId());
                     break;
 
             }
@@ -179,6 +184,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     @SuppressWarnings("unused")
     public void onEventMainThread(ItemSortType sortType) {
         setItemSortType(sortType);
+        sortItems();
     }
 
 
@@ -197,11 +203,14 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     @Override
     protected void loadList() {
-
         ShoppingList shoppingList = listManager.getList(this.listId);
 
+        for(Item item : shoppingList.getItems()) {
+            updateItem(item);
+        }
+
         int  sortTypeInt = shoppingList.getSortTypeInt();
-        switch (sortTypeInt){
+        switch (sortTypeInt) {
             case 1:
                 setItemSortType(ItemSortType.GROUP);
                 break;
@@ -212,25 +221,19 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 setItemSortType(ItemSortType.MANUAL);
                 break;
         }
-
+        sortItems();
+        //moveBoughtItemsToEnd();
 
         this.setName(shoppingList.getName());
-
-        for(Item item : shoppingList.getItems()) {
-            updateItem(item);
-        }
     }
-
 
     private void toggleIsBoughtCommandExecute(final int id) {
         Item item = items.getById(id);
-        if(item == null) {
-            item = boughtItems.getById(id);
-        }
 
         if(item != null) {
 
             item.setBought(!item.isBought());
+
             if (item.isBought()) {
                 if (item.isRegularlyRepeatItem() && item.isRemindFromNextPurchaseOn() && item.getLastBought() == null) {
                     Calendar now = Calendar.getInstance();
@@ -263,28 +266,40 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
     private void deleteItemCommandExecute(final int id) {
-
         listManager.deleteItem(listId, id);
     }
 
-    private void updateItem(Item item) {
+    public int getBoughtItemsCount() {
+        ListIterator li = items.listIterator(items.size());
+        int i = 0;
 
-        int id = item.getId();
-
-        if(item.isBought()) {
-
-            items.removeById(id);
-            boughtItems.setOrAddById(item);
-            boughtItems.notifyItemModifiedById(id);
-
-        } else {
-
-            boughtItems.removeById(id);
-            items.setOrAddById(item);
-
-            boughtItems.notifyItemModifiedById(id);
-
+        while(li.hasPrevious()) {
+            Item item = (Item)li.previous();
+            if(item.isBought())
+                i++;
+            else
+                break;
         }
+        return i;
     }
+
+    public void moveBoughtItemsToEnd() {
+        Collections.sort(getItems(), new ItemComparator(displayHelper, ItemSortType.BOUGHTITEMS));
+    }
+
+    private void updateItem(Item item) {
+        if(item.isBought()) { // Add bought items at the end of the list
+            if (items.size() - 1 >= 0) {
+                items.setOrAddById(items.size() - 1, item);
+            } else {
+                items.setOrAddById(item);
+            }
+        } else {
+            items.setOrAddById(item);
+        }
+
+        items.notifyItemModified(item);
+    }
+
 
 }

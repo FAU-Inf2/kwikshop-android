@@ -1,32 +1,33 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
+import android.app.FragmentManager;
 import android.os.AsyncTask;
+import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
-import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
+import de.fau.cs.mad.kwikshop.android.view.ManageUnitsFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ItemIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
 public abstract class ListViewModel<TList extends DomainListObject> extends ListViewModelBase {
+
 
     public interface Listener extends ListViewModelBase.Listener {
 
@@ -80,6 +81,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     protected final DisplayHelper displayHelper;
     protected final AutoCompletionHelper autoCompletionHelper;
 
+    public ArrayAdapter<String> adapter;
     protected int listId;
     protected final ObservableArrayList<Item, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
     private String quickAddText = "";
@@ -96,7 +98,10 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     };
     private final Command<Void> quickAddUnitCommand = new Command<Void>() {
         @Override
-        public void execute(Void parameter) {quickAddUnitsCommandExecute();
+        public void execute(Void parameter) {
+
+            quickAddUnitsCommandExecute(adapter);
+
         }
     };
     private final Command<Integer> selectItemCommand = new Command<Integer>() {
@@ -185,7 +190,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     public Command<Void> getQuickAddCommand() {
         return quickAddCommand;
     }
-    public Command<Void> getQuickAddUnitCommand() { return quickAddUnitCommand;}
+    public Command<Void> getQuickAddUnitCommand(ArrayAdapter<String> adapter) { this.adapter = adapter; return quickAddUnitCommand;}
     /**
      * Gets the command to be executed when a shopping list item in the view is selected
      */
@@ -293,27 +298,27 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
     }
 
-    protected synchronized  void quickAddUnitsCommandExecute(){
+    protected void quickAddUnitsCommandExecute(ArrayAdapter<String> adapter){
+
+
 
 
         final String text = getQuickAddText();
         //reset quick add text
         setQuickAddText("");
 
-        new AsyncTask<Void, Void, Void>() {
 
-            @Override
-            protected Void doInBackground(Void[] params) {
-
-                if(!StringHelper.isNullOrWhiteSpace(text)) {
+                if (!StringHelper.isNullOrWhiteSpace(text)) {
                     Unit newUnit = new Unit();
                     newUnit.setName(text);
+                    unitStorage.addItem(newUnit);
 
+                    autoCompletionHelper.offerName(newUnit.getName());
 
+                    viewLauncher.notifySpinnerChange(adapter);
                 }
-                return null;
-            }
-        }.execute();
+
+
 
     }
 

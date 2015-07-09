@@ -4,16 +4,27 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.Toast;
+import android.support.v4.app.FragmentActivity;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
+import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.messages.DialogFinishedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
@@ -177,5 +188,32 @@ public class DefaultViewLauncher implements ViewLauncher {
         AlertDialog alert = builder.create();
         alert.show();
 
+    }
+    @Override
+    public void notifySpinnerChange(ArrayAdapter<String> adapter){
+        List<Unit> units;
+        adapter.clear();
+        //populate unit picker with units from database
+        DisplayHelper displayHelper = new DisplayHelper(activity);
+
+
+        //get units from the database and sort them by name
+        units = ListStorageFragment.getUnitStorage().getItems();
+        Collections.sort(units, new Comparator<Unit>() {
+            @Override
+            public int compare(Unit lhs, Unit rhs) {
+                return lhs.getName().compareTo(rhs.getName());
+            }
+        });
+
+        //TODO implement adapter for Unit instead of String
+
+        ArrayList<String> unitNames = new ArrayList<>();
+        for (Unit u : units) {
+            unitNames.add(displayHelper.getDisplayName(u));
+        }
+        adapter.addAll(unitNames);
+        adapter.notifyDataSetChanged();
+        //onQuickAddTextChanged();
     }
 }

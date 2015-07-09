@@ -4,8 +4,6 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,31 +14,25 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
-import de.fau.cs.mad.kwikshop.android.common.Item;
-import de.fau.cs.mad.kwikshop.android.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
-import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
@@ -53,9 +45,9 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by Nicolas on 01/07/2015.
  */
-public class ManageUnitsGroupsFragment
+public class ManageUnitsFragment
         extends Fragment
-        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Item> {
+        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Unit> {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -72,20 +64,22 @@ public class ManageUnitsGroupsFragment
     Spinner unit_spinner;
     @InjectView(R.id.group_spinner)
     Spinner group_spinner;
+
     private List<Unit> units;
     private int selectedUnitIndex = -1;
     private List<Group> groups;
     private int selectedGroupIndex = -1;
     private boolean updatingViewModel;
 
+    ArrayAdapter<String> spinnerArrayAdapter;
     private int listID = -1;
 
     private AutoCompletionHelper autoCompletion;
     private View rootView;
 
-    public static ManageUnitsGroupsFragment newInstance() {
+    public static ManageUnitsFragment newInstance() {
 
-        ManageUnitsGroupsFragment fragment = new ManageUnitsGroupsFragment();
+        ManageUnitsFragment fragment = new ManageUnitsFragment();
         return fragment;
 
     }
@@ -194,7 +188,7 @@ public class ManageUnitsGroupsFragment
             unitNames.add(displayHelper.getDisplayName(u));
         }
 
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
+        spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         unit_spinner.setAdapter(spinnerArrayAdapter);
         unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -207,6 +201,8 @@ public class ManageUnitsGroupsFragment
             public void onNothingSelected(AdapterView<?> parent) {
                 selectedUnitIndex = -1;
             }
+
+
         });
 
 
@@ -235,7 +231,7 @@ public class ManageUnitsGroupsFragment
             }
         });
 
-        new ButtonBinding(button_qaunit, viewModel.getQuickAddUnitCommand());
+        new ButtonBinding(button_qaunit, viewModel.getQuickAddUnitCommand(spinnerArrayAdapter));
 
         //TODO: quick add long click
 
@@ -247,7 +243,8 @@ public class ManageUnitsGroupsFragment
                 synchronized (viewModel) {
                     // If the event is a key-down event on the "enter" button
                     if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                        viewModel.getQuickAddUnitCommand().execute(null);
+                        viewModel.getQuickAddUnitCommand(spinnerArrayAdapter).execute(null);
+                       // updateSpinnerList();
                         return true;
                     }
                     return false;
@@ -255,7 +252,9 @@ public class ManageUnitsGroupsFragment
             }
         });
         quickAddUnit.setTokenizer(new SpaceTokenizer());
+        RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity()); // to make sure it is initialized when needed in ShoppingListViewModel
 
+        refreshQuickAddAutoCompletion();
 
 
     }
@@ -269,6 +268,17 @@ public class ManageUnitsGroupsFragment
     @Override
     public void onItemSortTypeChanged() {
 
+    }
+    @OnTextChanged(R.id.quickAddUnit)
+    @SuppressWarnings("unused")
+    public void textView_ManageUnits_OnTextChanged(CharSequence s) {
+
+        synchronized (viewModel) {
+            //send updated value for shopping list name to the view model
+            updatingViewModel = true;
+            viewModel.setQuickAddText(s != null ? s.toString() : "");
+            updatingViewModel = false;
+        }
     }
     @Override
     public void onQuickAddTextChanged() {
@@ -286,11 +296,11 @@ public class ManageUnitsGroupsFragment
 
     }
     @Override
-    public void onItemModified(Item modifiedItem) {
+    public void onItemModified(Unit modifiedItem) {
 
     }
     @Override
-    public void onItemAdded(Item newItem) {
+    public void onItemAdded(Unit newItem) {
 
         //TODO: It might make sense to move autocompletion handling to the view model
         //IMPORTANT
@@ -302,7 +312,8 @@ public class ManageUnitsGroupsFragment
     }
 
     @Override
-    public void onItemRemoved(Item removedItem) {
+    public void onItemRemoved(Unit removedItem) {
 
     }
+
 }

@@ -56,6 +56,7 @@ public class ShoppingListFragment
 
     private static final String ARG_LISTID = "list_id";
 
+
     public Menu overflow_menu;
 
     private int listID = -1;
@@ -115,6 +116,8 @@ public class ShoppingListFragment
 
         EventBus.getDefault().register(this);
 
+        final String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
+
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
@@ -154,7 +157,7 @@ public class ShoppingListFragment
                                 try {
                                     Item item = viewModel.getItems().get(position);
                                     command.execute(item.getId());
-                                    viewModel.setLocationOnItemBought(item.getId());
+                                    viewModel.setLocationOnItemBought(item.getId(), googleBrowserApiKey);
                                 } catch (IndexOutOfBoundsException ex) {
                                     //nothing to do
                                 }

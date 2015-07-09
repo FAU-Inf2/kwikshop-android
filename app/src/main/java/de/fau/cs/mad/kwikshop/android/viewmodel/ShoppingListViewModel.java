@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,6 +26,9 @@ import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
+import se.walkercrou.places.GooglePlaces;
+import se.walkercrou.places.Param;
+import se.walkercrou.places.Place;
 
 public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
@@ -123,12 +127,15 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
 
-    public void setLocationOnItemBought(final int id){
+    public void setLocationOnItemBought(final int id, final String googleBrowserApiKey){
+
 
          new AsyncTask<Void, Void, Void>() {
 
             Item item;
             LastLocation location;
+             List<Place> places;
+
 
             @Override
             protected void onPreExecute() {
@@ -142,8 +149,26 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
             @Override
             protected Void doInBackground(Void... params) {
-                if(listManager.getListItem(listId, id).getLocation().getLatitude() == 0.0)
+
+                if(listManager.getListItem(listId, id).getLocation() == null) {
+
+                    // get location
                     location = locationFinderHelper.getLastLocation();
+
+                    // try to get information about a location
+                    try {
+                        GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
+                        places = client.getNearbyPlaces(location.getLatitude(), location.getLongitude(), 1000, 1, Param.name("types").value("grocery_or_supermarket"));
+                    } catch (Exception e) {
+                        Log.e("ShoppingListViewModel","Google Places error");
+                    }
+
+                    // place was found
+                    if(places != null){
+                        location.setName(places.get(0).getName());
+                    }
+
+                }
                 return null;
             }
 

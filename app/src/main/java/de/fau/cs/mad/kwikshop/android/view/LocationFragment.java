@@ -225,24 +225,23 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
                 final String clickedAdress = LocationFinderHelper.getAddressConverted(new LatLng(clickedPlace.getLatitude(), clickedPlace.getLongitude()),
                         getActivity().getApplicationContext());
 
-                if(clickedPlace != null){
 
-                    showInfoBox();
+                showInfoBox();
 
-                    mapPlaceName.setText(clickedPlace.getName());
-                    mapPlaceOpenStatus.setText(convertStatus(clickedPlace.getStatus()));
-                    mapPlaceDistance.setText(getDistanceBetweenLastLocationAndPlace(clickedPlace));
-                    mapDirectionButton.setOnClickListener(new View.OnClickListener() {
+                mapPlaceName.setText(clickedPlace.getName());
+                mapPlaceOpenStatus.setText(convertStatus(clickedPlace.getStatus()));
+                mapPlaceDistance.setText(getDistanceBetweenLastLocationAndPlace(clickedPlace));
+                mapDirectionButton.setOnClickListener(new View.OnClickListener() {
 
-                        @Override
-                        public void onClick(View v) {
+                    @Override
+                    public void onClick(View v) {
 
-                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                                    Uri.parse("http://maps.google.com/maps?daddr=" + clickedAdress));
-                            startActivity(intent);
-                        }
-                    });
-                }
+                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                                Uri.parse("http://maps.google.com/maps?daddr=" + clickedAdress));
+                        startActivity(intent);
+                    }
+                });
+
 
                 return false;
             }

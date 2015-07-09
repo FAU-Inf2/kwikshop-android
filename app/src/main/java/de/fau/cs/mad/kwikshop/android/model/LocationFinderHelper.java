@@ -66,7 +66,7 @@ public class LocationFinderHelper implements LocationListener {
         LastLocation lastLocation = new LastLocation();
         lastLocation.setLatitude(latitude);
         lastLocation.setLongitude(longitude);
-        lastLocation.setTimestamp(System.currentTimeMillis()/1000);
+        lastLocation.setTimestamp(System.currentTimeMillis());
        // lastLocation.setAddress(getAddressConverted());
 
         return lastLocation;

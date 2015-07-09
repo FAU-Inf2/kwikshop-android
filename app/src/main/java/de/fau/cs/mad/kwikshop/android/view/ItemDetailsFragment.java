@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -270,8 +271,20 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         LastLocation location = getListManager().getListItem(listId, itemId).getLocation();
 
         if(location != null){
-            lastbought_location.setText(location.getName() + " in " + new Date(location.getTimestamp()));
+            long days = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - location.getTimestamp());
+            String duration;
+            if(days < 1){
+                duration =  getString(R.string.today);
+            } else {
+                if(days == 1)
+                    duration = days + " " + getString(R.string.day);
+                 else
+                    duration = days + " " + getString(R.string.days);
+            }
+            lastbought_location.setText(location.getName() + " (" + duration + ") ");
         } else {
+
+            // hide information about last bought item
             ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);
         }
 

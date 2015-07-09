@@ -63,7 +63,8 @@
             android:focusable="false"
             android:layout_below="@+id/quickAddUnit"
             android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/button_qaunit" />
+            android:layout_toLeftOf="@+id/button_qaunit"
+            android:layout_alignBottom="@+id/button_qrunit" />
 
         <ImageButton
             style="?android:attr/borderlessButtonStyle"

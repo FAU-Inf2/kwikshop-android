@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,6 +120,22 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
         }
     };
+    private final Command<Void> quickRemoveGroupCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+
+            quickRemoveGroupCommandExecute(groupAdapter);
+
+        }
+    };
+    private final Command<Void> quickRemoveUnitCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+
+            quickRemoveUnitCommandExecute(unitAdapter);
+
+        }
+    };
     private final Command<Integer> selectItemCommand = new Command<Integer>() {
         @Override
         public void execute(Integer parameter) { selectItemCommandExecute(parameter); }
@@ -212,6 +229,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     }
     public Command<Void> getQuickAddUnitCommand(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddUnit) { this.unitAdapter = adapter; this.qAddUnit = qAddUnit; return quickAddUnitCommand;}
     public Command<Void> getQuickAddGroupCommand(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddGroup) { this.groupAdapter = adapter; this.qAddGroup = qAddGroup; return quickAddGroupCommand;}
+    public Command<Void> getQuickRemoveGroupCommand(ArrayAdapter<String> adapter){this.groupAdapter = adapter; return quickRemoveGroupCommand;}
+    public Command<Void> getQuickRemoveUnitCommand(ArrayAdapter<String> adapter){this.unitAdapter = adapter; return quickRemoveUnitCommand;}
     /**
      * Gets the command to be executed when a shopping list item in the view is selected
      */
@@ -377,6 +396,13 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         }
 
         qAddGroup.setText("");
+
+    }
+
+    protected void quickRemoveUnitCommandExecute(ArrayAdapter<String> adapter){
+
+    }
+    protected void quickRemoveGroupCommandExecute(ArrayAdapter<String> adapter){
 
     }
     protected abstract void loadList();

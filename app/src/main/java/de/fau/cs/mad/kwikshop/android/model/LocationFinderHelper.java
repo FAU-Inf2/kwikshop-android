@@ -6,6 +6,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -17,8 +18,12 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
+import se.walkercrou.places.GooglePlaces;
+import se.walkercrou.places.Param;
+import se.walkercrou.places.Place;
 
 
 public class LocationFinderHelper implements LocationListener {
@@ -61,7 +66,7 @@ public class LocationFinderHelper implements LocationListener {
         LastLocation lastLocation = new LastLocation();
         lastLocation.setLatitude(latitude);
         lastLocation.setLongitude(longitude);
-        lastLocation.setVisited(true);
+        lastLocation.setTimestamp(System.currentTimeMillis()/1000);
        // lastLocation.setAddress(getAddressConverted());
 
         return lastLocation;
@@ -126,7 +131,6 @@ public class LocationFinderHelper implements LocationListener {
     public boolean isThereALastLocation(){
         return getLatitude() != 0.0 && getLongitude() != 0.0;
     }
-
 
 
     public String getAddressConverted() {

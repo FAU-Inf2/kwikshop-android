@@ -140,11 +140,15 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
             switch (event.getChangeType()) {
 
-                case Added:
-                case PropertiesModified:
+                case Added: // TODO: New Items are moved to the top of the list, maybe we want to change this
                     Item item = listManager.getListItem(listId, event.getItemId());
                     updateItem(item);
                     sortItems();
+                    updateOrderOfItems();
+                    break;
+                case PropertiesModified:
+                    Item item1 = listManager.getListItem(listId, event.getItemId());
+                    updateItem(item1);
                     updateOrderOfItems();
                     break;
                 case Deleted:
@@ -179,6 +183,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     @SuppressWarnings("unused")
     public void onEventMainThread(ItemSortType sortType) {
         setItemSortType(sortType);
+        sortItems();
     }
 
 

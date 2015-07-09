@@ -130,13 +130,13 @@ public class ShoppingListFragment
 
         final ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);
-        //shoppingListView.setAdapter(shoppingListAdapter);
+        shoppingListView.setAdapter(shoppingListAdapter);
 
         new ListViewItemCommandBinding(ListViewItemCommandBinding.ListViewItemCommandType.Click,
                 shoppingListView,
                 viewModel.getSelectItemCommand());
 
-        TimedUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
+        /*TimedUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
                 new OnDismissCallback() {
                     @Override
                     public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
@@ -160,7 +160,29 @@ public class ShoppingListFragment
         swipeUndoAdapter.setAbsListView(shoppingListView);
         swipeUndoAdapter.setTimeoutMs(1000);
         shoppingListView.setAdapter(swipeUndoAdapter);
-        shoppingListView.enableSimpleSwipeUndo();
+        shoppingListView.enableSimpleSwipeUndo();*/
+
+        shoppingListView.enableSwipeToDismiss(
+                new OnDismissCallback() {
+                    @Override
+                    public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
+                        Command<Integer> command = viewModel.getToggleIsBoughtCommand();
+                        for (int position : reverseSortedPositions) {
+                            if (command.getCanExecute()) {
+                                try {
+                                    //Item item = viewModel.getItems().get(position);
+                                    Item item = shoppingListAdapter.getItem(position);
+                                    command.execute(item.getId());
+                                } catch (IndexOutOfBoundsException ex) {
+                                    //nothing to do
+                                }
+                            }
+                        }
+                        viewModel.moveBoughtItemsToEnd();
+                    }
+                }
+        );
+
         shoppingListView.enableDragAndDrop();
         shoppingListView.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
@@ -183,7 +205,6 @@ public class ShoppingListFragment
         shoppingListView.setOnItemMovedListener(new OnItemMovedListener() {
             @Override
             public void onItemMoved(int i, int i1) {
-
                 //IMPORTANT: reenable events of the observable list after drag and drop has finished
                 viewModel.getItems().enableEvents();
                 viewModel.itemsSwapped(i, i1);

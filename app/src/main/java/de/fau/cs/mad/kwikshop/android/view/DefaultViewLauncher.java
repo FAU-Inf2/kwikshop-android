@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
@@ -190,7 +191,7 @@ public class DefaultViewLauncher implements ViewLauncher {
 
     }
     @Override
-    public void notifySpinnerChange(ArrayAdapter<String> adapter){
+    public void notifyUnitSpinnerChange(ArrayAdapter<String> adapter){
         List<Unit> units;
         adapter.clear();
         //populate unit picker with units from database
@@ -213,6 +214,28 @@ public class DefaultViewLauncher implements ViewLauncher {
             unitNames.add(displayHelper.getDisplayName(u));
         }
         adapter.addAll(unitNames);
+        adapter.notifyDataSetChanged();
+        //onQuickAddTextChanged();
+    }
+
+    @Override
+    public void notifyGroupSpinnerChange(ArrayAdapter<String> adapter){
+        List<Group> groups;
+        adapter.clear();
+        //populate group picker with groups from database
+        DisplayHelper displayHelper = new DisplayHelper(activity);
+
+
+        //get units from the database and sort them by name
+        groups = ListStorageFragment.getGroupStorage().getItems();
+
+        //TODO implement adapter for Unit instead of String
+
+        ArrayList<String> groupNames = new ArrayList<>();
+        for (Group g : groups) {
+            groupNames.add(displayHelper.getDisplayName(g));
+        }
+        adapter.addAll(groupNames);
         adapter.notifyDataSetChanged();
         //onQuickAddTextChanged();
     }

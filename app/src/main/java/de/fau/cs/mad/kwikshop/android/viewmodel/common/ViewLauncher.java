@@ -42,5 +42,7 @@ public interface ViewLauncher {
 
     void showAddRecipeDialog(final Recipe recipe);
 
-    void notifySpinnerChange(ArrayAdapter<String> adapter);
+    void notifyUnitSpinnerChange(ArrayAdapter<String> adapter);
+
+    void notifyGroupSpinnerChange(ArrayAdapter<String> adapter);
 }

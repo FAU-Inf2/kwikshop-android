@@ -55,7 +55,7 @@ public class ManageUnitsFragment
     @InjectView(R.id.quickAddUnit)
     MultiAutoCompleteTextView quickAddUnit;
     @InjectView(R.id.quickAddGroup)
-    MultiAutoCompleteTextView getQuickAddGroup;
+    MultiAutoCompleteTextView quickAddGroup;
     @InjectView(R.id.button_qaunit)
     ImageButton button_qaunit;
     @InjectView(R.id.button_qagroup)
@@ -216,7 +216,7 @@ public class ManageUnitsFragment
             groupNames.add(displayHelper.getDisplayName(g));
         }
 
-        ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groupNames);
+        final ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groupNames);
         groupSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         group_spinner.setAdapter(groupSpinnerArrayAdapter);
         group_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -252,6 +252,28 @@ public class ManageUnitsFragment
             }
         });
         quickAddUnit.setTokenizer(new SpaceTokenizer());
+
+        new ButtonBinding(button_qagroup, viewModel.getQuickAddGroupCommand(groupSpinnerArrayAdapter));
+
+        //TODO: quick add long click
+
+        quickAddGroup.setFocusableInTouchMode(true);
+        quickAddGroup.requestFocus();
+
+        quickAddGroup.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                synchronized (viewModel) {
+                    // If the event is a key-down event on the "enter" button
+                    if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                        viewModel.getQuickAddGroupCommand(groupSpinnerArrayAdapter).execute(null);
+                        // updateSpinnerList();
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        });
+        quickAddGroup.setTokenizer(new SpaceTokenizer());
         RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity()); // to make sure it is initialized when needed in ShoppingListViewModel
 
         refreshQuickAddAutoCompletion();
@@ -280,6 +302,7 @@ public class ManageUnitsFragment
             updatingViewModel = false;
         }
     }
+
     @Override
     public void onQuickAddTextChanged() {
         if (!updatingViewModel) {
@@ -310,7 +333,17 @@ public class ManageUnitsFragment
 
 
     }
+    @OnTextChanged(R.id.quickAddGroup)
+    @SuppressWarnings("unused")
+    public void textView_ManageGroups_OnTextChanged(CharSequence s) {
 
+        synchronized (viewModel) {
+            //send updated value for shopping list name to the view model
+            updatingViewModel = true;
+            viewModel.setQuickAddText(s != null ? s.toString() : "");
+            updatingViewModel = false;
+        }
+    }
     @Override
     public void onItemRemoved(Unit removedItem) {
 

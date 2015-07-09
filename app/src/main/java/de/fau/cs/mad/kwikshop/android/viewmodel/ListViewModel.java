@@ -1,6 +1,5 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
-import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.widget.ArrayAdapter;
 
@@ -8,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Group;
 import de.fau.cs.mad.kwikshop.android.common.Item;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
@@ -19,7 +17,6 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
-import de.fau.cs.mad.kwikshop.android.view.ManageUnitsFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ItemIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
@@ -101,6 +98,14 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         public void execute(Void parameter) {
 
             quickAddUnitsCommandExecute(adapter);
+
+        }
+    };
+    private final Command<Void> quickAddGroupCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+
+            quickAddGroupsCommandExecute(adapter);
 
         }
     };
@@ -191,6 +196,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         return quickAddCommand;
     }
     public Command<Void> getQuickAddUnitCommand(ArrayAdapter<String> adapter) { this.adapter = adapter; return quickAddUnitCommand;}
+    public Command<Void> getQuickAddGroupCommand(ArrayAdapter<String> adapter) { this.adapter = adapter; return quickAddGroupCommand;}
     /**
      * Gets the command to be executed when a shopping list item in the view is selected
      */
@@ -315,13 +321,35 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
                     autoCompletionHelper.offerName(newUnit.getName());
 
-                    viewLauncher.notifySpinnerChange(adapter);
+                    viewLauncher.notifyUnitSpinnerChange(adapter);
                 }
 
 
 
     }
+    protected void quickAddGroupsCommandExecute(ArrayAdapter<String> adapter){
 
+
+
+
+        final String text = getQuickAddText();
+        //reset quick add text
+        setQuickAddText("");
+
+
+        if (!StringHelper.isNullOrWhiteSpace(text)) {
+            Group newGroup = new Group();
+            newGroup.setName(text);
+            groupStorage.addItem(newGroup);
+
+            autoCompletionHelper.offerName(newGroup.getName());
+
+            viewLauncher.notifyGroupSpinnerChange(adapter);
+        }
+
+
+
+    }
     protected abstract void loadList();
 
     protected abstract void addItemCommandExecute();

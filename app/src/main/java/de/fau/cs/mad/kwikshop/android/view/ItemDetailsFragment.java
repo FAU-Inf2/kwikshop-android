@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -16,12 +17,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,6 +37,7 @@ import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
@@ -90,6 +95,12 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     @InjectView(R.id.highlight_checkBox)
     CheckBox highlight_checkbox;
+
+    @InjectView(R.id.lastbought_location)
+    TextView lastbought_location;
+
+    @InjectView(R.id.last_bought_relativelayout)
+    RelativeLayout last_bought_relativelayout;
 
     @Inject
     AutoCompletionHelper autoCompletionHelper;
@@ -252,6 +263,17 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     }
 
     protected void setupUI() {
+
+
+        // display the supermarket where this item was bought
+
+        LastLocation location = getListManager().getListItem(listId, itemId).getLocation();
+
+        if(location != null){
+            lastbought_location.setText(location.getName() + " in " + new Date(location.getTimestamp()));
+        } else {
+            ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);
+        }
 
         //populate number picker
         numbersForAmountPicker = new String[1000];

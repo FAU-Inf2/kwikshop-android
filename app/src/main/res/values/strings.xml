@@ -45,6 +45,7 @@
     <string name="itemdetails_amount">Amount</string>
     <string name="action_item_details_save">Save</string>
     <string name="itemdetails_saved">Item saved</string>
+    <string name="itemdetails_last_bought">Found at </string>
     <string name="highlight">Highlight</string>
     <string name="regular_repeat">Regularly repeat this item</string>
     <string name="every">every</string>

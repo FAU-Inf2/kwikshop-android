@@ -50,6 +50,38 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="15dp" />
 
+
+            <RelativeLayout
+                android:id="@+id/last_bought_relativelayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginBottom="15dp"
+                android:gravity="center_vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/itemdetails_last_bought"
+                    android:id="@+id/lastbought_textview"
+                    android:textColor="@color/primary_text"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/lastbought_textview"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/lastbought_location"
+                    android:textColor="@color/primary_text"/>
+
+            </RelativeLayout>
+
+
+
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

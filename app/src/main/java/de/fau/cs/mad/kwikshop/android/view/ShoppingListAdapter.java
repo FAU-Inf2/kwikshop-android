@@ -126,7 +126,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         }
 
         // Item name
-        viewHolder.textView_Name.setText(item.getName() + " - " + item.getOrder());
+        viewHolder.textView_Name.setText(item.getName());
 
         // Comment
         String comment = item.getComment();

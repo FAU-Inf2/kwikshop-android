@@ -9,6 +9,7 @@ import de.fau.cs.mad.kwikshop.android.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
+import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
@@ -25,9 +26,9 @@ public class RecipeViewModel extends ListViewModel<Recipe> {
     public RecipeViewModel(ViewLauncher viewLauncher, ListManager<Recipe> recipeManager,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
-                                 AutoCompletionHelper autoCompletionHelper) {
+                                 AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper) {
 
-        super(viewLauncher, recipeManager, unitStorage, groupStorage, itemParser, displayHelper, autoCompletionHelper);
+        super(viewLauncher, recipeManager, unitStorage, groupStorage, itemParser, displayHelper, autoCompletionHelper, locationFinderHelper);
     }
 
 
@@ -51,7 +52,7 @@ public class RecipeViewModel extends ListViewModel<Recipe> {
 
             switch (event.getChangeType()) {
 
-                case  Added:
+                case Added:
                 case PropertiesModified:
                     loadList();
                     break;

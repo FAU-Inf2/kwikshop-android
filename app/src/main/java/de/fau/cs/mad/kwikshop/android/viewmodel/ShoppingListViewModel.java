@@ -16,13 +16,14 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
+import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 
 public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
-    private final LocationFinderHelper locationFinderHelper;
+
     private final ResourceProvider resourceProvider;
 
     //private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
@@ -51,17 +52,14 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
 
         super(viewLauncher, shoppingListManager, unitStorage, groupStorage, itemParser, displayHelper,
-                autoCompletionHelper);
+                autoCompletionHelper, locationFinderHelper);
 
-        if(locationFinderHelper == null) {
-            throw new IllegalArgumentException("'locationFinderHelper' must not be null");
-        }
 
         if (resourceProvider == null) {
             throw new IllegalArgumentException("'resourceProvider' must not be null");
         }
 
-        this.locationFinderHelper = locationFinderHelper;
+
         this.resourceProvider = resourceProvider;
     }
 
@@ -108,18 +106,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
 
-    public void setLocationOnStartingShopping() {
-
-        ShoppingList shoppingList = listManager.getList(this.listId);
-
-        if(shoppingList.getLocation() != null) {
-            if (!shoppingList.getLocation().isVisited()) {
-                shoppingList.setLocation(locationFinderHelper.setLocation());
-                listManager.saveList(listId);
-            }
-        }
-    }
-
     @Override
     public void itemsSwapped(int position1, int position2) {
         Item item1 = items.get(position1);
@@ -156,7 +142,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 case PropertiesModified:
                     Item item = listManager.getListItem(listId, event.getItemId());
                     updateItem(item);
-                    //sortItems();
+                    sortItems();
                     updateOrderOfItems();
                     break;
                 case Deleted:

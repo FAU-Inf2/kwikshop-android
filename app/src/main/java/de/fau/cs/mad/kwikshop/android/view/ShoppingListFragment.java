@@ -6,6 +6,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -188,8 +189,6 @@ public class ShoppingListFragment
                 viewModel.getItems().enableEvents();
                 viewModel.itemsSwapped(i, i1);
                 viewModel.moveBoughtItemsToEnd();
-
-                viewModel.setLocationOnStartingShopping();
             }
         });
 

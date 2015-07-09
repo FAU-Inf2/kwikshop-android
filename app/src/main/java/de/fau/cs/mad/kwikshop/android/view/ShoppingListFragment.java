@@ -154,6 +154,7 @@ public class ShoppingListFragment
                                 try {
                                     Item item = viewModel.getItems().get(position);
                                     command.execute(item.getId());
+                                    viewModel.setLocationOnItemBought(item.getId());
                                 } catch (IndexOutOfBoundsException ex) {
                                     //nothing to do
                                 }

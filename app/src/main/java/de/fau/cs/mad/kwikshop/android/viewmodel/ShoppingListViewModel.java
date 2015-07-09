@@ -1,6 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 
+import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -20,6 +22,7 @@ import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 
@@ -117,6 +120,40 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
         listManager.saveListItem(listId, item1);
         listManager.saveListItem(listId, item2);
+    }
+
+
+    public void setLocationOnItemBought(final int id){
+
+        new AsyncTask<Void, Void, Void>() {
+
+            Item item;
+            LastLocation location;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                item = items.getById(id);
+                if(item == null) {
+                    item = boughtItems.getById(id);
+                }
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                location = locationFinderHelper.getLastLocation();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                item.setLocation(location);
+                listManager.saveListItem(listId, item);
+            }
+        }.execute();
+
     }
 
 
@@ -236,6 +273,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     Calendar now = Calendar.getInstance();
                     item.setLastBought(now.getTime());
                     RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getInstance();
+
+                    //save location
 
                     Calendar remindDate = Calendar.getInstance();
                     switch (item.getPeriodType()) {

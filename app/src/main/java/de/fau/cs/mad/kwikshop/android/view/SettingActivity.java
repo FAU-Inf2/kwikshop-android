@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
 
 
 public class SettingActivity extends BaseActivity {
@@ -26,7 +25,7 @@ public class SettingActivity extends BaseActivity {
 
     public void replaceFragments() {
         // Create new fragment and transaction
-        ManageUnitsFragment newFragment = new ManageUnitsFragment();
+        ManageUnitGroupFragment newFragment = new ManageUnitGroupFragment();
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // Replace whatever is in the fragment_container view with this fragment,

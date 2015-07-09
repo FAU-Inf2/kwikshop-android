@@ -22,9 +22,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.Group;
-import de.fau.cs.mad.kwikshop.android.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.common.Unit;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.messages.DialogFinishedEvent;
@@ -227,7 +227,7 @@ public class DefaultViewLauncher implements ViewLauncher {
         DisplayHelper displayHelper = new DisplayHelper(activity);
 
 
-        //get units from the database and sort them by name
+
         groups = ListStorageFragment.getGroupStorage().getItems();
 
         //TODO implement adapter for Unit instead of String

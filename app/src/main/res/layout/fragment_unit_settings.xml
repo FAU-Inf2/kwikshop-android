@@ -104,6 +104,14 @@
         android:layout_alignRight="@+id/quickAddUnit"
         android:layout_weight="0.12">
 
+        <MultiAutoCompleteTextView
+            android:id="@+id/quickAddGroup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:inputType="textCapSentences" />
+
         <ImageButton
             style="?android:attr/borderlessButtonStyle"
             android:id="@+id/button_qagroup"
@@ -115,14 +123,6 @@
             android:layout_alignTop="@+id/quickAddGroup"
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_action_add" />
-
-        <MultiAutoCompleteTextView
-            android:id="@+id/quickAddGroup"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:inputType="textCapSentences" />
 
         <Spinner
             android:layout_width="match_parent"

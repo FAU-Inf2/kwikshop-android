@@ -1,5 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.model;
 
+import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 
 import java.sql.SQLException;
@@ -45,6 +46,10 @@ public class LocalListStorage implements ListStorage<ShoppingList> {
                     if (i.getGroup() != null) {
                         ListStorageFragment.getDatabaseHelper().getGroupDao().refresh(i.getGroup());
                     }
+
+                    if(i.getLocation() != null) {
+                        ListStorageFragment.getDatabaseHelper().getLocationDao().refresh(i.getLocation());
+                    }
                 }
             }
             return Collections.unmodifiableList(lists);
@@ -75,6 +80,10 @@ public class LocalListStorage implements ListStorage<ShoppingList> {
                 if (i.getGroup() != null) {
                     ListStorageFragment.getDatabaseHelper().getGroupDao().refresh(i.getGroup());
                 }
+
+                if(i.getLocation() != null) {
+                    ListStorageFragment.getDatabaseHelper().getLocationDao().refresh(i.getLocation());
+                }
             }
 
         } catch (SQLException e) {
@@ -89,7 +98,7 @@ public class LocalListStorage implements ListStorage<ShoppingList> {
         try {
             // Update all Items first
             for (Item item : list.getItems()) {
-                ListStorageFragment.getDatabaseHelper().getItemDao().update(item);
+                updateItem(item);
             }
             ListStorageFragment.getDatabaseHelper().getShoppingListDao().update(list);
         } catch (SQLException e) {
@@ -97,6 +106,14 @@ public class LocalListStorage implements ListStorage<ShoppingList> {
             return false;
         }
         return true;
+    }
+
+    private void updateItem(Item item) throws SQLException {
+
+        if(item.getLocation() != null) {
+            ListStorageFragment.getDatabaseHelper().getLocationDao().createIfNotExists(item.getLocation());
+        }
+        ListStorageFragment.getDatabaseHelper().getItemDao().update(item);
     }
 
     @Override

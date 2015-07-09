@@ -89,6 +89,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     public void sortItems() {
         Collections.sort(getItems(), new ItemComparator(displayHelper, getItemSortType()));
+        moveBoughtItemsToEnd();
         updateOrderOfItems();
         listener.onItemSortTypeChanged();
     }
@@ -221,7 +222,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 break;
         }
         sortItems();
-        moveBoughtItemsToEnd();
+        //moveBoughtItemsToEnd();
 
         this.setName(shoppingList.getName());
     }

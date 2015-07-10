@@ -65,6 +65,10 @@ public class ManageUnitGroupFragment
     Spinner unit_spinner;
     @InjectView(R.id.group_spinner)
     Spinner group_spinner;
+    @InjectView(R.id.button_qrunit)
+    ImageButton button_qrunit;
+    @InjectView(R.id.button_qrgroup)
+    ImageButton button_qrgroup;
 
     private List<Unit> units;
     private int selectedUnitIndex = -1;
@@ -196,6 +200,7 @@ public class ManageUnitGroupFragment
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedUnitIndex = position;
+                viewModel.setQuickRemoveUnitIndex(selectedUnitIndex);
             }
 
             @Override
@@ -224,6 +229,7 @@ public class ManageUnitGroupFragment
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedGroupIndex = position;
+                viewModel.setQuickRemoveGroupIndex(selectedGroupIndex);
             }
 
             @Override
@@ -275,6 +281,12 @@ public class ManageUnitGroupFragment
             }
         });
         quickAddGroup.setTokenizer(new SpaceTokenizer());
+
+        new ButtonBinding(button_qrunit, viewModel.getQuickRemoveUnitCommand(spinnerArrayAdapter, selectedUnitIndex));
+        new ButtonBinding(button_qrgroup, viewModel.getQuickRemoveGroupCommand(groupSpinnerArrayAdapter, selectedGroupIndex));
+
+
+
         RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity()); // to make sure it is initialized when needed in ShoppingListViewModel
 
         refreshQuickAddAutoCompletion();

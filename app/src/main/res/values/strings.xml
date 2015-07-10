@@ -65,9 +65,9 @@
     <string name="settings_option_3_check_text">Are you sure you want to delete the history of autocompletion?</string>
     <string name="settings_option_3_error">Unfortunately an error occurred while deleting the history</string>
     <string name="settings_option_3_success">Successfully deleted history</string>
-    <string name="settings_option_3_createUnits">Create units</string>
-    <string name="settings_option_4_createGroups">Create groups</string>
-    <string name="settings_option_3_desc2">Create units and groups</string>
+    <string name="settings_option_3_createUnits">Create or remove units</string>
+    <string name="settings_option_4_createGroups">Create and remove groups</string>
+    <string name="settings_option_3_desc2">Create or remove units and groups</string>
     <string name="settings_option_4_desc">Create groups for items</string>
 
     <!-- Overflow Action Menu -->

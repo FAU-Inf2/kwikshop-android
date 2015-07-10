@@ -6,6 +6,8 @@ import android.widget.MultiAutoCompleteTextView;
 
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -91,6 +93,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     public MultiAutoCompleteTextView qAddUnit;
     public MultiAutoCompleteTextView qAddGroup;
     protected int listId;
+    private int quickRemoveUnitIndex = -1;
+    private int quickRemoveGroupIndex = -1;
     protected final ObservableArrayList<Item, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
     private String quickAddText = "";
     private final Command<Void> addItemCommand = new Command<Void>() {
@@ -231,8 +235,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     }
     public Command<Void> getQuickAddUnitCommand(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddUnit) { this.unitAdapter = adapter; this.qAddUnit = qAddUnit; return quickAddUnitCommand;}
     public Command<Void> getQuickAddGroupCommand(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddGroup) { this.groupAdapter = adapter; this.qAddGroup = qAddGroup; return quickAddGroupCommand;}
-    public Command<Void> getQuickRemoveGroupCommand(ArrayAdapter<String> adapter){this.groupAdapter = adapter; return quickRemoveGroupCommand;}
-    public Command<Void> getQuickRemoveUnitCommand(ArrayAdapter<String> adapter){this.unitAdapter = adapter; return quickRemoveUnitCommand;}
+    public Command<Void> getQuickRemoveGroupCommand(ArrayAdapter<String> adapter, int index){this.groupAdapter = adapter; this.quickRemoveUnitIndex = index; return quickRemoveGroupCommand;}
+    public Command<Void> getQuickRemoveUnitCommand(ArrayAdapter<String> adapter, int index){this.unitAdapter = adapter; this.quickRemoveGroupIndex = index; return quickRemoveUnitCommand;}
     /**
      * Gets the command to be executed when a shopping list item in the view is selected
      */
@@ -247,6 +251,18 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         return quickAddText;
     }
 
+    /**
+     * Gets the current index for the quick-remove unit
+     */
+    public int getQuickRemoveUnitIndex() {
+        return quickRemoveUnitIndex;
+    }
+    /**
+     * Gets the current index for the quick-remove group
+     */
+    public int getQuickRemoveGroupIndex() {
+        return quickRemoveGroupIndex;
+    }
     /**
      * Sets the value of the quick-add text field
      */
@@ -263,7 +279,18 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
             listener.onQuickAddTextChanged();
         }
     }
-
+    /**
+     * Sets the value of the quick-remove index field
+     */
+    public void setQuickRemoveUnitIndex(int value) {
+            quickRemoveUnitIndex = value;
+    }
+    /**
+     * Sets the value of the quick-remove index field
+     */
+    public void setQuickRemoveGroupIndex(int value) {
+        quickRemoveGroupIndex = value;
+    }
     /**
      * To be called by the view after two items have been swapped
      */
@@ -418,10 +445,39 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     }
 
     protected void quickRemoveUnitCommandExecute(ArrayAdapter<String> adapter){
+        if (this.quickRemoveUnitIndex != -1) {
+            List<Unit> units;
+            //get units from the database and sort them by name
+            units = unitStorage.getItems();
+            Collections.sort(units, new Comparator<Unit>() {
+                @Override
+                public int compare(Unit lhs, Unit rhs) {
+                    return lhs.getName().compareTo(rhs.getName());
+                }
+            });
+            Unit u = units.get(quickRemoveUnitIndex);
+            unitStorage.deleteSingleItem(u);
+            viewLauncher.notifyUnitSpinnerChange(adapter);
 
+        }
     }
     protected void quickRemoveGroupCommandExecute(ArrayAdapter<String> adapter){
+        if (this.quickRemoveGroupIndex != -1) {
+            List<Group> groups;
+            //get units from the database and sort them by name
+            groups = groupStorage.getItems();
+            Collections.sort(groups, new Comparator<Group>() {
+                @Override
+                public int compare(Group lhs, Group rhs) {
+                    return lhs.getName().compareTo(rhs.getName());
+                }
+            });
+            Group g = groups.get(quickRemoveUnitIndex);
+            groupStorage.deleteSingleItem(g);
+            viewLauncher.notifyGroupSpinnerChange(adapter);
 
+
+        }
     }
     protected abstract void loadList();
 

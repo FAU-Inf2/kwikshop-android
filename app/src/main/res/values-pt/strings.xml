@@ -49,7 +49,7 @@
     <string name="settings_option_3_check_text">Tem certeza que deseja deletar o histórico de autopreenchimento?</string>
     <string name="settings_option_3_check_title">Deletar histórico?</string>
     <string name="settings_option_3_deleteHistory">Autopreenchimento</string>
-    <string name="settings_option_3_desc">deletar o histórico</string>
+    <string name="settings_option_3_desc">Deletar o histórico</string>
     <string name="settings_option_3_error">Infelizmento um erro ocorreu ao deletar o histórico</string>
     <string name="settings_option_3_success">Histórico deletado com sucesso</string>
     <string name="shoppinglist_divider_textview">Carro de compras</string>
@@ -114,11 +114,11 @@
     <string name="days">dias</string>
     <string name="deleteRecipe_DialogText">Tem certeza que deseja deletar essa receita?</string>
     <string name="deleteRecipe_DialogTitle">Deletar receita</string>
-    <string name="settings_option_3_createUnits">Criar unidades</string>
-    <string name="settings_option_4_createGroups">Criar categorias</string>
-    <string name="settings_option_3_desc2">Crie unidades e categorias</string>
+    <string name="settings_option_3_createUnits">Criar e remover unidades</string>
+    <string name="settings_option_4_createGroups">Criar e remover categorias</string>
+    <string name="settings_option_3_desc2">Crie ou remova unidades e categorias</string>
     <string name="settings_option_4_desc">Crie categorias para itens</string>
-    <string name="disconnect">Disconnect</string>
+    <string name="disconnect">Desconectar</string>
     <string name="retry">Tentar novamente</string>
     <string name="alert_dialog_connection_cancel">Cancelar</string>
     <string name="alert_dialog_connection_message">Sem conexão disponível com internet. Por favor conecte-se ao Wi-Fi ou à internet móvel</string>
@@ -164,7 +164,7 @@
     <string name="title_activity_reminder">Lembrete</string>
     <string name="item_divider">próximo</string>
     <string name="time_format">dd.MM.yyyy HH:mm</string>
-    <string name="settings_option_3_manageUnits">Gerenciar unidades e categorias</string>
+    <string name="settings_option_3_manageUnits">Gerenciar valores</string>
     <string name="reminder_question">"Um lembrete para o item '%1$s' foi agendado para %2$s. O que você gostaria de fazer agora?"</string>
     <string name="dateDescription_just_now"></string>
     <string name="recipe_choose_amount">Escolha a quantidade de</string>

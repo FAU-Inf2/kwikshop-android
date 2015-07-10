@@ -18,12 +18,10 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import de.fau.cs.mad.kwikshop.android.R;
+
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
-import se.walkercrou.places.GooglePlaces;
-import se.walkercrou.places.Param;
-import se.walkercrou.places.Place;
+
 
 
 public class LocationFinderHelper implements LocationListener {

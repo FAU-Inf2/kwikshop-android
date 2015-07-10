@@ -151,7 +151,7 @@ public class ShoppingListFragment
                                     //Item item = viewModel.getItems().get(position);
                                     Item item = shoppingListAdapter.getItem(position);
                                     command.execute(item.getId());
-                                    viewModel.setLocationOnItemBought(item.getId(), googleBrowserApiKey);
+
                                 } catch (IndexOutOfBoundsException ex) {
                                     //nothing to do
                                 }
@@ -177,6 +177,7 @@ public class ShoppingListFragment
                                     //Item item = viewModel.getItems().get(position);
                                     Item item = shoppingListAdapter.getItem(position);
                                     command.execute(item.getId());
+                                    viewModel.setLocationOnItemBought(item.getId(), googleBrowserApiKey);
                                 } catch (IndexOutOfBoundsException ex) {
                                     //nothing to do
                                 }
@@ -216,8 +217,8 @@ public class ShoppingListFragment
             }
         });
 
-        View footer = inflater.inflate(R.layout.listview_footerspace, container, false);
-        shoppingListView.addFooterView(footer);
+        //View footer = inflater.inflate(R.layout.listview_footerspace, container, false);
+        //shoppingListView.addFooterView(footer);
 
         //justifyListViewHeightBasedOnChildren(shoppingListView);
 

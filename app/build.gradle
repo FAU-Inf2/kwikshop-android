@@ -79,6 +79,7 @@ android {
         exclude 'readme.html'
         exclude 'META-INF/services/org.glassfish.jersey.internal.spi.ForcedAutoDiscoverable'
         exclude 'META-INF/services/com.fasterxml.jackson.databind.Module'
+        exclude 'META-INF/services/io.dropwizard.jackson.Discoverable'
     }
 
 

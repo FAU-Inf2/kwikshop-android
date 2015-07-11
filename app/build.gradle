@@ -78,6 +78,7 @@ android {
         exclude 'license.html'
         exclude 'readme.html'
         exclude 'META-INF/services/org.glassfish.jersey.internal.spi.ForcedAutoDiscoverable'
+        exclude 'META-INF/services/com.fasterxml.jackson.databind.Module'
     }
 
 

@@ -80,6 +80,7 @@ android {
         exclude 'META-INF/services/org.glassfish.jersey.internal.spi.ForcedAutoDiscoverable'
         exclude 'META-INF/services/com.fasterxml.jackson.databind.Module'
         exclude 'META-INF/services/io.dropwizard.jackson.Discoverable'
+        exclude 'META-INF/services/com.fasterxml.jackson.core.JsonFactory'
     }
 
 
@@ -152,7 +153,9 @@ dependencies {
     compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.5.1'
     compile 'com.wordnik:swagger-annotations:1.5.0-M2'
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
-    compile 'io.dropwizard:dropwizard-auth:0.8.2'
+    compile ('io.dropwizard:dropwizard-auth:0.8.2') {
+        exclude module: 'javax.inject'
+    }
 
     //Joda Time
     compile 'joda-time:joda-time:2.8.1'

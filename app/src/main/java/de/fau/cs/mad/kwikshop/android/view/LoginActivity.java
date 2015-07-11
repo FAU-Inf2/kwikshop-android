@@ -37,7 +37,7 @@ import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
-import de.fau.cs.mad.kwikshop.common.UserResource;
+import de.fau.cs.mad.kwikshop.common.rest.UserResource;
 
 public class LoginActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,

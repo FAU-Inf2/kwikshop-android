@@ -150,7 +150,7 @@ dependencies {
     compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.5.1'
     compile 'com.wordnik:swagger-annotations:1.5.0-M2'
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
-
+    compile 'io.dropwizard:dropwizard-auth:0.8.2'
 
     //Joda Time
     compile 'joda-time:joda-time:2.8.1'

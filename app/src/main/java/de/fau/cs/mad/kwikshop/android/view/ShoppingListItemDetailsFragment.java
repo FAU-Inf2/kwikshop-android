@@ -201,7 +201,7 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
                 }
                 item.setRemindAtDate(remindDate.getTime());
 
-                DateFormat dateFormat = new SimpleDateFormat(getString(R.string.time_format));
+                DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.DEFAULT, getResources().getConfiguration().locale);
                 additionalToastText += ". " + getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
 
             } else { //repeat from next purchase on

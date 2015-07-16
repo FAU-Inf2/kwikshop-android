@@ -15,6 +15,13 @@ import java.util.Date;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 
+/**
+ * Date formatter for human-friendly date strings:
+ *  - displays "just now" if event was only minutes ago
+ *  - displays the amount of minutes passed since the date if date was within an our of current time
+ *  - displays the time of day for events of the same day
+ *  - displays only the date without time if the date is not today
+ */
 public class DateFormatter {
 
     private final ResourceProvider resourceProvider;
@@ -32,7 +39,7 @@ public class DateFormatter {
 
     public String formatDate(Date date) {
 
-        DateTime now= DateTime.now();
+        DateTime now = DateTime.now();
         DateTime toFormat = new DateTime(date);
 
 
@@ -56,13 +63,13 @@ public class DateFormatter {
             } else  {
 
                 //larger periods: display time
-                return SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT).format(date);
+                return SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, resourceProvider.getLocale()).format(date);
             }
 
         //other day
         } else {
 
-            DateFormat format = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT);
+            DateFormat format = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, resourceProvider.getLocale());
             return format.format(date);
         }
 

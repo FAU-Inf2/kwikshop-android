@@ -1,6 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
@@ -75,6 +78,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     protected Item item;
     protected boolean isNewItem;
 
+    private static Bitmap Image = null;
+    private static Bitmap rotateImage = null;
+    private static final int GALLERY = 1;
+
 
     @InjectView(R.id.productname_text)
     MultiAutoCompleteTextView productname_text;
@@ -115,6 +122,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @Inject
     SimpleStorage<Group> groupStorage;
 
+    @InjectView(R.id.itemImageView)
+    ImageView itemImageView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -435,6 +444,19 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             highlight_checkbox.setChecked(false);
         }
 
+        //set on click listener to item's image
+        itemImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    itemImageView.setImageBitmap(null);
+                    if (Image != null)
+                        Image.recycle();
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY);
+            }
+        });
     }
 
 

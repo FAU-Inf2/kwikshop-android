@@ -275,6 +275,12 @@
 
             </LinearLayout>
 
+            <ImageView
+                android:layout_width="273dp"
+                android:layout_height="273dp"
+                android:id="@+id/itemImageView"
+                android:layout_gravity="center_horizontal|bottom" />
+
         </LinearLayout>
     </ScrollView>
 

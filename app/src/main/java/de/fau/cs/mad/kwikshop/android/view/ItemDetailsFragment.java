@@ -2,8 +2,12 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +29,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -110,6 +116,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @InjectView(R.id.last_bought_relativelayout)
     RelativeLayout last_bought_relativelayout;
 
+
+    @InjectView(R.id.itemImageView)
+    ImageView itemImageView;
+
+    /*@InjectView(R.id.buttonUploadPic)
+    ImageView buttonUploadPic;*/
+
     @Inject
     AutoCompletionHelper autoCompletionHelper;
 
@@ -122,8 +135,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @Inject
     SimpleStorage<Group> groupStorage;
 
-    @InjectView(R.id.itemImageView)
-    ImageView itemImageView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -454,11 +465,46 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     Intent intent = new Intent();
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY);
+                    startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)), GALLERY);
             }
+
+
+
         });
+
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == GALLERY && resultCode != 0) {
+            Uri mImageUri = data.getData();
+            try {
+                Image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
+                if (getOrientation(getActivity().getApplicationContext(), mImageUri) != 0) {
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(getOrientation(getActivity().getApplicationContext(), mImageUri));
+                    if (rotateImage != null)
+                        rotateImage.recycle();
+                    rotateImage = Bitmap.createBitmap(Image, 0, 0, Image.getWidth(), Image.getHeight(), matrix,true);
+                    itemImageView.setImageBitmap(rotateImage);
+                } else
+                    itemImageView.setImageBitmap(Image);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public int getOrientation(Context context, Uri photoUri) {
+        Cursor cursor = context.getContentResolver().query(photoUri,
+                new String[] { MediaStore.Images.ImageColumns.ORIENTATION },null, null, null);
+
+        if (cursor.getCount() != 1) {
+            return -1;
+        }
+        cursor.moveToFirst();
+        return cursor.getInt(0);
+    }
 
     @OnTextChanged(R.id.productname_text)
     @SuppressWarnings("unused")

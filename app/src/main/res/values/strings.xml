@@ -255,5 +255,6 @@
     <string name="today">Today</string>
     <string name="day">day</string>
     <string name="date_today">Today</string>
+    <string name="uploadPicture">Select picture</string>
 
 </resources>

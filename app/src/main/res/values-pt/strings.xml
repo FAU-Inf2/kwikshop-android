@@ -126,7 +126,7 @@
     <string name="alphabetically">Alfabeticamente</string>
     <string name="alert_dialog_connection_label">Rede</string>
     <string name="action_settings">Configurações</string>
-    <string name="supermarket_finder">Localizador de Supermercados</string>
+    <string name="supermarket_finder">Localizador de Lojas</string>
     <string name="from_now_on">A partir de agora</string>
     <string name="from_time_of_next_purchase_on">A partir da próxima compra</string>
     <string name="login_skip">Pular Login</string>
@@ -167,4 +167,10 @@
     <string name="settings_option_3_manageUnits">Gerenciar unidades e categorias</string>
     <string name="reminder_question">"Um lembrete para o item '%1$s' foi agendado para %2$s. O que você gostaria de fazer agora?"</string>
     <string name="day"></string>
+    <string name="uploadPicture">Selecionar imagem</string>
+    <string name="today">Hoje</string>
+    <string name="supermarket_finder_progress_dialog_message">Encontre Supermercados próximos.</string>
+    <string name="recipe_scaleName_piece">pedaços</string>
+    <string name="recipe_choose_amount">Escolha quantidade de</string>
+    <string name="itemdetails_last_bought">Encontrado em</string>
 </resources>

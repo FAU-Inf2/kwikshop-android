@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -17,6 +19,7 @@ import butterknife.OnTextChanged;
 import de.fau.cs.mad.kwikshop.android.R;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
+import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
@@ -35,6 +38,9 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
     @InjectView(R.id.edit_calendar_event)
     View button_EditCalendarEvent;
+
+    @InjectView(R.id.micButton)
+    ImageButton micButton;
 
     private ShoppingListDetailsViewModel viewModel;
     private boolean updatingViewModel = false;
@@ -96,6 +102,13 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
                     return true;
                 }
                 return false;
+            }
+        });
+
+        micButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SpeechRecognitionHelper.run(getActivity());
             }
         });
 

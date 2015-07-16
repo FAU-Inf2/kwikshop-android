@@ -126,6 +126,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @InjectView(R.id.itemImageView)
     ImageView itemImageView;
 
+    @InjectView(R.id.uploadText)
+    TextView uploadText;
+
     /*@InjectView(R.id.buttonUploadPic)
     ImageView buttonUploadPic;*/
 
@@ -384,6 +387,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 ByteArrayInputStream imageStream = new ByteArrayInputStream(imageByteArray);
                 itemImageView.setImageBitmap(BitmapFactory.decodeStream(imageStream));
             }
+            else{
+                uploadText.setText(R.string.uploadPicture);
+            }
 
         }
         numberPickerCalledWith = numberPicker.getValue();
@@ -499,8 +505,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     if (rotateImage != null)
                         rotateImage.recycle();
                     rotateImage = Bitmap.createBitmap(ImageItem, 0, 0, ImageItem.getWidth(), ImageItem.getHeight(), matrix,true);
+                    uploadText.setText("");
                     itemImageView.setImageBitmap(rotateImage);
                 } else
+                    uploadText.setText("");
                     itemImageView.setImageBitmap(ImageItem);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

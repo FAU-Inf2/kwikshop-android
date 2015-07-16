@@ -319,7 +319,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     item.setRemindAtDate(remindDate.getTime());
                     repeatHelper.offerRepeatData(item);
 
-                    DateFormat dateFormat = new SimpleDateFormat(resourceProvider.getString(R.string.time_format));
+                    DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.DEFAULT, resourceProvider.getLocale());
                     String message = resourceProvider.getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
                     viewLauncher.showToast(message, Toast.LENGTH_LONG);
                 }

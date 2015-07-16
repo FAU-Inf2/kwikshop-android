@@ -163,7 +163,6 @@
     <string name="title_fragment_reminder">Criar novo item</string>
     <string name="title_activity_reminder">Lembrete</string>
     <string name="item_divider">próximo</string>
-    <string name="time_format">dd.MM.yyyy HH:mm</string>
     <string name="settings_option_3_manageUnits">Gerenciar unidades e categorias</string>
     <string name="reminder_question">"Um lembrete para o item '%1$s' foi agendado para %2$s. O que você gostaria de fazer agora?"</string>
     <string name="day"></string>

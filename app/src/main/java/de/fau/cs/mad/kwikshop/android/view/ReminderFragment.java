@@ -270,7 +270,7 @@ public class ReminderFragment extends Fragment {
         if (additionalMessage == null)
             additionalMessage = "";
 
-        DateFormat dateFormat = new SimpleDateFormat(getString(R.string.time_format));
+        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.DEFAULT, getResources().getConfiguration().locale);
         String message = additionalMessage + getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
@@ -297,7 +297,7 @@ public class ReminderFragment extends Fragment {
             return;
         }
 
-        DateFormat dateFormat = new SimpleDateFormat(getString(R.string.time_format));
+        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.DEFAULT, getResources().getConfiguration().locale);
         String date;
         if (item.getRemindAtDate() != null) {
             date = dateFormat.format(item.getRemindAtDate().getTime());

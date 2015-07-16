@@ -148,7 +148,6 @@
     <string name="days">Tage</string>
     <string name="weeks">Wochen</string>
     <string name="months">Monate</string>
-    <string name="time_format">dd.MM.yyyy HH:mm</string>
     <string name="now">jetzt</string>
 
     <!-- Alert Dialog For missing connection -->
@@ -194,5 +193,7 @@
     <string name="itemdetails_last_bought">Gefunden bei</string>
     <string name="today">Heute</string>
     <string name="day">Tag</string>
+    <string name="dateDescription_minutes_ago">vor %1$s minuten</string>
+    <string name="date_today">heute</string>
 
 </resources>

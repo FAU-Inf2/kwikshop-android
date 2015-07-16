@@ -1,7 +1,10 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
+import java.util.Locale;
+
 public interface ResourceProvider {
 
-    public String getString(int id);
+    String getString(int id);
 
+    Locale getLocale();
 }

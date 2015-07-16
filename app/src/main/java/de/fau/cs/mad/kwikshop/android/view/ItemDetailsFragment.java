@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,8 +30,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -84,9 +89,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     protected Item item;
     protected boolean isNewItem;
 
-    private static Bitmap Image = null;
+    private static Bitmap ImageItem = null;
     private static Bitmap rotateImage = null;
     private static final int GALLERY = 1;
+    private static Uri mImageUri;
 
 
     @InjectView(R.id.productname_text)
@@ -239,7 +245,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         item.setBrand(brand_text.getText().toString());
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
-
+            byte[] data = getBitmapAsByteArray(ImageItem);
+            item.setImageItem(data);
 
         if (selectedUnitIndex >= 0) {
             Unit u = units.get(selectedUnitIndex);
@@ -371,6 +378,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             numberPicker.setValue(itemAmount);
             brand_text.setText(item.getBrand());
             comment_text.setText(item.getComment());
+            //load image
+            byte[] imageByteArray = item.getImageItem();
+            if (imageByteArray != null) {
+                ByteArrayInputStream imageStream = new ByteArrayInputStream(imageByteArray);
+                itemImageView.setImageBitmap(BitmapFactory.decodeStream(imageStream));
+            }
+
         }
         numberPickerCalledWith = numberPicker.getValue();
 
@@ -460,8 +474,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             @Override
             public void onClick(View v) {
                     itemImageView.setImageBitmap(null);
-                    if (Image != null)
-                        Image.recycle();
+                    if (ImageItem != null)
+                        ImageItem.recycle();
                     Intent intent = new Intent();
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -476,18 +490,18 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == GALLERY && resultCode != 0) {
-            Uri mImageUri = data.getData();
+            mImageUri = data.getData();
             try {
-                Image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
+                ImageItem = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
                 if (getOrientation(getActivity().getApplicationContext(), mImageUri) != 0) {
                     Matrix matrix = new Matrix();
                     matrix.postRotate(getOrientation(getActivity().getApplicationContext(), mImageUri));
                     if (rotateImage != null)
                         rotateImage.recycle();
-                    rotateImage = Bitmap.createBitmap(Image, 0, 0, Image.getWidth(), Image.getHeight(), matrix,true);
+                    rotateImage = Bitmap.createBitmap(ImageItem, 0, 0, ImageItem.getWidth(), ImageItem.getHeight(), matrix,true);
                     itemImageView.setImageBitmap(rotateImage);
                 } else
-                    itemImageView.setImageBitmap(Image);
+                    itemImageView.setImageBitmap(ImageItem);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -584,4 +598,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
+
+    public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+        return outputStream.toByteArray();
+    }
 }

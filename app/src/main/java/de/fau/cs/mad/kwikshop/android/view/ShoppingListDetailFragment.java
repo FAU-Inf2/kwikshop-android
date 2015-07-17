@@ -28,6 +28,7 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
 
     public static final String EXTRA_SHOPPINGLISTID = "extra_ShoppingListId";
+    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
 
     @InjectView(R.id.textView_ShoppingListName)
@@ -110,6 +111,7 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
             public void onClick(View v) {
                 SpeechRecognitionHelper.run(getActivity());
             }
+
         });
 
         viewModel.addListener(this);

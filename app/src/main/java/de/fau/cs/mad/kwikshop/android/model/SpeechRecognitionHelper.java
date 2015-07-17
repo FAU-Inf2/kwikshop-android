@@ -82,5 +82,6 @@ public class SpeechRecognitionHelper {
 			.create();
 		
 		dialog.show();
-	}	
+	}
+
 }

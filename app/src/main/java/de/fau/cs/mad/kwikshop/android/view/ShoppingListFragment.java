@@ -16,6 +16,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.MultiAutoCompleteTextView;
 import android.support.v4.app.Fragment;
 import android.widget.RelativeLayout;
@@ -79,6 +80,9 @@ public class ShoppingListFragment
 
     @InjectView(R.id.quickAdd)
     RelativeLayout quickAddLayout;
+
+    @InjectView(R.id.micButton)
+    ImageButton micButton;
 
 
     public static ShoppingListFragment newInstance(int listID) {
@@ -250,6 +254,13 @@ public class ShoppingListFragment
 
         disableFloatingButtonWhileSoftKeyboardIsShown();
 
+        micButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SpeechRecognitionHelper.run(getActivity());
+            }
+
+        });
 
         // shopping mode is on
         if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getActivity())){

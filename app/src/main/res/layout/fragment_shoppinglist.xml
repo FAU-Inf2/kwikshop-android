@@ -47,7 +47,7 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageButton"
+                android:id="@+id/micButton"
                 android:background="@android:drawable/ic_btn_speak_now"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/button_quickAdd" />

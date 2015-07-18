@@ -256,4 +256,12 @@
     <string name="date_today">Today</string>
     <string name="uploadPicture">Select picture</string>
 
+
+    <!-- Error Reporting -->
+    <string name="errorReporting_messaging_subject">Kwik Shop (Android) Crash Report</string>
+    <string name="errorReporting_messaging_chooser_title">Send Report using</string>
+    <string name="errorReporting_messaging_dialog_title">Crash Report</string>
+    <string name="errorReporting_messaging_dialog_text">"Unfortunately there was an error the last time you used the app. We're constantly working on improving the app. You can help by sending a report about the crash you encountered"</string>
+    <string name="errorReporting_messaging_recipient">quickshop@i2.cs.fau.de</string>
+
 </resources>

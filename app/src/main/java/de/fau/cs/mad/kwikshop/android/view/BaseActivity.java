@@ -10,24 +10,29 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import java.util.Locale;
 
+import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
+import de.fau.cs.mad.kwikshop.android.util.TopExceptionHandler;
 
 /**
  * BaseActivity: all activities have to inherit
  */
-
 public class BaseActivity extends ActionBarActivity {
+
+
+    public static final Object errorReportingLock = new Object();
+    public static boolean isErrorReportingInitialized = false;
 
     public static FrameLayout frameLayout;
     public static boolean refreshed = false;
@@ -37,6 +42,9 @@ public class BaseActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+
+
+        initializeErrorReporting();
 
         if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, this)){
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -155,6 +163,29 @@ public class BaseActivity extends ActionBarActivity {
         Intent refresh = new Intent(this, ListOfShoppingListsActivity.class);
         finish();
         startActivity(refresh);
+    }
+
+
+    public void initializeErrorReporting() {
+
+        if (!refreshed) {
+            return;
+        }
+
+        synchronized (errorReportingLock) {
+
+            if(isErrorReportingInitialized) {
+                return;
+            }
+
+            // register the TopExceptionHandler
+            Thread.setDefaultUncaughtExceptionHandler(new TopExceptionHandler(this));
+            StackTraceReporter stackTraceReporter = ObjectGraph.create(new KwikShopModule(this)).get(StackTraceReporter.class);
+            stackTraceReporter.reportStackTraceIfAvailable();
+
+            isErrorReportingInitialized = true;
+        }
+
     }
 
 }

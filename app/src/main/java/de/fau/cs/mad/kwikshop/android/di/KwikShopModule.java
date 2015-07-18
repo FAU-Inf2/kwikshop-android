@@ -5,6 +5,7 @@ import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
+import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -49,7 +50,8 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         AddRecipeToShoppingListViewModel.class,
         ShoppingListItemDetailsFragment.class,
         RecipeItemDetailsFragment.class,
-        ReminderFragment.class
+        ReminderFragment.class,
+        StackTraceReporter.class
 },
         library = true)
 @SuppressWarnings("unused")

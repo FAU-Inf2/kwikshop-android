@@ -32,6 +32,9 @@ The project makes use of several third-party libraries:
 - [Joda Time](http://www.joda.org/joda-time/), licensed under the Apache
   License, Version 2.0
 
+Some portions of the the [Fablab Android app](https://github.com/FAU-Inf2/fablab-android), licensed under the Apache License, Version 2.0 were used in this application 
+
+
 The build-process is based on gradle and uses the following third-party
 plugins (as well as the standard android build plugin):
 

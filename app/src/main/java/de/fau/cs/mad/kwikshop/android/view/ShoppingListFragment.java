@@ -3,8 +3,10 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 //import android.app.Fragment;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -30,6 +32,8 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCa
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.*;
 import dagger.ObjectGraph;
@@ -54,6 +58,7 @@ public class ShoppingListFragment
 
 
     private static final String ARG_LISTID = "list_id";
+    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
 
     public Menu overflow_menu;
@@ -258,6 +263,12 @@ public class ShoppingListFragment
             @Override
             public void onClick(View v) {
                 SpeechRecognitionHelper.run(getActivity());
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+                startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+
             }
 
         });
@@ -424,5 +435,19 @@ public class ShoppingListFragment
 
         //sizeBoughtItems = viewModel.getBoughtItems().size();
         //cartCounter.setText(String.valueOf(sizeBoughtItems));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getActivity();
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE) {
+            List<String> results = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            String spokenText = results.get(0);
+            textView_QuickAdd.setText(spokenText);
+            // Do something with spokenText
+        }
     }
 }

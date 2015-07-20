@@ -298,7 +298,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         // display the supermarket where this item was bought
 
-        LastLocation location = getListManager().getListItem(listId, itemId).getLocation();
+        LastLocation location = isNewItem ? null : getListManager().getListItem(listId, itemId).getLocation();
 
         if(location != null){
             if(location.getName() != null){

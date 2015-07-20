@@ -27,7 +27,7 @@
             android:minHeight="?android:attr/listPreferredItemHeightSmall"
             android:textColor="@color/primary_text"
             android:text="Shopping list Name"
-            />
+            android:layout_toLeftOf="@+id/shoppinglist_textView_lastModifiedDate" />
 
         <TextView
             android:id="@+id/shoppinglist_textView_lastModifiedDate"

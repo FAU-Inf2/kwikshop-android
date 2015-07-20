@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -110,6 +113,12 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
             @Override
             public void onClick(View v) {
                 SpeechRecognitionHelper.run(getActivity());
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+                startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
             }
 
         });
@@ -167,6 +176,19 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
         viewModel.setName(s != null ? s.toString() : "");
         updatingViewModel = false;
 
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getActivity();
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE) {
+            List<String> results = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            String spokenText = results.get(0);
+            textView_ShoppingListName.setText(spokenText);
+            // Do something with spokenText
+        }
     }
 
     private void initializeViewModel() {

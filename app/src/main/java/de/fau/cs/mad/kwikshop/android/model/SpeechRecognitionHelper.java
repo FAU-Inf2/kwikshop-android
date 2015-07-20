@@ -12,8 +12,11 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.speech.RecognizerIntent;
 import de.fau.cs.mad.kwikshop.android.R;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
-public class SpeechRecognitionHelper {
+
+public class SpeechRecognitionHelper{
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	public static void run(Activity ownerActivity) {
@@ -45,16 +48,16 @@ public class SpeechRecognitionHelper {
 	}
 
 	private static void startRecognitionActivity(Activity ownerActivity) {
-		
+
 
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-		
+
 
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
-        
 
-        ownerActivity.startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+
+        //ownerActivity.startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 	}
 
 	private static void installGoogleVoiceSearch(final Activity ownerActivity) {

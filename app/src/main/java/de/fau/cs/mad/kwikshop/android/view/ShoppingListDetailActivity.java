@@ -3,6 +3,9 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+
+import java.util.List;
 
 
 public class ShoppingListDetailActivity extends DetailsActivity {
@@ -34,6 +37,13 @@ public class ShoppingListDetailActivity extends DetailsActivity {
 
     }
 
+    // This callback is invoked when the Speech Recognizer returns.
+// This is where you process the intent and extract the speech text from the intent.
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
 
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
 }

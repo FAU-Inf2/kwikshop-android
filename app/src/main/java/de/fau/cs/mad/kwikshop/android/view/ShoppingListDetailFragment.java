@@ -182,7 +182,7 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
                                  Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         getActivity();
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE) {
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);

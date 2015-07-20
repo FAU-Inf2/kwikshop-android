@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.speech.RecognizerIntent;
+import de.fau.cs.mad.kwikshop.android.R;
 
 public class SpeechRecognitionHelper {
 
@@ -49,7 +50,6 @@ public class SpeechRecognitionHelper {
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		
 
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Select an application");
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
         
@@ -61,9 +61,9 @@ public class SpeechRecognitionHelper {
 		
 
 		Dialog dialog = new AlertDialog.Builder(ownerActivity)
-			.setMessage("For recognition it’s necessary to install 'Google Voice Search'")
-			.setTitle("Install Voice Search from Google Play?")
-			.setPositiveButton("Install", new DialogInterface.OnClickListener() {	//
+			.setMessage(R.string.askingGoogleVoiceSearch)
+			.setTitle(R.string.askingGooglePlay)
+			.setPositiveButton(R.string.Install, new DialogInterface.OnClickListener() {	//
 				@Override
 				public void onClick(DialogInterface dialog, int which) {	
 					try {
@@ -78,7 +78,7 @@ public class SpeechRecognitionHelper {
 					 }					
 				}})
 				
-			.setNegativeButton("Cancel", null)
+			.setNegativeButton(R.string.cancel, null)
 			.create();
 		
 		dialog.show();

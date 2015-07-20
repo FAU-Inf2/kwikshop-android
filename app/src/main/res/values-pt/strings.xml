@@ -109,7 +109,6 @@
     <string name="title_activity_recipe_item_details">Detalhes do Item da Receita</string>
     <string name="weeks">Semanas</string>
     <string name="months">Meses</string>
-    <string name="location">Localização</string>
     <string name="every">a cada</string>
     <string name="days">dias</string>
     <string name="deleteRecipe_DialogText">Tem certeza que deseja deletar essa receita?</string>
@@ -172,4 +171,7 @@
     <string name="recipe_scaleName_piece">pedaços</string>
     <string name="recipe_choose_amount">Escolha quantidade de</string>
     <string name="itemdetails_last_bought">Encontrado em</string>
+    <string name="askingGoogleVoiceSearch">Para o reconhecimento é necessário instalar \'Google Voice Search\'</string>
+    <string name="askingGooglePlay">Instalar Voice Search pelo Google Play?</string>
+    <string name="Install">Instalar</string>
 </resources>

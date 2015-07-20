@@ -28,25 +28,24 @@
 
             <MultiAutoCompleteTextView
                 android:id="@+id/textView_quickAdd"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/defaultItem"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:inputType="textCapSentences"
-                android:maxLength="20" />
+                android:layout_toLeftOf="@+id/micButton"
+                android:layout_alignParentLeft="true" />
 
             <ImageButton
                 android:id="@+id/button_quickAdd"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="40dip"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/textView_quickAdd"
-                android:layout_alignEnd="@id/textView_quickAdd"
-                android:layout_alignRight="@id/textView_quickAdd"
-                android:layout_alignTop="@id/textView_quickAdd"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_action_add" />
+                android:src="@drawable/ic_action_add"
+                android:layout_alignBottom="@+id/textView_quickAdd"
+                android:layout_alignParentRight="true" />
 
             <ImageButton
                 android:layout_width="wrap_content"

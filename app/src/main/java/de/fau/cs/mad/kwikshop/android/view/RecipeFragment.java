@@ -1,7 +1,9 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ScrollView;
@@ -19,11 +22,14 @@ import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.dragdrop.OnItemMovedListener;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
@@ -37,6 +43,8 @@ import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.greenrobot.event.EventBus;
 
 public class RecipeFragment  extends Fragment implements RecipeViewModel.Listener, ObservableArrayList.Listener<Item> {
+
+    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
 
     private static final String ARG_RECIPEID = "recipe_id";
@@ -64,6 +72,8 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
     @InjectView(R.id.recipe_scrollview)
     ScrollView scrollView;
 
+    @InjectView(R.id.micButton)
+    ImageButton micButton;
 
 
     public static RecipeFragment newInstance(int recipeID) {
@@ -163,6 +173,21 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
             }
         });
         textView_QuickAdd.setTokenizer(new SpaceTokenizer());
+
+        micButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SpeechRecognitionHelper.run(getActivity());
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+                startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+
+            }
+
+        });
+
 
         //wire up auto-complete for product name
         if (autoCompletion == null) {
@@ -318,4 +343,17 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
         justifyListViewHeightBasedOnChildren(recipeListView);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getActivity();
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
+            List<String> results = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            String spokenText = results.get(0);
+            textView_QuickAdd.setText(spokenText);
+            // Do something with spokenText
+        }
+    }
 }

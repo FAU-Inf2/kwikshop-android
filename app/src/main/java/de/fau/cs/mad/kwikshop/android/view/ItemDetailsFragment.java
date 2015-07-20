@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.NumberPicker;
@@ -50,6 +52,7 @@ import butterknife.InjectView;
 import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
@@ -72,6 +75,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     protected static final String ARG_LISTID = "list_id";
     protected static final String ARG_ITEMID = "item_id";
+    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     private int listId;
     private int itemId;
@@ -122,6 +126,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @InjectView(R.id.last_bought_relativelayout)
     RelativeLayout last_bought_relativelayout;
 
+    @InjectView(R.id.micButton)
+    ImageButton micButton;
 
     @InjectView(R.id.itemImageView)
     ImageView itemImageView;
@@ -492,6 +498,20 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         });
 
+        micButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SpeechRecognitionHelper.run(getActivity());
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+                startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+
+            }
+
+        });
+
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -515,6 +535,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
+            List<String> results = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            String spokenText = results.get(0);
+            productname_text.setText(spokenText);
+            // Do something with spokenText
         }
     }
     public int getOrientation(Context context, Uri photoUri) {
@@ -612,4 +639,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
         return outputStream.toByteArray();
     }
+
+
 }

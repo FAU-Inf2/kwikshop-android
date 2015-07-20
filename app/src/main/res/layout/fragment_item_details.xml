@@ -31,18 +31,35 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false" />
 
-            <MultiAutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/productname_text"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:singleLine="true"
-                android:textStyle="bold"
-                android:inputType="textCapSentences"
-                android:focusable="true"
-                android:focusableInTouchMode="true" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:weightSum="1">
+
+                <MultiAutoCompleteTextView
+                    android:layout_width="251dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/productname_text"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="2dp"
+                    android:singleLine="true"
+                    android:textStyle="bold"
+                    android:inputType="textCapSentences"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_weight="0.71" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/micButton"
+                    android:background="@android:drawable/ic_btn_speak_now"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/button_quickAdd"
+                    android:layout_marginRight="2dp" />
+            </LinearLayout>
 
             <Space
                 android:layout_width="wrap_content"

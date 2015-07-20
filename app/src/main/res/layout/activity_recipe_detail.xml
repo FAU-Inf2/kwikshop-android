@@ -17,12 +17,11 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:selectAllOnFocus="true"
         android:text="SAMPLE TEXT"
         android:singleLine="true"
-        android:inputType="textCapSentences"/>
+        android:inputType="textCapSentences"
+        android:layout_toLeftOf="@+id/micButton" />
 
     <TableRow
         android:layout_width="match_parent"
@@ -46,5 +45,13 @@
             android:layout_gravity="center_vertical"/>
 
     </TableRow>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/micButton"
+        android:background="@android:drawable/ic_btn_speak_now"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

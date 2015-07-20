@@ -33,7 +33,8 @@
                 android:hint="@string/defaultItem"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:inputType="textCapSentences"/>
+                android:inputType="textCapSentences"
+                android:maxLength="20" />
 
             <ImageButton
                 android:id="@+id/button_quickAdd"
@@ -46,6 +47,14 @@
                 android:layout_alignTop="@id/textView_quickAdd"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_action_add" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/micButton"
+                android:background="@android:drawable/ic_btn_speak_now"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/button_quickAdd" />
 
         </RelativeLayout>
 

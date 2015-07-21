@@ -1,8 +1,10 @@
+
+// Imports, mainly used for jaxrs2retrofit
 import com.wordnik.swagger.annotations.ApiParam
+import com.squareup.javapoet.ClassName;
 import de.bitdroid.jaxrs2retrofit.converter.IgnoreConverter;
 import de.bitdroid.jaxrs2retrofit.converter.ParamConverter;
 import de.bitdroid.jaxrs2retrofit.converter.AnnotatedParam;
-import com.squareup.javapoet.ClassName;
 import io.dropwizard.auth.Auth;
 import retrofit.http.Body;
 
@@ -10,10 +12,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'de.bitdroid.jaxrs2retrofit'
 
+//definition of sources directories
+// application souces
 def appSourcesDir = file('src/main/java')
+// sources of kwikshop-common
 def commonSourcesDir = rootProject.file('../kwikshop-common/src/main/java')
+// output directory of jaxrs2retrofit
 def generatedSourcesDir = file('src/main/java-gen')
-
 
 
 buildscript {
@@ -21,11 +26,12 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'de.bitdroid.jaxrs2retrofit:plugin:0.4.1'
+        //as with the imports, dependencies necessary for jaxrs2retrofit
         classpath 'com.wordnik:swagger-annotations:1.5.0-M2'
         classpath 'com.squareup:javapoet:1.2.0'
-        classpath 'io.dropwizard:dropwizard-auth:0.8.1'
         classpath 'com.squareup.retrofit:retrofit:1.9.0'
+        classpath 'de.bitdroid.jaxrs2retrofit:plugin:0.4.1'
+        classpath 'io.dropwizard:dropwizard-auth:0.8.1'
     }
 }
 
@@ -39,11 +45,11 @@ android {
 
     defaultConfig {
         applicationId "de.fau.cs.mad.kwikshop.android"
-        //minSdkVersion 14
-        //targetSdkVersion 21
         multiDexEnabled true
         versionCode 2
         versionName "1.0.1"
+
+        //resources generated during build
         resValue "string", "BuildInfo_Git_Branch", getGitBranchName()
         resValue "string", "BuildInfo_Git_Commit", getGitCommitId()
     }
@@ -103,9 +109,6 @@ android {
         exclude 'license.html'
         exclude 'readme.html'
         exclude 'META-INF/services/org.glassfish.jersey.internal.spi.ForcedAutoDiscoverable'
-        //exclude 'META-INF/services/com.fasterxml.jackson.databind.Module'
-        //exclude 'META-INF/services/io.dropwizard.jackson.Discoverable'
-        //exclude 'META-INF/services/com.fasterxml.jackson.core.JsonFactory'
     }
 
 
@@ -115,6 +118,7 @@ android {
 }
 
 
+//also build kwikshop-common (this can probably be removed)
 preBuild.dependsOn(":../kwikshop-common:build")
 
 dependencies {
@@ -176,9 +180,6 @@ dependencies {
     compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.5.1'
     compile 'com.wordnik:swagger-annotations:1.5.0-M2'
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
-    // compile ('io.dropwizard:dropwizard-auth:0.8.2') {
-    //     exclude module: 'javax.inject'
-    // }
 
     // REST - Retrofit
     compile 'com.squareup.retrofit:retrofit:1.9.0'
@@ -205,29 +206,40 @@ allprojects {
     }
 }
 
-
-
+//jaxrs2retrofit task definition
 afterEvaluate {
     project.tasks.matching { it.name.startsWith('jaxRs2Retrofit') }.each {
+
+        //input directory is the main source set of kwikshop-common
         it.inputDir = file(project(':../kwikshop-common').projectDir.toString() + '/src/main/java')
+        //output to source set of app
         it.outputDir = generatedSourcesDir
         it.packageName = 'de.fau.cs.mad.kwikshop.android.restclient'
+
+        //do not generate client interface for UserResource
         it.excludedClassNamesRegex = "UserResource"
+
+        //generate synchronous methods onöy
         it.generateSynchronousMethods = true
         it.generateCallbackMethods = false
         it.generateRxJavaMethods = false
+
+        //customize handling for certain annotation
+
+        //ignore all parameters marked with dropwizard's @Auth attribute
+        it.paramConverterManager.registerConverter(ClassName.get(Auth.class), new IgnoreConverter());
+
+        //parameters marked with @ApiParam (swagger): map to @Body, but remove annotation parameters
         it.paramConverterManager.registerConverter(ClassName.get(ApiParam.class),
                 new ParamConverter() {
                     @Override
                     AnnotatedParam convert(AnnotatedParam param) {
-
-
                         return new AnnotatedParam(
                                 param.getParamType(),
                                 ClassName.get(Body.class),
                                 new HashMap<String, Object>());
                     }
                 });
-        it.paramConverterManager.registerConverter(ClassName.get(Auth.class), new IgnoreConverter());
+
     }
 }

@@ -1,9 +1,33 @@
+import com.wordnik.swagger.annotations.ApiParam
+import de.bitdroid.jaxrs2retrofit.converter.IgnoreConverter;
+import de.bitdroid.jaxrs2retrofit.converter.ParamConverter;
+import de.bitdroid.jaxrs2retrofit.converter.AnnotatedParam;
+import com.squareup.javapoet.ClassName;
+import io.dropwizard.auth.Auth;
+import retrofit.http.Body;
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
-
+apply plugin: 'de.bitdroid.jaxrs2retrofit'
 
 def appSourcesDir = file('src/main/java')
 def commonSourcesDir = rootProject.file('../kwikshop-common/src/main/java')
+def generatedSourcesDir = file('src/main/java-gen')
+
+
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'de.bitdroid.jaxrs2retrofit:plugin:0.4.1'
+        classpath 'com.wordnik:swagger-annotations:1.5.0-M2'
+        classpath 'com.squareup:javapoet:1.2.0'
+        classpath 'io.dropwizard:dropwizard-auth:0.8.1'
+        classpath 'com.squareup.retrofit:retrofit:1.9.0'
+    }
+}
 
 android {
     compileSdkVersion 21
@@ -61,6 +85,7 @@ android {
         main {
             java {
                 srcDir appSourcesDir
+                srcDir generatedSourcesDir
                 srcDir commonSourcesDir
             }
         }
@@ -96,36 +121,48 @@ dependencies {
     //IMPORTANT: If you add dependencies here, you also need to mention
     // the dependency in README.md. If you want it to show up in the application's about screen
     // you also need to add it to the string array acknowledgements_Items in values/strings.xml
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
     //compile files('../../kwikshop-common/build/libs/kwikshop-common-1.0.jar')
     //Google support libraries for older android version
     compile 'com.android.support:appcompat-v7:21.0.+'
     compile 'com.android.support:multidex:1.0.0'
+
     //orm-lite (Object mapper)
     compile 'com.j256.ormlite:ormlite-android:4.48'
+
     //Floating action button common in material design applications
     compile 'com.melnykov:floatingactionbutton:1.3.0'
+
     //event bus for publish-subscribe messaging
     compile 'de.greenrobot:eventbus:2.4.0'
+
     //Animations, drag and drop, swiping for ListView
     compile 'com.nhaarman.listviewanimations:lib-core:3.1.0@aar'
     compile 'com.nhaarman.listviewanimations:lib-manipulation:3.1.0@aar'
     compile 'com.nhaarman.listviewanimations:lib-core-slh:3.1.0@aar'
+
     //Dependency injection
     compile 'com.squareup.dagger:dagger:1.2.2'
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
     compile 'com.jakewharton:butterknife:6.1.0'
+
     //Google Play Services
     compile 'com.google.android.gms:play-services-location:7.5.0'
     compile 'com.google.android.gms:play-services-maps:7.5.0'
+
     //Google Places API
     compile 'se.walkercrou:google-places-api-java:2.1.2'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
+
     //Google Maps Utils
     compile 'com.google.maps.android:android-maps-utils:0.3+'
+
     //Google Play Services for Login
     compile 'com.google.android.gms:play-services-base:7.5.0'
     compile 'com.google.android.gms:play-services-plus:7.5.0'
+
     //REST
     compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
     compile('org.glassfish.jersey.core:jersey-client:2.17') {
@@ -142,6 +179,12 @@ dependencies {
     // compile ('io.dropwizard:dropwizard-auth:0.8.2') {
     //     exclude module: 'javax.inject'
     // }
+
+    // REST - Retrofit
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.4.0'
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
+
     //Joda Time
     compile 'joda-time:joda-time:2.8.1'
 }
@@ -159,5 +202,32 @@ allprojects {
             android.signingConfigs[configName].keyAlias = props['keyAlias']
             android.signingConfigs[configName].keyPassword = props['keyPassword']
         }
+    }
+}
+
+
+
+afterEvaluate {
+    project.tasks.matching { it.name.startsWith('jaxRs2Retrofit') }.each {
+        it.inputDir = file(project(':../kwikshop-common').projectDir.toString() + '/src/main/java')
+        it.outputDir = generatedSourcesDir
+        it.packageName = 'de.fau.cs.mad.kwikshop.android.restclient'
+        it.excludedClassNamesRegex = "UserResource"
+        it.generateSynchronousMethods = true
+        it.generateCallbackMethods = false
+        it.generateRxJavaMethods = false
+        it.paramConverterManager.registerConverter(ClassName.get(ApiParam.class),
+                new ParamConverter() {
+                    @Override
+                    AnnotatedParam convert(AnnotatedParam param) {
+
+
+                        return new AnnotatedParam(
+                                param.getParamType(),
+                                ClassName.get(Body.class),
+                                new HashMap<String, Object>());
+                    }
+                });
+        it.paramConverterManager.registerConverter(ClassName.get(Auth.class), new IgnoreConverter());
     }
 }

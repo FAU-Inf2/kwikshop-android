@@ -8,11 +8,13 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,15 +22,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
+import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
 import de.fau.cs.mad.kwikshop.android.common.Setting;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.SimpleStorageBase;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+
+import static de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper.*;
 
 
 public class SettingFragment extends Fragment {
@@ -50,6 +62,14 @@ public class SettingFragment extends Fragment {
     private ArrayList<Setting> settingsList;
 
 
+    private Setting apiEndpointSetting;
+
+    @Inject
+    ViewLauncher viewLauncher;
+
+    @Inject
+    ResourceProvider resourceProvider;
+
     public static SettingFragment newInstance(int sectionNumber) {
         SettingFragment fragment = new SettingFragment();
         return fragment;
@@ -59,6 +79,9 @@ public class SettingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
+        objectGraph.inject(this);
 
         context = getActivity().getApplicationContext();
 
@@ -80,6 +103,9 @@ public class SettingFragment extends Fragment {
                 //manage units
                 if (settingsList.get(position).getName().equals(getString(R.string.settings_option_3_manageUnits)))
                     manageUnits(position);
+
+                if(settingsList.get(position).equals(apiEndpointSetting))
+                    setApiEndpoint();
 
             }
         });
@@ -109,9 +135,16 @@ public class SettingFragment extends Fragment {
         setManageUnits.setCaption(R.string.settings_option_3_desc2);
         settingsList.add(setManageUnits);
 
+        // API endpoint settings
+        apiEndpointSetting = new Setting(context);
+        apiEndpointSetting.setName(R.string.settings_option_4_APIEndPoint_Title);
+        apiEndpointSetting.setCaption(R.string.settings_option_4_APIEndPoint_Desc);
+        settingsList.add(apiEndpointSetting);
+
         // Adapter for settings view
         SettingAdapter objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, settingsList);
         listView.setAdapter(objAdapter);
+
 
         return rootView;
 
@@ -169,7 +202,6 @@ public class SettingFragment extends Fragment {
         getActivity().finish();
     }
 
-
     public void deleteAutoCompletionHistoryOption(int position) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -215,7 +247,6 @@ public class SettingFragment extends Fragment {
         Toast.makeText(getActivity(), getResources().getString(R.string.settings_option_3_success), Toast.LENGTH_LONG).show();
     }
 
-
     private void manageUnits(int position) {
 
                       /*  AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -239,5 +270,31 @@ public class SettingFragment extends Fragment {
 
     }
 
+    @SuppressWarnings("unchecked")
+    private void setApiEndpoint() {
+
+        viewLauncher.showTextInputDialog(
+                resourceProvider.getString(R.string.settings_option_4_APIEndPoint_Title),
+                loadString(API_ENDPOINT, resourceProvider.getString(R.string.API_URL), getActivity()),
+                resourceProvider.getString(android.R.string.ok),
+                new Command<String>() {
+                    @Override
+                    public void execute(String value) {
+                        saveString(API_ENDPOINT, value, getActivity());
+                    }
+                },
+                resourceProvider.getString(R.string.reset),
+                new Command<String>() {
+                    @Override
+                    public void execute(String value) {
+                        value = resourceProvider.getString(R.string.API_URL);
+                        saveString(API_ENDPOINT, value, getActivity());
+                    }
+                },
+                resourceProvider.getString(android.R.string.cancel),
+                (Command<String>) NullCommand.Instance
+        );
+
+    }
 
 }

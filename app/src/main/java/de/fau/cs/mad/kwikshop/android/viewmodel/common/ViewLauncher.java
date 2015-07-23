@@ -15,6 +15,13 @@ public interface ViewLauncher {
 
     void showYesNoDialog(String title, String message, Command positiveCommand, Command negativeCommand);
 
+    void showTextInputDialog(String title, String value, Command<String> positiveCommand, Command<String> negativeCommand);
+
+    void showTextInputDialog(String title, String value,
+                             String positiveText, Command<String> positiveCommand,
+                             String neutralText, Command<String> neutralCommand,
+                             String negativeText, Command<String> negativeCommand);
+
     void showToast(String message, int duration);
 
     void showToast(int resId, int duration);
@@ -37,7 +44,11 @@ public interface ViewLauncher {
 
     void showAddRecipeDialog(final Recipe recipe);
 
+    //TODO: move somewhere else, this is not a responsibility of ViewLauncher
+    @Deprecated
     void notifyUnitSpinnerChange(ArrayAdapter<String> adapter);
 
+    //TODO: move somewhere else, this is not a responsibility of ViewLauncher
+    @Deprecated
     void notifyGroupSpinnerChange(ArrayAdapter<String> adapter);
 }

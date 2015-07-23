@@ -344,7 +344,8 @@ public class LoginActivity extends FragmentActivity implements
                 return null;
             }
 
-            WebTarget target = ClientBuilder.newClient().register(JacksonJsonProvider.class).target(getString(R.string.API_URL));
+            String uri = SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, getString(R.string.API_URL), LoginActivity.this);
+            WebTarget target = ClientBuilder.newClient().register(JacksonJsonProvider.class).target(uri);
             UserResource endpoint = WebResourceFactory.newResource(UserResource.class, target);
             String authResponse;
             try {

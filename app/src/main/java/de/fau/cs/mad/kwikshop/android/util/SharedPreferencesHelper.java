@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+//TODO: make methods non-static, make usages use a injected instance instead
 public class SharedPreferencesHelper {
 
     //Settings keys
@@ -10,7 +11,7 @@ public class SharedPreferencesHelper {
     public static final String SHOPPING_MODE = "shopping_mode_setting";
     public static final String SKIP_LOGIN = "SKIPLOGIN";
     public static final String LOCALE = "locale";
-
+    public static final String API_ENDPOINT = "API_ENDPOINT";
 
     private static final String sharedPreferencesName = "settings";
 

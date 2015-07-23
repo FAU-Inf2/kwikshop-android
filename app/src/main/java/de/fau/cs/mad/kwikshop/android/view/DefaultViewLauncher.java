@@ -9,10 +9,13 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
 
@@ -21,7 +24,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.Unit;
@@ -35,15 +42,21 @@ import de.greenrobot.event.EventBus;
 public class DefaultViewLauncher implements ViewLauncher {
 
     private final Activity activity;
+    private final ResourceProvider resourceProvider;
 
-
-    public DefaultViewLauncher(Activity activity) {
+    @Inject
+    public DefaultViewLauncher(Activity activity, ResourceProvider resourceProvider) {
 
         if (activity == null) {
-            throw new IllegalArgumentException("'activity' must not be null");
+            throw new ArgumentNullException("activity");
+        }
+
+        if(resourceProvider == null) {
+            throw new ArgumentNullException("resourceProvider");
         }
 
         this.activity = activity;
+        this.resourceProvider = resourceProvider;
     }
 
 
@@ -122,6 +135,78 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
+    public void showTextInputDialog(String title, String value, final Command<String> positiveCommand, final Command<String> negativeCommand) {
+
+        showTextInputDialog(title, value,
+                resourceProvider.getString(android.R.string.ok), positiveCommand,
+                null, null,
+                resourceProvider.getString(android.R.string.cancel), negativeCommand);
+    }
+
+    @Override
+    public void showTextInputDialog(String title, String value,
+                                    String positiveText, final Command<String> positiveCommand,
+                                    String neutralText,  final Command<String> neutralCommand,
+                                    String negativeText, final Command<String> negativeCommand) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+
+        if(value == null) {
+            value = "";
+        }
+
+        // Set up the input
+        final View view = activity.getLayoutInflater().inflate(R.layout.dialog_textinput, null);
+        final TextView input = (TextView) view.findViewById(R.id.textView);
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText(value);
+        builder.setView(view);
+
+        // Set up the buttons
+        builder.setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if(positiveCommand.getCanExecute()) {
+                    positiveCommand.execute(input.getText().toString());
+                }
+
+            }
+        });
+
+        if(negativeCommand != null) {
+
+            builder.setNeutralButton(neutralText, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    if(neutralCommand.getCanExecute()) {
+                        neutralCommand.execute(input.getText().toString());
+                    }
+
+                }
+            });
+        }
+
+        builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+
+                if(negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(input.getText().toString());
+                }
+            }
+        });
+
+        builder.show();
+
+    }
+
+    @Override
     public void showToast(String message, int duration) {
         Toast.makeText(activity, message, duration).show();
     }
@@ -191,6 +276,9 @@ public class DefaultViewLauncher implements ViewLauncher {
         alert.show();
 
     }
+
+    //TODO: move somewhere else, this is not a responsibility of ViewLauncher
+    @Deprecated
     @Override
     public void notifyUnitSpinnerChange(ArrayAdapter<String> adapter){
         List<Unit> units;
@@ -219,6 +307,8 @@ public class DefaultViewLauncher implements ViewLauncher {
         //onQuickAddTextChanged();
     }
 
+    //TODO: move somewhere else, this is not a responsibility of ViewLauncher
+    @Deprecated
     @Override
     public void notifyGroupSpinnerChange(ArrayAdapter<String> adapter){
         List<Group> groups;

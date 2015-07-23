@@ -123,14 +123,14 @@ public class SettingFragment extends Fragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         //int currentLocaleIdIndex = getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).getInt(OPTION_1, 0);
-        int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(OPTION_1, 0, getActivity());
+        int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, getActivity());
         builder.setTitle(R.string.settings_option_2_setlocale);
         builder.setSingleChoiceItems(localeSelectionNames, currentLocaleIdIndex, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
                 setLocale(localeIds[which].toString());
-                SharedPreferencesHelper.saveInt(OPTION_1, which, getActivity());
+                SharedPreferencesHelper.saveInt(SharedPreferencesHelper.LOCALE, which, getActivity());
                 //getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).edit().putInt(OPTION_1, which).apply();
 
             }

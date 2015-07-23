@@ -46,7 +46,7 @@ public class LoginActivity extends FragmentActivity implements
 
     private static final String TAG = "LoginActivity";
 
-    private static final String SKIPLOGIN = "SKIPLOGIN"; // Used in SharedPreferences
+
 
     /* RequestCode for resolutions involving sign-in */
     private static final int RC_SIGN_IN = 0;
@@ -103,7 +103,7 @@ public class LoginActivity extends FragmentActivity implements
 
         // If the user is logged in or has skipped the login, go to the main Activity - except if the user opens the Activity from the menu
         if(!force) {
-            if (SessionHandler.isAuthenticated(getApplicationContext()) || SharedPreferencesHelper.loadInt(SKIPLOGIN, 0, getApplicationContext()) == 1)
+            if (SessionHandler.isAuthenticated(getApplicationContext()) || SharedPreferencesHelper.loadInt(SharedPreferencesHelper.SKIP_LOGIN, 0, getApplicationContext()) == 1)
                 exitLoginActivity();
         }
 
@@ -410,7 +410,7 @@ public class LoginActivity extends FragmentActivity implements
                 builder.setMessage(R.string.login_skip_message);
                 builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int position) {
-                        SharedPreferencesHelper.saveInt(SKIPLOGIN, 1, getApplicationContext());
+                        SharedPreferencesHelper.saveInt(SharedPreferencesHelper.SKIP_LOGIN, 1, getApplicationContext());
                         exitLoginActivity();
                     }
                 });

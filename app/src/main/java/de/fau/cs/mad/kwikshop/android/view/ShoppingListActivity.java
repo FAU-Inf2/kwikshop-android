@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -17,7 +16,7 @@ public class ShoppingListActivity extends BaseActivity {
 
 
     private static final String SHOPPING_LIST_ID = "shopping_list_id";
-    public static String SHOPPING_MODE_SETTING = "shopping_mode_setting";
+
     public Menu menu;
 
 
@@ -49,7 +48,7 @@ public class ShoppingListActivity extends BaseActivity {
         MenuItem shoppingMode = menu.findItem(R.id.action_shopping_mode);
         shoppingMode.setVisible(true);
 
-        if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getApplicationContext())){
+        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getApplicationContext())){
             for(int i = 0; i <  menu.getItem(1).getSubMenu().size(); i++){
                 menu.getItem(1).getSubMenu().getItem(i).setVisible(false);
             }
@@ -83,7 +82,7 @@ public class ShoppingListActivity extends BaseActivity {
                 break;
             case R.id.action_shopping_mode:
                 // save enabled shopping mode setting and restart activity to update view
-                SharedPreferencesHelper.saveBoolean(SHOPPING_MODE_SETTING, true, getApplicationContext());
+                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
                 Intent intent = getIntent();
                 finish();
                 startActivity(intent);
@@ -132,7 +131,7 @@ public class ShoppingListActivity extends BaseActivity {
         super.onConfigurationChanged(newConfig);
 
        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-           SharedPreferencesHelper.saveBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, true, getApplicationContext());
+           SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
         }
     }
 

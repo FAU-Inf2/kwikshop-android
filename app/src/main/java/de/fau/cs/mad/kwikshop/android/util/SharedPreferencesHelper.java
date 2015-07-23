@@ -4,6 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SharedPreferencesHelper {
+
+    //Settings keys
+    public static final String SESSION_TOKEN = "SESSION_TOKEN";
+    public static final String SHOPPING_MODE = "shopping_mode_setting";
+    public static final String SKIP_LOGIN = "SKIPLOGIN";
+    public static final String LOCALE = "locale";
+
+
     private static final String sharedPreferencesName = "settings";
 
     public static void saveString(String key, String value, Context context) {

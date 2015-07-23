@@ -46,7 +46,7 @@ public class BaseActivity extends ActionBarActivity {
 
         initializeErrorReporting();
 
-        if(SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, this)){
+        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, this)){
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
@@ -117,8 +117,8 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     public void onBackPressed() {
 
-        if (SharedPreferencesHelper.loadBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, this)) {
-            SharedPreferencesHelper.saveBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getApplicationContext());
+        if (SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, this)) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getApplicationContext());
             Intent intent = getIntent();
             finish();
             startActivity(intent);
@@ -130,7 +130,7 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferencesHelper.saveBoolean(ShoppingListActivity.SHOPPING_MODE_SETTING, false, getApplicationContext());
+        SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getApplicationContext());
 
     }
 

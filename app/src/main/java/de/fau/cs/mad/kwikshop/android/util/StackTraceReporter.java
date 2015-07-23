@@ -23,28 +23,24 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.IoService;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 
 public class StackTraceReporter {
 
-    private static final String MAILTO = "mailto";
 
-    //TODO: hide usages of Activity behind some interface, might be cleaner
-    private final Activity activity;
+    private final IoService ioService;
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
     private final ClipboardHelper clipBoardHelper;
 
 
     @Inject
-    public StackTraceReporter(Activity activity, ViewLauncher viewLauncher, ResourceProvider resourceProvider,
-                              ClipboardHelper clipBoardHelper) {
+    public StackTraceReporter(ViewLauncher viewLauncher, ResourceProvider resourceProvider,
+                              ClipboardHelper clipBoardHelper, IoService ioService) {
 
-        if(activity == null) {
-            throw new ArgumentNullException("activity");
-        }
 
         if(viewLauncher == null) {
             throw new ArgumentNullException("viewLauncher");
@@ -58,10 +54,14 @@ public class StackTraceReporter {
             throw new ArgumentNullException("clipBoardHelper");
         }
 
-        this.activity = activity;
+        if(ioService == null) {
+            throw new ArgumentNullException("ioService");
+        }
+
         this.viewLauncher = viewLauncher;
         this.resourceProvider = resourceProvider;
         this.clipBoardHelper = clipBoardHelper;
+        this.ioService = ioService;
     }
 
 
@@ -72,7 +72,7 @@ public class StackTraceReporter {
         String trace = "";
         boolean traceAvailable = true;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(activity.openFileInput(TopExceptionHandler.STACKTRACE_FILENAME)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(ioService.openFileInput(TopExceptionHandler.STACKTRACE_FILENAME)));
             while ((line = reader.readLine()) != null) {
                 trace += line + "\n";
             }
@@ -93,17 +93,12 @@ public class StackTraceReporter {
                         @Override
                         public void execute(Void parameter) {
 
-                            Intent sendIntent = new Intent(
-                                    Intent.ACTION_SENDTO,
-                                    Uri.fromParts(MAILTO, resourceProvider.getString(R.string.errorReporting_messaging_recipient), null));
+                            viewLauncher.launchEmailChooser(
+                                    resourceProvider.getString(R.string.errorReporting_messaging_chooser_title),
+                                    resourceProvider.getString(R.string.errorReporting_messaging_recipient),
+                                    resourceProvider.getString(R.string.errorReporting_messaging_subject),
+                                    traceFinal + "\n\n");
 
-                            String subject = resourceProvider.getString(R.string.errorReporting_messaging_subject);
-                            String body = traceFinal + "\n\n";
-
-                            sendIntent.putExtra(Intent.EXTRA_TEXT, body);
-                            sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-
-                            activity.startActivity(Intent.createChooser(sendIntent, resourceProvider.getString(R.string.errorReporting_messaging_chooser_title)));
                         }
                     },
                     resourceProvider.getString(R.string.errorReporting_copyToClipboard),
@@ -118,7 +113,7 @@ public class StackTraceReporter {
                     resourceProvider.getString(android.R.string.no),
                     NullCommand.VoidInstance);
 
-            activity.deleteFile(TopExceptionHandler.STACKTRACE_FILENAME);
+            ioService.deleteFile(TopExceptionHandler.STACKTRACE_FILENAME);
         }
     }
 }

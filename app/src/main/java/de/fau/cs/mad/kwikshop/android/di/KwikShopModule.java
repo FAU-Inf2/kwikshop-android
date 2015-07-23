@@ -7,8 +7,10 @@ import dagger.Module;
 import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
+import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
 import de.fau.cs.mad.kwikshop.android.view.SettingFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ClipboardHelper;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.IoService;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -160,5 +162,10 @@ public class KwikShopModule {
     @Provides
     public ClipboardHelper provideClipboardHelper(Activity activity) {
         return new DefaultClipboardHelper(activity);
+    }
+
+    @Provides
+    public IoService provideIoService(Activity activity) {
+        return new IoServiceImplementation(activity);
     }
 }

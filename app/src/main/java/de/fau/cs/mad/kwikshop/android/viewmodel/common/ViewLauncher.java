@@ -57,4 +57,6 @@ public interface ViewLauncher {
     //TODO: move somewhere else, this is not a responsibility of ViewLauncher
     @Deprecated
     void notifyGroupSpinnerChange(ArrayAdapter<String> adapter);
+
+    void launchEmailChooser(String chooserTitle, String recipient, String subject, String body);
 }

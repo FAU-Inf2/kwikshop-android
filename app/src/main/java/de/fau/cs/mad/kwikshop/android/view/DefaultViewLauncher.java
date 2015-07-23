@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -40,6 +41,8 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
 public class DefaultViewLauncher implements ViewLauncher {
+
+    private static final String MAILTO = "mailto";
 
     private final Activity activity;
     private final ResourceProvider resourceProvider;
@@ -356,4 +359,17 @@ public class DefaultViewLauncher implements ViewLauncher {
         adapter.notifyDataSetChanged();
         //onQuickAddTextChanged();
     }
+
+    @Override
+    public void launchEmailChooser(String chooserTitle, String recipient, String subject, String body) {
+
+        Intent sendIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(MAILTO, recipient, null));
+
+        sendIntent.putExtra(Intent.EXTRA_TEXT, body);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+
+        activity.startActivity(Intent.createChooser(sendIntent, chooserTitle));
+    }
+
+
 }

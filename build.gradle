@@ -50,6 +50,7 @@ def getGitCommitId() {
     }
 }
 
+
 def getGitBranchName() {
     if(isTravisBuild()) {
 
@@ -64,6 +65,16 @@ def getGitBranchName() {
         def repo = getGitRepository()
         return repo.branch.getCurrent().getName()
     }
+}
+
+
+def getGitCommitIdForCommonRepository() {
+	def repo = Grgit.open(dir: project.getRootProject().file('../kwikshop-common'))
+	def commitId = repo.head().getAbbreviatedId(10)
+	if(!repo.status().isClean()) {
+		commitId += "+"
+	}
+	return commitId
 }
 
 allprojects {

@@ -40,7 +40,9 @@ public class TopExceptionHandler implements Thread.UncaughtExceptionHandler {
         String report = "";
 
         report += String.format("Version: %s\n", app.getResources().getString(R.string.BuildInfo_Version));
-        report += String.format("Commit: %s\n", app.getResources().getString(R.string.BuildInfo_Git_Commit));
+        report += "Commit:\n";
+        report += String.format("  kwikshop-android: %s\n", app.getResources().getString(R.string.BuildInfo_Git_Commit));
+        report += String.format("  kwikshop-common:  %s\n", app.getResources().getString(R.string.BuildInfo_CommonRepository_Git_Commit));
         report += String.format("Branch: %s\n", app.getResources().getString(R.string.BuildInfo_Git_Branch));
         report += "\n\n";
 

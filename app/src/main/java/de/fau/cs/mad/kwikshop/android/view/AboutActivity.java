@@ -20,6 +20,8 @@ public class AboutActivity extends BaseActivity {
     @InjectView(R.id.gitHubLink)
     TextView textView_GitHubLink;
 
+    @InjectView(R.id.textView_GitCommit)
+    TextView textView_GitCommit;
 
     @InjectView(R.id.container)
     ViewGroup container;
@@ -39,6 +41,15 @@ public class AboutActivity extends BaseActivity {
         textView_GitHubLink.setText(Html.fromHtml(linkText));
         textView_GitHubLink.setMovementMethod(LinkMovementMethod.getInstance());
 
+        //git commit
+
+
+        String text = String.format(
+                getResources().getString(R.string.about_Commit_Format),
+                getResources().getString(R.string.BuildInfo_Git_Commit),
+                getResources().getString(R.string.BuildInfo_CommonRepository_Git_Commit));
+
+        textView_GitCommit.setText(text);
 
         //display acknowledgements
 

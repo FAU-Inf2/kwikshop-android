@@ -30,7 +30,7 @@
     <!-- About screen-->
     <string name="about_Commit_Title" translatable="false">Commit</string>
     <string name="about_Version_Title" translatable="false">Version</string>
-
+    <string name="about_Commit_Format" translatable="false">"kwikshop-android:\n%1$s\n\nkwikshop-common:\n%2$s"</string>
 
     <!-- List of Shopping Lists -->
     <string name="save">Save</string>

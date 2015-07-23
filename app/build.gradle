@@ -53,6 +53,7 @@ android {
         resValue "string", "BuildInfo_Git_Branch", getGitBranchName()
         resValue "string", "BuildInfo_Git_Commit", getGitCommitId()
 		resValue "string", "BuildInfo_Version", versionName
+		resValue "string", "BuildInfo_CommonRepository_Git_Commit", getGitCommitIdForCommonRepository()
     }
 
     signingConfigs {

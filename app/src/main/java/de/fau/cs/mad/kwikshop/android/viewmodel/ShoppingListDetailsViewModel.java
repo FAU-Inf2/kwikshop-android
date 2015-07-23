@@ -217,7 +217,7 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
                         finish();
                     }
                 },
-                (Command<Void>)NullCommand.Instance);
+                NullCommand.VoidInstance);
     }
 
 

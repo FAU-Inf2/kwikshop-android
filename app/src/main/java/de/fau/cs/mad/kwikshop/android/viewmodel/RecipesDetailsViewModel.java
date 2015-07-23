@@ -123,7 +123,7 @@ public class RecipesDetailsViewModel extends ListDetailsViewModel<Recipe> {
                         finish();
                     }
                 },
-                (Command<Void>)NullCommand.Instance);
+                NullCommand.VoidInstance);
     }
 
 }

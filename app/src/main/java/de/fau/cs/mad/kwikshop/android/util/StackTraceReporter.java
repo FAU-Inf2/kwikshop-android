@@ -76,12 +76,13 @@ public class StackTraceReporter {
 
             final String traceFinal = trace;
 
-            viewLauncher.showYesNoDialog(
+            viewLauncher.showMessageDialog(
                     resourceProvider.getString(R.string.errorReporting_messaging_dialog_title),
                     resourceProvider.getString(R.string.errorReporting_messaging_dialog_text),
-                    new Command() {
+                    resourceProvider.getString(android.R.string.yes),
+                    new Command<Void>() {
                         @Override
-                        public void execute(Object parameter) {
+                        public void execute(Void parameter) {
 
                             Intent sendIntent = new Intent(
                                     Intent.ACTION_SENDTO,
@@ -94,8 +95,12 @@ public class StackTraceReporter {
                             sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
 
                             activity.startActivity(Intent.createChooser(sendIntent, resourceProvider.getString(R.string.errorReporting_messaging_chooser_title)));
-                        }},
-                    NullCommand.Instance);
+                        }
+                    },
+                    null,
+                    null,
+                    resourceProvider.getString(android.R.string.no),
+                    NullCommand.VoidInstance);
 
             activity.deleteFile(TopExceptionHandler.STACKTRACE_FILENAME);
         }

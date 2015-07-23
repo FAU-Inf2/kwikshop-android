@@ -16,13 +16,16 @@ import android.util.Log;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import de.fau.cs.mad.kwikshop.android.R;
+
 public class TopExceptionHandler implements Thread.UncaughtExceptionHandler {
 
 
     static final String STACKTRACE_FILENAME = "stack.trace";
 
     private Thread.UncaughtExceptionHandler defaultUEH;
-    private Activity app = null;
+    private final Activity app;
+
 
     public TopExceptionHandler(Activity app) {
         this.defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
@@ -34,7 +37,14 @@ public class TopExceptionHandler implements Thread.UncaughtExceptionHandler {
         Log.e("TopExceptionHandler", "Uncaught Exception", e);
 
         StackTraceElement[] arr = e.getStackTrace();
-        String report = e.toString() + "\n\n";
+        String report = "";
+
+        report += String.format("Version: %s\n", app.getResources().getString(R.string.BuildInfo_Version));
+        report += String.format("Commit: %s\n", app.getResources().getString(R.string.BuildInfo_Git_Commit));
+        report += String.format("Branch: %s\n", app.getResources().getString(R.string.BuildInfo_Git_Branch));
+        report += "\n\n";
+
+        report += e.toString() + "\n\n";
         report += "--------- Stack trace ---------\n\n";
         for (int i = 0; i < arr.length; i++) {
             report += "    " + arr[i].toString() + "\n";

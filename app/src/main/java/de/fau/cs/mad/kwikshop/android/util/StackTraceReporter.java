@@ -9,9 +9,7 @@
  */
 package de.fau.cs.mad.kwikshop.android.util;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +25,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.IoService;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+
 
 public class StackTraceReporter {
 
@@ -106,8 +105,10 @@ public class StackTraceReporter {
                         @Override
                         public void execute(Void parameter) {
                             clipBoardHelper.setClipBoardText(
-                                    resourceProvider.getString(R.string.errorReporting_copyToClipboard_Label),
+                                    resourceProvider.getString(R.string.errorReporting_copyToClipboard_label),
                                     traceFinal);
+
+                            viewLauncher.showToast(R.string.errorReporting_copyToClipboard_toast, Toast.LENGTH_LONG);
                         }
                     },
                     resourceProvider.getString(android.R.string.no),

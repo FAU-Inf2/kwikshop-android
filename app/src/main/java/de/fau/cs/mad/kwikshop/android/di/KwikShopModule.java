@@ -6,7 +6,9 @@ import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
+import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.view.SettingFragment;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ClipboardHelper;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -153,5 +155,10 @@ public class KwikShopModule {
     @Provides
     public RegularlyRepeatHelper provideRegularlyRepeatHelper(Context context) {
         return RegularlyRepeatHelper.getRegularlyRepeatHelper(context);
+    }
+
+    @Provides
+    public ClipboardHelper provideClipboardHelper(Activity activity) {
+        return new DefaultClipboardHelper(activity);
     }
 }

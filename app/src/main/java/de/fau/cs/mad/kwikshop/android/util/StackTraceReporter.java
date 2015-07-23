@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
@@ -29,36 +31,43 @@ public class StackTraceReporter {
 
     private static final String MAILTO = "mailto";
 
-    //TODO: hide usages of Activity behind some interface, might be cleander
+    //TODO: hide usages of Activity behind some interface, might be cleaner
     private final Activity activity;
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
+    private final ClipboardHelper clipBoardHelper;
 
 
     @Inject
-    public StackTraceReporter(Activity activity, ViewLauncher viewLauncher, ResourceProvider resourceProvider) {
+    public StackTraceReporter(Activity activity, ViewLauncher viewLauncher, ResourceProvider resourceProvider,
+                              ClipboardHelper clipBoardHelper) {
 
         if(activity == null) {
-            throw new IllegalArgumentException("'activity' must not be null");
+            throw new ArgumentNullException("activity");
         }
 
         if(viewLauncher == null) {
-            throw new IllegalArgumentException("'viewLauncher' must not be null");
+            throw new ArgumentNullException("viewLauncher");
         }
 
         if(resourceProvider == null) {
-            throw new IllegalArgumentException("'resourceProvider' must not be null");
+            throw new ArgumentNullException("resourceProvider");
+        }
+
+        if(clipBoardHelper == null) {
+            throw new ArgumentNullException("clipBoardHelper");
         }
 
         this.activity = activity;
         this.viewLauncher = viewLauncher;
         this.resourceProvider = resourceProvider;
+        this.clipBoardHelper = clipBoardHelper;
     }
 
 
     public void reportStackTraceIfAvailable() {
 
-        // see if stracktrace file is available
+        // see if stacktrace file is available
         String line;
         String trace = "";
         boolean traceAvailable = true;
@@ -97,8 +106,15 @@ public class StackTraceReporter {
                             activity.startActivity(Intent.createChooser(sendIntent, resourceProvider.getString(R.string.errorReporting_messaging_chooser_title)));
                         }
                     },
-                    null,
-                    null,
+                    resourceProvider.getString(R.string.errorReporting_copyToClipboard),
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            clipBoardHelper.setClipBoardText(
+                                    resourceProvider.getString(R.string.errorReporting_copyToClipboard_Label),
+                                    traceFinal);
+                        }
+                    },
                     resourceProvider.getString(android.R.string.no),
                     NullCommand.VoidInstance);
 

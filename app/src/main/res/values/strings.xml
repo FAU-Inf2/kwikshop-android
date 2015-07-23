@@ -268,7 +268,11 @@
     <string name="errorReporting_messaging_chooser_title">Send Report using</string>
     <string name="errorReporting_messaging_dialog_title">Crash Report</string>
     <string name="errorReporting_messaging_dialog_text">"Unfortunately there was an error the last time you used the app. We're constantly working on improving the app. You can help by sending a report about the crash you encountered"</string>
+    <string name="errorReporting_copyToClipboard">Copy to Clipboard</string>
+    <string name="errorReporting_copyToClipboard_Label">Kwik Shop Crash Report</string>
     <string name="errorReporting_messaging_recipient">quickshop@i2.cs.fau.de</string>
+
+
     <string name="Install">Install</string>
     <string name="askingGooglePlay">Install Voice Search from Google Play?</string>
     <string name="askingGoogleVoiceSearch">For recognition it’s necessary to install \'Google Voice Search\'</string>

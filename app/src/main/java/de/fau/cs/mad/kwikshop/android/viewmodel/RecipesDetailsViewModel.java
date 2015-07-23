@@ -115,15 +115,15 @@ public class RecipesDetailsViewModel extends ListDetailsViewModel<Recipe> {
         viewLauncher.showYesNoDialog(
                 resourceProvider.getString(R.string.deleteRecipe_DialogTitle),
                 resourceProvider.getString(R.string.deleteRecipe_DialogText),
-                new Command() {
+                new Command<Void>() {
                     @Override
-                    public void execute(Object parameter) {
+                    public void execute(Void parameter) {
 
                         listManager.deleteList(listId);
                         finish();
                     }
                 },
-                NullCommand.Instance);
+                (Command<Void>)NullCommand.Instance);
     }
 
 }

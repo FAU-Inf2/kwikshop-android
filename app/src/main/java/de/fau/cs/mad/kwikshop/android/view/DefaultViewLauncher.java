@@ -108,30 +108,12 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-    public void showYesNoDialog(String title, String message, final Command positiveCommand, final Command negativeCommand) {
+    public void showYesNoDialog(String title, String message, final Command<Void> positiveCommand, final Command<Void> negativeCommand) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(title);
-        builder.setMessage(message);
-
-        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int position) {
-
-                if (positiveCommand.getCanExecute()) {
-                    positiveCommand.execute(null);
-                }
-            }
-        });
-        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int position) {
-                if (negativeCommand.getCanExecute()) {
-                    negativeCommand.execute(null);
-                }
-            }
-        });
-
-        AlertDialog alert = builder.create();
-        alert.show();
+        showMessageDialog(title, message,
+                resourceProvider.getString(android.R.string.yes), positiveCommand,
+                null, null,
+                resourceProvider.getString(android.R.string.no), negativeCommand);
     }
 
     @Override
@@ -204,6 +186,50 @@ public class DefaultViewLauncher implements ViewLauncher {
 
         builder.show();
 
+    }
+
+    @Override
+    public void showMessageDialog(String title, String message,
+                                  String positiveMessage, final Command<Void> positiveCommand,
+                                  String neutralMessage, final Command<Void> neutralCommand,
+                                  String negativeMessage, final Command<Void> negativeCommand) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        //android.R.string.yes
+        builder.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+
+                if (positiveCommand.getCanExecute()) {
+                    positiveCommand.execute(null);
+                }
+            }
+        });
+
+        if(neutralCommand != null) {
+            builder.setNeutralButton(neutralMessage, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(neutralCommand.getCanExecute()) {
+                        neutralCommand.execute(null);
+                    }
+                }
+            });
+        }
+
+        //android.R.string.no
+        builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+                if (negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(null);
+                }
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override

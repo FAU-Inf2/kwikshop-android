@@ -205,9 +205,9 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
         viewLauncher.showYesNoDialog(
                 resourceProvider.getString(R.string.deleteShoppingList_DialogTitle),
                 resourceProvider.getString(R.string.deleteShoppingList_DialogText),
-                new Command() {
+                new Command<Void>() {
                     @Override
-                    public void execute(Object parameter) {
+                    public void execute(Void parameter) {
 
                         if (getCalendarEventDate() != null) {
                             deleteCalendarEventCommandExecute();
@@ -217,7 +217,7 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
                         finish();
                     }
                 },
-                NullCommand.Instance);
+                (Command<Void>)NullCommand.Instance);
     }
 
 

@@ -52,6 +52,7 @@ android {
         //resources generated during build
         resValue "string", "BuildInfo_Git_Branch", getGitBranchName()
         resValue "string", "BuildInfo_Git_Commit", getGitCommitId()
+		resValue "string", "BuildInfo_Version", versionName
     }
 
     signingConfigs {

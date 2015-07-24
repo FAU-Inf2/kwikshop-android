@@ -254,9 +254,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         item.setBrand(brand_text.getText().toString());
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
+        if (ImageItem != null) {
             byte[] data = getBitmapAsByteArray(ImageItem);
             item.setImageItem(data);
-
+        }
         if (selectedUnitIndex >= 0) {
             Unit u = units.get(selectedUnitIndex);
             item.setUnit(u);
@@ -325,7 +326,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             }
         } else {
             // hide information about last bought item
-            ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);
+            if (last_bought_relativelayout != null)
+                ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);
         }
 
         //populate number picker
@@ -635,9 +637,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
 
     public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-        return outputStream.toByteArray();
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+            return outputStream.toByteArray();
+
     }
 
 

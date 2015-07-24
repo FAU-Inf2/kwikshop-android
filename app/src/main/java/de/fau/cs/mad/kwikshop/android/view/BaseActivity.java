@@ -109,6 +109,11 @@ public class BaseActivity extends ActionBarActivity {
                 intent.putExtras(b);
                 startActivity(intent);
                 return true;
+
+            case R.id.action_serverintegrationdebugactiviy:
+                startActivity(ServerIntegrationDebugActivity.getIntent(this));
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

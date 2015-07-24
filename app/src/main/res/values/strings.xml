@@ -276,5 +276,6 @@
     <string name="Install">Install</string>
     <string name="askingGooglePlay">Install Voice Search from Google Play?</string>
     <string name="askingGoogleVoiceSearch">For recognition it’s necessary to install \'Google Voice Search\'</string>
+    <string name="title_activity_server_integration_debug">Server Integration Debug Console</string>
 
 </resources>

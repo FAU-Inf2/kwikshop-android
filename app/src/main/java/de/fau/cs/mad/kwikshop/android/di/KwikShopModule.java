@@ -5,9 +5,12 @@ import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
+import de.fau.cs.mad.kwikshop.android.model.RestClientFactory;
+import de.fau.cs.mad.kwikshop.android.model.RestClientFactoryImplementation;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
+import de.fau.cs.mad.kwikshop.android.view.ServerIntegrationDebugActivity;
 import de.fau.cs.mad.kwikshop.android.view.SettingFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.IoService;
@@ -57,7 +60,8 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         RecipeItemDetailsFragment.class,
         ReminderFragment.class,
         StackTraceReporter.class,
-        SettingFragment.class
+        SettingFragment.class,
+        ServerIntegrationDebugActivity.class
 },
         library = true)
 @SuppressWarnings("unused")
@@ -167,5 +171,10 @@ public class KwikShopModule {
     @Provides
     public IoService provideIoService(Activity activity) {
         return new IoServiceImplementation(activity);
+    }
+
+    @Provides
+    public RestClientFactory provideRestClientFactory(Context context, ResourceProvider resourceProvider) {
+        return new RestClientFactoryImplementation(context, resourceProvider);
     }
 }

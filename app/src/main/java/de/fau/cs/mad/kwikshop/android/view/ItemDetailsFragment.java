@@ -7,10 +7,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +99,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private static Bitmap ImageItem = null;
     private static Bitmap rotateImage = null;
     private static final int GALLERY = 1;
+    private static final int GALLERY_INTENT_CALLED = 1;
+    private static final int GALLERY_KITKAT_INTENT_CALLED = 1;
+    private static String pathImage = "";
     private static Uri mImageUri;
 
 
@@ -490,10 +496,19 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     itemImageView.setImageBitmap(null);
                     if (ImageItem != null)
                         ImageItem.recycle();
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)), GALLERY);
+
+                    if (Build.VERSION.SDK_INT <19){
+                        Intent intent = new Intent();
+                        intent.setType("image/jpeg");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)),GALLERY_INTENT_CALLED);
+                    } else {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("image/jpeg");
+                        startActivityForResult(intent, GALLERY_KITKAT_INTENT_CALLED);
+                    }
+                    //startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)), GALLERY);
             }
 
 
@@ -520,14 +535,35 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if (requestCode == GALLERY && resultCode != 0) {
             mImageUri = data.getData();
             try {
+                if (requestCode == GALLERY_KITKAT_INTENT_CALLED) {
+
+                    final int takeFlags = data.getFlags()
+                            & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    // Check for the freshest data.
+                    getActivity().getContentResolver().takePersistableUriPermission(mImageUri, takeFlags);
+                }
                 ImageItem = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
+                String pathsegment[] = mImageUri.getLastPathSegment().split(":");
+                String id = pathsegment[1];
+                final String[] imageColumns = { MediaStore.Images.Media.DATA };
+                final String imageOrderBy = null;
+
+                Uri uri = getUri();
+                Cursor imageCursor = getActivity().getContentResolver().query(uri, imageColumns,
+                        MediaStore.Images.Media._ID + "=" + id, null, null);
+
+                if (imageCursor.moveToFirst()) {
+                    pathImage = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                }
                 if (getOrientation(getActivity().getApplicationContext(), mImageUri) != 0) {
                     Matrix matrix = new Matrix();
                     matrix.postRotate(getOrientation(getActivity().getApplicationContext(), mImageUri));
                     if (rotateImage != null)
                         rotateImage.recycle();
                     rotateImage = Bitmap.createBitmap(ImageItem, 0, 0, ImageItem.getWidth(), ImageItem.getHeight(), matrix,true);
-                    uploadText.setText("");
+
+
                     itemImageView.setImageBitmap(rotateImage);
                 } else
                     uploadText.setText("");
@@ -546,6 +582,15 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             // Do something with spokenText
         }
     }
+    // By using this method get the Uri of Internal/External Storage for Media
+    private Uri getUri() {
+        String state = Environment.getExternalStorageState();
+        if(!state.equalsIgnoreCase(Environment.MEDIA_MOUNTED))
+            return MediaStore.Images.Media.INTERNAL_CONTENT_URI;
+
+        return MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+    }
+
     public int getOrientation(Context context, Uri photoUri) {
         Cursor cursor = context.getContentResolver().query(photoUri,
                 new String[] { MediaStore.Images.ImageColumns.ORIENTATION },null, null, null);

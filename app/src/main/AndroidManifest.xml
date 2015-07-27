@@ -22,11 +22,11 @@
         android:required="true" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:name="android.support.multidex.MultiDexApplication"
         android:windowSoftInputMode="adjustResize" >
         <meta-data
             android:name="com.google.android.gms.version"
@@ -38,11 +38,14 @@
         <activity
             android:name=".view.ListOfShoppingListsActivity"
             android:label="@string/app_name" >
-            <!--<intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity
             android:name=".view.AboutActivity"
@@ -77,19 +80,24 @@
         <!-- The next label got changed so opening the app from calendar shows Kwik Shop and not Shopping List as option name -->
         <activity
             android:name=".view.ShoppingListActivity"
+            android:configChanges="screenSize|orientation"
             android:label="@string/app_name"
-            android:parentActivityName=".view.ListOfShoppingListsActivity"
-            android:configChanges="screenSize|orientation" >
+            android:parentActivityName=".view.ListOfShoppingListsActivity" >
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/intent_http" android:host="@string/intent_host" />
 
+                <data
+                    android:host="@string/intent_host"
+                    android:scheme="@string/intent_http" />
             </intent-filter>
         </activity>
         <activity
@@ -152,27 +160,30 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
         </activity>
-
         <activity
-            android:name="de.fau.cs.mad.kwikshop.android.view.ReminderActivity"
+            android:name=".view.ReminderActivity"
             android:label="@string/title_activity_reminder"
-            android:windowSoftInputMode="stateHidden"
-            android:parentActivityName="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" >
+            android:parentActivityName=".view.ListOfShoppingListsActivity"
+            android:windowSoftInputMode="stateHidden" >
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
         </activity>
-
         <activity
             android:name=".view.LoginActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".view.ServerIntegrationDebugActivity"
+            android:label="@string/title_activity_server_integration_debug" >
+        </activity>
     </application>
 
 </manifest>

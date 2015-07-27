@@ -57,6 +57,11 @@
                   app:showAsAction="ifRoom"
                   android:title="@string/overflow_action_menu_openloginactivity" />
 
+            <item android:id="@+id/action_serverintegrationdebugactiviy"
+                app:showAsAction="ifRoom"
+                android:title="Server Integration Debug Console" />
+
+
         </menu>
 
     </item>

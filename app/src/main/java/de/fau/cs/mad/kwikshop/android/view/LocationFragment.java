@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -54,6 +55,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
     double lastLng;
     String address;
     ProgressDialog progress;
+    List<Place> places;
 
     @InjectView(R.id.map_infobox)
     RelativeLayout mapInfoBox;
@@ -191,69 +193,11 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
             return;
         }
 
-
-        // get last/current location
-        lastLocation = new LocationFinderHelper(getActivity().getApplicationContext());
-        lastLat = lastLocation.getLatitude();
-        lastLng = lastLocation.getLongitude();
-        address = lastLocation.getAddressToString();
-
         // set up map
         MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
+        this.places = places;
         mapFragment.getMapAsync(this);
-        map = mapFragment.getMap();
-        map.setMyLocationEnabled(true);
-        map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lastLat,lastLng) , 15.0f) );
-        UiSettings settings = map.getUiSettings();
-        settings.setAllGesturesEnabled(true);
-        settings.setMapToolbarEnabled(false);
 
-
-        // display place on the map
-        for(Place place : places){
-            IconGenerator iconFactory = new IconGenerator(getActivity().getApplicationContext());
-            addIcon(iconFactory, place.getName(), new LatLng(place.getLatitude(), place.getLongitude()));
-        }
-
-
-        // display info box
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-
-                final Place clickedPlace = findCorrespondPlaceToMarker(marker, places);
-                final String clickedAdress = LocationFinderHelper.getAddressConverted(new LatLng(clickedPlace.getLatitude(), clickedPlace.getLongitude()),
-                        getActivity().getApplicationContext());
-
-
-                showInfoBox();
-
-                mapPlaceName.setText(clickedPlace.getName());
-                mapPlaceOpenStatus.setText(convertStatus(clickedPlace.getStatus()));
-                mapPlaceDistance.setText(getDistanceBetweenLastLocationAndPlace(clickedPlace));
-                mapDirectionButton.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-
-                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                                Uri.parse("http://maps.google.com/maps?daddr=" + clickedAdress));
-                        startActivity(intent);
-                    }
-                });
-
-
-                return false;
-            }
-        });
-
-        // hide info box
-        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                 hideInfoBox();
-            }
-        });
 
     }
 
@@ -352,7 +296,61 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap map) {
+
+        this.map = map;
+        map.setMyLocationEnabled(true);
+        map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lastLat,lastLng) , 15.0f) );
+        UiSettings settings = map.getUiSettings();
+        settings.setAllGesturesEnabled(true);
+        settings.setMapToolbarEnabled(false);
+
+
+        // display place on the map
+        for(Place place : places){
+            IconGenerator iconFactory = new IconGenerator(getActivity().getApplicationContext());
+            addIcon(iconFactory, place.getName(), new LatLng(place.getLatitude(), place.getLongitude()));
+        }
+
+
+        // display info box
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                final Place clickedPlace = findCorrespondPlaceToMarker(marker, places);
+                final String clickedAdress = LocationFinderHelper.getAddressConverted(new LatLng(clickedPlace.getLatitude(), clickedPlace.getLongitude()),
+                        getActivity().getApplicationContext());
+
+
+                showInfoBox();
+
+                mapPlaceName.setText(clickedPlace.getName());
+                mapPlaceOpenStatus.setText(convertStatus(clickedPlace.getStatus()));
+                mapPlaceDistance.setText(getDistanceBetweenLastLocationAndPlace(clickedPlace));
+                mapDirectionButton.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                                Uri.parse("http://maps.google.com/maps?daddr=" + clickedAdress));
+                        startActivity(intent);
+                    }
+                });
+
+
+                return false;
+            }
+        });
+
+        // hide info box
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                hideInfoBox();
+            }
+        });
 
     }
 

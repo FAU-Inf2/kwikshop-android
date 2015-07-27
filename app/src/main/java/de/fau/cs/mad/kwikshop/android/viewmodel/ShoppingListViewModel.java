@@ -131,6 +131,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     public void setLocationOnItemBought(final int id, final String googleBrowserApiKey){
 
+
+
         AsyncTask<Void, Void, Void> locationAsyncTask =  new AsyncTask<Void, Void, Void>() {
 
              Item item;
@@ -156,9 +158,9 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 // try to get information about a location
                 try {
                     GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-                    places = client.getNearbyPlaces(location.getLatitude(), location.getLongitude(), 200, 1, Param.name("types").value("grocery_or_supermarket"));
+                    places = client.getNearbyPlaces(location.getLatitude(), location.getLongitude(), 800, 1, Param.name("types").value("grocery_or_supermarket|"));
                 } catch (Exception e) {
-                    //  e.printStackTrace();
+                    e.printStackTrace();
                 }
 
                 // place was found

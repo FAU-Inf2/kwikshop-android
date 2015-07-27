@@ -325,15 +325,12 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     else
                         duration = days + " " + getString(R.string.days);
                 }
-                lastbought_location.setText(location.getName() + " (" + duration + ") ");
-                Log.e("Location: ", "Accuracy: " + location.getAccuracy());
+                lastbought_location.setText(location.getName() + " (" + duration + ")" );
             } else {
-                Log.e("Location: ", "no name");
                 // hide information about last bought item
                 ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);
             }
         } else {
-            Log.e("Location: ", "no nlcation");
             // hide information about last bought item
             if (last_bought_relativelayout != null)
                 ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);

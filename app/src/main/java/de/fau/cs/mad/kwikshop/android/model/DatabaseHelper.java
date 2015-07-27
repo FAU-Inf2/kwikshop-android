@@ -185,7 +185,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         if(oldVersion < 26){
             try {
                 itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
-                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN accuracy LASTLOCATION;");
+                itemDao.executeRaw("ALTER TABLE 'location' ADD COLUMN accuracy;");
             } catch (SQLException e) {
                 e.printStackTrace();
             }

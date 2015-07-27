@@ -34,9 +34,12 @@ public class LocationFinderHelper implements LocationListener {
     private double latitude;
     private double longitude;
 
+    // accuracyof location
+    private double accuracy;
+
+    // settings
     private boolean isGPSEnabled = false;
     private boolean isNetworkEnabled = false;
-
 
     // The minimum distance to change updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
@@ -51,11 +54,9 @@ public class LocationFinderHelper implements LocationListener {
         if (context == null) {
             throw new IllegalArgumentException("'context' must not be null");
         }
-
         this.context = context;
 
         getLocation();
-
     }
 
 
@@ -89,6 +90,8 @@ public class LocationFinderHelper implements LocationListener {
                 if (location != null) {
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
+                    accuracy= location.getAccuracy();
+                    Log.e("Location", "The location has a Accuracy of: " + accuracy);
                 }
             }
         }
@@ -107,10 +110,14 @@ public class LocationFinderHelper implements LocationListener {
                     if (location != null) {
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
+                        accuracy = location.getAccuracy();
+                        Log.e("Location", "The location has a Accuracy of: " + accuracy);
                     }
                 }
             }
         }
+
+
         return location;
 
     }

@@ -100,7 +100,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private static Bitmap rotateImage = null;
     private static final int GALLERY = 1;
     private static final int GALLERY_INTENT_CALLED = 1;
-    private static final int GALLERY_KITKAT_INTENT_CALLED = 1;
+    private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
     private static String pathImage = "";
     private static Uri mImageUri;
     private static String ImageId = "";
@@ -255,7 +255,15 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if(numberPickerCalledWith != numberPicker.getValue()){
             //only set amount if it got changed, so values written by parser which are not listed
             //in the numberPicker don't get overwritten
-            item.setAmount(Integer.parseInt(numbersForAmountPicker[numberPicker.getValue()-1]));
+            Double pickerAmountDouble;
+            String numberPickerString = numbersForAmountPicker[numberPicker.getValue()];
+                if (numberPickerString.contains("/")) {
+                    String[] rat = numberPickerString.split("/");
+                    pickerAmountDouble = Double.parseDouble(rat[0]) / Double.parseDouble(rat[1]);
+                } else {
+                    pickerAmountDouble= Double.parseDouble(numberPickerString);
+                }
+            item.setAmount(pickerAmountDouble);
         }
 
         item.setBrand(brand_text.getText().toString());
@@ -337,23 +345,29 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         }
 
         //populate number picker
-        numbersForAmountPicker = new String[1000];
+        numbersForAmountPicker = new String[1003];
         String [] numsOnce = new String[]{
-                "1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
+                "1/4","1/2","3/4","1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
                 "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
                 "450", "500", "600", "700", "750", "800", "900", "1000"
         };
-        int [] intNumsOnce = new int[numsOnce.length];
+        Double [] intNumsOnce = new Double[numsOnce.length];
         for(int i = 0; i < intNumsOnce.length; i++){
-            intNumsOnce[i] = Integer.parseInt(numsOnce[i]);
+            if (numsOnce[i].contains("/")) {
+                String[] rat = numsOnce[i].split("/");
+                intNumsOnce[i] = (Double.parseDouble(rat[0]) / Double.parseDouble(rat[1]));
+            } else {
+                intNumsOnce[i] = Double.parseDouble(numsOnce[i]);
+            }
         }
+
 
         //setDisplayedValues length must be as long as range
         for(int i = 0; i < numbersForAmountPicker.length; i++){
             numbersForAmountPicker[i] = numsOnce[i%numsOnce.length];
         }
 
-        numberPicker.setMinValue(1);
+        numberPicker.setMinValue(0);
         numberPicker.setMaxValue(1000);
         numberPicker.setWrapSelectorWheel(false);
         numberPicker.setDisplayedValues(numbersForAmountPicker);
@@ -367,7 +381,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if (isNewItem) {
 
             productname_text.setText("");
-            numberPicker.setValue(1);
+            numberPicker.setValue(3);
             brand_text.setText("");
             comment_text.setText("");
 
@@ -376,8 +390,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
             //thats not a pretty way to get it done, but the only one that came to my mind
             //numberPicker.setValue(index) sets the picker to the index + numberPicker.minValue()
-            int itemAmount = item.getAmount();
-            for(int i = 1; i < intNumsOnce.length; i++){
+            double itemAmount = item.getAmount();
+          /*  for(int i = 1; i < intNumsOnce.length; i++){
                 if(itemAmount > 1000) itemAmount = 1000;
                 if(intNumsOnce[i] == itemAmount){
                     itemAmount = i+1;
@@ -388,11 +402,19 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     itemAmount = i+1;
                     break;
                 }
+            }*/
+
+            int index = 1;
+            for(int i = 0; i < intNumsOnce.length; i++){
+                if(intNumsOnce[i].equals(itemAmount)){
+                    index = i;
+                    break;
+                }
             }
 
             // Fill UI elements with data from Item
             productname_text.setText(item.getName());
-            numberPicker.setValue(itemAmount);
+            numberPicker.setValue(index);
             brand_text.setText(item.getBrand());
             comment_text.setText(item.getComment());
             //load image

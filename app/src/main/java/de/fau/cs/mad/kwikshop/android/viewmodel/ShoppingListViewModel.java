@@ -160,7 +160,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     // try to get information about a location
                     try {
                         GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-                        places = client.getNearbyPlaces(location.getLatitude(), location.getLongitude(), 200, 1, Param.name("types").value("grocery_or_supermarket"));
+                        places = client.getNearbyPlaces(location.getLatitude(), location.getLongitude(), 50, 1, Param.name("types").value("grocery_or_supermarket"));
                     } catch (Exception e) {
                         Log.e("ShoppingListViewModel","Google Places error");
                     }
@@ -168,6 +168,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     // place was found
                     if(places != null){
                         location.setName(places.get(0).getName());
+                        location.setAddress(places.get(0).getAddress());
                     }
 
                 }

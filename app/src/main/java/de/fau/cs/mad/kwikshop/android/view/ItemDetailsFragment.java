@@ -103,6 +103,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private static final int GALLERY_KITKAT_INTENT_CALLED = 1;
     private static String pathImage = "";
     private static Uri mImageUri;
+    private static String ImageId = "";
 
 
     @InjectView(R.id.productname_text)
@@ -261,8 +262,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
         if (ImageItem != null) {
-            byte[] data = getBitmapAsByteArray(ImageItem);
-            item.setImageItem(data);
+            item.setImageItem(ImageId);
         }
         if (selectedUnitIndex >= 0) {
             Unit u = units.get(selectedUnitIndex);
@@ -396,10 +396,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             brand_text.setText(item.getBrand());
             comment_text.setText(item.getComment());
             //load image
-            byte[] imageByteArray = item.getImageItem();
-            if (imageByteArray != null) {
-                ByteArrayInputStream imageStream = new ByteArrayInputStream(imageByteArray);
-                itemImageView.setImageBitmap(BitmapFactory.decodeStream(imageStream));
+            ImageId = item.getImageItem();
+            if (ImageId != null && ImageId != "") {
+                itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
+                if (itemImageView.getDrawable() == null)
+                     uploadText.setText(R.string.uploadPicture);
             }
             else{
                 uploadText.setText(R.string.uploadPicture);
@@ -545,13 +546,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 }
                 ImageItem = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
                 String pathsegment[] = mImageUri.getLastPathSegment().split(":");
-                String id = pathsegment[1];
+                ImageId = pathsegment[1];
                 final String[] imageColumns = { MediaStore.Images.Media.DATA };
                 final String imageOrderBy = null;
 
                 Uri uri = getUri();
                 Cursor imageCursor = getActivity().getContentResolver().query(uri, imageColumns,
-                        MediaStore.Images.Media._ID + "=" + id, null, null);
+                        MediaStore.Images.Media._ID + "=" + ImageId, null, null);
 
                 if (imageCursor.moveToFirst()) {
                     pathImage = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
@@ -564,10 +565,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     rotateImage = Bitmap.createBitmap(ImageItem, 0, 0, ImageItem.getWidth(), ImageItem.getHeight(), matrix,true);
 
 
-                    itemImageView.setImageBitmap(rotateImage);
+                    //itemImageView.setImageBitmap(rotateImage);
+
+                    itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
                 } else
                     uploadText.setText("");
-                    itemImageView.setImageBitmap(ImageItem);
+                    //itemImageView.setImageBitmap(ImageItem);
+                itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {

@@ -175,11 +175,21 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             try {
                 //Item changes
                 itemDao =  ListStorageFragment.getDatabaseHelper().getItemDao();
-                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN imageItem VARBINARY;");
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN imageItem VARBYTEARRAY;");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
+        }
+        if(oldVersion < 26){
+            try {
+                //Item changes
+                itemDao =  ListStorageFragment.getDatabaseHelper().getItemDao();
+                itemDao.executeRaw("ALTER TABLE 'item' DROP COLUMN imageItem;" );
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN imageItem STRING;");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         if(oldVersion < 26){

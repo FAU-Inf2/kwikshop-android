@@ -34,7 +34,7 @@ public class LocationFinderHelper implements LocationListener {
     private double latitude;
     private double longitude;
 
-    // accuracyof location
+    // accuracy of location
     private double accuracy;
 
     // settings
@@ -65,8 +65,8 @@ public class LocationFinderHelper implements LocationListener {
         LastLocation lastLocation = new LastLocation();
         lastLocation.setLatitude(latitude);
         lastLocation.setLongitude(longitude);
+        lastLocation.setAddress(getAddressToString());
         lastLocation.setTimestamp(System.currentTimeMillis());
-       // lastLocation.setAddress(getAddressConverted());
 
         return lastLocation;
     }
@@ -138,7 +138,7 @@ public class LocationFinderHelper implements LocationListener {
     }
 
 
-    public String getAddressConverted() {
+    public String getAddressToString() {
 
         try {
             String address = "";

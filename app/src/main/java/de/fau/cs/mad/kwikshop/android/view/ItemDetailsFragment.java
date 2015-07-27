@@ -311,7 +311,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         // display the supermarket where this item was bought
 
-        LastLocation location = isNewItem ? null : getListManager().getListItem(listId, itemId).getLocation();
+        LastLocation location = getListManager().getListItem(listId, itemId).getLocation();
 
         if(location != null){
             if(location.getName() != null){
@@ -326,11 +326,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                         duration = days + " " + getString(R.string.days);
                 }
                 lastbought_location.setText(location.getName() + " (" + duration + ") ");
+                Log.e("Location: ", "Accuracy: " + location.getAccuracy());
             } else {
+                Log.e("Location: ", "no name");
                 // hide information about last bought item
                 ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);
             }
         } else {
+            Log.e("Location: ", "no nlcation");
             // hide information about last bought item
             if (last_bought_relativelayout != null)
                 ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);

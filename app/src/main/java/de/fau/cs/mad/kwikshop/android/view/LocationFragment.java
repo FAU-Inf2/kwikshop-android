@@ -167,7 +167,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
         } else {
             lastLat = lastLocation.getLatitude();
             lastLng = lastLocation.getLongitude();
-            address = lastLocation.getAddressConverted();
+            address = lastLocation.getAddressToString();
             aTask.execute();
         }
 
@@ -196,7 +196,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
         lastLocation = new LocationFinderHelper(getActivity().getApplicationContext());
         lastLat = lastLocation.getLatitude();
         lastLng = lastLocation.getLongitude();
-        address = lastLocation.getAddressConverted();
+        address = lastLocation.getAddressToString();
 
         // set up map
         MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);

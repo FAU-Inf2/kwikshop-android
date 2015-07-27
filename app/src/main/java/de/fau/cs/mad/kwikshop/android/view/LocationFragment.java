@@ -164,7 +164,9 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
         // no last location was found
         if(!lastLocation.isThereALastLocation()){
-            progress.dismiss();
+            if(progress != null){
+                progress.dismiss();
+            }
             notificationOfNoConnection();
         } else {
             lastLat = lastLocation.getLatitude();

@@ -14,8 +14,9 @@ public class InternetHelper extends BroadcastReceiver {
 
 
     public static boolean checkInternetConnection(Activity activity) {
-        ConnectivityManager cm =
-                (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(activity == null)
+            return false;
+        ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }

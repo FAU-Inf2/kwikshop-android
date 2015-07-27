@@ -90,8 +90,6 @@ public class LocationFinderHelper implements LocationListener {
                     networkAcc = networkLocation.getAccuracy();
                     networkLat = networkLocation.getLatitude();
                     networkLong = networkLocation.getLongitude();
-                    Log.e("LocationFinder","netAcc: "+ networkAcc);
-
                 }
             }
         }
@@ -107,7 +105,6 @@ public class LocationFinderHelper implements LocationListener {
                         gpsAcc = gpsLocation.getAccuracy();
                         gpsLat = gpsLocation.getLatitude();
                         gpsLong = gpsLocation.getLongitude();
-                        Log.e("LocationFinder","gpsAcc: "+ gpsAcc);
                     }
                 }
             }

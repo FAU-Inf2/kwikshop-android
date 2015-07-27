@@ -311,7 +311,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         // display the supermarket where this item was bought
 
-        LastLocation location = getListManager().getListItem(listId, itemId).getLocation();
+        LastLocation location = isNewItem ? null : getListManager().getListItem(listId, itemId).getLocation();
 
         if(location != null){
             if(location.getName() != null){
@@ -325,7 +325,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     else
                         duration = days + " " + getString(R.string.days);
                 }
-                lastbought_location.setText(location.getName() + " (" + duration + ")" );
+                lastbought_location.setText(location.getName() + " (" + duration + ") ");
             } else {
                 // hide information about last bought item
                 ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);
@@ -400,7 +400,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             if (ImageId != null && ImageId != "") {
                 itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
                 if (itemImageView.getDrawable() == null)
-                     uploadText.setText(R.string.uploadPicture);
+                    uploadText.setText(R.string.uploadPicture);
             }
             else{
                 uploadText.setText(R.string.uploadPicture);
@@ -494,22 +494,22 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         itemImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    itemImageView.setImageBitmap(null);
-                    if (ImageItem != null)
-                        ImageItem.recycle();
+                itemImageView.setImageBitmap(null);
+                if (ImageItem != null)
+                    ImageItem.recycle();
 
-                    if (Build.VERSION.SDK_INT <19){
-                        Intent intent = new Intent();
-                        intent.setType("image/jpeg");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)),GALLERY_INTENT_CALLED);
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType("image/jpeg");
-                        startActivityForResult(intent, GALLERY_KITKAT_INTENT_CALLED);
-                    }
-                    //startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)), GALLERY);
+                if (Build.VERSION.SDK_INT <19){
+                    Intent intent = new Intent();
+                    intent.setType("image/jpeg");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)),GALLERY_INTENT_CALLED);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/jpeg");
+                    startActivityForResult(intent, GALLERY_KITKAT_INTENT_CALLED);
+                }
+                //startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)), GALLERY);
             }
 
 
@@ -570,7 +570,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
                 } else
                     uploadText.setText("");
-                    //itemImageView.setImageBitmap(ImageItem);
+                //itemImageView.setImageBitmap(ImageItem);
                 itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -687,9 +687,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
 
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-            return outputStream.toByteArray();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+        return outputStream.toByteArray();
 
     }
 

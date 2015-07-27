@@ -158,7 +158,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 // try to get information about a location
                 try {
                     GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-                    places = client.getNearbyPlaces(location.getLatitude(), location.getLongitude(), 300, 1, Param.name("types").value("grocery_or_supermarket"));
+                    places = client.getNearbyPlaces(location.getLatitude(), location.getLongitude(), location.getAccuracy() * 10, 1, Param.name("types").value("grocery_or_supermarket"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

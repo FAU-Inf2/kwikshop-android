@@ -152,10 +152,8 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 initiateMap(places);
-                progress.dismiss();
+                progressDismiss();
             }
-
-
 
         };
 
@@ -164,9 +162,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
         // no last location was found
         if(!lastLocation.isThereALastLocation()){
-            if(progress != null){
-                progress.dismiss();
-            }
+            progressDismiss();
             notificationOfNoConnection();
         } else {
             lastLat = lastLocation.getLatitude();
@@ -180,17 +176,22 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        progressDismiss();
+    }
+
+    void progressDismiss(){
         if (progress != null) {
             progress.dismiss();
             progress = null;
         }
     }
 
+
     private void initiateMap(final List<Place> places){
 
         // no connection to internet
         if(!InternetHelper.checkInternetConnection(getActivity())){
-            progress.dismiss();
+            progressDismiss();
             notificationOfNoConnection();
             return;
         }
@@ -270,6 +271,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
         builder.setPositiveButton(R.string.alert_dialog_connection_try, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if(InternetHelper.checkInternetConnection(getActivity())){
+                    getActivity().finish();
                     getActivity().startActivity(new Intent(getActivity().getApplicationContext(), LocationActivity.class));
                 } else {
                     notificationOfNoConnection();

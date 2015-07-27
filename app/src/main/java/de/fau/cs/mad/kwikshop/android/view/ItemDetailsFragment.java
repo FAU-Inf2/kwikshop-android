@@ -399,6 +399,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             ImageId = item.getImageItem();
             if (ImageId != null && ImageId != "") {
                 itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
+                if (itemImageView.getDrawable() == null)
+                     uploadText.setText(R.string.uploadPicture);
             }
             else{
                 uploadText.setText(R.string.uploadPicture);

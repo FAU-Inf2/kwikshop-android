@@ -177,4 +177,16 @@
     <string name="dateDescription_just_now">agora mesmo</string>
     <string name="dateDescription_minutes_ago">há %1$s minutos</string>
     <string name="date_today">hoje</string>
+    <string name="recipe_carrotCake">Bolo de cenoura com cobertura de beijinho</string>
+    <string name="recipe_eggs">Ovos</string>
+    <string name="recipe_carrot">Cenoura</string>
+    <string name="recipe_oil">Óleo</string>
+    <string name="recipe_plainFlour">Farinha de trigo</string>
+    <string name="recipe_bakingPowder">Fermento em pó</string>
+    <string name="recipe_sugar">Açúcar</string>
+    <string name="recipe_sweetenedCondensedMilk">Leite condensado</string>
+    <string name="recipe_coconutFlakes">Coco ralado</string>
+    <string name="unit_cup">xícaras</string>
+    <string name="unit_tablespoon">colheres de sopa</string>
+    <string name="unit_can">latas</string>
 </resources>

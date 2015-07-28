@@ -190,6 +190,9 @@ public class ListStorageFragment extends Fragment {
             //I couldn't find a better way
             //see defaultDataProvider for order
             Unit gram = m_UnitStorage.getItems().get(6);
+            Unit cups = m_UnitStorage.getItems().get(10);
+            Unit tbsp = m_UnitStorage.getItems().get(11);
+            Unit cans = m_UnitStorage.getItems().get(12);
 
             Group meat = m_GroupStorage.getItems().get(11);
             Group vegetable = m_GroupStorage.getItems().get(10);
@@ -241,6 +244,59 @@ public class ListStorageFragment extends Fragment {
             recipe1.addItem(item6);
 
             m_RecipeStorage.saveList(recipe1);
+
+
+            int id2 = m_RecipeStorage.createList();
+            Recipe recipe2 = m_RecipeStorage.loadList(id2);
+            recipe2.setName(context.getString(R.string.recipe_carrotCake));
+            recipe2.setScaleFactor(8);
+            recipe2.setScaleName(context.getString(R.string.recipe_scaleName_piece));
+
+            Item item7 = new Item();
+            item7.setName(context.getString(R.string.recipe_oil));
+            item7.setAmount(0.5);
+            item7.setUnit(cups);
+            recipe2.addItem(item7);
+
+            Item item8 = new Item();
+            item8.setName(context.getString(R.string.recipe_carrot));
+            item8.setAmount(3);
+            item8.setGroup(vegetable);
+            recipe2.addItem(item8);
+
+            Item item9 = new Item();
+            item9.setName(context.getString(R.string.recipe_eggs));
+            item9.setAmount(4);
+            recipe2.addItem(item9);
+
+            Item item10 = new Item();
+            item10.setName(context.getString(R.string.recipe_sugar));
+            item10.setAmount(2);
+            item10.setUnit(cups);
+            recipe2.addItem(item10);
+
+            Item item11 = new Item();
+            item11.setName(context.getString(R.string.recipe_bakingPowder));
+            item11.setAmount(1);
+            item11.setUnit(tbsp);
+            recipe2.addItem(item11);
+
+            Item item12 = new Item();
+            item12.setName(context.getString(R.string.recipe_sweetenedCondensedMilk));
+            item12.setAmount(1);
+            item12.setUnit(cans);
+            recipe2.addItem(item12);
+
+            Item item13 = new Item();
+            item13.setName(context.getString(R.string.recipe_coconutFlakes));
+            item13.setAmount(50);
+            item13.setUnit(gram);
+            recipe2.addItem(item13);
+
+            m_RecipeStorage.saveList(recipe2);
+
+
+
         }
 
     }

@@ -112,9 +112,17 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
             viewHolder.textView_Brand.setText(brand);
         }
 
+        boolean unitIsPieces = false;
+        if (item.getUnit() != null) {
+            if (item.getUnit().getName().equals(context.getString(R.string.unit_piece_name))) {
+                unitIsPieces = true;
+            }
+        } else {
+            unitIsPieces = true;
+        }
         // amount
         double amount = item.getAmount();
-        if (amount == 1) {
+        if (amount == 1 && unitIsPieces) {
             viewHolder.textView_Amount.setVisibility(View.GONE);
         } else {
             String unitStr = displayHelper.getShortDisplayName(item.getUnit());

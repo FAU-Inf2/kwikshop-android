@@ -111,6 +111,55 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
         }.execute();
     }
 
+    @OnClick(R.id.button_getShoppingList)
+    void getShoppingList() {
+
+        viewLauncher.showTextInputDialog("Shopping List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    ShoppingListServer list = client.getListSynchronously(Integer.toString(listId));
+
+                                    privateBus.post(mapper.writeValueAsString(list));
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+
+    }
+
     @OnClick(R.id.button_createShoppingList)
     void createShoppingList() {
         new AsyncTask<Void, Void, Void>() {

@@ -29,6 +29,13 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/button_getShoppingList"
+            android:text="Get single Shopping List"/>
+
+
+            <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/button_createShoppingList"
             android:text="Create Shopping List"/>
 

@@ -1,9 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="de.fau.cs.mad.kwikshop.android.view.ServerIntegrationDebugActivity">
 
     <ScrollView
@@ -15,50 +17,61 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <TextView android:text="@string/hello_world"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView"/>
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hello_world" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_getShoppingLists"
-            android:text="Get Shopping Lists"/>
+            <Button
+                android:id="@+id/button_getShoppingLists"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Shopping Lists" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_getShoppingList"
-            android:text="Get single Shopping List"/>
-
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_createShoppingList"
-            android:text="Create Shopping List"/>
-
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_deleteShoppingList"
-            android:text="Delete Shopping List"/>
+            <Button
+                android:id="@+id/button_getShoppingList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get single Shopping List" />
 
 
             <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_createShoppingListItem"
-            android:text="Create Shopping List Item"/>
+                android:id="@+id/button_createShoppingList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Shopping List" />
+
+            <Button
+                android:id="@+id/button_editShoppingList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Shopping List" />
+
+
+            <Button
+                android:id="@+id/button_deleteShoppingList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete Shopping List" />
+
+
+            <Button
+                android:id="@+id/button_createShoppingListItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Shopping List Item" />
+
+            <Button
+                android:id="@+id/button_getShoppingListItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Shopping List Item" />
 
 
         </LinearLayout>
 
     </ScrollView>
-
-
 
 
 </RelativeLayout>

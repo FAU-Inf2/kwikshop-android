@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 
 import java.io.PrintWriter;
@@ -37,13 +38,20 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
     private final EventBus privateBus = EventBus.builder().build();
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
 
     @InjectView(R.id.textView)
     TextView textView_Result;
 
     @Inject
     RestClientFactory clientFactory;
+
+
+    public ServerIntegrationDebugActivity() {
+
+        mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
 
 
@@ -62,6 +70,11 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        privateBus.unregister(this);
+    }
 
 
     @OnClick(R.id.button_getShoppingLists)
@@ -123,18 +136,9 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
     }
 
 
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        privateBus.unregister(this);
-    }
-
-
     public void onEventMainThread(String value) {
         textView_Result.setText(value);
     }
-
 
     public static String getStackTrace(final Throwable throwable) {
         final StringWriter sw = new StringWriter();
@@ -142,46 +146,6 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
         throwable.printStackTrace(pw);
         return sw.getBuffer().toString();
     }
-
-
-//    private String toString(ShoppingListServer shoppingList) {
-//
-//        String format = "   %s = %s\n";
-//        String result = "";
-//
-//        result += "ShoppingList: \n";
-//        result += String.format(format, "id", shoppingList.getId());
-//        result += String.format(format, "name", shoppingList.getName());
-//        result += String.format(format, "sortType", shoppingList.getSortTypeInt());
-//        result += String.format(format, "location", toString(shoppingList.getLocation()));
-//        result += String.format(format, "lastModifiedDate", shoppingList.getLastModifiedDate());
-//        result += "   Items: \n";
-//
-//        for(Item item : shoppingList.getItems()) {
-//
-//            result += toString(item);
-//            result += "\n";
-//        }
-//
-//
-//        return result;
-//    }
-//
-//    private String toString(LastLocation location) {
-//
-//        if(location == null) {
-//            return "";
-//        }
-//
-//        return  String.format("latitide = %s, longitude = %s, address = %s, name = %s, timestamp = %s",
-//                location.getLatitude(),
-//                location.getLongitude(),
-//                location.getAddress(),
-//                location.getName(),
-//                location.getTimestamp());
-//    }
-//
-
 
 
 }

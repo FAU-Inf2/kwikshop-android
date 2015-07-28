@@ -43,7 +43,10 @@ public class DefaultDataProvider {
                     newUnit("gram", R.string.unit_gram, R.string.unit_gram_short),
                     newUnit("kilogram", R.string.unit_kilogram, R.string.unit_kilogram_short),
                     newUnit("millilitre", R.string.unit_millilitre, R.string.unit_millilitre_short),
-                    newUnit("litre", R.string.unit_litre, R.string.unit_litre_short)
+                    newUnit("litre", R.string.unit_litre, R.string.unit_litre_short),
+                    newUnit("cup", R.string.unit_cup),
+                    newUnit("tablespoon", R.string.unit_tablespoon, R.string.unit_tablespoon_short),
+                    newUnit("can", R.string.unit_can)
             };
         }
 

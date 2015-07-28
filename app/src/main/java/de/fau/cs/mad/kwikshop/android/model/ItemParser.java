@@ -101,7 +101,7 @@ public class ItemParser {
         }
 
         if (!StringHelper.isNullOrWhiteSpace(output)) {
-            if (amount != "") item.setAmount(Integer.parseInt(amount));
+            if (amount != "") item.setAmount(Double.parseDouble(amount));
             item.setName(output);
         }
         return item;

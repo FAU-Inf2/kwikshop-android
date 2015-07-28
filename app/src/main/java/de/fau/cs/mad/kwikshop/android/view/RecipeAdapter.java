@@ -112,15 +112,33 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
             viewHolder.textView_Brand.setText(brand);
         }
 
+        boolean unitIsPieces = false;
+        if (item.getUnit() != null) {
+            if (item.getUnit().getName().equals(context.getString(R.string.unit_piece_name))) {
+                unitIsPieces = true;
+            }
+        } else {
+            unitIsPieces = true;
+        }
         // amount
-        int amount = item.getAmount();
-        if (amount <= 1) {
+        double amount = item.getAmount();
+        if (amount == 1 && unitIsPieces) {
             viewHolder.textView_Amount.setVisibility(View.GONE);
         } else {
             String unitStr = displayHelper.getShortDisplayName(item.getUnit());
 
             viewHolder.textView_Amount.setVisibility(View.VISIBLE);
-            viewHolder.textView_Amount.setText(String.format("%d %s", amount, unitStr));
+            //This is not the best way to format fractions, but there are only few of them
+            if(amount < 1){
+                if (amount == 0.25)
+                    viewHolder.textView_Amount.setText(String.format("1/4 %s", unitStr));
+                if (amount == 0.5)
+                    viewHolder.textView_Amount.setText(String.format("1/2 %s", unitStr));
+                if (amount == 0.75)
+                    viewHolder.textView_Amount.setText(String.format("3/4 %s", unitStr));
+            }
+            else
+                viewHolder.textView_Amount.setText(String.format("%.0f %s", amount, unitStr));
         }
 
         viewHolder.view_GroupHeader.setVisibility(View.GONE);

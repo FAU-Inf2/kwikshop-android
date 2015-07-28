@@ -1,5 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -100,9 +101,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private static Bitmap rotateImage = null;
     private static final int GALLERY = 1;
     private static final int GALLERY_INTENT_CALLED = 1;
-    private static final int GALLERY_KITKAT_INTENT_CALLED = 1;
+    private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
     private static String pathImage = "";
     private static Uri mImageUri;
+    private static String ImageId = "";
 
 
     @InjectView(R.id.productname_text)
@@ -254,15 +256,22 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if(numberPickerCalledWith != numberPicker.getValue()){
             //only set amount if it got changed, so values written by parser which are not listed
             //in the numberPicker don't get overwritten
-            item.setAmount(Integer.parseInt(numbersForAmountPicker[numberPicker.getValue()-1]));
+            Double pickerAmountDouble;
+            String numberPickerString = numbersForAmountPicker[numberPicker.getValue()];
+                if (numberPickerString.contains("/")) {
+                    String[] rat = numberPickerString.split("/");
+                    pickerAmountDouble = Double.parseDouble(rat[0]) / Double.parseDouble(rat[1]);
+                } else {
+                    pickerAmountDouble= Double.parseDouble(numberPickerString);
+                }
+            item.setAmount(pickerAmountDouble);
         }
 
         item.setBrand(brand_text.getText().toString());
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
         if (ImageItem != null) {
-            byte[] data = getBitmapAsByteArray(ImageItem);
-            item.setImageItem(data);
+            item.setImageItem(ImageId);
         }
         if (selectedUnitIndex >= 0) {
             Unit u = units.get(selectedUnitIndex);
@@ -337,23 +346,29 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         }
 
         //populate number picker
-        numbersForAmountPicker = new String[1000];
+        numbersForAmountPicker = new String[1003];
         String [] numsOnce = new String[]{
-                "1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
+                "1/4","1/2","3/4","1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
                 "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
                 "450", "500", "600", "700", "750", "800", "900", "1000"
         };
-        int [] intNumsOnce = new int[numsOnce.length];
+        Double [] intNumsOnce = new Double[numsOnce.length];
         for(int i = 0; i < intNumsOnce.length; i++){
-            intNumsOnce[i] = Integer.parseInt(numsOnce[i]);
+            if (numsOnce[i].contains("/")) {
+                String[] rat = numsOnce[i].split("/");
+                intNumsOnce[i] = (Double.parseDouble(rat[0]) / Double.parseDouble(rat[1]));
+            } else {
+                intNumsOnce[i] = Double.parseDouble(numsOnce[i]);
+            }
         }
+
 
         //setDisplayedValues length must be as long as range
         for(int i = 0; i < numbersForAmountPicker.length; i++){
             numbersForAmountPicker[i] = numsOnce[i%numsOnce.length];
         }
 
-        numberPicker.setMinValue(1);
+        numberPicker.setMinValue(0);
         numberPicker.setMaxValue(1000);
         numberPicker.setWrapSelectorWheel(false);
         numberPicker.setDisplayedValues(numbersForAmountPicker);
@@ -367,7 +382,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if (isNewItem) {
 
             productname_text.setText("");
-            numberPicker.setValue(1);
+            numberPicker.setValue(3);
             brand_text.setText("");
             comment_text.setText("");
 
@@ -376,8 +391,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
             //thats not a pretty way to get it done, but the only one that came to my mind
             //numberPicker.setValue(index) sets the picker to the index + numberPicker.minValue()
-            int itemAmount = item.getAmount();
-            for(int i = 1; i < intNumsOnce.length; i++){
+            double itemAmount = item.getAmount();
+          /*  for(int i = 1; i < intNumsOnce.length; i++){
                 if(itemAmount > 1000) itemAmount = 1000;
                 if(intNumsOnce[i] == itemAmount){
                     itemAmount = i+1;
@@ -388,18 +403,27 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     itemAmount = i+1;
                     break;
                 }
+            }*/
+
+            int index = 1;
+            for(int i = 0; i < intNumsOnce.length; i++){
+                if(intNumsOnce[i].equals(itemAmount)){
+                    index = i;
+                    break;
+                }
             }
 
             // Fill UI elements with data from Item
             productname_text.setText(item.getName());
-            numberPicker.setValue(itemAmount);
+            numberPicker.setValue(index);
             brand_text.setText(item.getBrand());
             comment_text.setText(item.getComment());
             //load image
-            byte[] imageByteArray = item.getImageItem();
-            if (imageByteArray != null) {
-                ByteArrayInputStream imageStream = new ByteArrayInputStream(imageByteArray);
-                itemImageView.setImageBitmap(BitmapFactory.decodeStream(imageStream));
+            ImageId = item.getImageItem();
+            if (ImageId != null && ImageId != "") {
+                itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
+                if (itemImageView.getDrawable() == null)
+                     uploadText.setText(R.string.uploadPicture);
             }
             else{
                 uploadText.setText(R.string.uploadPicture);
@@ -497,18 +521,12 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     if (ImageItem != null)
                         ImageItem.recycle();
 
-                    if (Build.VERSION.SDK_INT <19){
-                        Intent intent = new Intent();
-                        intent.setType("image/jpeg");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)),GALLERY_INTENT_CALLED);
-                    } else {
                         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                         intent.addCategory(Intent.CATEGORY_OPENABLE);
                         intent.setType("image/jpeg");
-                        startActivityForResult(intent, GALLERY_KITKAT_INTENT_CALLED);
-                    }
-                    //startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)), GALLERY);
+                        startActivityForResult(intent, GALLERY);
+
+
             }
 
 
@@ -535,23 +553,16 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if (requestCode == GALLERY && resultCode != 0) {
             mImageUri = data.getData();
             try {
-                if (requestCode == GALLERY_KITKAT_INTENT_CALLED) {
 
-                    final int takeFlags = data.getFlags()
-                            & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    // Check for the freshest data.
-                    getActivity().getContentResolver().takePersistableUriPermission(mImageUri, takeFlags);
-                }
                 ImageItem = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
                 String pathsegment[] = mImageUri.getLastPathSegment().split(":");
-                String id = pathsegment[1];
+                ImageId = pathsegment[1];
                 final String[] imageColumns = { MediaStore.Images.Media.DATA };
                 final String imageOrderBy = null;
 
                 Uri uri = getUri();
                 Cursor imageCursor = getActivity().getContentResolver().query(uri, imageColumns,
-                        MediaStore.Images.Media._ID + "=" + id, null, null);
+                        MediaStore.Images.Media._ID + "=" + ImageId, null, null);
 
                 if (imageCursor.moveToFirst()) {
                     pathImage = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
@@ -564,10 +575,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     rotateImage = Bitmap.createBitmap(ImageItem, 0, 0, ImageItem.getWidth(), ImageItem.getHeight(), matrix,true);
 
 
-                    itemImageView.setImageBitmap(rotateImage);
+                    //itemImageView.setImageBitmap(rotateImage);
+
+                    itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
                 } else
                     uploadText.setText("");
-                    itemImageView.setImageBitmap(ImageItem);
+                    //itemImageView.setImageBitmap(ImageItem);
+                itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {

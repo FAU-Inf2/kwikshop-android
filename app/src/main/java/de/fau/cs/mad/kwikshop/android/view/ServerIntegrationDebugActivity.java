@@ -4,14 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,8 +25,10 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.ShoppingListResource;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.Item;
-import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.greenrobot.event.EventBus;
 
@@ -39,13 +42,22 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
     private final EventBus privateBus = EventBus.builder().build();
-
+    private final ObjectMapper mapper;
 
     @InjectView(R.id.textView)
     TextView textView_Result;
 
     @Inject
     RestClientFactory clientFactory;
+
+    @Inject
+    ViewLauncher viewLauncher;
+
+    public ServerIntegrationDebugActivity() {
+
+        mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
 
 
@@ -64,9 +76,15 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        privateBus.unregister(this);
+    }
 
 
     @OnClick(R.id.button_getShoppingLists)
+    @SuppressWarnings("unused")
     void getShoppingLists() {
 
         new AsyncTask<Void, Void, Void>() {
@@ -77,8 +95,6 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                     privateBus.post("Getting shopping lists...");
 
-                    ObjectMapper mapper = new ObjectMapper();
-
                     ShoppingListResource client = clientFactory.getShoppingListClient();
 
                     List<ShoppingListServer> shoppingLists = client.getListSynchronously();
@@ -88,67 +104,411 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                 } catch (Exception e) {
 
-                    privateBus.post(e.toString());
+                    privateBus.post(getStackTrace(e));
                 }
 
                 return null;
             }
         }.execute();
+    }
+
+    @OnClick(R.id.button_getShoppingList)
+    @SuppressWarnings("unused")
+    void getShoppingList() {
+
+        viewLauncher.showTextInputDialog("Shopping List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting shopping list...");
+
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    ShoppingListServer list = client.getListSynchronously(Integer.toString(listId));
+
+                                    privateBus.post(mapper.writeValueAsString(list));
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
 
     }
 
+    @OnClick(R.id.button_createShoppingList)
+    @SuppressWarnings("unused")
+    void createShoppingList() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                try{
+
+                    privateBus.post("Creating sample shopping list on server...");
+
+                    ShoppingListServer newList = new ShoppingListServer();
+                    newList.setName("New List");
+                    newList.setLastModifiedDate(new Date());
 
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        privateBus.unregister(this);
+                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                    newList = client.createListSynchronously(newList);
+
+                    privateBus.post(mapper.writeValueAsString(newList));
+
+                } catch (Exception e) {
+                    privateBus.post(getStackTrace(e));
+                }
+
+                return null;
+            }
+        }.execute();
     }
 
+    @OnClick(R.id.button_createShoppingListItem)
+    @SuppressWarnings("unused")
+    void createShoppingListItem() {
+
+
+        viewLauncher.showTextInputDialog("Shopping List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Creating item in shopping list..");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    Item newItem = new Item();
+                                    newItem.setName("New Item on Server");
+                                    newItem.setComment("Sample Comment");
+
+                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    newItem = client.createItemSynchronously(listId, newItem);
+
+                                    privateBus.post(mapper.writeValueAsString(newItem));
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+
+    }
+
+    @OnClick(R.id.button_deleteShoppingList)
+    @SuppressWarnings("unused")
+    void deleteShoppingList()
+    {
+        viewLauncher.showTextInputDialog("Shopping List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+                        privateBus.post("Deleting shopping list...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+
+                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    client.deleteListSynchronously(listId);
+
+                                    privateBus.post("OK");
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+    }
+
+    @OnClick(R.id.button_editShoppingList)
+    @SuppressWarnings("unused")
+    void editShoppingList() {
+        viewLauncher.showTextInputDialog("Shopping List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+                        privateBus.post("Editing shopping list...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+
+                                    ShoppingListServer list = client.getListSynchronously(Integer.toString(listId));
+                                    list.setName(list.getName()  + "_edited");
+                                    list.setLastModifiedDate(new Date());
+
+                                    list = client.updateListSynchronously(listId, list, false);
+
+                                    privateBus.post(mapper.writeValueAsString(list));
+
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+    }
+
+    @OnClick(R.id.button_getShoppingListItem)
+    @SuppressWarnings("unused")
+    void getShoppingListItem() {
+
+        viewLauncher.showTextInputDialog("Shopping List Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting shopping list item...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        viewLauncher.showTextInputDialog("Item Id", "",
+                                new Command<String>() {
+                                    @Override
+                                    public void execute(String parameter) {
+
+
+                                        final int itemId;
+                                        try{
+                                            itemId = Integer.parseInt(parameter);
+                                        } catch (Exception e) {
+                                            privateBus.post(getStackTrace(e));
+                                            return;
+                                        }
+
+
+                                        new AsyncTask<Void, Void, Void>() {
+
+
+                                            @Override
+                                            protected Void doInBackground(Void... voids) {
+
+                                                try {
+                                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                                    Item item = client.getListItemSynchronously(listId, itemId);
+
+                                                    privateBus.post(mapper.writeValueAsString(item));
+
+                                                } catch (Exception e) {
+                                                    privateBus.post(getStackTrace(e));
+                                                }
+
+                                                return null;
+                                            }
+                                        }.execute();
+
+
+
+                                    }
+                                },
+                                NullCommand.StringInstance);
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+    }
+
+    @OnClick(R.id.button_editShoppingListItem)
+    @SuppressWarnings("unused")
+    void editShoppingListItem() {
+
+        viewLauncher.showTextInputDialog("Shopping List Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting shopping list item...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        viewLauncher.showTextInputDialog("Item Id", "",
+                                new Command<String>() {
+                                    @Override
+                                    public void execute(String parameter) {
+
+
+                                        final int itemId;
+                                        try{
+                                            itemId = Integer.parseInt(parameter);
+                                        } catch (Exception e) {
+                                            privateBus.post(getStackTrace(e));
+                                            return;
+                                        }
+
+
+                                        new AsyncTask<Void, Void, Void>() {
+
+
+                                            @Override
+                                            protected Void doInBackground(Void... voids) {
+
+                                                try {
+                                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                                    Item item = client.getListItemSynchronously(listId, itemId);
+                                                    item.setName(item.getName() + "_edited");
+
+                                                    item = client.updateItemSynchronously(listId, itemId, item);
+
+                                                    privateBus.post(mapper.writeValueAsString(item));
+
+                                                } catch (Exception e) {
+                                                    privateBus.post(getStackTrace(e));
+                                                }
+
+                                                return null;
+                                            }
+                                        }.execute();
+
+
+
+                                    }
+                                },
+                                NullCommand.StringInstance);
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+    }
 
     public void onEventMainThread(String value) {
         textView_Result.setText(value);
     }
 
-
-//    private String toString(ShoppingListServer shoppingList) {
-//
-//        String format = "   %s = %s\n";
-//        String result = "";
-//
-//        result += "ShoppingList: \n";
-//        result += String.format(format, "id", shoppingList.getId());
-//        result += String.format(format, "name", shoppingList.getName());
-//        result += String.format(format, "sortType", shoppingList.getSortTypeInt());
-//        result += String.format(format, "location", toString(shoppingList.getLocation()));
-//        result += String.format(format, "lastModifiedDate", shoppingList.getLastModifiedDate());
-//        result += "   Items: \n";
-//
-//        for(Item item : shoppingList.getItems()) {
-//
-//            result += toString(item);
-//            result += "\n";
-//        }
-//
-//
-//        return result;
-//    }
-//
-//    private String toString(LastLocation location) {
-//
-//        if(location == null) {
-//            return "";
-//        }
-//
-//        return  String.format("latitide = %s, longitude = %s, address = %s, name = %s, timestamp = %s",
-//                location.getLatitude(),
-//                location.getLongitude(),
-//                location.getAddress(),
-//                location.getName(),
-//                location.getTimestamp());
-//    }
-//
-
+    public static String getStackTrace(final Throwable throwable) {
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw, true);
+        throwable.printStackTrace(pw);
+        return sw.getBuffer().toString();
+    }
 
 
 }

@@ -164,7 +164,7 @@
     <string name="item_divider">próximo</string>
     <string name="settings_option_3_manageUnits">Gerenciar unidades e categorias</string>
     <string name="reminder_question">"Um lembrete para o item '%1$s' foi agendado para %2$s. O que você gostaria de fazer agora?"</string>
-    <string name="day"></string>
+    <string name="day">dia</string>
     <string name="uploadPicture">Selecionar imagem</string>
     <string name="today">Hoje</string>
     <string name="supermarket_finder_progress_dialog_message">Encontre Supermercados próximos.</string>
@@ -174,4 +174,19 @@
     <string name="askingGoogleVoiceSearch">Para o reconhecimento é necessário instalar \'Google Voice Search\'</string>
     <string name="askingGooglePlay">Instalar Voice Search pelo Google Play?</string>
     <string name="Install">Instalar</string>
+    <string name="dateDescription_just_now">agora mesmo</string>
+    <string name="dateDescription_minutes_ago">há %1$s minutos</string>
+    <string name="date_today">hoje</string>
+    <string name="recipe_carrotCake">Bolo de cenoura com cobertura de beijinho</string>
+    <string name="recipe_eggs">Ovos</string>
+    <string name="recipe_carrot">Cenoura</string>
+    <string name="recipe_oil">Óleo</string>
+    <string name="recipe_plainFlour">Farinha de trigo</string>
+    <string name="recipe_bakingPowder">Fermento em pó</string>
+    <string name="recipe_sugar">Açúcar</string>
+    <string name="recipe_sweetenedCondensedMilk">Leite condensado</string>
+    <string name="recipe_coconutFlakes">Coco ralado</string>
+    <string name="unit_cup">xícaras</string>
+    <string name="unit_tablespoon">colheres de sopa</string>
+    <string name="unit_can">latas</string>
 </resources>

@@ -114,7 +114,7 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
 
         // amount
         double amount = item.getAmount();
-        if (amount <= 1) {
+        if (amount == 1) {
             viewHolder.textView_Amount.setVisibility(View.GONE);
         } else {
             String unitStr = displayHelper.getShortDisplayName(item.getUnit());

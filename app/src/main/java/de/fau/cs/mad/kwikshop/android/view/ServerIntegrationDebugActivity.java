@@ -4,14 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,8 +24,6 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.ShoppingListResource;
-import de.fau.cs.mad.kwikshop.common.Item;
-import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.greenrobot.event.EventBus;
 
@@ -39,7 +37,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
     private final EventBus privateBus = EventBus.builder().build();
-
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @InjectView(R.id.textView)
     TextView textView_Result;
@@ -77,8 +75,6 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                     privateBus.post("Getting shopping lists...");
 
-                    ObjectMapper mapper = new ObjectMapper();
-
                     ShoppingListResource client = clientFactory.getShoppingListClient();
 
                     List<ShoppingListServer> shoppingLists = client.getListSynchronously();
@@ -88,13 +84,42 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                 } catch (Exception e) {
 
-                    privateBus.post(e.toString());
+                    privateBus.post(getStackTrace(e));
                 }
 
                 return null;
             }
         }.execute();
+    }
 
+    @OnClick(R.id.button_createShoppingist)
+    void createShoppingList()
+    {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                try{
+
+                    privateBus.post("Creating sample shopping list on server...");
+
+                    ShoppingListServer newList = new ShoppingListServer();
+                    newList.setName("New List");
+                    newList.setLastModifiedDate(new Date());
+
+
+                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                    newList = client.createListSynchronously(newList);
+
+                    privateBus.post(mapper.writeValueAsString(newList));
+
+                } catch (Exception e) {
+                    privateBus.post(getStackTrace(e));
+                }
+
+                return null;
+            }
+        }.execute();
     }
 
 
@@ -108,6 +133,14 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
     public void onEventMainThread(String value) {
         textView_Result.setText(value);
+    }
+
+
+    public static String getStackTrace(final Throwable throwable) {
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw, true);
+        throwable.printStackTrace(pw);
+        return sw.getBuffer().toString();
     }
 
 

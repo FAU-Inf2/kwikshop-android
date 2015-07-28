@@ -28,6 +28,16 @@ import com.google.android.gms.plus.model.people.Person;
 
 import org.glassfish.jersey.client.proxy.WebResourceFactory;
 
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManagerFactory;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
@@ -344,7 +354,63 @@ public class LoginActivity extends FragmentActivity implements
                 return null;
             }
 
-            String uri = SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, getString(R.string.API_URL), LoginActivity.this);
+            //TODO: Use RestClientFactoryImplementation if possible
+            String authResponse = null;
+            try {
+                // Load cert from raw res
+                CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                InputStream caInput = getResources().openRawResource(R.raw.server);
+                Certificate ca;
+                try {
+                    ca = cf.generateCertificate(caInput);
+                    //System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+                } finally {
+                    caInput.close();
+                }
+
+                // Create a KeyStore containing our trusted CAs
+                String keyStoreType = KeyStore.getDefaultType();
+                KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+                keyStore.load(null, null);
+                keyStore.setCertificateEntry("ca", ca);
+
+                // Create a TrustManager that trusts the CAs in our KeyStore
+                String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+                TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+                tmf.init(keyStore);
+
+                // Create an SSLContext that uses our TrustManager
+                SSLContext context = SSLContext.getInstance("TLS");
+                context.init(null, tmf.getTrustManagers(), null);
+
+                String uri = SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT,
+                        getString(R.string.API_PROTOCOL) +
+                                getString(R.string.API_HOST) +
+                                ":" + getString(R.string.API_PORT),
+                        LoginActivity.this);
+
+                WebTarget target = ClientBuilder.newBuilder()
+                        .sslContext(context)
+                        .hostnameVerifier(new HostnameVerifier() {
+                            @Override
+                            public boolean verify(String hostname, SSLSession session) {
+                                HostnameVerifier hv =
+                                        HttpsURLConnection.getDefaultHostnameVerifier();
+                                //return hv.verify("HOSTNAME", session);
+                                return (hostname.equals(getString(R.string.API_HOST)));
+                            }
+                        })
+                        .build().register(JacksonJsonProvider.class).target(uri);
+
+                UserResource endpoint = WebResourceFactory.newResource(UserResource.class, target);
+
+                authResponse = endpoint.auth(idToken);
+            } catch (Exception e) {
+                Log.e(TAG, "Error contacting server.", e);
+                return null;
+            }
+
+            /*String uri = SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, getString(R.string.API_URL), LoginActivity.this);
             WebTarget target = ClientBuilder.newClient().register(JacksonJsonProvider.class).target(uri);
             UserResource endpoint = WebResourceFactory.newResource(UserResource.class, target);
             String authResponse;
@@ -353,8 +419,12 @@ public class LoginActivity extends FragmentActivity implements
             } catch (Exception e) {
                 Log.e(TAG, "Error contacting server.", e);
                 return null;
-            }
-            SessionHandler.setSessionToken(getApplicationContext(), authResponse); // save session token
+            }*/
+
+            if(authResponse != null)
+                if(authResponse.length() > 0)
+                    SessionHandler.setSessionToken(getApplicationContext(), authResponse); // save session token
+
             return authResponse;
 
         }

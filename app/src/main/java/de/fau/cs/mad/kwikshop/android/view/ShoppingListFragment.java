@@ -229,7 +229,17 @@ public class ShoppingListFragment
         //justifyListViewHeightBasedOnChildren(shoppingListView);
 
         new ButtonBinding(floatingActionButton, viewModel.getAddItemCommand(), false);
-        new ButtonBinding(button_QuickAdd, viewModel.getQuickAddCommand());
+       //moved to onClickListener to enable scrolling
+       // new ButtonBinding(button_QuickAdd, viewModel.getQuickAddCommand());
+
+
+        button_QuickAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.getQuickAddCommand().execute(null);
+                shoppingListView.setSelection(viewModel.getItems().size() - viewModel.getBoughtItemsCount());
+            }
+        });
 
         //TODO: quick add long click
 
@@ -244,6 +254,7 @@ public class ShoppingListFragment
                         viewModel.getQuickAddCommand().execute(null);
                         return true;
                     }
+                    shoppingListView.setSelection(viewModel.getItems().size() - viewModel.getBoughtItemsCount());
                     return false;
                 }
             }

@@ -132,12 +132,12 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     public void setLocationOnItemBought(final int id, final String googleBrowserApiKey){
 
 
-         new AsyncTask<Void, Void, Void>() {
 
-            Item item;
-            LastLocation location;
+        AsyncTask<Void, Void, Void> locationAsyncTask =  new AsyncTask<Void, Void, Void>() {
+
+             Item item;
+             LastLocation location;
              List<Place> places;
-
 
             @Override
             protected void onPreExecute() {
@@ -152,24 +152,20 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             @Override
             protected Void doInBackground(Void... params) {
 
-                if(listManager.getListItem(listId, id).getLocation() == null) {
+                // get location
+                location = locationFinderHelper.getLastLocation();
 
-                    // get location
-                    location = locationFinderHelper.getLastLocation();
+                // try to get information about a location
+                try {
+                    GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
+                    places = client.getNearbyPlaces(location.getLatitude(), location.getLongitude(), location.getAccuracy() * 10, 1, Param.name("types").value("grocery_or_supermarket"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                    // try to get information about a location
-                    try {
-                        GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-                        places = client.getNearbyPlaces(location.getLatitude(), location.getLongitude(), 200, 1, Param.name("types").value("grocery_or_supermarket"));
-                    } catch (Exception e) {
-                        Log.e("ShoppingListViewModel","Google Places error");
-                    }
-
-                    // place was found
-                    if(places != null){
-                        location.setName(places.get(0).getName());
-                    }
-
+                // place was found
+                if (places != null) {
+                    location.setName(places.get(0).getName());
                 }
                 return null;
             }
@@ -180,7 +176,12 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 item.setLocation(location);
                 listManager.saveListItem(listId, item);
             }
-        }.execute();
+        };
+
+        if(listManager.getListItem(listId, id).getLocation() == null) {
+            locationAsyncTask.execute();
+        }
+
     }
 
 

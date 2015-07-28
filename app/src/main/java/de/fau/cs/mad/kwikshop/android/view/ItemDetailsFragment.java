@@ -1,6 +1,5 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;

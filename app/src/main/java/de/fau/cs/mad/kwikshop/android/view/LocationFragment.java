@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -54,6 +55,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
     double lastLng;
     String address;
     ProgressDialog progress;
+    List<Place> places;
 
     @InjectView(R.id.map_infobox)
     RelativeLayout mapInfoBox;
@@ -138,9 +140,8 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
                 GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
                 try {
-                    places = client.getNearbyPlaces(lastLat, lastLng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
+                    places = client.getNearbyPlaces(lastLat, lastLng, 5000, 30, Param.name("types").value("grocery_or_supermarket"));
                 } catch (Exception e) {
-                    Log.e(LOG_TAG, "Exception: " + e.getMessage());
                 }
 
                 return null;
@@ -150,24 +151,21 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 initiateMap(places);
-                progress.dismiss();
+                progressDismiss();
             }
-
-
 
         };
 
-        // retrieve last location from gps or mobile internet
-        lastLocation = new LocationFinderHelper(getActivity());
-
         // no last location was found
-        if(!lastLocation.isThereALastLocation()){
-            progress.dismiss();
+        if(!InternetHelper.checkInternetConnection(getActivity())){
+            progressDismiss();
             notificationOfNoConnection();
         } else {
+            // retrieve last location from gps or mobile internet
+            lastLocation = new LocationFinderHelper(getActivity());
             lastLat = lastLocation.getLatitude();
             lastLng = lastLocation.getLongitude();
-            address = lastLocation.getAddressConverted();
+            address = lastLocation.getAddressToString();
             aTask.execute();
         }
 
@@ -176,84 +174,23 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        progressDismiss();
+    }
+
+    void progressDismiss(){
         if (progress != null) {
             progress.dismiss();
             progress = null;
         }
     }
 
+
     private void initiateMap(final List<Place> places){
-
-        // no connection to internet
-        if(!InternetHelper.checkInternetConnection(getActivity())){
-            progress.dismiss();
-            notificationOfNoConnection();
-            return;
-        }
-
-
-        // get last/current location
-        lastLocation = new LocationFinderHelper(getActivity().getApplicationContext());
-        lastLat = lastLocation.getLatitude();
-        lastLng = lastLocation.getLongitude();
-        address = lastLocation.getAddressConverted();
 
         // set up map
         MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
+        this.places = places;
         mapFragment.getMapAsync(this);
-        map = mapFragment.getMap();
-        map.setMyLocationEnabled(true);
-        map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lastLat,lastLng) , 15.0f) );
-        UiSettings settings = map.getUiSettings();
-        settings.setAllGesturesEnabled(true);
-        settings.setMapToolbarEnabled(false);
-
-
-        // display place on the map
-        for(Place place : places){
-            IconGenerator iconFactory = new IconGenerator(getActivity().getApplicationContext());
-            addIcon(iconFactory, place.getName(), new LatLng(place.getLatitude(), place.getLongitude()));
-        }
-
-
-        // display info box
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-
-                final Place clickedPlace = findCorrespondPlaceToMarker(marker, places);
-                final String clickedAdress = LocationFinderHelper.getAddressConverted(new LatLng(clickedPlace.getLatitude(), clickedPlace.getLongitude()),
-                        getActivity().getApplicationContext());
-
-
-                showInfoBox();
-
-                mapPlaceName.setText(clickedPlace.getName());
-                mapPlaceOpenStatus.setText(convertStatus(clickedPlace.getStatus()));
-                mapPlaceDistance.setText(getDistanceBetweenLastLocationAndPlace(clickedPlace));
-                mapDirectionButton.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-
-                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                                Uri.parse("http://maps.google.com/maps?daddr=" + clickedAdress));
-                        startActivity(intent);
-                    }
-                });
-
-
-                return false;
-            }
-        });
-
-        // hide info box
-        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                 hideInfoBox();
-            }
-        });
 
     }
 
@@ -324,6 +261,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
         builder.setPositiveButton(R.string.alert_dialog_connection_try, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if(InternetHelper.checkInternetConnection(getActivity())){
+                    getActivity().finish();
                     getActivity().startActivity(new Intent(getActivity().getApplicationContext(), LocationActivity.class));
                 } else {
                     notificationOfNoConnection();
@@ -352,7 +290,64 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap map) {
+
+        this.map = map;
+        map.setMyLocationEnabled(true);
+        map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lastLat,lastLng) , 15.0f) );
+        UiSettings settings = map.getUiSettings();
+        settings.setAllGesturesEnabled(true);
+        settings.setMapToolbarEnabled(false);
+
+
+        if(places == null){
+            return;
+        }
+
+        // display place on the map
+        for(Place place : places){
+            IconGenerator iconFactory = new IconGenerator(getActivity().getApplicationContext());
+            addIcon(iconFactory, place.getName(), new LatLng(place.getLatitude(), place.getLongitude()));
+        }
+
+        // display info box
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                final Place clickedPlace = findCorrespondPlaceToMarker(marker, places);
+                final String clickedAdress = LocationFinderHelper.getAddressConverted(new LatLng(clickedPlace.getLatitude(), clickedPlace.getLongitude()),
+                        getActivity().getApplicationContext());
+
+
+                showInfoBox();
+
+                mapPlaceName.setText(clickedPlace.getName());
+                mapPlaceOpenStatus.setText(convertStatus(clickedPlace.getStatus()));
+                mapPlaceDistance.setText(getDistanceBetweenLastLocationAndPlace(clickedPlace));
+                mapDirectionButton.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                                Uri.parse("http://maps.google.com/maps?daddr=" + clickedAdress));
+                        startActivity(intent);
+                    }
+                });
+
+
+                return false;
+            }
+        });
+
+        // hide info box
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                hideInfoBox();
+            }
+        });
 
     }
 

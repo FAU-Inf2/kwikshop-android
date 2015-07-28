@@ -1,5 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -520,18 +521,12 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     if (ImageItem != null)
                         ImageItem.recycle();
 
-                    if (Build.VERSION.SDK_INT <19){
-                        Intent intent = new Intent();
-                        intent.setType("image/jpeg");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)),GALLERY_INTENT_CALLED);
-                    } else {
                         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                         intent.addCategory(Intent.CATEGORY_OPENABLE);
                         intent.setType("image/jpeg");
-                        startActivityForResult(intent, GALLERY_KITKAT_INTENT_CALLED);
-                    }
-                    //startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.uploadPicture)), GALLERY);
+                        startActivityForResult(intent, GALLERY);
+
+
             }
 
 
@@ -558,14 +553,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if (requestCode == GALLERY && resultCode != 0) {
             mImageUri = data.getData();
             try {
-                if (requestCode == GALLERY_KITKAT_INTENT_CALLED) {
 
-                    final int takeFlags = data.getFlags()
-                            & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    // Check for the freshest data.
-                    getActivity().getContentResolver().takePersistableUriPermission(mImageUri, takeFlags);
-                }
                 ImageItem = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
                 String pathsegment[] = mImageUri.getLastPathSegment().split(":");
                 ImageId = pathsegment[1];

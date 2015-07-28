@@ -33,13 +33,21 @@
             android:text="Get single Shopping List"/>
 
 
-            <Button
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button_createShoppingList"
             android:text="Create Shopping List"/>
 
+
         <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_deleteShoppingList"
+            android:text="Delete Shopping List"/>
+
+
+            <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button_createShoppingListItem"

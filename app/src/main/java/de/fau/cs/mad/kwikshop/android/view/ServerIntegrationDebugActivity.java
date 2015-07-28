@@ -120,6 +120,9 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                     public void execute(String parameter) {
 
 
+                        privateBus.post("Getting shopping list...");
+
+
                         final int listId;
 
                         try{
@@ -199,6 +202,8 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                     public void execute(String parameter) {
 
 
+                        privateBus.post("Creating item in shopping list..");
+
                         final int listId;
 
                         try{
@@ -242,6 +247,57 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
     }
+
+    @OnClick(R.id.button_deleteShoppingList)
+    void deleteShoppingList()
+    {
+        viewLauncher.showTextInputDialog("Shopping List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Deleting shopping list...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+
+                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    client.deleteListSynchronously(listId);
+
+                                    privateBus.post("OK");
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+    }
+
 
     public void onEventMainThread(String value) {
         textView_Result.setText(value);

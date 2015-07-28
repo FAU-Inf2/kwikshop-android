@@ -84,6 +84,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
     @OnClick(R.id.button_getShoppingLists)
+    @SuppressWarnings("unused")
     void getShoppingLists() {
 
         new AsyncTask<Void, Void, Void>() {
@@ -112,6 +113,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
     }
 
     @OnClick(R.id.button_getShoppingList)
+    @SuppressWarnings("unused")
     void getShoppingList() {
 
         viewLauncher.showTextInputDialog("Shopping List id", "",
@@ -164,6 +166,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
     }
 
     @OnClick(R.id.button_createShoppingList)
+    @SuppressWarnings("unused")
     void createShoppingList() {
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -193,6 +196,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
     }
 
     @OnClick(R.id.button_createShoppingListItem)
+    @SuppressWarnings("unused")
     void createShoppingListItem() {
 
 
@@ -249,13 +253,13 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
     }
 
     @OnClick(R.id.button_deleteShoppingList)
+    @SuppressWarnings("unused")
     void deleteShoppingList()
     {
         viewLauncher.showTextInputDialog("Shopping List id", "",
                 new Command<String>() {
                     @Override
                     public void execute(String parameter) {
-
 
                         privateBus.post("Deleting shopping list...");
 
@@ -298,6 +302,202 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                 NullCommand.StringInstance);
     }
 
+    @OnClick(R.id.button_editShoppingList)
+    @SuppressWarnings("unused")
+    void editShoppingList() {
+        viewLauncher.showTextInputDialog("Shopping List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+                        privateBus.post("Editing shopping list...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+
+                                    ShoppingListServer list = client.getListSynchronously(Integer.toString(listId));
+                                    list.setName(list.getName()  + "_edited");
+                                    list.setLastModifiedDate(new Date());
+
+                                    list = client.updateListSynchronously(listId, list, false);
+
+                                    privateBus.post(mapper.writeValueAsString(list));
+
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+    }
+
+    @OnClick(R.id.button_getShoppingListItem)
+    @SuppressWarnings("unused")
+    void getShoppingListItem() {
+
+        viewLauncher.showTextInputDialog("Shopping List Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting shopping list item...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        viewLauncher.showTextInputDialog("Item Id", "",
+                                new Command<String>() {
+                                    @Override
+                                    public void execute(String parameter) {
+
+
+                                        final int itemId;
+                                        try{
+                                            itemId = Integer.parseInt(parameter);
+                                        } catch (Exception e) {
+                                            privateBus.post(getStackTrace(e));
+                                            return;
+                                        }
+
+
+                                        new AsyncTask<Void, Void, Void>() {
+
+
+                                            @Override
+                                            protected Void doInBackground(Void... voids) {
+
+                                                try {
+                                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                                    Item item = client.getListItemSynchronously(listId, itemId);
+
+                                                    privateBus.post(mapper.writeValueAsString(item));
+
+                                                } catch (Exception e) {
+                                                    privateBus.post(getStackTrace(e));
+                                                }
+
+                                                return null;
+                                            }
+                                        }.execute();
+
+
+
+                                    }
+                                },
+                                NullCommand.StringInstance);
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+    }
+
+    @OnClick(R.id.button_editShoppingListItem)
+    @SuppressWarnings("unused")
+    void editShoppingListItem() {
+
+        viewLauncher.showTextInputDialog("Shopping List Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting shopping list item...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        viewLauncher.showTextInputDialog("Item Id", "",
+                                new Command<String>() {
+                                    @Override
+                                    public void execute(String parameter) {
+
+
+                                        final int itemId;
+                                        try{
+                                            itemId = Integer.parseInt(parameter);
+                                        } catch (Exception e) {
+                                            privateBus.post(getStackTrace(e));
+                                            return;
+                                        }
+
+
+                                        new AsyncTask<Void, Void, Void>() {
+
+
+                                            @Override
+                                            protected Void doInBackground(Void... voids) {
+
+                                                try {
+                                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                                    Item item = client.getListItemSynchronously(listId, itemId);
+                                                    item.setName(item.getName() + "_edited");
+
+                                                    item = client.updateItemSynchronously(listId, itemId, item);
+
+                                                    privateBus.post(mapper.writeValueAsString(item));
+
+                                                } catch (Exception e) {
+                                                    privateBus.post(getStackTrace(e));
+                                                }
+
+                                                return null;
+                                            }
+                                        }.execute();
+
+
+
+                                    }
+                                },
+                                NullCommand.StringInstance);
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+    }
 
     public void onEventMainThread(String value) {
         textView_Result.setText(value);

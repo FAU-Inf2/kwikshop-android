@@ -26,11 +26,17 @@
             android:id="@+id/button_getShoppingLists"
             android:text="Get Shopping Lists"/>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/button_createShoppingist"
-                android:text="Create Shopping List"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_createShoppingList"
+            android:text="Create Shopping List"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_createShoppingListItem"
+            android:text="Create Shopping List Item"/>
 
 
         </LinearLayout>

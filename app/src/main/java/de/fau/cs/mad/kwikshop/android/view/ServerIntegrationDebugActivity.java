@@ -25,6 +25,10 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.ShoppingListResource;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.greenrobot.event.EventBus;
 
@@ -46,6 +50,8 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
     @Inject
     RestClientFactory clientFactory;
 
+    @Inject
+    ViewLauncher viewLauncher;
 
     public ServerIntegrationDebugActivity() {
 
@@ -105,9 +111,8 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
         }.execute();
     }
 
-    @OnClick(R.id.button_createShoppingist)
-    void createShoppingList()
-    {
+    @OnClick(R.id.button_createShoppingList)
+    void createShoppingList() {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -135,6 +140,59 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
         }.execute();
     }
 
+    @OnClick(R.id.button_createShoppingListItem)
+    void createShoppingListItem() {
+
+
+        viewLauncher.showTextInputDialog("Shopping List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    Item newItem = new Item();
+                                    newItem.setName("New Item on Server");
+                                    newItem.setComment("Sample Comment");
+
+                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    newItem = client.createItemSynchronously(listId, newItem);
+
+                                    privateBus.post(mapper.writeValueAsString(newItem));
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+
+    }
 
     public void onEventMainThread(String value) {
         textView_Result.setText(value);

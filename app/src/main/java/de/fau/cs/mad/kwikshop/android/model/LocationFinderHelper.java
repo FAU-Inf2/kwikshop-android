@@ -86,7 +86,7 @@ public class LocationFinderHelper implements LocationListener {
             if (locationManager != null) {
                 // get last position
                 networkLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if (gpsLocation != null) {
+                if (networkLocation != null) {
                     networkAcc = networkLocation.getAccuracy();
                     networkLat = networkLocation.getLatitude();
                     networkLong = networkLocation.getLongitude();
@@ -101,7 +101,7 @@ public class LocationFinderHelper implements LocationListener {
                 if (locationManager != null) {
                     // get last position
                     gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (networkLocation != null) {
+                    if (gpsLocation != null) {
                         gpsAcc = gpsLocation.getAccuracy();
                         gpsLat = gpsLocation.getLatitude();
                         gpsLong = gpsLocation.getLongitude();
@@ -115,7 +115,7 @@ public class LocationFinderHelper implements LocationListener {
             latitude = networkLat;
             longitude = networkLong;
             location = networkLocation;
-        } else {
+        } else if(networkAcc > gpsAcc){
             accuracy = gpsAcc;
             latitude = gpsLat;
             longitude = gpsLong;
@@ -128,16 +128,12 @@ public class LocationFinderHelper implements LocationListener {
 
     public double getLatitude(){
 
-       return location != null ? location.getLatitude() : 0.0;
+       return location != null ? latitude : 0.0;
     }
 
     public double getLongitude(){
 
-        return location != null ? location.getLongitude() : 0.0;
-    }
-
-    public boolean isThereALastLocation(){
-        return getLatitude() != 0.0 && getLongitude() != 0.0;
+        return location != null ? longitude  : 0.0;
     }
 
     public String getAddressToString() {

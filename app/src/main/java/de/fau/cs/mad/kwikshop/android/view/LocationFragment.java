@@ -140,9 +140,8 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
                 GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
                 try {
-                    places = client.getNearbyPlaces(lastLat, lastLng, 2000, 30, Param.name("types").value("grocery_or_supermarket"));
+                    places = client.getNearbyPlaces(lastLat, lastLng, 5000, 30, Param.name("types").value("grocery_or_supermarket"));
                 } catch (Exception e) {
-                    Log.e(LOG_TAG, "Exception: " + e.getMessage());
                 }
 
                 return null;
@@ -157,14 +156,13 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
         };
 
-        // retrieve last location from gps or mobile internet
-        lastLocation = new LocationFinderHelper(getActivity());
-
         // no last location was found
-        if(!lastLocation.isThereALastLocation()){
+        if(!InternetHelper.checkInternetConnection(getActivity())){
             progressDismiss();
             notificationOfNoConnection();
         } else {
+            // retrieve last location from gps or mobile internet
+            lastLocation = new LocationFinderHelper(getActivity());
             lastLat = lastLocation.getLatitude();
             lastLng = lastLocation.getLongitude();
             address = lastLocation.getAddressToString();
@@ -189,18 +187,10 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
     private void initiateMap(final List<Place> places){
 
-        // no connection to internet
-        if(!InternetHelper.checkInternetConnection(getActivity())){
-            progressDismiss();
-            notificationOfNoConnection();
-            return;
-        }
-
         // set up map
         MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
         this.places = places;
         mapFragment.getMapAsync(this);
-
 
     }
 
@@ -310,12 +300,15 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
         settings.setMapToolbarEnabled(false);
 
 
+        if(places == null){
+            return;
+        }
+
         // display place on the map
         for(Place place : places){
             IconGenerator iconFactory = new IconGenerator(getActivity().getApplicationContext());
             addIcon(iconFactory, place.getName(), new LatLng(place.getLatitude(), place.getLongitude()));
         }
-
 
         // display info box
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {

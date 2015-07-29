@@ -128,8 +128,8 @@ public class KwikShopModule {
     }
 
     @Provides
-    public DisplayHelper provideDisplayHelper(Context context, ResourceProvider resourceProvider) {
-        return new DisplayHelper(context, resourceProvider);
+    public DisplayHelper provideDisplayHelper(ResourceProvider resourceProvider) {
+        return new DisplayHelper(resourceProvider);
     }
 
     @Provides

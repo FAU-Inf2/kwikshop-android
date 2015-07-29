@@ -35,19 +35,19 @@ public class DefaultDataProvider {
 
         if (defaultUnits == null) {
             defaultUnits = new Unit[]{
-                    newUnit(PIECE, R.string.unit_piece, R.string.unit_piece_short),
-                    newUnit("bag", R.string.unit_bag),
-                    newUnit("bottle", R.string.unit_bottle),
-                    newUnit("box", R.string.unit_box),
-                    newUnit("pack", R.string.unit_pack),
-                    newUnit("dozen", R.string.unit_dozen),
-                    newUnit("gram", R.string.unit_gram, R.string.unit_gram_short),
-                    newUnit("kilogram", R.string.unit_kilogram, R.string.unit_kilogram_short),
-                    newUnit("millilitre", R.string.unit_millilitre, R.string.unit_millilitre_short),
-                    newUnit("litre", R.string.unit_litre, R.string.unit_litre_short),
-                    newUnit("cup", R.string.unit_cup),
-                    newUnit("tablespoon", R.string.unit_tablespoon, R.string.unit_tablespoon_short),
-                    newUnit("can", R.string.unit_can)
+                    new Unit(PIECE, ResourceId.Unit_Piece, ResourceId.Unit_short_Piece),
+                    new Unit("bag", ResourceId.Unit_Bag),
+                    new Unit("bottle", ResourceId.Unit_Bottle),
+                    new Unit("box", ResourceId.Unit_Box),
+                    new Unit("pack", ResourceId.Unit_Pack),
+                    new Unit("dozen", ResourceId.Unit_Dozen),
+                    new Unit("gram", ResourceId.Unit_Gram, ResourceId.Unit_short_Gram),
+                    new Unit("kilogram", ResourceId.Unit_Kilogram, ResourceId.Unit_short_Kilogram),
+                    new Unit("millilitre", ResourceId.Unit_Millilitre, ResourceId.Unit_short_Millilitre),
+                    new Unit("litre", ResourceId.Unit_Litre, ResourceId.Unit_short_Litre),
+                    new Unit("cup", ResourceId.Unit_Cup),
+                    new Unit("tablespoon", ResourceId.Unit_Tablespoon, ResourceId.Unit_short_Tablespoon),
+                    new Unit("can", ResourceId.Unit_Can)
             };
         }
 
@@ -85,26 +85,6 @@ public class DefaultDataProvider {
         return defaultGroups;
     }
 
-
-    private Unit newUnit(String name, int displayNameResourceId) {
-        return newUnit(name, displayNameResourceId, -1);
-    }
-
-    private Unit newUnit(String name, int displayNameResourceId, int shortDisplayNameResourceId) {
-
-        String displayNameResourceName = context.getResources().getResourceName(displayNameResourceId);
-
-        String shortDisplayNameResourceName = shortDisplayNameResourceId != -1
-                ? context.getResources().getResourceName(shortDisplayNameResourceId)
-                : null;
-
-        Unit unit = new Unit();
-        unit.setName(name);
-        unit.setDisplayNameResourceName(displayNameResourceName);
-        unit.setShortDisplayNameResourceName(shortDisplayNameResourceName);
-
-        return unit;
-    }
 
 
 

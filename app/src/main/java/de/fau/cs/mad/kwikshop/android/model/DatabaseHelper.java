@@ -42,7 +42,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 28; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 29; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -218,13 +218,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
             //upgrade how resource ids are stored
             // before v28, the name of the Android resource was stored
-            // beginning with v28, the enum ResourceId is used instead
+            // beginning with v28, the enum ResourceId is used instead.
             // this updates the table so it includes a ResourceId
 
             try {
                 groupDao = ListStorageFragment.getDatabaseHelper().getGroupDao();
 
-                StringBuilder queryBuilder = new StringBuilder();
                 groupDao.executeRaw("ALTER TABLE 'group' ADD COLUMN resourceId;");
 
                 GenericRawResults<String[]> rawResults = groupDao.queryRaw("SELECT DISTINCT displayNameResourceName " +
@@ -241,9 +240,56 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 }
 
                 //Sqlite does not seem to support dropping columns, so the column must just stay there...
-                //queryBuilder.append("ALTER TABLE 'group' DROP COLUMN displayNameResourceName;");
+                //groupDao.executeRaw("ALTER TABLE 'group' DROP COLUMN displayNameResourceName;");
 
-//                groupDao.executeRaw(queryBuilder.toString());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        if(oldVersion < 29) {
+
+
+            //upgrade how resource ids are stored
+            // before v29, the name of the Android resource was stored
+            // beginning with v29, the enum ResourceId is used instead.
+            // this updates the table so it includes a ResourceId
+
+            try {
+                unitDao = ListStorageFragment.getDatabaseHelper().getUnitDao();
+
+                unitDao.executeRaw("ALTER TABLE 'unit' ADD COLUMN resourceId;");
+                unitDao.executeRaw("ALTER TABLE 'unit' ADD COLUMN shortNameResourceId;");
+
+                GenericRawResults<String[]> rawResults = unitDao.queryRaw("SELECT DISTINCT displayNameResourceName " +
+                        "FROM 'unit' WHERE displayNameResourceName != '' AND displayNameResourceName IS NOT NULL;");
+                for(String[] row : rawResults) {
+
+                    String statement = String.format(
+                            "UPDATE 'unit' SET resourceId = '%s' WHERE displayNameResourceName = '%s';",
+                            getResourceId(row[0]).toString(),
+                            row[0]);
+
+                    unitDao.executeRaw(statement);
+                }
+
+
+                GenericRawResults<String[]> shortNameRawResults = unitDao.queryRaw("SELECT DISTINCT shortDisplayNameResourceName " +
+                        "FROM 'unit' WHERE shortDisplayNameResourceName != '' AND shortDisplayNameResourceName IS NOT NULL;");
+
+                for(String[] row : shortNameRawResults) {
+
+                    String statement = String.format(
+                            "UPDATE 'unit' SET shortNameResourceId = '%s' WHERE shortDisplayNameResourceName = '%s';",
+                            getResourceId(row[0]).toString(),
+                            row[0]);
+
+                    unitDao.executeRaw(statement);
+                }
+
+                //Sqlite does not seem to support dropping columns, so the two redundant column smust just stay there...
+
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -476,6 +522,26 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_frozenAndConvenience), ResourceId.Group_FrozenAndConvenience);
         migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_tobacco), ResourceId.Group_Tobacco);
         migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_Other), ResourceId.Group_Other);
+
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_piece), ResourceId.Unit_Piece);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_piece_short), ResourceId.Unit_short_Piece);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_bag), ResourceId.Unit_Bag);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_bottle), ResourceId.Unit_Bottle);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_box), ResourceId.Unit_Box);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_pack), ResourceId.Unit_Pack);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_dozen), ResourceId.Unit_Dozen);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_gram), ResourceId.Unit_Gram);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_gram_short), ResourceId.Unit_short_Gram );
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_kilogram), ResourceId.Unit_Kilogram);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_kilogram_short), ResourceId.Unit_short_Kilogram);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_millilitre), ResourceId.Unit_Millilitre);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_millilitre_short), ResourceId.Unit_short_Millilitre);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_litre), ResourceId.Unit_Litre );
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_litre_short), ResourceId.Unit_short_Litre);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_cup), ResourceId.Unit_Cup);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_tablespoon), ResourceId.Unit_Tablespoon);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_tablespoon_short), ResourceId.Unit_short_Tablespoon);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_can), ResourceId.Unit_Can);
 
         resourceMappingInitialized = true;
     }

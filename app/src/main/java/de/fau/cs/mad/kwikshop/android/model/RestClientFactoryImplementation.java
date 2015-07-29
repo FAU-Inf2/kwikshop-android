@@ -26,8 +26,11 @@ import de.fau.cs.mad.kwikshop.android.restclient.RecipeResource;
 import de.fau.cs.mad.kwikshop.android.restclient.ShoppingListResource;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
+import de.fau.cs.mad.kwikshop.common.localization.ResourceId;
 import de.fau.cs.mad.kwikshop.common.serialization.DateDeserializer;
 import de.fau.cs.mad.kwikshop.common.serialization.DateSerializer;
+import de.fau.cs.mad.kwikshop.common.serialization.ResourceIdDeserializer;
+import de.fau.cs.mad.kwikshop.common.serialization.ResourceIdSerializer;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
@@ -114,6 +117,8 @@ public class RestClientFactoryImplementation implements RestClientFactory {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Date.class, new DateDeserializer())
                 .registerTypeAdapter(Date.class, new DateSerializer())
+                .registerTypeAdapter(ResourceId.class, new ResourceIdDeserializer())
+                .registerTypeAdapter(ResourceId.class, new ResourceIdSerializer())
                 .create();
 
         return new RestAdapter.Builder()

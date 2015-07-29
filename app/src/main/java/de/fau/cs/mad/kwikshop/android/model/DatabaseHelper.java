@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.model;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -12,7 +13,10 @@ import android.content.Context;
 import android.util.Log;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.AccountID;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
@@ -23,14 +27,22 @@ import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
+import de.fau.cs.mad.kwikshop.common.localization.ResourceId;
 
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
+    private final Context context;
+
+    //fields containing mapping information required for upgrade of resource ids (version 28)
+    private static boolean resourceMappingInitialized = false;
+    private static final Map<String, ResourceId> migrationResourceMapping = new HashMap<>();
+
+
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 27; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 28; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -64,6 +76,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
     public DatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -196,6 +209,42 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             try {
                 itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
                 itemDao.executeRaw("ALTER TABLE 'location' ADD COLUMN accuracy;");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(oldVersion < 28) {
+
+            //upgrade how resource ids are stored
+            // before v28, the name of the Android resource was stored
+            // beginning with v28, the enum ResourceId is used instead
+            // this updates the table so it includes a ResourceId
+
+            try {
+                groupDao = ListStorageFragment.getDatabaseHelper().getGroupDao();
+
+                StringBuilder queryBuilder = new StringBuilder();
+                groupDao.executeRaw("ALTER TABLE 'group' ADD COLUMN resourceId;");
+
+                GenericRawResults<String[]> rawResults = groupDao.queryRaw("SELECT DISTINCT displayNameResourceName " +
+                        "FROM 'group' WHERE displayNameResourceName != '' AND displayNameResourceName IS NOT NULL;");
+                for(String[] row : rawResults) {
+
+
+                    String statement = String.format(
+                            "UPDATE 'group' SET resourceId = '%s' WHERE displayNameResourceName = '%s';",
+                            getResourceId(row[0]).toString(),
+                            row[0]);
+
+                    groupDao.executeRaw(statement);
+                }
+
+                //Sqlite does not seem to support dropping columns, so the column must just stay there...
+                //queryBuilder.append("ALTER TABLE 'group' DROP COLUMN displayNameResourceName;");
+
+//                groupDao.executeRaw(queryBuilder.toString());
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -385,4 +434,50 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         //itemRepeatDao = null;
         //itemRepeatRunTimeDao = null;
     }
+
+
+    /***
+     * Gets the ResourceId for the specified Android resource name
+     */
+    private ResourceId getResourceId(String androidResourceName) {
+
+        initializeMigrationResourceMapping(this.context);
+
+        if(migrationResourceMapping.containsKey(androidResourceName)) {
+            return migrationResourceMapping.get(androidResourceName);
+        } else {
+            throw new IllegalArgumentException("Unknown resource name: " + androidResourceName);
+        }
+
+    }
+
+    /**
+     * Populates the migrationResourceMapping map
+     */
+    private static synchronized void initializeMigrationResourceMapping(Context context) {
+
+        if(resourceMappingInitialized) {
+            return;
+        }
+
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_CoffeeAndTea), ResourceId.Group_CoffeeAndTea);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_healthAndHygiene), ResourceId.Group_HealthAndHygiene);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_petSupplies), ResourceId.Group_PetSupplies);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_household), ResourceId.Group_Household);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_breakPastries), ResourceId.Group_BreadAndPastries);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_beverages), ResourceId.Group_Beverages);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_sweetsAndSnacks), ResourceId.Group_SweetsAndSnacks);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_babyFoods), ResourceId.Group_BabyFoods);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_pasta), ResourceId.Group_Pasta);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_dairy), ResourceId.Group_Dairy);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_fruitsAndVegetables), ResourceId.Group_FruitsAndVegetables);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_meatAndFish), ResourceId.Group_MeatAndFish);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_ingredientsAndSpices), ResourceId.Group_IngredientsAndSpices);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_frozenAndConvenience), ResourceId.Group_FrozenAndConvenience);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_tobacco), ResourceId.Group_Tobacco);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.group_Other), ResourceId.Group_Other);
+
+        resourceMappingInitialized = true;
+    }
+
 }

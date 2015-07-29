@@ -5,6 +5,7 @@ import android.content.Context;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Unit;
+import de.fau.cs.mad.kwikshop.common.localization.ResourceId;
 
 public class DefaultDataProvider {
 
@@ -62,22 +63,22 @@ public class DefaultDataProvider {
 
         if (defaultGroups == null) {
             defaultGroups = new Group[]{
-                    newGroup("Coffee & Tea", R.string.group_CoffeeAndTea),
-                    newGroup("Health & Hygiene", R.string.group_healthAndHygiene),
-                    newGroup("Pet Supplies", R.string.group_petSupplies),
-                    newGroup("Household", R.string.group_household),
-                    newGroup("Bread and Pastries", R.string.group_breakPastries),
-                    newGroup("Beverages", R.string.group_beverages),
-                    newGroup("Sweets & Snacks", R.string.group_sweetsAndSnacks),
-                    newGroup("Baby Foods", R.string.group_babyFoods),
-                    newGroup("Pasta", R.string.group_pasta),
-                    newGroup("Milk & Cheese", R.string.group_dairy),
-                    newGroup("Fruits & Vegetables", R.string.group_fruitsAndVegetables),
-                    newGroup("Meat & Fish", R.string.group_meatAndFish),
-                    newGroup("Ingredients & Spices", R.string.group_ingredientsAndSpices),
-                    newGroup("Frozen & Convenience", R.string.group_frozenAndConvenience),
-                    newGroup("Tobacco", R.string.group_tobacco),
-                    newGroup(OTHER, R.string.group_Other)
+                    new Group("Coffee & Tea", ResourceId.Group_CoffeeAndTea),
+                    new Group("Health & Hygiene", ResourceId.Group_HealthAndHygiene),
+                    new Group("Pet Supplies", ResourceId.Group_PetSupplies),
+                    new Group("Household", ResourceId.Group_Household),
+                    new Group("Bread and Pastries", ResourceId.Group_BreadAndPastries),
+                    new Group("Beverages", ResourceId.Group_Beverages),
+                    new Group("Sweets & Snacks", ResourceId.Group_SweetsAndSnacks),
+                    new Group("Baby Foods", ResourceId.Group_BabyFoods),
+                    new Group("Pasta", ResourceId.Group_Pasta),
+                    new Group("Milk & Cheese", ResourceId.Group_Dairy),
+                    new Group("Fruits & Vegetables", ResourceId.Group_FruitsAndVegetables),
+                    new Group("Meat & Fish", ResourceId.Group_MeatAndFish),
+                    new Group("Ingredients & Spices", ResourceId.Group_IngredientsAndSpices),
+                    new Group("Frozen & Convenience", ResourceId.Group_FrozenAndConvenience),
+                    new Group("Tobacco", ResourceId.Group_Tobacco),
+                    new Group(OTHER, ResourceId.Group_Other)
             };
         }
 
@@ -105,14 +106,6 @@ public class DefaultDataProvider {
         return unit;
     }
 
-    private Group newGroup(String name, int displayNameResourceId) {
 
-        String displayNameResourceName = context.getResources().getResourceName(displayNameResourceId);
-
-        Group g = new Group();
-        g.setName(name);
-        g.setDisplayNameResourceName(displayNameResourceName);
-        return g;
-    }
 
 }

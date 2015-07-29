@@ -80,6 +80,69 @@
                 android:layout_height="wrap_content"
                 android:text="Delete Shopping List Item" />
 
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+
+            <Button
+                android:id="@+id/button_getRecipes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Recipes" />
+
+            <Button
+                android:id="@+id/button_getRecipe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get single Recipe" />
+
+
+            <Button
+                android:id="@+id/button_createRecipe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Recipe" />
+
+            <Button
+                android:id="@+id/button_editRecipe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Recipe" />
+
+
+            <Button
+                android:id="@+id/button_deleteRecipe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete Recipe" />
+
+
+            <Button
+                android:id="@+id/button_createRecipeItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Recipe Item" />
+
+            <Button
+                android:id="@+id/button_getRecipeItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Recipe Item" />
+
+            <Button
+                android:id="@+id/button_editRecipeItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Recipe Item" />
+
+            <Button
+                android:id="@+id/button_deleteRecipeItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete Recipe Item" />
+
         </LinearLayout>
 
     </ScrollView>

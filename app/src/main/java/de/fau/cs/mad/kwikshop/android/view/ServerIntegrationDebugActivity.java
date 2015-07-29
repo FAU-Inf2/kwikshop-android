@@ -150,7 +150,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                 try {
 
                                     ShoppingListResource client = clientFactory.getShoppingListClient();
-                                    ShoppingListServer list = client.getListSynchronously(Integer.toString(listId));
+                                    ShoppingListServer list = client.getListSynchronously(listId);
 
                                     privateBus.post(mapper.writeValueAsString(list));
 
@@ -338,7 +338,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                     ShoppingListResource client = clientFactory.getShoppingListClient();
 
-                                    ShoppingListServer list = client.getListSynchronously(Integer.toString(listId));
+                                    ShoppingListServer list = client.getListSynchronously(listId);
                                     list.setName(list.getName()  + "_edited");
                                     list.setLastModifiedDate(new Date());
 

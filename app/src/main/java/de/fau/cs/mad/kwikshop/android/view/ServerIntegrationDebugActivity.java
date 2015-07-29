@@ -32,6 +32,9 @@ import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.greenrobot.event.EventBus;
 
+/*
+    Quick & Dirty test UI for interaction with kwikshop-server
+ */
 public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
@@ -477,6 +480,77 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                                     item = client.updateItemSynchronously(listId, itemId, item);
 
                                                     privateBus.post(mapper.writeValueAsString(item));
+
+                                                } catch (Exception e) {
+                                                    privateBus.post(getStackTrace(e));
+                                                }
+
+                                                return null;
+                                            }
+                                        }.execute();
+
+
+
+                                    }
+                                },
+                                NullCommand.StringInstance);
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+    }
+
+
+    @OnClick(R.id.button_deleteShoppingListItem)
+    @SuppressWarnings("unused")
+    void deleteShoppingListItem() {
+
+        viewLauncher.showTextInputDialog("Shopping List Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Deleting shopping list item...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        viewLauncher.showTextInputDialog("Item Id", "",
+                                new Command<String>() {
+                                    @Override
+                                    public void execute(String parameter) {
+
+
+                                        final int itemId;
+                                        try{
+                                            itemId = Integer.parseInt(parameter);
+                                        } catch (Exception e) {
+                                            privateBus.post(getStackTrace(e));
+                                            return;
+                                        }
+
+
+                                        new AsyncTask<Void, Void, Void>() {
+
+
+                                            @Override
+                                            protected Void doInBackground(Void... voids) {
+
+                                                try {
+                                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                                    client.deleteListItemSynchronously(listId, itemId);
+
+                                                    privateBus.post("OK.");
 
                                                 } catch (Exception e) {
                                                     privateBus.post(getStackTrace(e));

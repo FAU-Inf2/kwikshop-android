@@ -106,6 +106,7 @@ public class RestClientFactoryImplementation implements RestClientFactory {
             });
 
         } catch(Exception e) {
+            //TODO: throw appropriate exception instead of returning null
             return null;
         }
 
@@ -126,7 +127,7 @@ public class RestClientFactoryImplementation implements RestClientFactory {
 
     private String getApiEndPoint() {
         return SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT,
-                resourceProvider.getString(R.string.API_PROTOCOL) +
+                        resourceProvider.getString(R.string.API_PROTOCOL) +
                         resourceProvider.getString(R.string.API_HOST) +
                         ":" + resourceProvider.getString(R.string.API_PORT),
                 context);

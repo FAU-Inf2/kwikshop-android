@@ -313,6 +313,19 @@
                     android:gravity="center"
                     android:layout_centerInParent="true"
                     android:layout_margin="1dp"/>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_remove"
+                    android:src="@drawable/ic_clear_black_24dp"
+                    android:background="@android:color/transparent"
+                    android:paddingRight="30dp"
+                    android:paddingBottom="20dp"
+                    android:paddingTop="20dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignLeft="@+id/itemImageView"
+                    android:layout_marginLeft="37dp" />
             </RelativeLayout>
 
         </LinearLayout>

@@ -187,15 +187,14 @@ public class ListStorageFragment extends Fragment {
         if(m_RecipeStorage.getAllLists().size() == 0){
 
 
-            //I couldn't find a better way
-            //see defaultDataProvider for order
-            Unit gram = m_UnitStorage.getItems().get(6);
-            Unit cups = m_UnitStorage.getItems().get(10);
-            Unit tbsp = m_UnitStorage.getItems().get(11);
-            Unit cans = m_UnitStorage.getItems().get(12);
-            Unit piece = m_UnitStorage.getItems().get(0);
-            Group meat = m_GroupStorage.getItems().get(11);
-            Group vegetable = m_GroupStorage.getItems().get(10);
+            Unit gram = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.GRAM);
+            Unit cups = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.CUP);
+            Unit tbsp = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.TABLESPOON);
+            Unit cans = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.CAN);
+            Unit piece = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.PIECE);
+
+            Group meat = m_GroupStorage.getByName(DefaultDataProvider.GroupNames.MEAT_AND_FISH);
+            Group vegetable = m_GroupStorage.getByName(DefaultDataProvider.GroupNames.FRUITS_AND_VEGETABLES);
 
             int id = m_RecipeStorage.createList();
             Recipe recipe1 = m_RecipeStorage.loadList(id);

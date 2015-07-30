@@ -67,4 +67,11 @@ public class SimpleStorageBase<T> implements SimpleStorage<T> {
         return null;
     }
 
+    @Override
+    public T getByName(String name) {
+        //override in sub-classes if necessary
+        throw new UnsupportedOperationException();
+    }
+
+
 }

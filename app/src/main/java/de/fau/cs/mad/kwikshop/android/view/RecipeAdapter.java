@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -74,6 +75,8 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
+
+        viewHolder.divider_table.setVisibility(View.GONE);
 
         Item item = items.get(position);
 
@@ -186,6 +189,9 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
         }
+
+        @InjectView(R.id.divider_table)
+        TableRow divider_table;
 
         @InjectView(R.id.list_row_textView_Main)
         TextView textView_RecipeName;

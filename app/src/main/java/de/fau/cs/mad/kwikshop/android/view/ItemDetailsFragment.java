@@ -300,7 +300,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 getListManager().addListItem(listId, item);
             }
         } else {
-            getListManager().saveListItem(listId, item);
+            if(itemMerger.mergeItem(listId, item)){
+                getListManager().deleteItem(listId, item.getId());
+            }else {
+                getListManager().saveListItem(listId, item);
+            }
         }
 
 

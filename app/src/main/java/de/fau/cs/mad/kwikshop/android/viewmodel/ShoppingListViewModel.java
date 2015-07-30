@@ -24,6 +24,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
+import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import se.walkercrou.places.GooglePlaces;
@@ -298,7 +299,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             item.setBought(!item.isBought());
 
             if (item.isBought()) {
-                if (item.isRegularlyRepeatItem() && item.isRemindFromNextPurchaseOn() && item.getLastBought() == null) {
+                if (item.getRepeatType() == RepeatType.Schedule && item.isRemindFromNextPurchaseOn() && item.getLastBought() == null) {
                     Calendar now = Calendar.getInstance();
                     item.setLastBought(now.getTime());
                     RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getInstance();

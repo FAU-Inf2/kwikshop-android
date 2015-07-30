@@ -25,6 +25,7 @@ import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.localization.ResourceId;
@@ -42,7 +43,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 29; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 30; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -295,6 +296,21 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 e.printStackTrace();
             }
 
+        }
+
+        if(oldVersion < 30) {
+            try {
+
+                itemDao =  ListStorageFragment.getDatabaseHelper().getItemDao();
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN repeatType;");
+
+                String template = "UPDATE 'item' SET repeatType = '%s' WHERE regularlyRepeatItem = %s;";
+                itemDao.executeRaw(String.format(template, RepeatType.None, 0));
+                itemDao.executeRaw(String.format(template, RepeatType.Schedule, 1));
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
 

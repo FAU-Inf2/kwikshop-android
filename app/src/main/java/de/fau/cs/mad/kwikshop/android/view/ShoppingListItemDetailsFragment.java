@@ -19,7 +19,10 @@ import java.util.Calendar;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
@@ -55,8 +58,20 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
     @InjectView(R.id.repeat_fromNextPurchase_radioButton)
     RadioButton repeat_fromNextPurchase_radioButton;
 
+    @InjectView(R.id.repeat_radioGroup_repeatType)
+    View repeat_radioGroup_repeatType;
 
+    @InjectView(R.id.repeat_row_scheduleSelection)
+    View repeat_row_scheduleSelection;
 
+    @InjectView(R.id.repeat_radioGroup_scheduleStart)
+    View repeat_radioGroup_scheduleStart;
+
+    @InjectView(R.id.repeat_radioButton_repeatType_schedule)
+    RadioButton repeat_radioButton_repeatType_schedule;
+
+    @InjectView(R.id.repeat_radioButton_repeatType_listCreation)
+    RadioButton repeat_radioButton_repeatType_listCreation;
 
     @Inject
     RegularlyRepeatHelper repeatHelper;
@@ -114,30 +129,6 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
         super.setupUI();
 
 
-        if (!isNewItem) {
-            boolean repeatItem = item.isRegularlyRepeatItem();
-            repeat_checkbox.setChecked(repeatItem);
-            if (repeatItem) {
-                TimePeriodsEnum timePeriod = item.getPeriodType();
-                int spinnerPos = 0;
-                switch (timePeriod) {
-                    case DAYS:
-                        spinnerPos = 0;
-                        break;
-                    case WEEKS:
-                        spinnerPos = 1;
-                        break;
-                    case MONTHS:
-                        spinnerPos = 2;
-                        break;
-                }
-                repeat_spinner.setSelection(spinnerPos);
-                int numberPickerVal = item.getSelectedRepeatTime();
-                repeat_numberPicker.setValue(numberPickerVal);
-                repeat_fromNextPurchase_radioButton.setChecked(item.isRemindFromNextPurchaseOn());
-            }
-        }
-
 
         repeat_numberPicker.setMinValue(1);
         repeat_numberPicker.setMaxValue(10);
@@ -150,6 +141,51 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
         ArrayAdapter<String> repeat_spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, repeat_spinner_entries);
         repeat_spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         repeat_spinner.setAdapter(repeat_spinnerAdapter);
+
+
+
+        if (!isNewItem) {
+
+            switch (item.getRepeatType()) {
+
+                case None:
+                    repeat_checkbox.setChecked(false);
+                    repeat_radioButton_repeatType_listCreation.setChecked(true);
+
+                    break;
+
+                case Schedule:
+                    repeat_checkbox.setChecked(true);
+                    repeat_radioButton_repeatType_schedule.setChecked(true);
+
+                    TimePeriodsEnum timePeriod = item.getPeriodType();
+                    int spinnerPos = 0;
+                    switch (timePeriod) {
+                        case DAYS:
+                            spinnerPos = 0;
+                            break;
+                        case WEEKS:
+                            spinnerPos = 1;
+                            break;
+                        case MONTHS:
+                            spinnerPos = 2;
+                            break;
+                    }
+                    repeat_spinner.setSelection(spinnerPos);
+                    int numberPickerVal = item.getSelectedRepeatTime();
+                    repeat_numberPicker.setValue(numberPickerVal);
+                    repeat_fromNextPurchase_radioButton.setChecked(item.isRemindFromNextPurchaseOn());
+                    break;
+
+                case ListCreation:
+                    repeat_checkbox.setChecked(true);
+
+            }
+        }
+
+        onRepeatCheckBoxCheckedChanged();
+        onRepeatTypeSelectionChanged();
+
 
     }
 
@@ -168,7 +204,15 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
         additionalToastText = "";
 
         if (repeat_checkbox.isChecked()) {
-            item.setRegularlyRepeatItem(true);
+
+            if(repeat_radioButton_repeatType_schedule.isChecked()) {
+                item.setRepeatType(RepeatType.Schedule);
+            } else if(repeat_radioButton_repeatType_listCreation.isChecked()) {
+                item.setRepeatType(RepeatType.ListCreation);
+            } else {
+                //this case should not happen
+            }
+
             int repeatSpinnerPos = repeat_spinner.getSelectedItemPosition();
             switch (repeatSpinnerPos) {
                 case 0:
@@ -185,6 +229,7 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
             }
             item.setSelectedRepeatTime(repeat_numberPicker.getValue());
             item.setRemindFromNowOn(repeat_fromNow_radioButton.isChecked());
+
 
             if (repeat_fromNow_radioButton.isChecked()) {
                 Calendar remindDate = Calendar.getInstance();
@@ -213,8 +258,8 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
             repeatHelper.offerRepeatData(item);
 
         } else { // repeat_checkbox is not checked
-            boolean wasRegularRepeat = item.isRegularlyRepeatItem();
-            item.setRegularlyRepeatItem(false);
+            boolean wasRegularRepeat = item.getRepeatType() != RepeatType.None;
+            item.setRepeatType(RepeatType.None);
             if (wasRegularRepeat) { //repeat_checkbox was checked before
                 item.setRemindAtDate(null);
                 repeatHelper.delete(item);
@@ -222,6 +267,34 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
             }
         }
 
+    }
+
+
+    @OnCheckedChanged(R.id.repeat_checkBox)
+    @SuppressWarnings("unused")
+    void onRepeatCheckBoxCheckedChanged() {
+
+        int visibility = repeat_checkbox.isChecked()
+                ? View.VISIBLE
+                : View.GONE;
+
+        repeat_radioGroup_repeatType.setVisibility(visibility);
+        repeat_row_scheduleSelection.setVisibility(visibility);
+        repeat_radioGroup_scheduleStart.setVisibility(visibility);
+
+    }
+
+
+    @OnClick({R.id.repeat_radioButton_repeatType_listCreation, R.id.repeat_radioButton_repeatType_schedule})
+    @SuppressWarnings("unused")
+    void onRepeatTypeSelectionChanged() {
+
+        int scheduleControlsVisibility = repeat_radioButton_repeatType_schedule.isChecked()
+                ? View.VISIBLE
+                : View.GONE;
+
+        repeat_row_scheduleSelection.setVisibility(scheduleControlsVisibility);
+        repeat_radioGroup_scheduleStart.setVisibility(scheduleControlsVisibility);
     }
 
 }

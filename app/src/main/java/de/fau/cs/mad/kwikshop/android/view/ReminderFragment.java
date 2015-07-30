@@ -25,6 +25,7 @@ import butterknife.InjectView;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
@@ -202,7 +203,7 @@ public class ReminderFragment extends Fragment {
     private void deleteReminder() {
         item.setRemindAtDate(null);
         item.setLastBought(null);
-        item.setRegularlyRepeatItem(false);
+        item.setRepeatType(RepeatType.None);
 
         saveInDatabase();
 

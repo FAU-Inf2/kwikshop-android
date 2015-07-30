@@ -15,6 +15,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
+import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.greenrobot.event.EventBus;
 
 public class RegularlyRepeatHelper {
@@ -51,7 +52,7 @@ public class RegularlyRepeatHelper {
                 }
             });
             for (Item item : items) {
-                if(item.isRegularlyRepeatItem()/* && item.getRemindAtDate() != null*/) {
+                if(item.getRepeatType() == RepeatType.Schedule/* && item.getRemindAtDate() != null*/) {
                     repeatList.add(item);
                 }
             }

@@ -383,8 +383,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
                         } else {
                             newItem.setGroup(group);
                         }
-
-                        listManager.addListItem(listId, newItem);
+                        if(!itemMerger.mergeItem(listId, newItem))
+                            listManager.addListItem(listId, newItem);
 
                         autoCompletionHelper.offerName(newItem.getName());
                     }

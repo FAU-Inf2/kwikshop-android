@@ -22,7 +22,7 @@ public class ItemMerger<TList extends DomainListObject> {
         DomainListObject list = listManager.getList(listId);
         for(Item items : list.getItems()){
             //merges if name, brand, comment, unit and group are the same
-            if(items.getName().equals(item.getName()) && items.getBrand().equals(item.getBrand())
+            if(!items.equals(item) && items.getName().equals(item.getName()) && items.getBrand().equals(item.getBrand())
                     && items.getComment().equals(item.getComment()) &&
                     ((items.getName() != null && items.getUnit().equals(item.getUnit())) || items.getUnit() == item.getUnit()) &&
                     ((items.getGroup() != null && items.getGroup().equals(item.getGroup())) || items.getGroup() == item.getGroup())){

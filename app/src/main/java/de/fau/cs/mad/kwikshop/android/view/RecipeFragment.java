@@ -69,9 +69,6 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
     @InjectView(R.id.button_quickAdd)
     View button_QuickAdd;
 
-    @InjectView(R.id.recipe_scrollview)
-    ScrollView scrollView;
-
     @InjectView(R.id.micButton)
     ImageButton micButton;
 
@@ -134,7 +131,6 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
                     public boolean onItemLongClick(final AdapterView<?> parent, final View view,
                                                    final int position, final long id) {
                         viewModel.getItems().disableEvents();
-                        scrollView.requestDisallowInterceptTouchEvent(true);
                         recipeListView.startDragging(position);
                         //sets value of the Spinner to the first entry, in this case Manual
                         return true;
@@ -154,6 +150,14 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
 
         new ButtonBinding(floatingActionButton, viewModel.getAddItemCommand(), false);
         new ButtonBinding(button_QuickAdd, viewModel.getQuickAddCommand());
+
+        button_QuickAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.getQuickAddCommand().execute(null);
+                recipeListView.setSelection(viewModel.getItems().size());
+            }
+        });
 
         //TODO: quick add long click
 

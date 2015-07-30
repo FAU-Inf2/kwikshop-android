@@ -31,20 +31,16 @@ import de.fau.cs.mad.kwikshop.android.util.TopExceptionHandler;
 public class BaseActivity extends ActionBarActivity {
 
 
-    public static final Object errorReportingLock = new Object();
-    public static boolean isErrorReportingInitialized = false;
 
     public static FrameLayout frameLayout;
     public static boolean refreshed = false;
-    public static Menu overflow_menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
 
-
-        initializeErrorReporting();
 
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, this)){
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -165,32 +161,12 @@ public class BaseActivity extends ActionBarActivity {
 
 
         // Activity must be restarted to set saved locale
-        Intent refresh = new Intent(this, ListOfShoppingListsActivity.class);
+        Intent refresh = new Intent(this, getClass());
         finish();
         startActivity(refresh);
     }
 
 
-    public void initializeErrorReporting() {
 
-        if (!refreshed) {
-            return;
-        }
-
-        synchronized (errorReportingLock) {
-
-            if(isErrorReportingInitialized) {
-                return;
-            }
-
-            // register the TopExceptionHandler
-            Thread.setDefaultUncaughtExceptionHandler(new TopExceptionHandler(this));
-            StackTraceReporter stackTraceReporter = ObjectGraph.create(new KwikShopModule(this)).get(StackTraceReporter.class);
-            stackTraceReporter.reportStackTraceIfAvailable();
-
-            isErrorReportingInitialized = true;
-        }
-
-    }
 
 }

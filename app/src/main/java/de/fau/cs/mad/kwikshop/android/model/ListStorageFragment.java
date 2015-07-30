@@ -193,7 +193,7 @@ public class ListStorageFragment extends Fragment {
             Unit cups = m_UnitStorage.getItems().get(10);
             Unit tbsp = m_UnitStorage.getItems().get(11);
             Unit cans = m_UnitStorage.getItems().get(12);
-
+            Unit piece = m_UnitStorage.getItems().get(0);
             Group meat = m_GroupStorage.getItems().get(11);
             Group vegetable = m_GroupStorage.getItems().get(10);
 
@@ -234,12 +234,14 @@ public class ListStorageFragment extends Fragment {
             Item item3 = new Item();
             item3.setName(context.getString(R.string.recipe_potatoes));
             item3.setAmount(4);
+            item3.setUnit(piece);
             item3.setGroup(vegetable);
             recipe1.addItem(item3);
 
             Item item6 = new Item();
             item6.setName(context.getString(R.string.recipe_onion));
             item6.setAmount(2);
+            item6.setUnit(piece);
             item6.setGroup(vegetable);
             recipe1.addItem(item6);
 
@@ -261,12 +263,14 @@ public class ListStorageFragment extends Fragment {
             Item item8 = new Item();
             item8.setName(context.getString(R.string.recipe_carrot));
             item8.setAmount(3);
+            item8.setUnit(piece);
             item8.setGroup(vegetable);
             recipe2.addItem(item8);
 
             Item item9 = new Item();
             item9.setName(context.getString(R.string.recipe_eggs));
             item9.setAmount(4);
+            item9.setUnit(piece);
             recipe2.addItem(item9);
 
             Item item10 = new Item();

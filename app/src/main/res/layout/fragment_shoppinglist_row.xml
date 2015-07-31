@@ -47,7 +47,8 @@
             android:layout_gravity="right"
             android:gravity="right"
             android:textAlignment="gravity"
-            android:layout_marginRight="20dp">
+            android:layout_marginRight="20dp"
+            android:weightSum="1">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -71,7 +72,8 @@
                 android:layout_marginBottom="3dp"
                 android:layout_marginLeft="10dp"
                 android:textAlignment="textEnd"
-                android:layout_gravity="center_vertical|right" />
+                android:layout_gravity="center_vertical|right"
+                android:layout_weight="0.09" />
         </LinearLayout>
 
     </TableRow>

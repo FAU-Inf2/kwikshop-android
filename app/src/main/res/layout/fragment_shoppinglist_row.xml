@@ -96,14 +96,14 @@
                 android:id="@+id/list_row_textView_Main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
                 android:background="?android:attr/activatedBackgroundIndicator"
                 android:gravity="center_vertical"
                 android:minHeight="?android:attr/listPreferredItemHeightSmall"
                 android:text="Shopping list Name"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/primary_text"/>
+                android:textColor="@color/primary_text"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/checkBox" />
 
             <TextView
                 android:id="@+id/list_row_textView_amount"
@@ -127,6 +127,13 @@
                 android:src="@drawable/ic_item_delete"
                 android:visibility="gone"
                 />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/checkBox"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true" />
 
         </RelativeLayout>
 

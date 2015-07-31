@@ -125,11 +125,9 @@ public class RestClientFactoryImplementation implements RestClientFactory {
     }
 
     private String getApiEndPoint() {
-        return SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT,
-                resourceProvider.getString(R.string.API_PROTOCOL) +
-                        resourceProvider.getString(R.string.API_HOST) +
-                        ":" + resourceProvider.getString(R.string.API_PORT),
-                context);
+        return resourceProvider.getString(R.string.API_PROTOCOL) +
+                SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, resourceProvider.getString(R.string.API_HOST), context) +
+                ":" + resourceProvider.getString(R.string.API_PORT);
     }
 
 }

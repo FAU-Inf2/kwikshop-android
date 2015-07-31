@@ -26,10 +26,24 @@
             android:textColor="@color/text_icons"
             android:singleLine="true"/>
 
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:id="@+id/button"
+            android:background="@drawable/ic_keyboard_arrow_down_white_24dp" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="21dp"
+            android:id="@+id/button2"
+            android:background="@drawable/ic_keyboard_arrow_up_white_24dp" />
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="25dp"
             android:layout_gravity="right"
             android:gravity="right"
             android:textAlignment="gravity"
@@ -96,13 +110,13 @@
                 android:id="@+id/list_row_textView_Main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:background="?android:attr/activatedBackgroundIndicator"
                 android:gravity="center_vertical"
                 android:minHeight="?android:attr/listPreferredItemHeightSmall"
                 android:text="Shopping list Name"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/primary_text"
-                android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/checkBox" />
 
             <TextView

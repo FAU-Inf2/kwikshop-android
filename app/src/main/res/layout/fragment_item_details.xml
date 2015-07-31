@@ -213,6 +213,7 @@
 
             </LinearLayout>
 
+            <!-- Controls for repeating items -->
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" android:visibility="gone"
@@ -232,11 +233,36 @@
                     android:layout_marginLeft="25dp"
                     android:checked="false" />
 
+                <!-- Selection of repeat type (time based / every time a list is created) -->
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/repeat_radioGroup_repeatType"
+                    android:layout_marginLeft="25dp">
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/every_time_i_create_a_list"
+                        android:id="@+id/repeat_radioButton_repeatType_listCreation"
+                        android:checked="true" />
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/on_a_schedule"
+                        android:id="@+id/repeat_radioButton_repeatType_schedule"
+                        android:checked="false" />
+                </RadioGroup>
+
+
+                <!-- Controls for selecting repeat interval -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:weightSum="1"
-                    android:layout_marginLeft="30dp">
+                    android:layout_marginLeft="30dp"
+                    android:id="@+id/repeat_row_scheduleSelection"
+                    >
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -268,6 +294,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:id="@+id/repeat_radioGroup_scheduleStart"
                     android:layout_marginLeft="25dp">
                     <RadioButton
                         android:layout_width="wrap_content"
@@ -313,6 +340,19 @@
                     android:gravity="center"
                     android:layout_centerInParent="true"
                     android:layout_margin="1dp"/>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_remove"
+                    android:src="@drawable/ic_clear_black_24dp"
+                    android:background="@android:color/transparent"
+                    android:paddingRight="30dp"
+                    android:paddingBottom="20dp"
+                    android:paddingTop="20dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignLeft="@+id/itemImageView"
+                    android:layout_marginLeft="37dp" />
             </RelativeLayout>
 
         </LinearLayout>

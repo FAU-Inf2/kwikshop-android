@@ -292,5 +292,7 @@
     <string name="unit_tablespoon">Tablespoons</string>
     <string name="unit_tablespoon_short">tbsp</string>
     <string name="unit_can">cans</string>
+    <string name="every_time_i_create_a_list">Every time I create a list</string>
+    <string name="on_a_schedule">On a schedule</string>
 
 </resources>

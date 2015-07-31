@@ -67,4 +67,10 @@ public class DoubleStorageBase<T> implements SimpleStorage<T> {
         return null;
     }
 
+    @Override
+    public T getByName(String name) {
+        throw new UnsupportedOperationException();
+    }
+
+
 }

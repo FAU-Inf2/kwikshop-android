@@ -2,6 +2,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 import android.accounts.Account;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -99,6 +100,24 @@ public class LoginActivity extends FragmentActivity implements
     @InjectView(R.id.login_logo)
     ImageView login_logo;
 
+
+    public static Intent getIntent(Context context) {
+        return new Intent(context, LoginActivity.class);
+    }
+
+    /**
+     * Determines if the login activity is supposed to be skipped
+     * Also used by ErrorReportingActivity to go directly to the following activity
+     */
+    public static boolean skipActivity(Context context) {
+
+        Context applicationContext = context.getApplicationContext();
+
+        return SessionHandler.isAuthenticated(applicationContext) ||
+               SharedPreferencesHelper.loadInt(SharedPreferencesHelper.SKIP_LOGIN, 0, applicationContext) == 1;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +132,7 @@ public class LoginActivity extends FragmentActivity implements
 
         // If the user is logged in or has skipped the login, go to the main Activity - except if the user opens the Activity from the menu
         if(!force) {
-            if (SessionHandler.isAuthenticated(getApplicationContext()) || SharedPreferencesHelper.loadInt(SharedPreferencesHelper.SKIP_LOGIN, 0, getApplicationContext()) == 1)
+            if (skipActivity(this))
                 exitLoginActivity();
         }
 

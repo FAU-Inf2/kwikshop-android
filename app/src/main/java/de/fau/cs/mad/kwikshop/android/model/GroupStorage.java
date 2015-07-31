@@ -30,4 +30,16 @@ public class GroupStorage extends SimpleStorageBase<Group> {
 
         return super.getDefaultValue();
     }
+
+    @Override
+    public Group getByName(String name) {
+
+        for(Group g : getItems()) {
+            if(g.getName() != null && g.getName().equals(name)) {
+                return  g;
+            }
+        }
+
+        return null;
+    }
 }

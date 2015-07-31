@@ -22,7 +22,6 @@ import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.IoService;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 
@@ -64,7 +63,7 @@ public class StackTraceReporter {
     }
 
 
-    public void reportStackTraceIfAvailable() {
+    public void reportStackTraceIfAvailable(final Callback onCompletedCallback) {
 
         // see if stacktrace file is available
         String line;
@@ -88,6 +87,7 @@ public class StackTraceReporter {
                     resourceProvider.getString(R.string.errorReporting_messaging_dialog_title),
                     resourceProvider.getString(R.string.errorReporting_messaging_dialog_text),
                     resourceProvider.getString(android.R.string.yes),
+                    //send crash report
                     new Command<Void>() {
                         @Override
                         public void execute(Void parameter) {
@@ -98,8 +98,12 @@ public class StackTraceReporter {
                                     resourceProvider.getString(R.string.errorReporting_messaging_subject),
                                     traceFinal + "\n\n");
 
+                            if(onCompletedCallback != null) {
+                                onCompletedCallback.onCompleted();
+                            }
                         }
                     },
+                    // copy crash report to clipboard
                     resourceProvider.getString(R.string.errorReporting_copyToClipboard),
                     new Command<Void>() {
                         @Override
@@ -109,12 +113,36 @@ public class StackTraceReporter {
                                     traceFinal);
 
                             viewLauncher.showToast(R.string.errorReporting_copyToClipboard_toast, Toast.LENGTH_LONG);
+
+                            if(onCompletedCallback != null) {
+                                onCompletedCallback.onCompleted();
+                            }
                         }
                     },
+                    // do nothing (except calling the callback)
                     resourceProvider.getString(android.R.string.no),
-                    NullCommand.VoidInstance);
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            if(onCompletedCallback != null) {
+                                onCompletedCallback.onCompleted();
+                            }
+                        }
+                    });
 
             ioService.deleteFile(TopExceptionHandler.STACKTRACE_FILENAME);
+        } else {
+
+            if(onCompletedCallback != null) {
+                onCompletedCallback.onCompleted();
+            }
+
         }
     }
+
+
+    public interface Callback {
+        void onCompleted();
+    }
+
 }

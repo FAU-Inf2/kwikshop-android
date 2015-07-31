@@ -313,7 +313,7 @@ public class DefaultViewLauncher implements ViewLauncher {
         List<Unit> units;
         adapter.clear();
         //populate unit picker with units from database
-        DisplayHelper displayHelper = new DisplayHelper(activity);
+        DisplayHelper displayHelper = new DisplayHelper(new DefaultResourceProvider(activity));
 
 
         //get units from the database and sort them by name
@@ -343,7 +343,7 @@ public class DefaultViewLauncher implements ViewLauncher {
         List<Group> groups;
         adapter.clear();
         //populate group picker with groups from database
-        DisplayHelper displayHelper = new DisplayHelper(activity);
+        DisplayHelper displayHelper = new DisplayHelper(new DefaultResourceProvider(activity));
 
 
 

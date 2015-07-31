@@ -24,14 +24,20 @@ import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.RestClientFactory;
+import de.fau.cs.mad.kwikshop.android.restclient.RecipeResource;
 import de.fau.cs.mad.kwikshop.android.restclient.ShoppingListResource;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.RecipeServer;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.greenrobot.event.EventBus;
 
+/*
+    Quick & Dirty test UI for interaction with kwikshop-server
+ */
 public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
@@ -144,7 +150,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                 try {
 
                                     ShoppingListResource client = clientFactory.getShoppingListClient();
-                                    ShoppingListServer list = client.getListSynchronously(Integer.toString(listId));
+                                    ShoppingListServer list = client.getListSynchronously(listId);
 
                                     privateBus.post(mapper.writeValueAsString(list));
 
@@ -332,7 +338,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                     ShoppingListResource client = clientFactory.getShoppingListClient();
 
-                                    ShoppingListServer list = client.getListSynchronously(Integer.toString(listId));
+                                    ShoppingListServer list = client.getListSynchronously(listId);
                                     list.setName(list.getName()  + "_edited");
                                     list.setLastModifiedDate(new Date());
 
@@ -477,6 +483,561 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                                     item = client.updateItemSynchronously(listId, itemId, item);
 
                                                     privateBus.post(mapper.writeValueAsString(item));
+
+                                                } catch (Exception e) {
+                                                    privateBus.post(getStackTrace(e));
+                                                }
+
+                                                return null;
+                                            }
+                                        }.execute();
+
+
+
+                                    }
+                                },
+                                NullCommand.StringInstance);
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+    }
+
+    @OnClick(R.id.button_deleteShoppingListItem)
+    @SuppressWarnings("unused")
+    void deleteShoppingListItem() {
+
+        viewLauncher.showTextInputDialog("Shopping List Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Deleting shopping list item...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        viewLauncher.showTextInputDialog("Item Id", "",
+                                new Command<String>() {
+                                    @Override
+                                    public void execute(String parameter) {
+
+
+                                        final int itemId;
+                                        try{
+                                            itemId = Integer.parseInt(parameter);
+                                        } catch (Exception e) {
+                                            privateBus.post(getStackTrace(e));
+                                            return;
+                                        }
+
+
+                                        new AsyncTask<Void, Void, Void>() {
+
+
+                                            @Override
+                                            protected Void doInBackground(Void... voids) {
+
+                                                try {
+                                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                                    client.deleteListItemSynchronously(listId, itemId);
+
+                                                    privateBus.post("OK.");
+
+                                                } catch (Exception e) {
+                                                    privateBus.post(getStackTrace(e));
+                                                }
+
+                                                return null;
+                                            }
+                                        }.execute();
+
+
+
+                                    }
+                                },
+                                NullCommand.StringInstance);
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+    }
+
+    @OnClick(R.id.button_getRecipes)
+    @SuppressWarnings("unused")
+    void getRecipes() {
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+
+                    privateBus.post("Getting Recipes...");
+
+                    RecipeResource client = clientFactory.getRecipeClient();
+
+                    List<RecipeServer> shoppingLists = client.getListSynchronously();
+
+                    String serialized = mapper.writeValueAsString(shoppingLists);
+                    privateBus.post(serialized);
+
+                } catch (Exception e) {
+
+                    privateBus.post(getStackTrace(e));
+                }
+
+                return null;
+            }
+        }.execute();
+    }
+
+    @OnClick(R.id.button_getRecipe)
+    @SuppressWarnings("unused")
+    void getRecipe() {
+
+        viewLauncher.showTextInputDialog("Recipe Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting recipes...");
+
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    RecipeResource client = clientFactory.getRecipeClient();
+                                    RecipeServer list = client.getListSynchronously(listId);
+
+                                    privateBus.post(mapper.writeValueAsString(list));
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+
+    }
+
+    @OnClick(R.id.button_createRecipe)
+    @SuppressWarnings("unused")
+    void createRecipe() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                try{
+
+                    privateBus.post("Creating sample recipe on server...");
+
+                    RecipeServer newList = new RecipeServer();
+                    newList.setName("New Recipe");
+                    newList.setLastModifiedDate(new Date());
+
+                    RecipeResource client = clientFactory.getRecipeClient();
+                    newList = client.createListSynchronously(newList);
+
+                    privateBus.post(mapper.writeValueAsString(newList));
+
+                } catch (Exception e) {
+                    privateBus.post(getStackTrace(e));
+                }
+
+                return null;
+            }
+        }.execute();
+    }
+
+    @OnClick(R.id.button_createRecipeItem)
+    @SuppressWarnings("unused")
+    void createRecipeItem() {
+
+
+        viewLauncher.showTextInputDialog("Recipe List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Creating item in recipe..");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    Item newItem = new Item();
+                                    newItem.setName("New Item on Server");
+                                    newItem.setComment("Sample Comment");
+
+                                    RecipeResource client = clientFactory.getRecipeClient();
+                                    newItem = client.createItemSynchronously(listId, newItem);
+
+                                    privateBus.post(mapper.writeValueAsString(newItem));
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+
+    }
+
+    @OnClick(R.id.button_deleteRecipe)
+    @SuppressWarnings("unused")
+    void deleteRecipe()
+    {
+        viewLauncher.showTextInputDialog("Recipe Id ", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+                        privateBus.post("Deleting recipe...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+
+                                    RecipeResource client = clientFactory.getRecipeClient();
+                                    client.deleteListSynchronously(listId);
+
+                                    privateBus.post("OK");
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+    }
+
+    @OnClick(R.id.button_editRecipe)
+    @SuppressWarnings("unused")
+    void editRecipe() {
+        viewLauncher.showTextInputDialog("Recipe Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+                        privateBus.post("Editing recipe...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    RecipeResource client = clientFactory.getRecipeClient();
+
+                                    RecipeServer list = client.getListSynchronously(listId);
+                                    list.setName(list.getName()  + "_edited");
+                                    list.setLastModifiedDate(new Date());
+
+                                    list = client.updateListSynchronously(listId, list, false);
+
+                                    privateBus.post(mapper.writeValueAsString(list));
+
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+    }
+
+    @OnClick(R.id.button_getRecipeItem)
+    @SuppressWarnings("unused")
+    void getRecipeItem() {
+
+        viewLauncher.showTextInputDialog("Recipe Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting recipe item...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        viewLauncher.showTextInputDialog("Item Id", "",
+                                new Command<String>() {
+                                    @Override
+                                    public void execute(String parameter) {
+
+
+                                        final int itemId;
+                                        try{
+                                            itemId = Integer.parseInt(parameter);
+                                        } catch (Exception e) {
+                                            privateBus.post(getStackTrace(e));
+                                            return;
+                                        }
+
+
+                                        new AsyncTask<Void, Void, Void>() {
+
+
+                                            @Override
+                                            protected Void doInBackground(Void... voids) {
+
+                                                try {
+                                                    RecipeResource client = clientFactory.getRecipeClient();
+                                                    Item item = client.getListItemSynchronously(listId, itemId);
+
+                                                    privateBus.post(mapper.writeValueAsString(item));
+
+                                                } catch (Exception e) {
+                                                    privateBus.post(getStackTrace(e));
+                                                }
+
+                                                return null;
+                                            }
+                                        }.execute();
+
+
+
+                                    }
+                                },
+                                NullCommand.StringInstance);
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+    }
+
+    @OnClick(R.id.button_editRecipeItem)
+    @SuppressWarnings("unused")
+    void editRecipeItem() {
+
+        viewLauncher.showTextInputDialog("Recipe Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting recipe item...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        viewLauncher.showTextInputDialog("Item Id", "",
+                                new Command<String>() {
+                                    @Override
+                                    public void execute(String parameter) {
+
+
+                                        final int itemId;
+                                        try{
+                                            itemId = Integer.parseInt(parameter);
+                                        } catch (Exception e) {
+                                            privateBus.post(getStackTrace(e));
+                                            return;
+                                        }
+
+
+                                        new AsyncTask<Void, Void, Void>() {
+
+
+                                            @Override
+                                            protected Void doInBackground(Void... voids) {
+
+                                                try {
+                                                    RecipeResource client = clientFactory.getRecipeClient();
+                                                    Item item = client.getListItemSynchronously(listId, itemId);
+                                                    item.setName(item.getName() + "_edited");
+
+                                                    item = client.updateItemSynchronously(listId, itemId, item);
+
+                                                    privateBus.post(mapper.writeValueAsString(item));
+
+                                                } catch (Exception e) {
+                                                    privateBus.post(getStackTrace(e));
+                                                }
+
+                                                return null;
+                                            }
+                                        }.execute();
+
+
+
+                                    }
+                                },
+                                NullCommand.StringInstance);
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+    }
+
+    @OnClick(R.id.button_deleteRecipeItem)
+    @SuppressWarnings("unused")
+    void deleteRecipeItem() {
+
+        viewLauncher.showTextInputDialog("Recipe Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Deleting recipe item...");
+
+                        final int listId;
+
+                        try{
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        viewLauncher.showTextInputDialog("Item Id", "",
+                                new Command<String>() {
+                                    @Override
+                                    public void execute(String parameter) {
+
+
+                                        final int itemId;
+                                        try{
+                                            itemId = Integer.parseInt(parameter);
+                                        } catch (Exception e) {
+                                            privateBus.post(getStackTrace(e));
+                                            return;
+                                        }
+
+
+                                        new AsyncTask<Void, Void, Void>() {
+
+
+                                            @Override
+                                            protected Void doInBackground(Void... voids) {
+
+                                                try {
+                                                    RecipeResource client = clientFactory.getRecipeClient();
+                                                    client.deleteListItemSynchronously(listId, itemId);
+
+                                                    privateBus.post("OK.");
 
                                                 } catch (Exception e) {
                                                     privateBus.post(getStackTrace(e));

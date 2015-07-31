@@ -142,6 +142,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @InjectView(R.id.uploadText)
     TextView uploadText;
 
+    @InjectView(R.id.button_remove)
+    ImageView button_remove;
+
     /*@InjectView(R.id.buttonUploadPic)
     ImageView buttonUploadPic;*/
 
@@ -297,7 +300,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 getListManager().addListItem(listId, item);
             }
         } else {
-            getListManager().saveListItem(listId, item);
+            if(itemMerger.mergeItem(listId, item)){
+                getListManager().deleteItem(listId, item.getId());
+            }else {
+                getListManager().saveListItem(listId, item);
+            }
         }
 
 
@@ -421,8 +428,15 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             ImageId = item.getImageItem();
             if (ImageId != null && ImageId != "") {
                 itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
-                if (itemImageView.getDrawable() == null)
-                     uploadText.setText(R.string.uploadPicture);
+                if (itemImageView.getDrawable() == null) {
+                    uploadText.setText(R.string.uploadPicture);
+                    button_remove.setClickable(false);
+                    button_remove.setEnabled(false);
+                }
+                else{
+                    button_remove.setClickable(true);
+                    button_remove.setEnabled(true);
+                }
             }
             else{
                 uploadText.setText(R.string.uploadPicture);
@@ -431,6 +445,15 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         }
         numberPickerCalledWith = numberPicker.getValue();
 
+
+        button_remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemImageView.setImageDrawable(null);
+                uploadText.setText(R.string.uploadPicture);
+            }
+
+        });
 
         //get units from the database and sort them by name
         units = unitStorage.getItems();

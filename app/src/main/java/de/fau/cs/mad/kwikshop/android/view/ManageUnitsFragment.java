@@ -174,10 +174,10 @@ public class ManageUnitsFragment
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         //populate unit picker with units from database
-        DisplayHelper displayHelper = new DisplayHelper(getActivity());
 
         viewModel = objectGraph.get(ShoppingListViewModel.class);
         autoCompletion = objectGraph.get(AutoCompletionHelper.class);
+        DisplayHelper displayHelper = objectGraph.get(DisplayHelper.class);
 
 
 

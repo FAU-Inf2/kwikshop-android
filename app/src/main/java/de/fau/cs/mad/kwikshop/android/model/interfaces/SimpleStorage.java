@@ -17,4 +17,5 @@ public interface SimpleStorage<T>  {
 
     T getDefaultValue();
 
+    T getByName(String name);
 }

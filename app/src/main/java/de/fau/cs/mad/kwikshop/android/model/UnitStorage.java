@@ -30,4 +30,18 @@ public class UnitStorage extends SimpleStorageBase<Unit> {
 
         return super.getDefaultValue();
     }
+
+    @Override
+    public Unit getByName(String name) {
+
+        for(Unit u : getItems()) {
+            if(u.getName() != null && u.getName().equals(name)) {
+                return  u;
+            }
+        }
+
+        return null;
+    }
+
+
 }

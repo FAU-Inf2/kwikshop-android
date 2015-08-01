@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.inject.Inject;
+import javax.ws.rs.NotSupportedException;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
@@ -33,7 +34,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<ShoppingList> {
 
 
-    // fields cannot be moved to base class because Dagger cant handle generics
+    // field cannot be moved to base class because Dagger can't handle generics
     @Inject
     ListManager<ShoppingList> listManager;
 
@@ -211,48 +212,59 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
                 item.setRepeatType(RepeatType.ListCreation);
             } else {
                 //this case should not happen
+                throw new NotSupportedException();
             }
 
-            int repeatSpinnerPos = repeat_spinner.getSelectedItemPosition();
-            switch (repeatSpinnerPos) {
-                case 0:
-                    item.setPeriodType(TimePeriodsEnum.DAYS);
-                    break;
-                case 1:
-                    item.setPeriodType(TimePeriodsEnum.WEEKS);
-                    break;
-                case 2:
-                    item.setPeriodType(TimePeriodsEnum.MONTHS);
-                    break;
-                default:
-                    break;
-            }
-            item.setSelectedRepeatTime(repeat_numberPicker.getValue());
-            item.setRemindFromNowOn(repeat_fromNow_radioButton.isChecked());
+            if(item.getRepeatType() == RepeatType.Schedule) {
 
-
-            if (repeat_fromNow_radioButton.isChecked()) {
-                Calendar remindDate = Calendar.getInstance();
-                switch (item.getPeriodType()) {
-                    case DAYS:
-                        remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime());
+                int repeatSpinnerPos = repeat_spinner.getSelectedItemPosition();
+                switch (repeatSpinnerPos) {
+                    case 0:
+                        item.setPeriodType(TimePeriodsEnum.DAYS);
                         break;
-                    case WEEKS:
-                        remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime() * 7);
+                    case 1:
+                        item.setPeriodType(TimePeriodsEnum.WEEKS);
                         break;
-                    case MONTHS:
-                        remindDate.add(Calendar.MONTH, item.getSelectedRepeatTime());
+                    case 2:
+                        item.setPeriodType(TimePeriodsEnum.MONTHS);
+                        break;
+                    default:
                         break;
                 }
-                item.setRemindAtDate(remindDate.getTime());
+                item.setSelectedRepeatTime(repeat_numberPicker.getValue());
+                item.setRemindFromNowOn(repeat_fromNow_radioButton.isChecked());
 
-                DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.DEFAULT, getResources().getConfiguration().locale);
-                additionalToastText += ". " + getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
+                if (repeat_fromNow_radioButton.isChecked()) {
+                    Calendar remindDate = Calendar.getInstance();
+                    switch (item.getPeriodType()) {
+                        case DAYS:
+                            remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime());
+                            break;
+                        case WEEKS:
+                            remindDate.add(Calendar.DAY_OF_MONTH, item.getSelectedRepeatTime() * 7);
+                            break;
+                        case MONTHS:
+                            remindDate.add(Calendar.MONTH, item.getSelectedRepeatTime());
+                            break;
+                    }
+                    item.setRemindAtDate(remindDate.getTime());
 
-            } else { //repeat from next purchase on
+                    DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.DEFAULT, getResources().getConfiguration().locale);
+                    additionalToastText += ". " + getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
+
+                } else { //repeat from next purchase on
+                    item.setLastBought(null);
+                    item.setRemindAtDate(null);
+                    additionalToastText += ". " + getString(R.string.reminder_nextTimeBought_msg);
+                }
+
+            } else {
+
+                item.setPeriodType(null);
+                item.setSelectedRepeatTime(0);
+                item.setRemindFromNowOn(false);
                 item.setLastBought(null);
                 item.setRemindAtDate(null);
-                additionalToastText += ". " + getString(R.string.reminder_nextTimeBought_msg);
             }
 
             repeatHelper.offerRepeatData(item);

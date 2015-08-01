@@ -25,9 +25,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 
 
-/**
- * TODO: This name is temporary. This adapter is intended to replace existing ShoppingListAdapter once it's finished
- */
+
 public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Item> implements UndoAdapter , ObservableArrayList.Listener<Item> {
 
     private final Context context;

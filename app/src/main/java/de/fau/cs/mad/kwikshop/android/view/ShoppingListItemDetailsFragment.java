@@ -294,6 +294,7 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
         repeat_row_scheduleSelection.setVisibility(visibility);
         repeat_radioGroup_scheduleStart.setVisibility(visibility);
 
+        onRepeatTypeSelectionChanged();
     }
 
 

@@ -185,7 +185,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         this.itemParser = itemParser;
         this.displayHelper = displayHelper;
         this.autoCompletionHelper = autoCompletionHelper;
-        this.itemMerger = new ItemMerger(listManager);
+        this.itemMerger = new ItemMerger<>(listManager);
         this.locationFinderHelper = locationFinderHelper;
     }
 

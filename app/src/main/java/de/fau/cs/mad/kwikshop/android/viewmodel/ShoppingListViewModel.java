@@ -201,7 +201,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     @SuppressWarnings("unused")
     public void onEventMainThread(ItemChangedEvent event) {
 
-        if(event.getListId() == this.listId) {
+        if(event.getListType() == ListType.ShoppingList && event.getListId() == this.listId) {
 
             switch (event.getChangeType()) {
 

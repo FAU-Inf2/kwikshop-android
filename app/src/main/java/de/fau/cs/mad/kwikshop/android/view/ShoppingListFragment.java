@@ -219,8 +219,6 @@ public class ShoppingListFragment
         });
         textView_QuickAdd.setTokenizer(new SpaceTokenizer());
 
-        RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity()); // to make sure it is initialized when needed in ShoppingListViewModel
-
         refreshQuickAddAutoCompletion();
 
         disableFloatingButtonWhileSoftKeyboardIsShown();

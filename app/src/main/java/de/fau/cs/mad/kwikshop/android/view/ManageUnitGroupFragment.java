@@ -35,7 +35,6 @@ import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
-import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
@@ -43,9 +42,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.greenrobot.event.EventBus;
 
-/**
- * Created by Nicolas on 01/07/2015.
- */
+
 public class ManageUnitGroupFragment
         extends Fragment
         implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Unit> {
@@ -251,7 +248,7 @@ public class ManageUnitGroupFragment
                     // If the event is a key-down event on the "enter" button
                     if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                         viewModel.getQuickAddUnitCommand(spinnerArrayAdapter, quickAddUnit).execute(null);
-                       // updateSpinnerList();
+                        // updateSpinnerList();
                         return true;
                     }
                     return false;
@@ -285,9 +282,6 @@ public class ManageUnitGroupFragment
         new ButtonBinding(button_qrunit, viewModel.getQuickRemoveUnitCommand(spinnerArrayAdapter, selectedUnitIndex));
         new ButtonBinding(button_qrgroup, viewModel.getQuickRemoveGroupCommand(groupSpinnerArrayAdapter, selectedGroupIndex));
 
-
-
-        RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity()); // to make sure it is initialized when needed in ShoppingListViewModel
 
         refreshQuickAddAutoCompletion();
 

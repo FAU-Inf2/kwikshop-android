@@ -35,6 +35,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
 
     private final ResourceProvider resourceProvider;
+    private final RegularlyRepeatHelper repeatHelper;
 
     private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
     private ItemSortType itemSortType = ItemSortType.MANUAL;
@@ -58,7 +59,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                                  DisplayHelper displayHelper,
                                  AutoCompletionHelper autoCompletionHelper,
                                  LocationFinderHelper locationFinderHelper,
-                                 ResourceProvider resourceProvider) {
+                                 ResourceProvider resourceProvider,
+                                 RegularlyRepeatHelper repeatHelper) {
 
 
         super(viewLauncher, shoppingListManager, unitStorage, groupStorage, itemParser, displayHelper,
@@ -66,11 +68,16 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
 
         if (resourceProvider == null) {
-            throw new IllegalArgumentException("'resourceProvider' must not be null");
+            throw new ArgumentNullException("resourceProvider");
+        }
+
+        if(repeatHelper == null) {
+            throw new ArgumentNullException("repeatHelper");
         }
 
 
         this.resourceProvider = resourceProvider;
+        this.repeatHelper = repeatHelper;
     }
 
 
@@ -302,7 +309,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 if (item.getRepeatType() == RepeatType.Schedule && item.isRemindFromNextPurchaseOn() && item.getLastBought() == null) {
                     Calendar now = Calendar.getInstance();
                     item.setLastBought(now.getTime());
-                    RegularlyRepeatHelper repeatHelper = RegularlyRepeatHelper.getInstance();
 
                     //save location
 

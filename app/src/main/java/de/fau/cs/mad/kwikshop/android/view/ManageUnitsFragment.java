@@ -285,7 +285,6 @@ public class ManageUnitsFragment
             }
         });
         quickAddGroup.setTokenizer(new SpaceTokenizer());
-        RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity()); // to make sure it is initialized when needed in ShoppingListViewModel
 
         refreshQuickAddAutoCompletion();
 

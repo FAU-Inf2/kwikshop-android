@@ -5,11 +5,13 @@ import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
+import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.model.RestClientFactoryImplementation;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
+import de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity;
 import de.fau.cs.mad.kwikshop.android.view.ServerIntegrationDebugActivity;
 import de.fau.cs.mad.kwikshop.android.view.SettingFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ClipboardHelper;
@@ -61,7 +63,8 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         ReminderFragment.class,
         StackTraceReporter.class,
         SettingFragment.class,
-        ServerIntegrationDebugActivity.class
+        ServerIntegrationDebugActivity.class,
+        RegularlyRepeatHelper.class
 },
         library = true)
 @SuppressWarnings("unused")
@@ -69,6 +72,7 @@ public class KwikShopModule {
 
     private static ListManager<ShoppingList> shoppingListManager;
     private static ListManager<Recipe> recipeManager;
+    private static RegularlyRepeatHelper regularlyRepeatHelper;
     private final Activity currentActivity;
 
     public KwikShopModule(Activity currentActivity) {
@@ -159,8 +163,12 @@ public class KwikShopModule {
     }
 
     @Provides
-    public RegularlyRepeatHelper provideRegularlyRepeatHelper(Context context) {
-        return RegularlyRepeatHelper.getRegularlyRepeatHelper(context);
+    public RegularlyRepeatHelper provideRegularlyRepeatHelper(DatabaseHelper databaseHelper) {
+
+        if(regularlyRepeatHelper == null) {
+            regularlyRepeatHelper = new RegularlyRepeatHelper(databaseHelper);
+        }
+        return regularlyRepeatHelper;
     }
 
     @Provides
@@ -176,5 +184,10 @@ public class KwikShopModule {
     @Provides
     public RestClientFactory provideRestClientFactory(Context context, ResourceProvider resourceProvider) {
         return new RestClientFactoryImplementation(context, resourceProvider);
+    }
+
+    @Provides
+    public DatabaseHelper provideDatabaseHelper(Context context) {
+        return new DatabaseHelper(context);
     }
 }

@@ -1,6 +1,5 @@
 package de.fau.cs.mad.kwikshop.android.model;
 
-import android.content.Context;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,17 +19,16 @@ import de.greenrobot.event.EventBus;
 
 public class RegularlyRepeatHelper {
 
-    private PriorityQueue<Item> repeatList;
-    private DatabaseHelper databaseHelper;
+    private PriorityQueue<Item> scheduleRepeatList;
+    private final DatabaseHelper databaseHelper;
 
-    private static volatile RegularlyRepeatHelper instance = null; //singleton
 
-    private RegularlyRepeatHelper(Context context) {
-        if (context == null) {
-            throw new IllegalArgumentException("'context' must not be null");
+    public RegularlyRepeatHelper(DatabaseHelper databaseHelper) {
+
+        if (databaseHelper== null) {
+            throw new ArgumentNullException("databaseHelper");
         }
-        databaseHelper = new DatabaseHelper(context);
-
+        this.databaseHelper = databaseHelper;
         EventBus.getDefault().register(this);
 
         loadFromDatabase();
@@ -39,7 +37,7 @@ public class RegularlyRepeatHelper {
     private void loadFromDatabase() {
         try {
             List<Item> items = databaseHelper.getItemDao().queryForAll();
-            repeatList = new PriorityQueue<>(items.size(), new Comparator<Item>() {
+            scheduleRepeatList = new PriorityQueue<>(Math.max(1, items.size()), new Comparator<Item>() {
                 @Override
                 public int compare(Item lhs, Item rhs) {
                     if (lhs != null && lhs.getRemindAtDate() != null && rhs != null && rhs.getRemindAtDate() != null)
@@ -52,8 +50,8 @@ public class RegularlyRepeatHelper {
                 }
             });
             for (Item item : items) {
-                if(item.getRepeatType() == RepeatType.Schedule/* && item.getRemindAtDate() != null*/) {
-                    repeatList.add(item);
+                if(item.getRepeatType() == RepeatType.Schedule) {
+                    scheduleRepeatList.add(item);
                 }
             }
         } catch (SQLException e) {
@@ -61,37 +59,18 @@ public class RegularlyRepeatHelper {
         }
     }
 
-    public static RegularlyRepeatHelper getRegularlyRepeatHelper(Context context) {
-        if (instance == null) {
-            synchronized (RegularlyRepeatHelper.class) { // double checked looking
-                if (instance == null) {
-                    instance = new RegularlyRepeatHelper(context);
-                }
-            }
-        }
-        return instance;
-    }
-
-    /**
-     * Gets the instance of RegularlyRepeatHelper, if it was already created (via getRegularlyRepeatHelper)
-     * @return the instance of RegularlyRepeatHelper, or null if it doesn't exist
-     */
-    public static RegularlyRepeatHelper getInstance() {
-        return instance;
-    }
-
     public void offerRepeatData (Item item) {
-        if (!(repeatList.contains(item))){
-            repeatList.add(item);
+        if (!(scheduleRepeatList.contains(item))){
+            scheduleRepeatList.add(item);
         } else {
             // delete the item and add it again, in order to re-sort the list
-            repeatList.remove(item);
-            repeatList.add(item);
+            scheduleRepeatList.remove(item);
+            scheduleRepeatList.add(item);
         }
     }
 
     public List<Item> getAll() {
-        return new ArrayList<>(repeatList);
+        return new ArrayList<>(scheduleRepeatList);
     }
 
     public Item getItemForId(int id) {
@@ -106,7 +85,7 @@ public class RegularlyRepeatHelper {
     }
 
     private Item getItem(int id) {
-        for (Item item : repeatList) {
+        for (Item item : scheduleRepeatList) {
             if (item.getId() == id)
                 return item;
         }
@@ -114,16 +93,16 @@ public class RegularlyRepeatHelper {
     }
 
     public void delete(Item data) {
-        if(!repeatList.contains(data)){
+        if(!scheduleRepeatList.contains(data)){
             return;
         }
-        repeatList.remove(data);
+        scheduleRepeatList.remove(data);
     }
 
     public void checkIfReminderIsOver() {
 
         Calendar now = Calendar.getInstance();
-        Item item = repeatList.peek();
+        Item item = scheduleRepeatList.peek();
         if (item == null || item.getRemindAtDate() == null)
             return;
 
@@ -134,20 +113,22 @@ public class RegularlyRepeatHelper {
 
     }
 
+    @SuppressWarnings("unused")
     public void onEventBackgroundThread(ShoppingListChangedEvent event) {
         if (event.getChangeType() == ListChangeType.Deleted) {
-            if (repeatList.size() > 0) {
+            if (scheduleRepeatList.size() > 0) {
                 // it is probably faster to reload every time a shopping list is deleted than checking all items if they are in the deleted shopping list
                 loadFromDatabase();
             }
         }
     }
 
+    @SuppressWarnings("unused")
     public void onEventBackgroundThread(ItemChangedEvent event) {
         if (event.getChangeType() == ItemChangeType.Deleted) {
             Item item = getItem(event.getItemId());
             if (item != null)
-                repeatList.remove(item);
+                scheduleRepeatList.remove(item);
         }
     }
 }

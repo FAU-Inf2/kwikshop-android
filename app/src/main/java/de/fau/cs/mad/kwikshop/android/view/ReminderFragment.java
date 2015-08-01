@@ -48,10 +48,11 @@ public class ReminderFragment extends Fragment {
     private int listId;
     List<ShoppingList> shoppingLists;
 
-    private RegularlyRepeatHelper repeatHelper;
-
     @Inject
     ListManager<ShoppingList> shoppingListManager;
+
+    @Inject
+    RegularlyRepeatHelper repeatHelper;
 
     /* UI elements */
 
@@ -285,7 +286,6 @@ public class ReminderFragment extends Fragment {
 
 
     private void setupUI() {
-        repeatHelper = RegularlyRepeatHelper.getRegularlyRepeatHelper(getActivity());
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         objectGraph.inject(this);

@@ -57,8 +57,6 @@ public class ShoppingListFragment
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
 
-    public Menu overflow_menu;
-
     private int listID = -1;
 
     private AutoCompletionHelper autoCompletion;
@@ -129,12 +127,6 @@ public class ShoppingListFragment
 
         viewModel.addListener(this);
         viewModel.getItems().addListener(this);
-        //viewModel.getBoughtItems().addListener(this);
-        //sizeBoughtItems = viewModel.getBoughtItems().size();
-        //cartCounter.setText(String.valueOf(sizeBoughtItems));
-
-        //ObservableArrayList list = (ObservableArrayList)viewModel.getItems().clone();
-        //list.addAll(viewModel.getBoughtItems());
 
         final ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);
@@ -143,33 +135,6 @@ public class ShoppingListFragment
         new ListViewItemCommandBinding(ListViewItemCommandBinding.ListViewItemCommandType.Click,
                 shoppingListView,
                 viewModel.getSelectItemCommand());
-
-        /*TimedUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(shoppingListAdapter, getActivity(),
-                new OnDismissCallback() {
-                    @Override
-                    public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
-                        Command<Integer> command = viewModel.getToggleIsBoughtCommand();
-                        for (int position : reverseSortedPositions) {
-
-                            if (command.getCanExecute()) {
-                                try {
-                                    //Item item = viewModel.getItems().get(position);
-                                    Item item = shoppingListAdapter.getItem(position);
-                                    command.execute(item.getId());
-
-                                } catch (IndexOutOfBoundsException ex) {
-                                    //nothing to do
-                                }
-                            }
-                        }
-                        viewModel.moveBoughtItemsToEnd();
-                    }
-                });
-
-        swipeUndoAdapter.setAbsListView(shoppingListView);
-        swipeUndoAdapter.setTimeoutMs(1000);
-        shoppingListView.setAdapter(swipeUndoAdapter);
-        shoppingListView.enableSimpleSwipeUndo();*/
 
         shoppingListView.enableSwipeToDismiss(
                 new OnDismissCallback() {
@@ -222,14 +187,8 @@ public class ShoppingListFragment
             }
         });
 
-        //View footer = inflater.inflate(R.layout.listview_footerspace, container, false);
-        //shoppingListView.addFooterView(footer);
-
-        //justifyListViewHeightBasedOnChildren(shoppingListView);
 
         new ButtonBinding(floatingActionButton, viewModel.getAddItemCommand(), false);
-       //moved to onClickListener to enable scrolling
-       // new ButtonBinding(button_QuickAdd, viewModel.getQuickAddCommand());
 
 
         button_QuickAdd.setOnClickListener(new View.OnClickListener() {
@@ -303,7 +262,6 @@ public class ShoppingListFragment
 
     @Override
     public void onDestroyView() {
-
         super.onDestroyView();
         viewModel.onDestroyView();
         EventBus.getDefault().unregister(this);
@@ -347,30 +305,6 @@ public class ShoppingListFragment
         });
 
     }
-
-    /*public void justifyListViewHeightBasedOnChildren(DynamicListView listView) {
-        ListAdapter adapter = listView.getAdapter();
-
-        if (adapter == null) {
-            return;
-        }
-
-        listView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-
-        int listWidth = listView.getMeasuredWidth();
-        int totalHeight = 0;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            View listItem = adapter.getView(i, null, listView);
-            listItem.measure(MeasureSpec.makeMeasureSpec(listWidth, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams par = listView.getLayoutParams();
-        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
-        listView.setLayoutParams(par);
-        listView.requestLayout();
-    }*/
 
     @SuppressWarnings("unused")
     public void onEvent(AutoCompletionHistoryDeletedEvent event) {
@@ -424,24 +358,16 @@ public class ShoppingListFragment
         if(autoCompletion != null) {
             refreshQuickAddAutoCompletion();
         }
-
-        //justifyListViewHeightBasedOnChildren(shoppingListView);
     }
 
     @Override
     public void onItemRemoved(Item removedItem) {
-        //justifyListViewHeightBasedOnChildren(shoppingListView);
 
-        //sizeBoughtItems = viewModel.getBoughtItems().size();
-        //cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
 
     @Override
     public void onItemModified(Item modifiedItem) {
-        //justifyListViewHeightBasedOnChildren(shoppingListView);
 
-        //sizeBoughtItems = viewModel.getBoughtItems().size();
-        //cartCounter.setText(String.valueOf(sizeBoughtItems));
     }
 
     @Override

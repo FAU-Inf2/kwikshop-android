@@ -342,7 +342,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                     list.setName(list.getName()  + "_edited");
                                     list.setLastModifiedDate(new Date());
 
-                                    list = client.updateListSynchronously(listId, list, false);
+                                    list = client.updateListSynchronously(listId, list);
 
                                     privateBus.post(mapper.writeValueAsString(list));
 
@@ -827,7 +827,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                     list.setName(list.getName()  + "_edited");
                                     list.setLastModifiedDate(new Date());
 
-                                    list = client.updateListSynchronously(listId, list, false);
+                                    list = client.updateListSynchronously(listId, list);
 
                                     privateBus.post(mapper.writeValueAsString(list));
 

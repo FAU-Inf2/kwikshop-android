@@ -1,19 +1,17 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,16 +33,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -294,7 +287,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         autoCompletionHelper.offerNameAndGroup(item.getName(), item.getGroup());
         autoCompletionHelper.offerBrand(item.getBrand());
 
-        ItemMerger itemMerger = new ItemMerger((ListManager) getListManager());
+        ItemMerger<TList> itemMerger = new ItemMerger<>(getListManager());
         if(isNewItem) {
             if(!itemMerger.mergeItem(listId, item)) {
                 getListManager().addListItem(listId, item);
@@ -426,7 +419,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             comment_text.setText(item.getComment());
             //load image
             ImageId = item.getImageItem();
-            if (ImageId != null && ImageId != "") {
+            if (ImageId != null && !ImageId.equals("")) {
                 itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
                 if (itemImageView.getDrawable() == null) {
                     uploadText.setText(R.string.uploadPicture);
@@ -604,13 +597,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     uploadText.setText("");
                     //itemImageView.setImageBitmap(ImageItem);
                 itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);

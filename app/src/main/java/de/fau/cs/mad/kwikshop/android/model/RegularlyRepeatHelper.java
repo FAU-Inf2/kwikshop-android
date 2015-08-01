@@ -5,21 +5,28 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShoppingListChangedEvent;
-import de.fau.cs.mad.kwikshop.common.RepeatType;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.greenrobot.event.EventBus;
 
 public class RegularlyRepeatHelper {
 
+    //list of items repeating on a schedule
     private PriorityQueue<Item> scheduleRepeatList;
+    //list of items to be added to every new shopping list
+    private List<Item> listCreationRepeatList;
+
+
     private final DatabaseHelper databaseHelper;
 
 
@@ -28,30 +35,43 @@ public class RegularlyRepeatHelper {
         if (databaseHelper== null) {
             throw new ArgumentNullException("databaseHelper");
         }
+
         this.databaseHelper = databaseHelper;
+
         EventBus.getDefault().register(this);
 
         loadFromDatabase();
     }
 
     private void loadFromDatabase() {
+
         try {
+
             List<Item> items = databaseHelper.getItemDao().queryForAll();
-            scheduleRepeatList = new PriorityQueue<>(Math.max(1, items.size()), new Comparator<Item>() {
-                @Override
-                public int compare(Item lhs, Item rhs) {
-                    if (lhs != null && lhs.getRemindAtDate() != null && rhs != null && rhs.getRemindAtDate() != null)
-                        return lhs.getRemindAtDate().compareTo(rhs.getRemindAtDate());
-                    if (lhs != null && lhs.getRemindAtDate() != null)
-                        return -1;
-                    if (rhs != null && rhs.getRemindAtDate() != null)
-                        return 1;
-                    return 0;
-                }
-            });
+            databaseHelper.refreshItemsRecursively(items);
+
+            scheduleRepeatList = new PriorityQueue<>(Math.max(1, items.size()), new RepeatDateItemComparator());
+            listCreationRepeatList = new LinkedList<>();
+
+
             for (Item item : items) {
-                if(item.getRepeatType() == RepeatType.Schedule) {
-                    scheduleRepeatList.add(item);
+
+                switch (item.getRepeatType()) {
+
+                    case Schedule:
+                        scheduleRepeatList.add(item);
+                        break;
+
+                    case ListCreation:
+                        listCreationRepeatList.add(item);
+                        break;
+
+                    case None:
+                        //nothing to do
+                        break;
+
+                    default:
+                        throw new UnsupportedOperationException("Unimplemented case in switch statement");
                 }
             }
         } catch (SQLException e) {
@@ -113,6 +133,15 @@ public class RegularlyRepeatHelper {
 
     }
 
+    public void addListCreationRepeatingItems(ListManager<ShoppingList> shoppingListManager, int shoppingListId) {
+
+        for(Item i : listCreationRepeatList) {
+            Item newItem = new Item(i);
+            shoppingListManager.addListItem(shoppingListId, newItem);
+        }
+
+    }
+
     @SuppressWarnings("unused")
     public void onEventBackgroundThread(ShoppingListChangedEvent event) {
         if (event.getChangeType() == ListChangeType.Deleted) {
@@ -129,6 +158,23 @@ public class RegularlyRepeatHelper {
             Item item = getItem(event.getItemId());
             if (item != null)
                 scheduleRepeatList.remove(item);
+        }
+    }
+
+
+
+    private static class RepeatDateItemComparator implements Comparator<Item> {
+
+        @Override
+        public int compare(Item lhs, Item rhs) {
+
+            if (lhs != null && lhs.getRemindAtDate() != null && rhs != null && rhs.getRemindAtDate() != null)
+                return lhs.getRemindAtDate().compareTo(rhs.getRemindAtDate());
+            if (lhs != null && lhs.getRemindAtDate() != null)
+                return -1;
+            if (rhs != null && rhs.getRemindAtDate() != null)
+                return 1;
+            return 0;
         }
     }
 }

@@ -27,29 +27,19 @@ public class LocalListStorage implements ListStorage<ShoppingList> {
 
     @Override
     public List<ShoppingList> getAllLists() {
+
+        DatabaseHelper databaseHelper = ListStorageFragment.getDatabaseHelper();
+
         try {
             ArrayList<ShoppingList> lists = new ArrayList<>();
-            for(ShoppingList list : ListStorageFragment.getDatabaseHelper().getShoppingListDao()) {
+            for(ShoppingList list : databaseHelper.getShoppingListDao()) {
                 lists.add(list);
 
                 if(list.getCalendarEventDate() != null) {
-                    ListStorageFragment.getDatabaseHelper().getCalendarDao().refresh(list.getCalendarEventDate());
+                    databaseHelper.getCalendarDao().refresh(list.getCalendarEventDate());
                 }
 
-                for (Item i : list.getItems()) {
-
-                    if (i.getUnit() != null) {
-                        ListStorageFragment.getDatabaseHelper().getUnitDao().refresh(i.getUnit());
-                    }
-
-                    if (i.getGroup() != null) {
-                        ListStorageFragment.getDatabaseHelper().getGroupDao().refresh(i.getGroup());
-                    }
-
-                    if(i.getLocation() != null) {
-                        ListStorageFragment.getDatabaseHelper().getLocationDao().refresh(i.getLocation());
-                    }
-                }
+                databaseHelper.refreshItemsRecursively(list.getItems());
             }
             return Collections.unmodifiableList(lists);
 
@@ -62,28 +52,18 @@ public class LocalListStorage implements ListStorage<ShoppingList> {
 
     @Override
     public ShoppingList loadList(int listID) {
+
+        DatabaseHelper databaseHelper = ListStorageFragment.getDatabaseHelper();
+
         ShoppingList loadedList;
         try {
-            loadedList = ListStorageFragment.getDatabaseHelper().getShoppingListDao().queryForId(listID);
+            loadedList = databaseHelper.getShoppingListDao().queryForId(listID);
 
             if(loadedList.getCalendarEventDate() != null) {
-                ListStorageFragment.getDatabaseHelper().getCalendarDao().refresh(loadedList.getCalendarEventDate());
+                databaseHelper.getCalendarDao().refresh(loadedList.getCalendarEventDate());
             }
 
-            for (Item i : loadedList.getItems()) {
-
-                if (i.getUnit() != null) {
-                    ListStorageFragment.getDatabaseHelper().getUnitDao().refresh(i.getUnit());
-                }
-
-                if (i.getGroup() != null) {
-                    ListStorageFragment.getDatabaseHelper().getGroupDao().refresh(i.getGroup());
-                }
-
-                if(i.getLocation() != null) {
-                    ListStorageFragment.getDatabaseHelper().getLocationDao().refresh(i.getLocation());
-                }
-            }
+            databaseHelper.refreshItemsRecursively(loadedList.getItems());
 
         } catch (SQLException e) {
             e.printStackTrace();

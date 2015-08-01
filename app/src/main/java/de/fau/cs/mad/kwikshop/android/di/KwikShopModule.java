@@ -147,9 +147,9 @@ public class KwikShopModule {
 
 
     @Provides
-    public ListManager<ShoppingList> provideShoppingListManager(ListStorage<ShoppingList> listStorage) {
+    public ListManager<ShoppingList> provideShoppingListManager(ListStorage<ShoppingList> listStorage, RegularlyRepeatHelper repeatHelper) {
         if(shoppingListManager == null) {
-            shoppingListManager = new ShoppingListManager(listStorage);
+            shoppingListManager = new ShoppingListManager(listStorage, repeatHelper);
         }
         return shoppingListManager;
     }

@@ -9,10 +9,27 @@ import de.fau.cs.mad.kwikshop.common.ShoppingList;
 
 public class ShoppingListManager extends AbstractListManager<ShoppingList> {
 
+    private final RegularlyRepeatHelper repeatHelper;
+
     @Inject
-    public ShoppingListManager(ListStorage<ShoppingList> listStorage) {
+    public ShoppingListManager(ListStorage<ShoppingList> listStorage, RegularlyRepeatHelper repeatHelper) {
         super(listStorage);
+
+        if(repeatHelper == null) {
+            throw new ArgumentNullException("repeatHelper");
+        }
+
+        this.repeatHelper = repeatHelper;
     }
+
+    @Override
+    public int createList() {
+
+        int listId = super.createList();
+        repeatHelper.addListCreationRepeatingItems(this, listId);
+        return listId;
+    }
+
 
     @Override
     protected ListNotFoundException listNotFound(int listId) {

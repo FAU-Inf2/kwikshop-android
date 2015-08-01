@@ -13,6 +13,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -560,6 +561,29 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_can), ResourceId.Unit_Can);
 
         resourceMappingInitialized = true;
+    }
+
+
+    /**
+     * Loads all the fields of all the supplied items which unfortunately ORMLite does not do automatically
+     */
+    public void refreshItemsRecursively(Collection<Item> items) throws SQLException {
+
+        for (Item i : items) {
+
+            if (i.getUnit() != null) {
+                getUnitDao().refresh(i.getUnit());
+            }
+
+            if (i.getGroup() != null) {
+                getGroupDao().refresh(i.getGroup());
+            }
+
+            if(i.getLocation() != null) {
+                getLocationDao().refresh(i.getLocation());
+            }
+        }
+
     }
 
 }

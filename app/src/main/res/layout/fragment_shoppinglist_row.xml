@@ -4,7 +4,8 @@
               android:layout_height="wrap_content"
               android:background="@color/text_icons"
               android:orientation="vertical"
-              android:paddingBottom="5dp">
+              android:paddingBottom="5dp"
+              android:descendantFocusability="blocksDescendants">
 
     <TableRow
         android:layout_width="match_parent"

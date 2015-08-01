@@ -1,7 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 
-//import android.app.Fragment;
 
 import android.content.Intent;
 import android.graphics.Rect;

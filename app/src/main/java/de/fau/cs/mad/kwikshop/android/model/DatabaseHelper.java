@@ -44,7 +44,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 30; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 31; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -257,7 +257,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             // before v29, the name of the Android resource was stored
             // beginning with v29, the enum ResourceId is used instead.
             // this updates the table so it includes a ResourceId
-
             try {
                 unitDao = ListStorageFragment.getDatabaseHelper().getUnitDao();
 
@@ -308,6 +307,24 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 String template = "UPDATE 'item' SET repeatType = '%s' WHERE regularlyRepeatItem = %s;";
                 itemDao.executeRaw(String.format(template, RepeatType.None, 0));
                 itemDao.executeRaw(String.format(template, RepeatType.Schedule, 1));
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        if(oldVersion < 31) {
+            try {
+
+                itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN serverId INTEGER;");
+
+                shoppingListDao = ListStorageFragment.getDatabaseHelper().getShoppingListDao();
+                shoppingListDao.executeRaw("ALTER TABLE 'shoppingList' ADD COLUMN serverId INTEGER;");
+
+                recipeDao = ListStorageFragment.getDatabaseHelper().getRecipeDao();
+                recipeDao.executeRaw("ALTER TABLE 'recipe' ADD COLUMN serverId INTEGER;");
 
             } catch (SQLException e) {
                 e.printStackTrace();

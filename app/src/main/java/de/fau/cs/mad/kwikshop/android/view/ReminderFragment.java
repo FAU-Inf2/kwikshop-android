@@ -124,6 +124,8 @@ public class ReminderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
+
         rootView = inflater.inflate(R.layout.fragment_reminder, container, false);
         ButterKnife.inject(this, rootView);
 

@@ -48,6 +48,7 @@ import butterknife.InjectView;
 import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
@@ -189,6 +190,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
         View rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
         ButterKnife.inject(this, rootView);

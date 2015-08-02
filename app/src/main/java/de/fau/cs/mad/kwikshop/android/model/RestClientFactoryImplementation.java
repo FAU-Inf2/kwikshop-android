@@ -110,9 +110,8 @@ public class RestClientFactoryImplementation implements RestClientFactory {
         return new RestAdapter.Builder()
                 .setClient(new OkClient(client))
                 .setEndpoint(getApiEndPoint())
-                //TODO: get actual username / password
                 .setConverter(new JacksonConverter())
-                .setRequestInterceptor(new BasicAuthenticationRequestInterceptor("DEBUG", "DEBUG"))
+                .setRequestInterceptor(new BasicAuthenticationRequestInterceptor(SessionHandler.getSessionUser(context), SessionHandler.getSessionToken(context)))
                 .build();
     }
 

@@ -8,7 +8,15 @@ public class SessionHandler {
 
 
     public static boolean isAuthenticated(Context context) {
-        return (getSessionToken(context) != null ? true : false);
+        return (getSessionToken(context) != null && getSessionUser(context) != null ? true : false);
+    }
+
+    public static void setSessionUser(Context context, String token) {
+        saveString(SESSION_USER, token, context);
+    }
+
+    public static String getSessionUser(Context context) {
+        return loadString(SESSION_USER, null, context);
     }
 
     public static void setSessionToken(Context context, String token) {
@@ -20,6 +28,7 @@ public class SessionHandler {
     }
 
     public static void logout(Context context) {
+        setSessionUser(context, null);
         setSessionToken(context, null);
     }
 

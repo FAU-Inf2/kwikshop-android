@@ -8,6 +8,7 @@ public class SharedPreferencesHelper {
 
     //Settings keys
     public static final String SESSION_TOKEN = "SESSION_TOKEN";
+    public static final String SESSION_USER  = "SESSION_USER";
     public static final String SHOPPING_MODE = "shopping_mode_setting";
     public static final String SKIP_LOGIN = "SKIPLOGIN";
     public static final String LOCALE = "locale";

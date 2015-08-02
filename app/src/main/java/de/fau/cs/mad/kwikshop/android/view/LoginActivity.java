@@ -175,7 +175,7 @@ public class LoginActivity extends FragmentActivity implements
     }
 
     private void updateUI(boolean isSignedIn) {
-        mDebugStatus.setText(SessionHandler.getSessionToken(getApplicationContext()));
+        mDebugStatus.setText(SessionHandler.getSessionUser(getApplicationContext()) + " - " + SessionHandler.getSessionToken(getApplicationContext()));
 
         if(SessionHandler.isAuthenticated(getApplicationContext()))
             isSignedIn = true;
@@ -359,9 +359,9 @@ public class LoginActivity extends FragmentActivity implements
     }
 
     /* This task retrieves the user's session token from the server */
-    private class GetIdTokenTask extends AsyncTask<String, Void, String> {
+    private class GetIdTokenTask extends AsyncTask<String, Void, Boolean> {
         @Override
-        protected String doInBackground(String... params) {
+        protected Boolean doInBackground(String... params) {
             String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
             Account account = new Account(accountName, GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
             String scopes = "audience:server:client_id:" + getString(R.string.login_server_client_id);
@@ -411,10 +411,9 @@ public class LoginActivity extends FragmentActivity implements
                         .hostnameVerifier(new HostnameVerifier() {
                             @Override
                             public boolean verify(String hostname, SSLSession session) {
-                                HostnameVerifier hv =
-                                        HttpsURLConnection.getDefaultHostnameVerifier();
+                                //HostnameVerifier hv = HttpsURLConnection.getDefaultHostnameVerifier();
                                 //return hv.verify("HOSTNAME", session);
-                                return (hostname.equals(getString(R.string.API_HOST)));
+                                return (hostname.equals(SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, getString(R.string.API_HOST), getApplicationContext())));
                             }
                         })
                         .build().register(JacksonJsonProvider.class).target(uri);
@@ -438,21 +437,31 @@ public class LoginActivity extends FragmentActivity implements
                 return null;
             }*/
 
-            if(authResponse != null)
-                if(authResponse.length() > 0)
-                    SessionHandler.setSessionToken(getApplicationContext(), authResponse); // save session token
+            Boolean success = false;
 
-            return authResponse;
+            if(authResponse != null) {
+                if (authResponse.length() > 0) {
+                    String[] authResponseSplit = authResponse.split(":");
+                    if (authResponseSplit.length == 2) {
+                        SessionHandler.setSessionUser(getApplicationContext(), authResponseSplit[0]); // save session user
+                        SessionHandler.setSessionToken(getApplicationContext(), authResponseSplit[1]); // save session token
+                        success = true;
+                    }
+                }
+            }
+            
+            return success;
 
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            if(result == null) {
+        protected void onPostExecute(Boolean success) {
+            if(success != null && success == false) {
                 Toast.makeText(getApplicationContext(), R.string.kwikshop_login_failed, Toast.LENGTH_LONG).show();
                 mStatus.setText(R.string.kwikshop_login_failed);
-            }
-            updateUI(true);
+                updateUI(false);
+            } else
+                updateUI(true);
         }
 
     }

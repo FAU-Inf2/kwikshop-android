@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -29,6 +30,8 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
+import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -371,5 +374,16 @@ public class DefaultViewLauncher implements ViewLauncher {
         activity.startActivity(Intent.createChooser(sendIntent, chooserTitle));
     }
 
+
+    @Override
+    public void openVoiceRecognition(int requestCode){
+        SpeechRecognitionHelper.run(activity);
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+        activity.startActivityForResult(intent, requestCode);
+
+    }
 
 }

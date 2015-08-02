@@ -14,6 +14,7 @@ import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
 import de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity;
 import de.fau.cs.mad.kwikshop.android.view.ServerIntegrationDebugActivity;
 import de.fau.cs.mad.kwikshop.android.view.SettingFragment;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.IoService;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
@@ -64,7 +65,8 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         StackTraceReporter.class,
         SettingFragment.class,
         ServerIntegrationDebugActivity.class,
-        RegularlyRepeatHelper.class
+        RegularlyRepeatHelper.class,
+        ItemDetailsViewModel.class
 },
         library = true)
 @SuppressWarnings("unused")

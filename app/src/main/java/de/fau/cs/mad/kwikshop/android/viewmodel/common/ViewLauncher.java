@@ -1,6 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
 import de.fau.cs.mad.kwikshop.common.Recipe;
+
+import android.content.Intent;
 import android.widget.ArrayAdapter;
 
 public interface ViewLauncher {
@@ -59,4 +61,8 @@ public interface ViewLauncher {
     void notifyGroupSpinnerChange(ArrayAdapter<String> adapter);
 
     void launchEmailChooser(String chooserTitle, String recipient, String subject, String body);
-}
+
+    void openVoiceRecognition(int requestCode);
+
+
+    }

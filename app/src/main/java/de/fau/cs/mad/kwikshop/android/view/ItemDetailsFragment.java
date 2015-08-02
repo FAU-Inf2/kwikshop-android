@@ -48,7 +48,11 @@ import butterknife.InjectView;
 import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.GroupStorage;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
+import de.fau.cs.mad.kwikshop.android.model.UnitStorage;
+import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
@@ -69,9 +73,16 @@ import de.greenrobot.event.EventBus;
 
 public abstract class ItemDetailsFragment<TList extends DomainListObject> extends Fragment {
 
+    private static final int GALLERY = 1;
+    private static final int GALLERY_INTENT_CALLED = 1;
+    private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
+    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
+
+    protected boolean isNewItem;
+
+
     protected static final String ARG_LISTID = "list_id";
     protected static final String ARG_ITEMID = "item_id";
-    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     private int listId;
     private int itemId;
@@ -79,24 +90,12 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private int selectedUnitIndex = -1;
     private int selectedGroupIndex = -1;
 
+
     private String[] numbersForAmountPicker;
     private int numberPickerCalledWith;
 
-    private List<Unit> units;
-    private List<Group> groups;
-
 
     protected Item item;
-    protected boolean isNewItem;
-
-    private static Bitmap ImageItem = null;
-    private static Bitmap rotateImage = null;
-    private static final int GALLERY = 1;
-    private static final int GALLERY_INTENT_CALLED = 1;
-    private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
-    private static String pathImage = "";
-    private static Uri mImageUri;
-    private static String ImageId = "";
 
 
     @InjectView(R.id.productname_text)
@@ -138,20 +137,16 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @InjectView(R.id.button_remove)
     ImageView button_remove;
 
-    /*@InjectView(R.id.buttonUploadPic)
-    ImageView buttonUploadPic;*/
-
     @Inject
     AutoCompletionHelper autoCompletionHelper;
-
-    @Inject
-    DisplayHelper displayHelper;
 
     @Inject
     SimpleStorage<Unit> unitStorage;
 
     @Inject
     SimpleStorage<Group> groupStorage;
+
+    private ItemDetailsViewModel viewModel;
 
 
     @Override
@@ -166,7 +161,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             listId = getArguments().getInt(ARG_LISTID);
             itemId = getArguments().getInt(ARG_ITEMID);
         }
-        isNewItem = itemId == -1;
     }
 
     @Override
@@ -176,7 +170,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         productname_text.requestFocus();
 
-        if (isNewItem) {
+        if (viewModel.isNewItem()) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(productname_text, InputMethodManager.SHOW_IMPLICIT);
         } else {
@@ -190,24 +184,28 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        EventBus.getDefault().register(this);
+
         View rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
         ButterKnife.inject(this, rootView);
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
+        viewModel = objectGraph.get(ItemDetailsViewModel.class);
+        viewModel.initialize(listId, itemId);
         objectGraph.inject(this);
+
+        isNewItem = viewModel.isNewItem();
 
         setupUI();
 
         // set actionbar with save and cancel buttons
         setCustomActionBar();
 
-        EventBus.getDefault().register(this);
-
         // set actionbar title
-        if (isNewItem) {
+        if (viewModel.isNewItem()) {
             getActivity().setTitle(R.string.title_fragment_item_details);
         } else {
-            getActivity().setTitle(productname_text.getText().toString());
+            getActivity().setTitle(viewModel.getItemName());
         }
 
 
@@ -243,7 +241,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     protected void saveItem() {
 
-        if (isNewItem) {
+        if (viewModel.isNewItem()) {
             item = new Item();
         }
 
@@ -265,18 +263,17 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         item.setBrand(brand_text.getText().toString());
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
-        if (ImageItem != null) {
-            item.setImageItem(ImageId);
-        }
+        viewModel.setImageItem();
+
         if (selectedUnitIndex >= 0) {
-            Unit u = units.get(selectedUnitIndex);
+            Unit u = viewModel.getUnits().get(selectedUnitIndex);
             item.setUnit(u);
         } else {
             item.setUnit(unitStorage.getDefaultValue());
         }
 
         if (selectedGroupIndex >= 0) {
-            Group g = groups.get(selectedGroupIndex);
+            Group g = viewModel.getGroups().get(selectedGroupIndex);
             item.setGroup(g);
         } else {
             item.setGroup(groupStorage.getDefaultValue());
@@ -288,7 +285,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         autoCompletionHelper.offerBrand(item.getBrand());
 
         ItemMerger<TList> itemMerger = new ItemMerger<>(getListManager());
-        if(isNewItem) {
+        if(viewModel.isNewItem()) {
             if(!itemMerger.mergeItem(listId, item)) {
                 getListManager().addListItem(listId, item);
             }
@@ -307,7 +304,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     protected void deleteItem() {
 
-        if(!isNewItem){
+        if(!viewModel.isNewItem()){
             getListManager().deleteItem(listId, itemId);
         }
 
@@ -319,7 +316,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         // display the supermarket where this item was bought
 
-        LastLocation location = isNewItem ? null : getListManager().getListItem(listId, itemId).getLocation();
+        LastLocation location = viewModel.isNewItem() ? null : viewModel.getItem().getLocation();
 
         if(location != null){
             if(location.getName() != null){
@@ -378,7 +375,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         brand_text.setAdapter(autoCompletionHelper.getBrandAdapter(getActivity()));
 
 
-        if (isNewItem) {
+        if (viewModel.isNewItem()) {
 
             productname_text.setText("");
             numberPicker.setValue(3);
@@ -386,23 +383,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             comment_text.setText("");
 
         } else {
-            item = getListManager().getListItem(listId, itemId);
+            item = viewModel.getItem();
 
-            //thats not a pretty way to get it done, but the only one that came to my mind
+            viewModel.setImageId();
             //numberPicker.setValue(index) sets the picker to the index + numberPicker.minValue()
             double itemAmount = item.getAmount();
-          /*  for(int i = 1; i < intNumsOnce.length; i++){
-                if(itemAmount > 1000) itemAmount = 1000;
-                if(intNumsOnce[i] == itemAmount){
-                    itemAmount = i+1;
-                    break;
-                }
-                if(intNumsOnce[i-1] < itemAmount && intNumsOnce[i+1] > itemAmount){
-                    //if amount is not in the spinner, the next lower value gets selected
-                    itemAmount = i+1;
-                    break;
-                }
-            }*/
 
             int index = 1;
             for(int i = 0; i < intNumsOnce.length; i++){
@@ -413,14 +398,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             }
 
             // Fill UI elements with data from Item
-            productname_text.setText(item.getName());
+            productname_text.setText(viewModel.getItemName());
             numberPicker.setValue(index);
             brand_text.setText(item.getBrand());
             comment_text.setText(item.getComment());
             //load image
-            ImageId = item.getImageItem();
-            if (ImageId != null && !ImageId.equals("")) {
-                itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
+
+            if (viewModel.getImageId() != null && !viewModel.getImageId().equals("")) {
+                itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, viewModel.getImageId()));
                 if (itemImageView.getDrawable() == null) {
                     uploadText.setText(R.string.uploadPicture);
                     button_remove.setClickable(false);
@@ -448,24 +433,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         });
 
-        //get units from the database and sort them by name
-        units = unitStorage.getItems();
-        Collections.sort(units, new Comparator<Unit>() {
-            @Override
-            public int compare(Unit lhs, Unit rhs) {
-                return lhs.getName().compareTo(rhs.getName());
-            }
-        });
+        //sort units by name
+        viewModel.sortUnitsByName();
 
         //TODO implement adapter for Unit instead of String
 
-        ArrayList<String> unitNames = new ArrayList<>();
-        for (Unit u : units) {
-            unitNames.add(displayHelper.getDisplayName(u));
-        }
 
-
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, unitNames);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getUnitNames());
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         unit_spinner.setAdapter(spinnerArrayAdapter);
         unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -480,23 +454,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             }
         });
 
-        Unit selectedUnit = isNewItem || item.getUnit() == null
-                ? unitStorage.getDefaultValue()
-                : item.getUnit();
 
-        if (selectedUnit != null) {
-            unit_spinner.setSelection(units.indexOf(selectedUnit));
-        }
-
-        //get groups from the database and populate group spinner
-        groups = groupStorage.getItems();
-        ArrayList<String> groupNames = new ArrayList<>();
-        for (Group g : groups) {
-            groupNames.add(displayHelper.getDisplayName(g));
+        if (viewModel.getSelectedUnit() != null) {
+            unit_spinner.setSelection(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
         }
 
 
-        ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groupNames);
+        ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getGroupNames());
         groupSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         group_spinner.setAdapter(groupSpinnerArrayAdapter);
         group_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -512,17 +476,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         });
 
 
-        Group selectedGroup = isNewItem || item.getGroup() == null
-                ? groupStorage.getDefaultValue()
-                : item.getGroup();
-
-        if (selectedGroup != null) {
-            group_spinner.setSelection(groups.indexOf(selectedGroup));
+        if (viewModel.getSelectedGroup() != null) {
+            group_spinner.setSelection(viewModel.getGroups().indexOf(viewModel.getSelectedGroup()));
         }
 
 
         //check highlight_checkbox, if item is already highlighted
-        if (!isNewItem && item.isHighlight()) {
+        if (!viewModel.isNewItem() && item.isHighlight()) {
             highlight_checkbox.setChecked(true);
         } else {
             highlight_checkbox.setChecked(false);
@@ -533,15 +493,12 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             @Override
             public void onClick(View v) {
                     itemImageView.setImageBitmap(null);
-                    if (ImageItem != null)
-                        ImageItem.recycle();
-
-                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType("image/jpeg");
-                        startActivityForResult(intent, GALLERY);
-
-
+                    if (viewModel.getImageItem() != null)
+                        viewModel.getImageItem().recycle();
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/jpeg");
+                startActivityForResult(intent, GALLERY);
             }
 
 
@@ -551,52 +508,47 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         micButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SpeechRecognitionHelper.run(getActivity());
-                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
-                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
-                startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
-
+                viewModel.openVoiceRecognition();
             }
 
         });
 
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == GALLERY && resultCode != 0) {
-            mImageUri = data.getData();
+            viewModel.setmImageUri(data.getData());
             try {
 
-                ImageItem = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
-                String pathsegment[] = mImageUri.getLastPathSegment().split(":");
-                ImageId = pathsegment[1];
+                viewModel.setImageItem(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), viewModel.getmImageUri()));
+                String pathsegment[] = viewModel.getmImageUri().getLastPathSegment().split(":");
+                viewModel.setImageId(pathsegment[1]);
                 final String[] imageColumns = { MediaStore.Images.Media.DATA };
                 final String imageOrderBy = null;
 
                 Uri uri = getUri();
                 Cursor imageCursor = getActivity().getContentResolver().query(uri, imageColumns,
-                        MediaStore.Images.Media._ID + "=" + ImageId, null, null);
+                        MediaStore.Images.Media._ID + "=" + viewModel.getImageId(), null, null);
 
                 if (imageCursor.moveToFirst()) {
-                    pathImage = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                    viewModel.setPathImage(imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
                 }
-                if (getOrientation(getActivity().getApplicationContext(), mImageUri) != 0) {
+                if (getOrientation(getActivity().getApplicationContext(), viewModel.getmImageUri()) != 0) {
                     Matrix matrix = new Matrix();
-                    matrix.postRotate(getOrientation(getActivity().getApplicationContext(), mImageUri));
-                    if (rotateImage != null)
-                        rotateImage.recycle();
-                    rotateImage = Bitmap.createBitmap(ImageItem, 0, 0, ImageItem.getWidth(), ImageItem.getHeight(), matrix,true);
+                    matrix.postRotate(getOrientation(getActivity().getApplicationContext(), viewModel.getmImageUri()));
+                    if (viewModel.getRotateImage() != null)
+                        viewModel.getRotateImage().recycle();
+                    viewModel.setRotateImage(Bitmap.createBitmap(viewModel.getImageItem(), 0, 0, viewModel.getImageItem().getWidth(), viewModel.getImageItem().getHeight(), matrix,true));
 
 
                     //itemImageView.setImageBitmap(rotateImage);
 
-                    itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
+                    itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, viewModel.getImageId()));
                 } else
                     uploadText.setText("");
                     //itemImageView.setImageBitmap(ImageItem);
-                itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ImageId));
+                itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, viewModel.getImageId()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -633,7 +585,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @SuppressWarnings("unused")
     void onProductNameChanged(CharSequence text) {
 
-        if(groups == null) {
+        if(viewModel.getGroups() == null) {
             return;
         }
 
@@ -641,7 +593,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         Group group = autoCompletionHelper.getGroup(name);
 
         if (group != null) {
-            group_spinner.setSelection(groups.indexOf(group));
+            group_spinner.setSelection(viewModel.getGroups().indexOf(group));
         }
     }
 
@@ -682,7 +634,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
             View delete = parent.getDeleteButton();
 
-            if (isNewItem) {
+            if (viewModel.isNewItem()) {
                 delete.setVisibility(View.GONE);
             } else {
                 delete.setOnClickListener(new View.OnClickListener() {

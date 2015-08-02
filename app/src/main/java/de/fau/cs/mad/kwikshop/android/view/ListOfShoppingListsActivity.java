@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 
 public class ListOfShoppingListsActivity extends BaseActivity {
@@ -23,6 +24,7 @@ public class ListOfShoppingListsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        new ListStorageFragment().SetupLocalListStorageFragment(this);
         repeatHelper = ObjectGraph.create(new KwikShopModule(this)).get(RegularlyRepeatHelper.class);
 
         if (savedInstanceState == null) {

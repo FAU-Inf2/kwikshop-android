@@ -104,7 +104,7 @@ public class RestClientFactoryImplementation implements RestClientFactory {
                     HostnameVerifier hv =
                             HttpsURLConnection.getDefaultHostnameVerifier();
                     //return hv.verify("HOSTNAME", session);
-                    return (hostname.equals(resourceProvider.getString(R.string.API_HOST)));
+                    return hostname.equals(getApiHost());
                 }
             });
 
@@ -134,6 +134,10 @@ public class RestClientFactoryImplementation implements RestClientFactory {
         return resourceProvider.getString(R.string.API_PROTOCOL) +
                 SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, resourceProvider.getString(R.string.API_HOST), context) +
                 ":" + resourceProvider.getString(R.string.API_PORT);
+    }
+
+    private String getApiHost() {
+        return SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, resourceProvider.getString(R.string.API_HOST), context);
     }
 
 }

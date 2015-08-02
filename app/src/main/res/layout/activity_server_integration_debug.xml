@@ -30,11 +30,29 @@
                 android:text="Get Shopping Lists" />
 
             <Button
+                android:id="@+id/button_getDeletedShoppingLists"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Deleted Shopping Lists" />
+
+
+            <Button
                 android:id="@+id/button_getShoppingList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Get single Shopping List" />
 
+            <Button
+                android:id="@+id/button_getShoppingListItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Shopping List Items" />
+
+            <Button
+                android:id="@+id/button_getDeletedShoppingListItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Deleted Shopping List Items" />
 
             <Button
                 android:id="@+id/button_createShoppingList"
@@ -93,10 +111,28 @@
                 android:text="Get Recipes" />
 
             <Button
+                android:id="@+id/button_getDeletedRecipes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Deleted Recipes" />
+
+            <Button
                 android:id="@+id/button_getRecipe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Get single Recipe" />
+
+            <Button
+                android:id="@+id/button_getRecipeItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Recipe Items" />
+
+            <Button
+                android:id="@+id/button_getDeletedRecipeItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Deleted Recipe Items" />
 
 
             <Button

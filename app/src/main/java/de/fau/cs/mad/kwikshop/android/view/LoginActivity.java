@@ -402,11 +402,9 @@ public class LoginActivity extends FragmentActivity implements
                 SSLContext context = SSLContext.getInstance("TLS");
                 context.init(null, tmf.getTrustManagers(), null);
 
-                String uri = SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT,
-                        getString(R.string.API_PROTOCOL) +
-                                getString(R.string.API_HOST) +
-                                ":" + getString(R.string.API_PORT),
-                        LoginActivity.this);
+                String uri = getString(R.string.API_PROTOCOL) +
+                        SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, getString(R.string.API_HOST), getApplicationContext()) +
+                                ":" + getString(R.string.API_PORT);
 
                 WebTarget target = ClientBuilder.newBuilder()
                         .sslContext(context)

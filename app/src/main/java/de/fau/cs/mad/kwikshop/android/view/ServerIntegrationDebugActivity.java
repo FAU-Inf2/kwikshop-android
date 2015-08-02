@@ -29,6 +29,7 @@ import de.fau.cs.mad.kwikshop.android.restclient.ShoppingListResource;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+import de.fau.cs.mad.kwikshop.common.DeletionInfo;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.RecipeServer;
@@ -118,6 +119,37 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
         }.execute();
     }
 
+    @OnClick(R.id.button_getDeletedShoppingLists)
+    @SuppressWarnings("unused")
+    void getDeletedShoppingLists() {
+
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+
+                    privateBus.post("Getting deleted shopping lists...");
+
+                    ShoppingListResource client = clientFactory.getShoppingListClient();
+
+                    List<DeletionInfo> shoppingLists = client.getDeletedListsSynchronously();
+
+                    String serialized = mapper.writeValueAsString(shoppingLists);
+                    privateBus.post(serialized);
+
+                } catch (Exception e) {
+
+                    privateBus.post(getStackTrace(e));
+                }
+
+                return null;
+            }
+        }.execute();
+
+    }
+
     @OnClick(R.id.button_getShoppingList)
     @SuppressWarnings("unused")
     void getShoppingList() {
@@ -133,7 +165,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -168,6 +200,110 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                 },
                 NullCommand.StringInstance);
 
+
+    }
+
+    @OnClick(R.id.button_getShoppingListItems)
+    @SuppressWarnings("unused")
+    void getShoppingListItems() {
+
+        viewLauncher.showTextInputDialog("Shopping List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting shopping list items...");
+
+
+                        final int listId;
+
+                        try {
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    List<Item> list = client.getListItemsSynchronously(listId);
+
+                                    privateBus.post(mapper.writeValueAsString(list));
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+
+    }
+
+    @OnClick(R.id.button_getDeletedShoppingListItems)
+    @SuppressWarnings("unused")
+    void getDeletedShoppingListItems() {
+
+        viewLauncher.showTextInputDialog("Shopping List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting deleted shopping list items...");
+
+
+                        final int listId;
+
+                        try {
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    List<DeletionInfo> list = client.getDeletedListItemsSynchronously(listId);
+
+                                    privateBus.post(mapper.writeValueAsString(list));
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
 
     }
 
@@ -216,7 +352,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -391,7 +527,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
                                         final int itemId;
-                                        try{
+                                        try {
                                             itemId = Integer.parseInt(parameter);
                                         } catch (Exception e) {
                                             privateBus.post(getStackTrace(e));
@@ -418,7 +554,6 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                                 return null;
                                             }
                                         }.execute();
-
 
 
                                     }
@@ -519,7 +654,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -534,7 +669,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
                                         final int itemId;
-                                        try{
+                                        try {
                                             itemId = Integer.parseInt(parameter);
                                         } catch (Exception e) {
                                             privateBus.post(getStackTrace(e));
@@ -561,7 +696,6 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                                 return null;
                                             }
                                         }.execute();
-
 
 
                                     }
@@ -604,6 +738,35 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
         }.execute();
     }
 
+    @OnClick(R.id.button_getDeletedRecipes)
+    @SuppressWarnings("unused")
+    void getDeletedRecipes() {
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+
+                    privateBus.post("Getting deleted Recipes...");
+
+                    RecipeResource client = clientFactory.getRecipeClient();
+                    List<DeletionInfo> shoppingLists = client.getDeletedListsSynchronously();
+
+                    String serialized = mapper.writeValueAsString(shoppingLists);
+                    privateBus.post(serialized);
+
+                } catch (Exception e) {
+
+                    privateBus.post(getStackTrace(e));
+                }
+
+                return null;
+
+            }
+        }.execute();
+    }
+
     @OnClick(R.id.button_getRecipe)
     @SuppressWarnings("unused")
     void getRecipe() {
@@ -619,7 +782,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -656,6 +819,108 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
     }
+
+    @OnClick(R.id.button_getRecipeItems)
+    @SuppressWarnings("unused")
+    void getRecipeItems() {
+        viewLauncher.showTextInputDialog("Recipe Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting Recipe items...");
+
+
+                        final int listId;
+
+                        try {
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    RecipeResource client = clientFactory.getRecipeClient();
+                                    List<Item> list = client.getListItemsSynchronously(listId);
+
+                                    privateBus.post(mapper.writeValueAsString(list));
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+    }
+
+    @OnClick(R.id.button_getDeletedRecipeItems)
+    @SuppressWarnings("unused")
+    void getDeletedRecipeItems() {
+
+        viewLauncher.showTextInputDialog("Recipe Id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+
+                        privateBus.post("Getting deleted recipe items...");
+
+
+                        final int listId;
+
+                        try {
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+
+                                try {
+
+                                    RecipeResource client = clientFactory.getRecipeClient();
+                                    List<DeletionInfo> list = client.getDeletedListItemsSynchronously(listId);
+
+                                    privateBus.post(mapper.writeValueAsString(list));
+
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+    }
+
 
     @OnClick(R.id.button_createRecipe)
     @SuppressWarnings("unused")

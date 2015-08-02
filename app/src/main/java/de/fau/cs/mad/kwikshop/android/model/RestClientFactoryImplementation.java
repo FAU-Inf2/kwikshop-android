@@ -4,15 +4,12 @@ package de.fau.cs.mad.kwikshop.android.model;
 import android.content.Context;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
-import java.util.Date;
 
 import javax.inject.Inject;
 import javax.net.ssl.HostnameVerifier;
@@ -26,14 +23,9 @@ import de.fau.cs.mad.kwikshop.android.restclient.RecipeResource;
 import de.fau.cs.mad.kwikshop.android.restclient.ShoppingListResource;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
-import de.fau.cs.mad.kwikshop.common.localization.ResourceId;
-import de.fau.cs.mad.kwikshop.common.serialization.DateDeserializer;
-import de.fau.cs.mad.kwikshop.common.serialization.DateSerializer;
-import de.fau.cs.mad.kwikshop.common.serialization.ResourceIdDeserializer;
-import de.fau.cs.mad.kwikshop.common.serialization.ResourceIdSerializer;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
-import retrofit.converter.GsonConverter;
+import retrofit.converter.JacksonConverter;
 
 
 public class RestClientFactoryImplementation implements RestClientFactory {
@@ -114,18 +106,12 @@ public class RestClientFactoryImplementation implements RestClientFactory {
         }
 
 
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Date.class, new DateDeserializer())
-                .registerTypeAdapter(Date.class, new DateSerializer())
-                .registerTypeAdapter(ResourceId.class, new ResourceIdDeserializer())
-                .registerTypeAdapter(ResourceId.class, new ResourceIdSerializer())
-                .create();
 
         return new RestAdapter.Builder()
                 .setClient(new OkClient(client))
                 .setEndpoint(getApiEndPoint())
                 //TODO: get actual username / password
-                .setConverter(new GsonConverter(gson))
+                .setConverter(new JacksonConverter())
                 .setRequestInterceptor(new BasicAuthenticationRequestInterceptor("DEBUG", "DEBUG"))
                 .build();
     }

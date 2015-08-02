@@ -35,7 +35,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
@@ -449,7 +448,7 @@ public class LoginActivity extends FragmentActivity implements
                     }
                 }
             }
-            
+
             return success;
 
         }
@@ -524,6 +523,7 @@ public class LoginActivity extends FragmentActivity implements
                 new GetIdTokenTask().execute(null, null, null);
                 break;
             case R.id.login_debug_login:
+                SessionHandler.setSessionUser(getApplicationContext(), "DEBUG");
                 SessionHandler.setSessionToken(getApplicationContext(), "DEBUG");
                 updateUI(true);
                 break;

@@ -2,6 +2,7 @@ package de.fau.cs.mad.kwikshop.android.model;
 
 import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.ItemNotFoundException;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.ListNotFoundException;
@@ -9,12 +10,16 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
+import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
 
 public class RecipeManager extends AbstractListManager<Recipe> {
 
     @Inject
-    public RecipeManager(ListStorage<Recipe> listStorage) {
-        super(listStorage);
+    public RecipeManager(ListStorage<Recipe> listStorage,EqualityComparer equalityComparer,
+                         SimpleStorage<DeletedList> deletedListStorage,
+                         SimpleStorage<DeletedItem> deletedItemStorage) {
+
+        super(listStorage,equalityComparer, deletedListStorage, deletedItemStorage);
     }
 
     @Override

@@ -76,6 +76,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private Dao<LastLocation, Integer> locationDao = null;
     private RuntimeExceptionDao<LastLocation, Integer> locationRunTimeDao = null;
 
+    private Dao<DeletedList, Integer> deletedListDao = null;
+    private RuntimeExceptionDao<DeletedList, Integer> deletedListRuntimeDao = null;
+
+    private Dao<DeletedItem, Integer> deletedItemDao = null;
+    private RuntimeExceptionDao<DeletedItem, Integer> deletedItemRuntimeDao = null;
+
+
     public DatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -544,6 +551,34 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         return locationRunTimeDao;
     }
 
+    public Dao<DeletedList,Integer> getDeletedListDao() throws SQLException {
+        if (deletedListDao == null) {
+            deletedListDao = getDao(DeletedList.class);
+        }
+        return deletedListDao;
+    }
+
+    public RuntimeExceptionDao<DeletedList, Integer> getDeletedListRuntimeDao() {
+        if (deletedListRuntimeDao == null) {
+            deletedListRuntimeDao = getRuntimeExceptionDao(DeletedList.class);
+        }
+        return deletedListRuntimeDao;
+    }
+
+
+    public Dao<DeletedItem, Integer> getDeletedItemDao() throws SQLException {
+        if (deletedItemDao == null) {
+            deletedItemDao = getDao(DeletedItem.class);
+        }
+        return deletedItemDao;
+    }
+
+    public RuntimeExceptionDao<DeletedItem, Integer> getDeletedItemRuntimeDao() {
+        if (deletedItemRuntimeDao == null) {
+            deletedItemRuntimeDao = getRuntimeExceptionDao(DeletedItem.class);
+        }
+        return deletedItemRuntimeDao;
+    }
 
     @Override
     public void close() {
@@ -669,5 +704,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         }
 
     }
+
 
 }

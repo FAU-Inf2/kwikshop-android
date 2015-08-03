@@ -17,7 +17,7 @@ public class DeletedItem extends DeletedList {
 
     }
 
-    public DeletedItem(ListType listType, int listId, int serverVersion, int itemId) {
+    public DeletedItem(ListType listType, int listId, int itemId, int serverVersion) {
         super(listType, listId, serverVersion);
 
         this.itemId = itemId;

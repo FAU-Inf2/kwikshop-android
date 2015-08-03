@@ -8,6 +8,9 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 @DatabaseTable(tableName = "deletedList")
 public class DeletedList {
 
+    @DatabaseField(generatedId = true)
+    private int id;
+
     @DatabaseField
     private ListType listType;
 

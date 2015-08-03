@@ -232,6 +232,8 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         deletedItemStorage.addItem(new DeletedItem(getListType(), listId, itemId, item.getVersion()));
 
         list.setModifiedSinceLastSync(true);
+        list.removeItem(itemId);
+
         saveListWithoutEvents(listId);
 
         eventBus.post(new ItemChangedEvent(getListType(),ItemChangeType.Deleted, listId, itemId));

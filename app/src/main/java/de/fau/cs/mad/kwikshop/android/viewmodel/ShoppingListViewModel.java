@@ -255,6 +255,9 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     @SuppressWarnings("unused")
     public void onEventMainThread(ItemSortType sortType) {
         setItemSortType(sortType);
+        ShoppingList list = listManager.getList(listId);
+        list.setSortTypeInt(sortType.ordinal());
+        listManager.saveList(list.getId());
         sortItems();
     }
 

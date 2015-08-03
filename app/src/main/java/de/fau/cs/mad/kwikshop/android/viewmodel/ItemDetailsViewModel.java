@@ -85,11 +85,10 @@ public class ItemDetailsViewModel{
         if(!initialized){
             this.listId = listId;
             this.itemId = itemId;
-            shoppingList = shoppingListManager.getList(listId);
             if(itemId == -1){
                 isNewItem = true;
             }else {
-                item = shoppingListManager.getListItem(listId, itemId);
+                //item = shoppingListManager.getListItem(listId, itemId);
             }
             units = unitStorage.getItems();
             groups = groupStorage.getItems();

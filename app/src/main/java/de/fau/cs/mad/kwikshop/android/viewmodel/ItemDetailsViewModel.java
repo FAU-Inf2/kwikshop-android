@@ -148,6 +148,14 @@ public class ItemDetailsViewModel{
         this.rotateImage = rotateImage;
     }
 
+    public Unit getSelectedUnit(int index){
+        return units.get(index);
+    }
+
+    public Group getSelectedGroup(int index){
+        return groups.get(index);
+    }
+
 
     public void sortUnitsByName(){
         Collections.sort(units, new Comparator<Unit>() {

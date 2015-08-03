@@ -19,16 +19,23 @@ import java.util.Calendar;
 import javax.inject.Inject;
 import javax.ws.rs.NotSupportedException;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.TimePeriodsEnum;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
+import de.greenrobot.event.EventBus;
 
 
 public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<ShoppingList> {
@@ -74,10 +81,10 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
     @InjectView(R.id.repeat_radioButton_repeatType_listCreation)
     RadioButton repeat_radioButton_repeatType_listCreation;
 
-    @Inject
-    RegularlyRepeatHelper repeatHelper;
-
     private String additionalToastText;
+
+    private ShoppingListItemDetailsViewModel viewModel;
+
 
     /**
      * Creates a new instance of ItemDetailsFragment for a new shopping list item in the specified list
@@ -109,6 +116,10 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
+        viewModel = objectGraph.get(ShoppingListItemDetailsViewModel.class);
+        objectGraph.inject(this);
 
         repeat_Container.setVisibility(View.VISIBLE);
 
@@ -253,28 +264,22 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
                     additionalToastText += ". " + getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
 
                 } else { //repeat from next purchase on
-                    item.setLastBought(null);
-                    item.setRemindAtDate(null);
+                    viewModel.repeatFromNextPurchaseOn(item);
                     additionalToastText += ". " + getString(R.string.reminder_nextTimeBought_msg);
                 }
 
             } else {
 
-                item.setPeriodType(null);
-                item.setSelectedRepeatTime(0);
-                item.setRemindFromNowOn(false);
-                item.setLastBought(null);
-                item.setRemindAtDate(null);
+                viewModel.repeatOnNewList(item);
             }
 
-            repeatHelper.offerRepeatData(item);
+            viewModel.offerRepeatData(item);
 
         } else { // repeat_checkbox is not checked
             boolean wasRegularRepeat = item.getRepeatType() != RepeatType.None;
             item.setRepeatType(RepeatType.None);
             if (wasRegularRepeat) { //repeat_checkbox was checked before
-                item.setRemindAtDate(null);
-                repeatHelper.delete(item);
+                viewModel.deleteRepetition(item);
                 additionalToastText += ". " + getString(R.string.reminder_deleted_msg);
             }
         }

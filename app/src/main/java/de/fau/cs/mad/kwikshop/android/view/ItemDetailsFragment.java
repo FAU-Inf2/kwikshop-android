@@ -269,14 +269,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         viewModel.setImageItem();
 
         if (selectedUnitIndex >= 0) {
-            Unit u = viewModel.getUnits().get(selectedUnitIndex);
+            Unit u = viewModel.getSelectedUnit(selectedUnitIndex);
             item.setUnit(u);
         } else {
             item.setUnit(unitStorage.getDefaultValue());
         }
 
         if (selectedGroupIndex >= 0) {
-            Group g = viewModel.getGroups().get(selectedGroupIndex);
+            Group g = viewModel.getSelectedGroup(selectedGroupIndex);
             item.setGroup(g);
         } else {
             item.setGroup(groupStorage.getDefaultValue());
@@ -616,7 +616,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     }
 
 
-    private void setCustomActionBar() {
+    protected void setCustomActionBar() {
 
         if (getActivity() instanceof SaveDeleteActivity) {
 

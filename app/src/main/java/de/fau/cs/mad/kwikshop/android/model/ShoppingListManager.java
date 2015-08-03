@@ -4,16 +4,22 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.model.exceptions.*;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
 
 public class ShoppingListManager extends AbstractListManager<ShoppingList> {
 
     private final RegularlyRepeatHelper repeatHelper;
 
     @Inject
-    public ShoppingListManager(ListStorage<ShoppingList> listStorage, RegularlyRepeatHelper repeatHelper) {
-        super(listStorage);
+    public ShoppingListManager(ListStorage<ShoppingList> listStorage, RegularlyRepeatHelper repeatHelper,
+                               EqualityComparer equalityComparer,
+                               SimpleStorage<DeletedList> deletedListStorage,
+                               SimpleStorage<DeletedItem> deletedItemStorage) {
+
+        super(listStorage, equalityComparer, deletedListStorage, deletedItemStorage);
 
         if(repeatHelper == null) {
             throw new ArgumentNullException("repeatHelper");

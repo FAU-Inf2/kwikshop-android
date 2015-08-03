@@ -6,8 +6,11 @@ import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
-import de.fau.cs.mad.kwikshop.android.model.RestClientFactory;
+import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
+import de.fau.cs.mad.kwikshop.android.model.DeletedList;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.model.RestClientFactoryImplementation;
+import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
@@ -48,6 +51,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
 
 @Module(injects = {
         ListOfShoppingListsViewModel.class,
@@ -152,17 +156,26 @@ public class KwikShopModule {
 
 
     @Provides
-    public ListManager<ShoppingList> provideShoppingListManager(ListStorage<ShoppingList> listStorage, RegularlyRepeatHelper repeatHelper) {
+    public ListManager<ShoppingList> provideShoppingListManager(ListStorage<ShoppingList> listStorage,
+                                                                RegularlyRepeatHelper repeatHelper,
+                                                                EqualityComparer equalityComparer,
+                                                                SimpleStorage<DeletedList> deletedListStorage,
+                                                                SimpleStorage<DeletedItem> deletedItemStorage) {
         if(shoppingListManager == null) {
-            shoppingListManager = new ShoppingListManager(listStorage, repeatHelper);
+            shoppingListManager = new ShoppingListManager(listStorage, repeatHelper, equalityComparer,
+                                                          deletedListStorage, deletedItemStorage);
         }
         return shoppingListManager;
     }
 
     @Provides
-    public ListManager<Recipe> provideRecipeManager(ListStorage<Recipe> listStorage) {
+    public ListManager<Recipe> provideRecipeManager(ListStorage<Recipe> listStorage,
+                                                    EqualityComparer equalityComparer,
+                                                    SimpleStorage<DeletedList> deletedListStorage,
+                                                    SimpleStorage<DeletedItem> deltedItemStorage) {
         if(recipeManager == null) {
-            recipeManager = new RecipeManager(listStorage);
+            recipeManager = new RecipeManager(listStorage, equalityComparer,
+                                              deletedListStorage, deltedItemStorage);
         }
         return recipeManager;
     }
@@ -194,5 +207,20 @@ public class KwikShopModule {
     @Provides
     public DatabaseHelper provideDatabaseHelper(Context context) {
         return new DatabaseHelper(context);
+    }
+
+    @Provides
+    public EqualityComparer provideEqualityComparer() {
+        return new ClientEqualityComparer();
+    }
+
+    @Provides
+    public SimpleStorage<DeletedList> provideDeletedListStorage() {
+        return ListStorageFragment.getDeletedListStorage();
+    }
+
+    @Provides
+    public SimpleStorage<DeletedItem> provideDeletedItemStorage() {
+        return ListStorageFragment.getDeletedItemStorage();
     }
 }

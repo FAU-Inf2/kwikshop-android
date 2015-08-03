@@ -36,6 +36,8 @@ public class ListStorageFragment extends Fragment {
     private static SimpleStorage<Unit> m_UnitStorage;
     private static SimpleStorage<CalendarEventDate> m_CalendarEventStorage;
     private static SimpleStorage<LastLocation> m_LastLocationStorage;
+    private static SimpleStorage<DeletedList> m_DeletedListStorage;
+    private static SimpleStorage<DeletedItem> m_DeletedItemStorage;
     private static ListStorageFragment m_ListStorageFragment;
     private static DatabaseHelper m_DatabaseHelper;
     private static ListStorage<Recipe> m_RecipeStorage;
@@ -70,6 +72,14 @@ public class ListStorageFragment extends Fragment {
 
     public static SimpleStorage<LastLocation> getLastLocationStorage(){
         return m_LastLocationStorage;
+    }
+
+    public static SimpleStorage<DeletedList> getDeletedListStorage() {
+        return m_DeletedListStorage;
+    }
+
+    public static SimpleStorage<DeletedItem> getDeletedItemStorage() {
+        return m_DeletedItemStorage;
     }
 
 
@@ -127,6 +137,10 @@ public class ListStorageFragment extends Fragment {
             m_CalendarEventStorage = new SimpleStorageBase<>(m_DatabaseHelper.getCalendarDao());
 
             m_LastLocationStorage = new SimpleStorageBase<>(m_DatabaseHelper.getLocationDao());
+
+            m_DeletedListStorage = new SimpleStorageBase<>(m_DatabaseHelper.getDeletedListDao());
+
+            m_DeletedItemStorage = new SimpleStorageBase<>(m_DatabaseHelper.getDeletedItemDao());
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -205,7 +205,7 @@ public class SettingFragment extends Fragment {
         Configuration conf = res.getConfiguration();
         conf.locale = setLocale;
         res.updateConfiguration(conf, dm);
-        Intent refresh = new Intent(getActivity(), ListOfShoppingListsActivity.class);
+        Intent refresh = new Intent(getActivity(), SettingActivity.class);
         refresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(refresh);
         getActivity().finish();

@@ -55,9 +55,20 @@ public class SettingAdapter extends ArrayAdapter<Setting> {
 
         tvSetname.setText(settingsList.get(position).getName());
         tvSetdesc.setText(settingsList.get(position).getCaption());
-        checkbox.setVisibility(View.INVISIBLE);
+
+        // setup checkbox
+        if(settingsList.get(position).getViewVisibility() == View.INVISIBLE){
+            checkbox.setVisibility(View.INVISIBLE);
+        } else {
+            checkbox.setVisibility(View.VISIBLE);
+            checkbox.setChecked(settingsList.get(position).isChecked());
+            checkbox.setFocusable(false);
+            checkbox.setFocusableInTouchMode(false);
+        }
 
         return view;
     }
+
+
 
 }

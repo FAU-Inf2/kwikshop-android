@@ -9,16 +9,19 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -53,9 +56,15 @@ public class SettingFragment extends Fragment {
     private ListView listView;
     private Context context;
     private ArrayList<Setting> settingsList;
+    private SettingAdapter objAdapter;
 
 
     private Setting apiEndpointSetting;
+    private Setting locationPermission;
+    private Setting setLocale;
+    private Setting setAutoCompletionDeletion;
+    private Setting setManageUnits;
+
 
     @Inject
     ViewLauncher viewLauncher;
@@ -86,15 +95,16 @@ public class SettingFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 // local change
-                if (settingsList.get(position).getName().equals(getString(R.string.settings_option_2_setlocale)))
+                if (settingsList.get(position).equals(setLocale))
                     changeLocalOption();
 
+
                 // delete history of autocompletion
-                if (settingsList.get(position).getName().equals(getString(R.string.settings_option_3_deleteHistory)))
-                    deleteAutoCompletionHistoryOption(position);
+                if (settingsList.get(position).equals(setAutoCompletionDeletion))
+                    deleteAutoCompletionHistoryOption();
 
                 // manage units
-                if (settingsList.get(position).getName().equals(getString(R.string.settings_option_3_manageUnits)))
+                if (settingsList.get(position).equals(setManageUnits))
                     manageUnits(position);
 
                 // set API endpoint
@@ -102,10 +112,17 @@ public class SettingFragment extends Fragment {
                     setApiEndpoint();
 
                 // location permission
+                if(settingsList.get(position).equals(locationPermission)){
+                    setLocationPermission(position);
+                }
+
 
 
             }
         });
+
+
+
 
 
         // set title for actionbar
@@ -115,19 +132,19 @@ public class SettingFragment extends Fragment {
         settingsList = new ArrayList<>();
 
         // Locale Setting
-        Setting setLocale = new Setting(context);
+        setLocale = new Setting(context);
         setLocale.setName(R.string.settings_option_2_setlocale);
         setLocale.setCaption(R.string.settings_option_2_desc);
         settingsList.add(setLocale);
 
         // Autocompletion deletion
-        Setting setAutoCompletionDeletion = new Setting(context);
+        setAutoCompletionDeletion = new Setting(context);
         setAutoCompletionDeletion.setName(R.string.settings_option_3_deleteHistory);
         setAutoCompletionDeletion.setCaption(R.string.settings_option_3_desc);
         settingsList.add(setAutoCompletionDeletion);
 
         // manage units
-        Setting setManageUnits = new Setting(context);
+        setManageUnits = new Setting(context);
         setManageUnits.setName(R.string.settings_option_3_manageUnits);
         setManageUnits.setCaption(R.string.settings_option_3_desc2);
         settingsList.add(setManageUnits);
@@ -139,17 +156,19 @@ public class SettingFragment extends Fragment {
         settingsList.add(apiEndpointSetting);
 
         // permission for location tracking
-
+        locationPermission = new Setting(context);
+        locationPermission.setName(R.string.settings_option_5_location_permission_title);
+        locationPermission.setCaption(R.string.settings_option_5_location_permission_desc);
+        locationPermission.setViewVisibility(View.VISIBLE);
+        settingsList.add(locationPermission);
 
         // Adapter for settings view
-        SettingAdapter objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, settingsList);
+        objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, settingsList);
         listView.setAdapter(objAdapter);
 
-
         return rootView;
-
-
     }
+
 
     private void changeLocalOption() {
 
@@ -192,7 +211,7 @@ public class SettingFragment extends Fragment {
         getActivity().finish();
     }
 
-    public void deleteAutoCompletionHistoryOption(int position) {
+    public void deleteAutoCompletionHistoryOption() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.settings_option_3_check_title);
@@ -286,5 +305,18 @@ public class SettingFragment extends Fragment {
         );
 
     }
+
+    private void setLocationPermission(int position){
+
+        if(objAdapter.getItem(position).isChecked()){
+            objAdapter.getItem(position).setChecked(false);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,false,getActivity());
+        } else {
+            objAdapter.getItem(position).setChecked(true);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,true,getActivity());
+        }
+        objAdapter.notifyDataSetChanged();
+    }
+
 
 }

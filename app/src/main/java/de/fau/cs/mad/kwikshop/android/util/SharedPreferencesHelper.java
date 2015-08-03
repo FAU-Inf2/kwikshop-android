@@ -13,6 +13,7 @@ public class SharedPreferencesHelper {
     public static final String SKIP_LOGIN = "SKIPLOGIN";
     public static final String LOCALE = "locale";
     public static final String API_ENDPOINT = "API_ENDPOINT";
+    public static final String LOCATION_PERMISSION = "location_permission";
 
     private static final String sharedPreferencesName = "settings";
 

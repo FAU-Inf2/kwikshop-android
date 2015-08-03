@@ -19,6 +19,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RecipeResource;
 import de.fau.cs.mad.kwikshop.android.restclient.ShoppingListResource;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;

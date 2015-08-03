@@ -8,19 +8,19 @@ import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
-import de.fau.cs.mad.kwikshop.android.model.RestClientFactory;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.model.RestClientFactoryImplementation;
-import de.fau.cs.mad.kwikshop.android.model.SimpleStorageBase;
 import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
-import de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity;
 import de.fau.cs.mad.kwikshop.android.view.ServerIntegrationDebugActivity;
 import de.fau.cs.mad.kwikshop.android.view.SettingFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.IoService;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -71,7 +71,9 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         SettingFragment.class,
         ServerIntegrationDebugActivity.class,
         RegularlyRepeatHelper.class,
-        ItemDetailsViewModel.class
+        ItemDetailsViewModel.class,
+        ShoppingListItemDetailsViewModel.class,
+        RecipeItemDetailsViewModel.class
 },
         library = true)
 @SuppressWarnings("unused")

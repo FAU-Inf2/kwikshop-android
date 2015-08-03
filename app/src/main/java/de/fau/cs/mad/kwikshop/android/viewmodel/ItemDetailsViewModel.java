@@ -85,11 +85,10 @@ public class ItemDetailsViewModel{
         if(!initialized){
             this.listId = listId;
             this.itemId = itemId;
-            shoppingList = shoppingListManager.getList(listId);
             if(itemId == -1){
                 isNewItem = true;
             }else {
-                item = shoppingListManager.getListItem(listId, itemId);
+                //item = shoppingListManager.getListItem(listId, itemId);
             }
             units = unitStorage.getItems();
             groups = groupStorage.getItems();
@@ -146,6 +145,14 @@ public class ItemDetailsViewModel{
 
     public void setRotateImage(Bitmap rotateImage){
         this.rotateImage = rotateImage;
+    }
+
+    public Unit getSelectedUnit(int index){
+        return units.get(index);
+    }
+
+    public Group getSelectedGroup(int index){
+        return groups.get(index);
     }
 
 

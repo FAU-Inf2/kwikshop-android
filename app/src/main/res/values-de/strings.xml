@@ -197,5 +197,7 @@
     <string name="date_today">heute</string>
     <string name="settings_option_5_location_permission_desc">Aktiviere Standortbestimmung während des Einkaufs</string>
     <string name="settings_option_5_location_permission_title">Standortbestimmung</string>
+    <string name="item">Artikel</string>
+    <string name="kwikshop_login_success">Du bist eingeloggt.</string>
 
 </resources>

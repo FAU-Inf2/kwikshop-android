@@ -13,6 +13,7 @@ import java.util.Locale;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.util.TopExceptionHandler;
 
@@ -101,8 +102,7 @@ public class ErrorReportingActivity extends ActionBarActivity {
         Locale setLocale;
 
         // get current locale index
-        int currentLocaleIdIndex = getSharedPreferences(SettingFragment.SETTINGS, Context.MODE_PRIVATE)
-                .getInt(SettingFragment.OPTION_1, 0);
+        int currentLocaleIdIndex =  SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, getApplicationContext());
         setLocale = new Locale(SettingFragment.localeIds[currentLocaleIdIndex].toString());
 
         if(currentLocaleIdIndex == 0) // default

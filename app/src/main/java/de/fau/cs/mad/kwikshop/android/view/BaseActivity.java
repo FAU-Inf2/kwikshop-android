@@ -148,7 +148,7 @@ public class BaseActivity extends ActionBarActivity {
         refreshed = true;
 
         // get current locale index
-        int currentLocaleIdIndex = getSharedPreferences(SettingFragment.SETTINGS, Context.MODE_PRIVATE).getInt(SettingFragment.OPTION_1, 0);
+        int currentLocaleIdIndex =  SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, getApplicationContext());
         Locale setLocale= new Locale(SettingFragment.localeIds[currentLocaleIdIndex].toString());
 
         if(currentLocaleIdIndex == 0) // default

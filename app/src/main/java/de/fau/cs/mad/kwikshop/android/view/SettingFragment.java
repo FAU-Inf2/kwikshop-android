@@ -45,16 +45,11 @@ public class SettingFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     public static String SETTINGS = "settings";
-    public static String OPTION_1 = "locale";
-    public static String OPTION_2 = "autocomplete";
-    public static String OPTION_3 = "create units";
-    public static String OPTION_4 = "create groups";
-    public static CharSequence[] localeSelectionNames = {"Default", "English", "German", "Portuguese", " Russian"};
+    public static CharSequence[] localeSelectionNames = {"Default", "English", "German", "Portuguese", "Russian"};
     public static CharSequence[] localeIds = {"default", "en", "de", "pt", "ru"};
 
     private View rootView;
     private AlertDialog alert;
-    private ArrayList setList;
     private ListView listView;
     private Context context;
     private ArrayList<Setting> settingsList;
@@ -92,18 +87,22 @@ public class SettingFragment extends Fragment {
 
                 // local change
                 if (settingsList.get(position).getName().equals(getString(R.string.settings_option_2_setlocale)))
-                    changeLocalOption(position);
+                    changeLocalOption();
 
                 // delete history of autocompletion
                 if (settingsList.get(position).getName().equals(getString(R.string.settings_option_3_deleteHistory)))
                     deleteAutoCompletionHistoryOption(position);
 
-                //manage units
+                // manage units
                 if (settingsList.get(position).getName().equals(getString(R.string.settings_option_3_manageUnits)))
                     manageUnits(position);
 
+                // set API endpoint
                 if(settingsList.get(position).equals(apiEndpointSetting))
                     setApiEndpoint();
+
+                // location permission
+
 
             }
         });
@@ -139,6 +138,9 @@ public class SettingFragment extends Fragment {
         apiEndpointSetting.setCaption(R.string.settings_option_4_APIEndPoint_Desc);
         settingsList.add(apiEndpointSetting);
 
+        // permission for location tracking
+
+
         // Adapter for settings view
         SettingAdapter objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, settingsList);
         listView.setAdapter(objAdapter);
@@ -149,39 +151,29 @@ public class SettingFragment extends Fragment {
 
     }
 
-    private void changeLocalOption(int position) {
-
+    private void changeLocalOption() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        //int currentLocaleIdIndex = getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).getInt(OPTION_1, 0);
         int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, getActivity());
         builder.setTitle(R.string.settings_option_2_setlocale);
         builder.setSingleChoiceItems(localeSelectionNames, currentLocaleIdIndex, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 setLocale(localeIds[which].toString());
                 SharedPreferencesHelper.saveInt(SharedPreferencesHelper.LOCALE, which, getActivity());
-                //getActivity().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE).edit().putInt(OPTION_1, which).apply();
-
             }
-
         });
 
         alert = builder.create();
         alert.show();
-
-
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
-
         if (alert != null)
             alert.dismiss();
-
     }
 
     public void setLocale(String lang) {

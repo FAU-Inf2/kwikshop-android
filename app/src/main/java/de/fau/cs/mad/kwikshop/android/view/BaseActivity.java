@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -120,9 +121,7 @@ public class BaseActivity extends ActionBarActivity {
 
         if (SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, this)) {
             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getApplicationContext());
-            Intent intent = getIntent();
-            finish();
-            startActivity(intent);
+            restartActivity();
             return;
         }
         super.onBackPressed();
@@ -131,8 +130,13 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getApplicationContext());
 
+    }
+
+    private void restartActivity(){
+        Intent intent = new Intent(this, getClass());
+        finish();
+        startActivity(intent);
     }
 
 
@@ -141,29 +145,24 @@ public class BaseActivity extends ActionBarActivity {
         if (refreshed) {
             return;
         }
-
         refreshed = true;
-
-        Locale setLocale;
 
         // get current locale index
         int currentLocaleIdIndex = getSharedPreferences(SettingFragment.SETTINGS, Context.MODE_PRIVATE).getInt(SettingFragment.OPTION_1, 0);
-        setLocale = new Locale(SettingFragment.localeIds[currentLocaleIdIndex].toString());
+        Locale setLocale= new Locale(SettingFragment.localeIds[currentLocaleIdIndex].toString());
 
         if(currentLocaleIdIndex == 0) // default
             setLocale = Locale.getDefault();
 
+        // change locale configuration
         Resources res = getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
         Configuration conf = res.getConfiguration();
         conf.locale = setLocale;
         res.updateConfiguration(conf, dm);
 
-
         // Activity must be restarted to set saved locale
-        Intent refresh = new Intent(this, getClass());
-        finish();
-        startActivity(refresh);
+        restartActivity();
     }
 
 

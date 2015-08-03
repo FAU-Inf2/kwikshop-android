@@ -195,5 +195,7 @@
     <string name="day">Tag</string>
     <string name="dateDescription_minutes_ago">vor %1$s minuten</string>
     <string name="date_today">heute</string>
+    <string name="item">Artikel</string>
+    <string name="kwikshop_login_success">Du bist eingeloggt.</string>
 
 </resources>

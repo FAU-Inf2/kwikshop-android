@@ -111,7 +111,13 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         if(showDivider) {
             viewHolder.tableRow_divider_table.setVisibility(View.VISIBLE);
-            //viewHolder.textView_CartCounter.setText(shoppingListViewModel.getBoughtItemsCount());
+            viewHolder.textView_CartCounter.setText(String.valueOf(shoppingListViewModel.getBoughtItemsCount()));
+
+            // Special case: single item -> singular form of "Items"
+            if(shoppingListViewModel.getBoughtItemsCount() == 1)
+                viewHolder.textView_Items.setText(R.string.item);
+            else
+                viewHolder.textView_Items.setText(R.string.items);
         } else {
             viewHolder.tableRow_divider_table.setVisibility(View.GONE);
         }
@@ -290,6 +296,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         @InjectView(R.id.textView_cartCounter)
         TextView textView_CartCounter;
+
+        @InjectView(R.id.textView_items)
+        TextView textView_Items;
 
         @InjectView(R.id.list_row_textView_Main)
         TextView textView_Name;

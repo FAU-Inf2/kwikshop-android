@@ -159,6 +159,7 @@ public class SettingFragment extends Fragment {
         locationPermission = new Setting(context);
         locationPermission.setName(R.string.settings_option_5_location_permission_title);
         locationPermission.setCaption(R.string.settings_option_5_location_permission_desc);
+        locationPermission.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,false,getActivity()));
         locationPermission.setViewVisibility(View.VISIBLE);
         settingsList.add(locationPermission);
 

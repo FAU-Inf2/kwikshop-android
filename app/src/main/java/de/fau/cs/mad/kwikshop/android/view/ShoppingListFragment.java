@@ -147,7 +147,9 @@ public class ShoppingListFragment
                                     //Item item = viewModel.getItems().get(position);
                                     Item item = shoppingListAdapter.getItem(position);
                                     command.execute(item.getId());
-                                    viewModel.setLocationOnItemBought(item.getId(), googleBrowserApiKey);
+                                    if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,false,getActivity())){
+                                        viewModel.setLocationOnItemBought(item.getId(), googleBrowserApiKey);
+                                    }
                                 } catch (IndexOutOfBoundsException ex) {
                                     //nothing to do
                                 }

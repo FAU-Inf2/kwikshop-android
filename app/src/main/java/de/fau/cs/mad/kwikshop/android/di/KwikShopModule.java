@@ -8,6 +8,7 @@ import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.model.RestClientFactoryImplementation;
+import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
@@ -47,6 +48,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
 
 @Module(injects = {
         ListOfShoppingListsViewModel.class,
@@ -191,5 +193,10 @@ public class KwikShopModule {
     @Provides
     public DatabaseHelper provideDatabaseHelper(Context context) {
         return new DatabaseHelper(context);
+    }
+
+    @Provides
+    public EqualityComparer provideEqualityComparer() {
+        return new ClientEqualityComparer();
     }
 }

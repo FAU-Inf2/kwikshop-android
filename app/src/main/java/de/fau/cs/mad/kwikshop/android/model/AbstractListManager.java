@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.ItemNotFoundException;
@@ -20,12 +21,16 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.tasks.SaveListTask;
+import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
 import de.greenrobot.event.EventBus;
 
 public abstract class AbstractListManager<TList extends DomainListObject> implements ListManager<TList> {
 
-
     private final ListStorage<TList> listStorage;
+    private final EqualityComparer equalityComparer;
+    private final SimpleStorage<DeletedList> deletedListStorage;
+    private final SimpleStorage<DeletedItem> deletedItemStorage;
+
     private final EventBus eventBus = EventBus.getDefault();
 
     private final Object loadLock = new Object();
@@ -38,12 +43,32 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
 
 
-    public AbstractListManager(ListStorage<TList> listStorage) {
+    public AbstractListManager(ListStorage<TList> listStorage, EqualityComparer equalityComparer,
+                               SimpleStorage<DeletedList> deletedListStorage,
+                               SimpleStorage<DeletedItem> deletedItemStorage) {
+
         if (listStorage == null) {
-            throw new IllegalArgumentException("'listStorage' must not be null");
+            throw new ArgumentNullException("listStorage");
         }
 
+        if(equalityComparer == null) {
+            throw new ArgumentNullException("equalityComparer");
+        }
+
+        if(deletedListStorage == null) {
+            throw new ArgumentNullException("deletedListStorage");
+        }
+
+        if(deletedItemStorage == null) {
+            throw new ArgumentNullException("deletedItemStorage");
+        }
+
+
         this.listStorage = listStorage;
+        this.equalityComparer = equalityComparer;
+        this.deletedListStorage = deletedListStorage;
+        this.deletedItemStorage = deletedItemStorage;
+
         loadLists();
     }
 
@@ -106,6 +131,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         int id = listStorage.createList();
         TList list = listStorage.loadList(id);
         list.setLastModifiedDate(new Date());
+        list.setModifiedSinceLastSync(true);
         listStorage.saveList(list);
 
         int listId = list.getId();
@@ -124,9 +150,11 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
     public TList saveList(int listId) {
 
         TList shoppingList = saveListWithoutEvents(listId);
+        shoppingList.setModifiedSinceLastSync(true);
         eventBus.post(getPropertiesModifiedListChangedEvent(shoppingList.getId()));
         return shoppingList;
     }
+
 
     @Override
     public Item addListItem(int listId, Item item) {
@@ -141,6 +169,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
         list.addItem(item);
         list.setLastModifiedDate(new Date());
+        list.setModifiedSinceLastSync(true);
         listStorage.saveList(list);
 
         synchronized (listLock) {
@@ -155,15 +184,22 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
     @Override
     public Item saveListItem(int listId, Item item) {
 
+        TList list;
         synchronized (listLock) {
             if (!lists.containsKey(listId)) {
                 throw listNotFound(listId);
             }
 
+            list = lists.get(listId);
+
             if (listItems.get(listId).get(item.getId()) == null) {
                 throw itemNotFound(listId, item.getId());
             }
         }
+
+        list.setModifiedSinceLastSync(true);
+        item.setModifiedSinceLastSync(true);
+
         saveListWithoutEvents(listId);
 
         eventBus.post(new ItemChangedEvent(getListType(), ItemChangeType.PropertiesModified, listId, item.getId()));
@@ -173,14 +209,18 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
     @Override
     public boolean deleteItem(int listId, int itemId) {
+
         TList list;
+        Item item;
+
         synchronized (listLock) {
 
             if (!lists.containsKey(listId)) {
                 return false;
             }
 
-            if (listItems.get(listId).get(itemId) == null) {
+            item = listItems.get(listId).get(itemId);
+            if (item == null) {
                 return false;
             }
 
@@ -188,28 +228,34 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
             list = lists.get(listId);
         }
 
-        if (list.removeItem(itemId)) {
-            saveListWithoutEvents(listId);
 
-            eventBus.post(new ItemChangedEvent(getListType(),ItemChangeType.Deleted, listId, itemId));
-            return true;
+        deletedItemStorage.addItem(new DeletedItem(getListType(), listId, itemId, item.getVersion()));
 
-        } else {
-            return false;
-        }
+        list.setModifiedSinceLastSync(true);
+        list.removeItem(itemId);
+
+        saveListWithoutEvents(listId);
+
+        eventBus.post(new ItemChangedEvent(getListType(),ItemChangeType.Deleted, listId, itemId));
+        return true;
+
     }
 
     @Override
     public boolean deleteList(int listId) {
+
+        TList list;
         synchronized (listLock) {
             if (!lists.containsKey(listId)) {
                 return false;
             }
+            list = lists.get(listId);
             lists.remove(listId);
             listItems.remove(listId);
         }
 
         listStorage.deleteList(listId);
+        deletedListStorage.addItem(new DeletedList(getListType(), listId, list.getServerVersion()));
 
         eventBus.post(getDeletedListChangedEvent(listId));
 

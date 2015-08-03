@@ -79,14 +79,34 @@ public class RegularlyRepeatHelper {
         }
     }
 
-    public void offerRepeatData (Item item) {
-        if (!(scheduleRepeatList.contains(item))){
-            scheduleRepeatList.add(item);
-        } else {
-            // delete the item and add it again, in order to re-sort the list
-            scheduleRepeatList.remove(item);
-            scheduleRepeatList.add(item);
+    public void offerRepeatData(Item item) {
+
+        switch (item.getRepeatType()) {
+
+            case None:
+                break;
+
+            case Schedule:
+                if (!(scheduleRepeatList.contains(item))){
+                    scheduleRepeatList.add(item);
+                } else {
+                    // delete the item and add it again, in order to re-sort the list
+                    scheduleRepeatList.remove(item);
+                    scheduleRepeatList.add(item);
+                }
+                break;
+
+            case ListCreation:
+                if(!listCreationRepeatList.contains(item)) {
+                    listCreationRepeatList.add(item);
+                }
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unimplemented case in switch-statment");
         }
+
+
     }
 
     public List<Item> getAll() {

@@ -11,16 +11,19 @@ public class DeletedItem extends DeletedList {
     @DatabaseField
     private int itemId;
 
+    @DatabaseField
+    private int itemIdServer;
 
 
     public DeletedItem() {
 
     }
 
-    public DeletedItem(ListType listType, int listId, int itemId, int serverVersion) {
-        super(listType, listId, serverVersion);
+    public DeletedItem(ListType listType, int listId, int listIdServer, int itemId, int itemIdServer, int serverVersion) {
+        super(listType, listId, listIdServer, serverVersion);
 
         this.itemId = itemId;
+        this.itemIdServer = itemIdServer;
     }
 
 
@@ -29,4 +32,7 @@ public class DeletedItem extends DeletedList {
         return this.itemId;
     }
 
+    public int getItemIdServer() {
+        return this.itemIdServer;
+    }
 }

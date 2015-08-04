@@ -11,11 +11,15 @@ public class DeletedList {
     @DatabaseField(generatedId = true)
     private int id;
 
+
     @DatabaseField
     private ListType listType;
 
     @DatabaseField
     private int listId;
+
+    @DatabaseField
+    private int listIdServer;
 
     @DatabaseField
     private int serverVersion;
@@ -26,11 +30,12 @@ public class DeletedList {
 
     }
 
-    public DeletedList(ListType listType, int listId, int serverVersion) {
+    public DeletedList(ListType listType, int listId, int listIdServer, int serverVersion) {
 
         this.listType = listType;
         this.listId = listId;
         this.serverVersion = serverVersion;
+        this.listIdServer = listIdServer;
     }
 
 
@@ -45,6 +50,10 @@ public class DeletedList {
 
     public int getServerVersion() {
         return this.serverVersion;
+    }
+
+    public int getListIdServer() {
+        return this.listIdServer;
     }
 
 }

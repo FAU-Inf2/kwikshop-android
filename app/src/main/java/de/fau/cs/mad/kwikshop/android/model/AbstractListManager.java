@@ -229,7 +229,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         }
 
 
-        deletedItemStorage.addItem(new DeletedItem(getListType(), listId, itemId, item.getVersion()));
+        deletedItemStorage.addItem(new DeletedItem(getListType(), listId, list.getServerId(), itemId, item.getServerId(), item.getVersion()));
 
         list.setModifiedSinceLastSync(true);
         list.removeItem(itemId);
@@ -255,7 +255,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         }
 
         listStorage.deleteList(listId);
-        deletedListStorage.addItem(new DeletedList(getListType(), listId, list.getServerVersion()));
+        deletedListStorage.addItem(new DeletedList(getListType(), listId, list.getServerId(), list.getServerVersion()));
 
         eventBus.post(getDeletedListChangedEvent(listId));
 

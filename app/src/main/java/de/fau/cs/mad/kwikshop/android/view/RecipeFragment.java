@@ -109,11 +109,13 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
         viewModel = objectGraph.get(RecipeViewModel.class);
         viewModel.initialize(this.recipeID);
 
-
         getActivity().setTitle(viewModel.getName());
 
         viewModel.addListener(this);
         viewModel.getItems().addListener(this);
+
+        View footer = inflater.inflate(R.layout.listview_footerspace, recipeListView, false);
+        recipeListView.addFooterView(footer);
 
         RecipeAdapter recipeAdapter = new RecipeAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);

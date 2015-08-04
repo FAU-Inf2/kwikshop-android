@@ -9,7 +9,6 @@ import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
@@ -61,7 +60,6 @@ public class ShoppingListFragment
 
     private AutoCompletionHelper autoCompletion;
 
-    private Integer sizeBoughtItems;
     private ShoppingListViewModel viewModel;
     private boolean updatingViewModel;
 
@@ -122,11 +120,13 @@ public class ShoppingListFragment
         autoCompletion = objectGraph.get(AutoCompletionHelper.class);
         viewModel.initialize(this.listID);
 
-
         getActivity().setTitle(viewModel.getName());
 
         viewModel.addListener(this);
         viewModel.getItems().addListener(this);
+
+        View footer = inflater.inflate(R.layout.listview_footerspace, shoppingListView, false);
+        shoppingListView.addFooterView(footer);
 
         final ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);
@@ -144,7 +144,6 @@ public class ShoppingListFragment
                         for (int position : reverseSortedPositions) {
                             if (command.getCanExecute()) {
                                 try {
-                                    //Item item = viewModel.getItems().get(position);
                                     Item item = shoppingListAdapter.getItem(position);
                                     command.execute(item.getId());
                                     if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,false,getActivity())){

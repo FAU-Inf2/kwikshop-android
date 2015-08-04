@@ -29,62 +29,62 @@ public class RecipeClient implements ListClient<RecipeServer> {
 
 
     @Override
-    public List<RecipeServer> getListSynchronously() {
+    public List<RecipeServer> getLists() {
         return RecipeResource.getListSynchronously();
     }
 
     @Override
-    public RecipeServer getListSynchronously(int listId) {
+    public RecipeServer getLists(int listId) {
         return RecipeResource.getListSynchronously(listId);
     }
 
     @Override
-    public RecipeServer createListSynchronously(RecipeServer list) {
+    public RecipeServer createList(RecipeServer list) {
         return RecipeResource.createListSynchronously(list);
     }
 
     @Override
-    public RecipeServer updateListSynchronously(int listId, RecipeServer list) {
+    public RecipeServer updateList(int listId, RecipeServer list) {
         return RecipeResource.updateListSynchronously(listId, list);
     }
 
     @Override
-    public Response deleteListSynchronously(int listId) {
+    public Response deleteList(int listId) {
         return RecipeResource.deleteListSynchronously(listId);
     }
 
     @Override
-    public List<DeletionInfo> getDeletedListsSynchronously() {
+    public List<DeletionInfo> getDeletedLists() {
         return RecipeResource.getDeletedListsSynchronously();
     }
 
     @Override
-    public Item getListItemSynchronously(int listId, int itemId) {
+    public Item getListItem(int listId, int itemId) {
         return RecipeResource.getListItemSynchronously(listId, itemId);
     }
 
     @Override
-    public Item createItemSynchronously(int listId, Item newItem) {
+    public Item createItem(int listId, Item newItem) {
         return RecipeResource.createItemSynchronously(listId, newItem);
     }
 
     @Override
-    public Item updateItemSynchronously(int listId, int itemId, Item item) {
+    public Item updateItem(int listId, int itemId, Item item) {
         return RecipeResource.updateItemSynchronously(listId, itemId, item);
     }
 
     @Override
-    public Response deleteListItemSynchronously(int listId, int itemId) {
+    public Response deleteListItem(int listId, int itemId) {
         return RecipeResource.deleteListItemSynchronously(listId, itemId);
     }
 
     @Override
-    public List<Item> getListItemsSynchronously(int listId) {
+    public List<Item> getListItems(int listId) {
         return RecipeResource.getListItemsSynchronously(listId);
     }
 
     @Override
-    public List<DeletionInfo> getDeletedListItemsSynchronously(int listId) {
+    public List<DeletionInfo> getDeletedListItems(int listId) {
         return RecipeResource.getDeletedListItemsSynchronously(listId);
     }
 }

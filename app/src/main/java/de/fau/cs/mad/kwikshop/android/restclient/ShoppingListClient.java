@@ -29,62 +29,62 @@ public class ShoppingListClient implements ListClient<ShoppingListServer> {
 
 
     @Override
-    public List<ShoppingListServer> getListSynchronously() {
+    public List<ShoppingListServer> getLists() {
         return shoppingListResource.getListSynchronously();
     }
 
     @Override
-    public ShoppingListServer getListSynchronously(int listId) {
+    public ShoppingListServer getLists(int listId) {
         return shoppingListResource.getListSynchronously(listId);
     }
 
     @Override
-    public ShoppingListServer createListSynchronously(ShoppingListServer list) {
+    public ShoppingListServer createList(ShoppingListServer list) {
         return shoppingListResource.createListSynchronously(list);
     }
 
     @Override
-    public ShoppingListServer updateListSynchronously(int listId, ShoppingListServer list) {
+    public ShoppingListServer updateList(int listId, ShoppingListServer list) {
         return shoppingListResource.updateListSynchronously(listId, list);
     }
 
     @Override
-    public Response deleteListSynchronously(int listId) {
+    public Response deleteList(int listId) {
         return shoppingListResource.deleteListSynchronously(listId);
     }
 
     @Override
-    public List<DeletionInfo> getDeletedListsSynchronously() {
+    public List<DeletionInfo> getDeletedLists() {
         return shoppingListResource.getDeletedListsSynchronously();
     }
 
     @Override
-    public Item getListItemSynchronously(int listId, int itemId) {
+    public Item getListItem(int listId, int itemId) {
         return shoppingListResource.getListItemSynchronously(listId, itemId);
     }
 
     @Override
-    public Item createItemSynchronously(int listId, Item newItem) {
+    public Item createItem(int listId, Item newItem) {
         return shoppingListResource.createItemSynchronously(listId, newItem);
     }
 
     @Override
-    public Item updateItemSynchronously(int listId, int itemId, Item item) {
+    public Item updateItem(int listId, int itemId, Item item) {
         return shoppingListResource.updateItemSynchronously(listId, itemId, item);
     }
 
     @Override
-    public Response deleteListItemSynchronously(int listId, int itemId) {
+    public Response deleteListItem(int listId, int itemId) {
         return shoppingListResource.deleteListItemSynchronously(listId, itemId);
     }
 
     @Override
-    public List<Item> getListItemsSynchronously(int listId) {
+    public List<Item> getListItems(int listId) {
         return shoppingListResource.getListItemsSynchronously(listId);
     }
 
     @Override
-    public List<DeletionInfo> getDeletedListItemsSynchronously(int listId) {
+    public List<DeletionInfo> getDeletedListItems(int listId) {
         return shoppingListResource.getDeletedListItemsSynchronously(listId);
     }
 }

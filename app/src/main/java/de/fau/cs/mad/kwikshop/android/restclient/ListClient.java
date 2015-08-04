@@ -10,28 +10,28 @@ import retrofit.client.Response;
 public interface ListClient<TListServer extends DomainListObjectServer> {
 
 
-    List<TListServer> getListSynchronously();
+    List<TListServer> getLists();
 
-    TListServer getListSynchronously(int listId);
+    TListServer getLists(int listId);
 
-    TListServer createListSynchronously(TListServer list);
+    TListServer createList(TListServer list);
 
-    TListServer updateListSynchronously(int listId, TListServer list);
+    TListServer updateList(int listId, TListServer list);
 
-    Response deleteListSynchronously(int listId);
+    Response deleteList(int listId);
 
-    List<DeletionInfo> getDeletedListsSynchronously();
+    List<DeletionInfo> getDeletedLists();
 
-    Item getListItemSynchronously(int listId, int itemId);
+    Item getListItem(int listId, int itemId);
 
-    Item createItemSynchronously(int listId, Item newItem);
+    Item createItem(int listId, Item newItem);
 
-    Item updateItemSynchronously(int listId, int itemId, Item item);
+    Item updateItem(int listId, int itemId, Item item);
 
-    Response deleteListItemSynchronously(int listId, int itemId);
+    Response deleteListItem(int listId, int itemId);
 
-    List<Item> getListItemsSynchronously(int listId);
+    List<Item> getListItems(int listId);
 
-    List<DeletionInfo> getDeletedListItemsSynchronously(int listId);
+    List<DeletionInfo> getDeletedListItems(int listId);
 
 }

@@ -120,11 +120,13 @@ public class ShoppingListFragment
         autoCompletion = objectGraph.get(AutoCompletionHelper.class);
         viewModel.initialize(this.listID);
 
-
         getActivity().setTitle(viewModel.getName());
 
         viewModel.addListener(this);
         viewModel.getItems().addListener(this);
+
+        View footer = inflater.inflate(R.layout.listview_footerspace, shoppingListView, false);
+        shoppingListView.addFooterView(footer);
 
         final ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);

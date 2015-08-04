@@ -335,5 +335,6 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
     protected abstract Object getPropertiesModifiedListChangedEvent(int id);
 
-    protected abstract ListType getListType();
+    @Override
+    public abstract ListType getListType();
 }

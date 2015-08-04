@@ -2,6 +2,7 @@ package de.fau.cs.mad.kwikshop.android.model.interfaces;
 
 import java.util.Collection;
 
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 
@@ -30,4 +31,6 @@ public interface ListManager<TList extends DomainListObject> {
 
     boolean deleteList(int listId);
 
+
+    ListType getListType();
 }

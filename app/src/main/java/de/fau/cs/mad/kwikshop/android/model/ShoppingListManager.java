@@ -64,7 +64,7 @@ public class ShoppingListManager extends AbstractListManager<ShoppingList> {
     }
 
     @Override
-    protected ListType getListType() {
+    public ListType getListType() {
         return ListType.ShoppingList;
     }
 

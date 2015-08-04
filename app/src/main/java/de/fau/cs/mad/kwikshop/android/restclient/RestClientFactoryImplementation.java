@@ -1,4 +1,4 @@
-package de.fau.cs.mad.kwikshop.android.model;
+package de.fau.cs.mad.kwikshop.android.restclient;
 
 
 import android.content.Context;
@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.net.ssl.HostnameVerifier;
@@ -19,11 +20,16 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.model.interfaces.RestClientFactory;
+import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.model.BasicAuthenticationRequestInterceptor;
+import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
+import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RecipeResource;
 import de.fau.cs.mad.kwikshop.android.restclient.ShoppingListResource;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
+import de.fau.cs.mad.kwikshop.common.RecipeServer;
+import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.JacksonConverter;
@@ -51,13 +57,13 @@ public class RestClientFactoryImplementation implements RestClientFactory {
 
 
     @Override
-    public ShoppingListResource getShoppingListClient() {
-        return getRestAdapter().create(ShoppingListResource.class);
+    public ListClient<ShoppingListServer> getShoppingListClient() {
+        return new ShoppingListClient(getRestAdapter().create(ShoppingListResource.class));
     }
 
     @Override
-    public RecipeResource getRecipeClient() {
-        return getRestAdapter().create(RecipeResource.class);
+    public ListClient<RecipeServer> getRecipeClient() {
+        return new RecipeClient(getRestAdapter().create(RecipeResource.class));
     }
 
     private RestAdapter getRestAdapter() {

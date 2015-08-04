@@ -23,9 +23,8 @@ import butterknife.OnClick;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
-import de.fau.cs.mad.kwikshop.android.model.interfaces.RestClientFactory;
-import de.fau.cs.mad.kwikshop.android.restclient.RecipeResource;
-import de.fau.cs.mad.kwikshop.android.restclient.ShoppingListResource;
+import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
+import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
@@ -101,7 +100,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                     privateBus.post("Getting shopping lists...");
 
-                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
 
                     List<ShoppingListServer> shoppingLists = client.getListSynchronously();
 
@@ -131,7 +130,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                     privateBus.post("Getting deleted shopping lists...");
 
-                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
 
                     List<DeletionInfo> shoppingLists = client.getDeletedListsSynchronously();
 
@@ -180,7 +179,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                 try {
 
-                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
                                     ShoppingListServer list = client.getListSynchronously(listId);
 
                                     privateBus.post(mapper.writeValueAsString(list));
@@ -233,7 +232,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                 try {
 
-                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
                                     List<Item> list = client.getListItemsSynchronously(listId);
 
                                     privateBus.post(mapper.writeValueAsString(list));
@@ -285,7 +284,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                 try {
 
-                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
                                     List<DeletionInfo> list = client.getDeletedListItemsSynchronously(listId);
 
                                     privateBus.post(mapper.writeValueAsString(list));
@@ -322,7 +321,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                     newList.setLastModifiedDate(new Date());
 
 
-                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
                     newList = client.createListSynchronously(newList);
 
                     privateBus.post(mapper.writeValueAsString(newList));
@@ -371,7 +370,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                     newItem.setName("New Item on Server");
                                     newItem.setComment("Sample Comment");
 
-                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
                                     newItem = client.createItemSynchronously(listId, newItem);
 
                                     privateBus.post(mapper.writeValueAsString(newItem));
@@ -423,7 +422,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                 try {
 
 
-                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
                                     client.deleteListSynchronously(listId);
 
                                     privateBus.post("OK");
@@ -471,7 +470,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                 try {
 
-                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
 
                                     ShoppingListServer list = client.getListSynchronously(listId);
                                     list.setName(list.getName()  + "_edited");
@@ -541,7 +540,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                             protected Void doInBackground(Void... voids) {
 
                                                 try {
-                                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
                                                     Item item = client.getListItemSynchronously(listId, itemId);
 
                                                     privateBus.post(mapper.writeValueAsString(item));
@@ -610,7 +609,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                             protected Void doInBackground(Void... voids) {
 
                                                 try {
-                                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
                                                     Item item = client.getListItemSynchronously(listId, itemId);
                                                     item.setName(item.getName() + "_edited");
 
@@ -683,7 +682,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                             protected Void doInBackground(Void... voids) {
 
                                                 try {
-                                                    ShoppingListResource client = clientFactory.getShoppingListClient();
+                                                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
                                                     client.deleteListItemSynchronously(listId, itemId);
 
                                                     privateBus.post("OK.");
@@ -720,7 +719,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                     privateBus.post("Getting Recipes...");
 
-                    RecipeResource client = clientFactory.getRecipeClient();
+                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
 
                     List<RecipeServer> shoppingLists = client.getListSynchronously();
 
@@ -749,7 +748,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                     privateBus.post("Getting deleted Recipes...");
 
-                    RecipeResource client = clientFactory.getRecipeClient();
+                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
                     List<DeletionInfo> shoppingLists = client.getDeletedListsSynchronously();
 
                     String serialized = mapper.writeValueAsString(shoppingLists);
@@ -797,7 +796,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                 try {
 
-                                    RecipeResource client = clientFactory.getRecipeClient();
+                                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
                                     RecipeServer list = client.getListSynchronously(listId);
 
                                     privateBus.post(mapper.writeValueAsString(list));
@@ -849,7 +848,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                 try {
 
-                                    RecipeResource client = clientFactory.getRecipeClient();
+                                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
                                     List<Item> list = client.getListItemsSynchronously(listId);
 
                                     privateBus.post(mapper.writeValueAsString(list));
@@ -900,7 +899,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                 try {
 
-                                    RecipeResource client = clientFactory.getRecipeClient();
+                                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
                                     List<DeletionInfo> list = client.getDeletedListItemsSynchronously(listId);
 
                                     privateBus.post(mapper.writeValueAsString(list));
@@ -936,7 +935,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                     newList.setName("New Recipe");
                     newList.setLastModifiedDate(new Date());
 
-                    RecipeResource client = clientFactory.getRecipeClient();
+                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
                     newList = client.createListSynchronously(newList);
 
                     privateBus.post(mapper.writeValueAsString(newList));
@@ -985,7 +984,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                     newItem.setName("New Item on Server");
                                     newItem.setComment("Sample Comment");
 
-                                    RecipeResource client = clientFactory.getRecipeClient();
+                                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
                                     newItem = client.createItemSynchronously(listId, newItem);
 
                                     privateBus.post(mapper.writeValueAsString(newItem));
@@ -1037,7 +1036,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                 try {
 
 
-                                    RecipeResource client = clientFactory.getRecipeClient();
+                                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
                                     client.deleteListSynchronously(listId);
 
                                     privateBus.post("OK");
@@ -1085,7 +1084,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                 try {
 
-                                    RecipeResource client = clientFactory.getRecipeClient();
+                                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
 
                                     RecipeServer list = client.getListSynchronously(listId);
                                     list.setName(list.getName()  + "_edited");
@@ -1155,7 +1154,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                             protected Void doInBackground(Void... voids) {
 
                                                 try {
-                                                    RecipeResource client = clientFactory.getRecipeClient();
+                                                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
                                                     Item item = client.getListItemSynchronously(listId, itemId);
 
                                                     privateBus.post(mapper.writeValueAsString(item));
@@ -1225,7 +1224,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                             protected Void doInBackground(Void... voids) {
 
                                                 try {
-                                                    RecipeResource client = clientFactory.getRecipeClient();
+                                                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
                                                     Item item = client.getListItemSynchronously(listId, itemId);
                                                     item.setName(item.getName() + "_edited");
 
@@ -1298,7 +1297,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                             protected Void doInBackground(Void... voids) {
 
                                                 try {
-                                                    RecipeResource client = clientFactory.getRecipeClient();
+                                                    ListClient<RecipeServer> client = clientFactory.getRecipeClient();
                                                     client.deleteListItemSynchronously(listId, itemId);
 
                                                     privateBus.post("OK.");

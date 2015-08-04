@@ -31,6 +31,12 @@ public interface ListManager<TList extends DomainListObject> {
 
     boolean deleteList(int listId);
 
+    /**
+     * Clears all the data only held for sync
+     * In particular it sets back all the modifiedSinceLastSync flags for lists and items
+     * and deletes all DeletedList and DeletedItem entries
+     */
+    void clearSyncData();
 
     ListType getListType();
 }

@@ -337,4 +337,31 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
     @Override
     public abstract ListType getListType();
+
+    @Override
+    public void clearSyncData() {
+
+        for(TList list : getLists()) {
+            list.setModifiedSinceLastSync(false);
+
+            for(Item item : list.getItems()) {
+                item.setModifiedSinceLastSync(false);
+            }
+            saveListWithoutEvents(list.getId());
+        }
+
+        for(DeletedList deletedList : deletedListStorage.getItems()) {
+            if(deletedList.getListType() == this.getListType()) {
+                deletedListStorage.deleteSingleItem(deletedList);
+            }
+        }
+
+        for(DeletedItem deletedItem : deletedItemStorage.getItems()) {
+            if(deletedItem.getListType() == this.getListType()) {
+                deletedItemStorage.deleteSingleItem(deletedItem);
+            }
+        }
+
+
+    }
 }

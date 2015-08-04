@@ -6,6 +6,7 @@ import java.util.Map;
 
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainObject;
 
 public class CollectionUtilities {
@@ -19,6 +20,17 @@ public class CollectionUtilities {
         }
         return result;
     }
+
+
+    public static Map<Integer, Item> toItemMapByServerId(Collection<Item> items) {
+
+        Map<Integer, Item> result = new HashMap<>();
+        for(Item item : items) {
+            result.put(item.getServerId(), item);
+        }
+        return result;
+    }
+
 
     public static Map<Integer, Map<Integer, DeletedItem>> toDeletedItemMapByClientId(Collection<DeletedItem> deltedItems) {
 

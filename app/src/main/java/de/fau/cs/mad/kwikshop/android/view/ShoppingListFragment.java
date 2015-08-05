@@ -16,6 +16,9 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.MultiAutoCompleteTextView;
 import android.support.v4.app.Fragment;
@@ -27,6 +30,7 @@ import com.nhaarman.listviewanimations.itemmanipulation.dragdrop.OnItemMovedList
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
 
 
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.ButterKnife;

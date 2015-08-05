@@ -424,14 +424,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             }
 
         }
-        if(oldVersion < 37){
-            try {
-                TableUtils.dropTable(connectionSource, Unit.class, true);
-                TableUtils.createTable(connectionSource, Unit.class);
-            }catch (SQLException e){
-                e.printStackTrace();
-            }
-        }
 
 
     }

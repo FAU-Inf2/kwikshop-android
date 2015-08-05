@@ -156,10 +156,10 @@ public class LoginActivity extends FragmentActivity implements
         // Start with sign-in button disabled until sign-in either succeeds or fails
         login_sign_in_button.setEnabled(false);
 
-        if (!BuildConfig.DEBUG) {
+        /*if (!BuildConfig.DEBUG) {
             mDebugStatus.setEnabled(false);
             mDebugStatus.setVisibility(View.GONE);
-        }
+        }*/
 
         // [START create_google_api_client]
         // Build GoogleApiClient with access to basic profile
@@ -199,10 +199,14 @@ public class LoginActivity extends FragmentActivity implements
             } else {
                 if(!SessionHandler.getSessionToken(getApplicationContext()).equals("DEBUG")) {
                     // Show signed-in user's name
-                    Person p = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-                    if(p != null) {
-                        String name = p.getDisplayName();
-                        mStatus.setText(getText(R.string.signed_in_fmt) + " " + name);
+                    if(mGoogleApiClient.isConnected()) {
+                        Person p = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+                        if (p != null) {
+                            String name = p.getDisplayName();
+                            mStatus.setText(getText(R.string.signed_in_fmt) + " " + name);
+                        }
+                    } else {
+                        mShouldResolve = true;
                     }
                 } else {
                     mStatus.setText("DEBUG logged in");
@@ -369,7 +373,7 @@ public class LoginActivity extends FragmentActivity implements
                 idToken = GoogleAuthUtil.getToken(getApplicationContext(), account, scopes);
             } catch (Exception e) {
                 Log.e(TAG, "Error retrieving ID token.", e);
-                return null;
+                return false;
             }
 
             //TODO: Use RestClientFactoryImplementation if possible
@@ -422,7 +426,7 @@ public class LoginActivity extends FragmentActivity implements
                 authResponse = endpoint.auth(idToken);
             } catch (Exception e) {
                 Log.e(TAG, "Error contacting server.", e);
-                return null;
+                return false;
             }
 
             /*String uri = SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, getString(R.string.API_URL), LoginActivity.this);
@@ -455,12 +459,11 @@ public class LoginActivity extends FragmentActivity implements
 
         @Override
         protected void onPostExecute(Boolean success) {
-            if(success != null && success == false) {
+            if(!success) {
                 Toast.makeText(getApplicationContext(), R.string.kwikshop_login_failed, Toast.LENGTH_LONG).show();
                 mStatus.setText(R.string.kwikshop_login_failed);
-                updateUI(false);
-            } else
-                updateUI(true);
+            }
+            updateUI(success);
         }
 
     }

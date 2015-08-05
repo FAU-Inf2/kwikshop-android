@@ -34,18 +34,29 @@ import com.google.maps.android.ui.IconGenerator;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
+import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
 import se.walkercrou.places.Status;
 
+import static de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper.API_ENDPOINT;
+import static de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper.saveString;
 
-public class LocationFragment extends Fragment implements  OnMapReadyCallback {
+
+public class LocationFragment extends Fragment implements  OnMapReadyCallback, SupermarketPlace.AsyncPlaceRequestListener {
 
     private View rootView;
     private GoogleMap map;
@@ -56,6 +67,12 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
     String address;
     ProgressDialog progress;
     List<Place> places;
+
+    @Inject
+    ViewLauncher viewLauncher;
+
+    @Inject
+    ResourceProvider resourceProvider;
 
     @InjectView(R.id.map_infobox)
     RelativeLayout mapInfoBox;
@@ -94,11 +111,23 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
         rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
 
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
+        objectGraph.inject(this);
+
         hideInfoBox();
 
         whereIsTheNextSupermarketRequest();
 
+         //SupermarketPlace.initiateSupermarketPlace(getActivity()).performAsyncPlaceRequest();
+
         return rootView;
+
+    }
+
+    // called when place request is ready
+    @Override
+    public void postResult(List<Place> places) {
+
 
     }
 
@@ -112,26 +141,21 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
             protected void onPreExecute() {
                 super.onPreExecute();
 
-                progress = new ProgressDialog(getActivity());
-                progress.setMessage(getString(R.string.supermarket_finder_progress_dialog_message));
-                progress.setCancelable(true);
-                progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        Intent intent = new Intent(getActivity(), ListOfShoppingListsActivity.class);
-                        getActivity().finish();
-                        startActivity(intent);
-                    }
-                });
-                progress.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(getActivity(), ListOfShoppingListsActivity.class);
-                        getActivity().finish();
-                        startActivity(intent);
-                    }
-                });
-                progress.show();
+                viewLauncher.showProgressDialog(
+                        resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
+                        resourceProvider.getString(R.string.alert_dialog_connection_cancel),
+                        true,
+                        new Command<Void>() {
+                            @Override
+                            public void execute(Void parameter) {
+                                Intent intent = new Intent(getActivity(), ListOfShoppingListsActivity.class);
+                                getActivity().finish();
+                                startActivity(intent);
+                            }
+                        }
+
+                );
+
             }
 
             @Override
@@ -142,6 +166,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
                 try {
                     places = client.getNearbyPlaces(lastLat, lastLng, 5000, 30, Param.name("types").value("grocery_or_supermarket"));
                 } catch (Exception e) {
+                    Log.e("LocationFragment", "no places was found");
                 }
 
                 return null;
@@ -171,6 +196,8 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
 
     }
 
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -178,10 +205,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
     }
 
     void progressDismiss(){
-        if (progress != null) {
-            progress.dismiss();
-            progress = null;
-        }
+       viewLauncher.dismissProgressDialog();
     }
 
 
@@ -350,6 +374,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback {
         });
 
     }
+
 
 
 }

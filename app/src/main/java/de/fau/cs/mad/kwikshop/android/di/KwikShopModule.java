@@ -14,6 +14,7 @@ import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
+import de.fau.cs.mad.kwikshop.android.view.LocationFragment;
 import de.fau.cs.mad.kwikshop.android.view.ServerIntegrationDebugActivity;
 import de.fau.cs.mad.kwikshop.android.view.SettingFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
@@ -73,7 +74,8 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         RegularlyRepeatHelper.class,
         ItemDetailsViewModel.class,
         ShoppingListItemDetailsViewModel.class,
-        RecipeItemDetailsViewModel.class
+        RecipeItemDetailsViewModel.class,
+        LocationFragment.class
 },
         library = true)
 @SuppressWarnings("unused")

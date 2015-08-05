@@ -65,6 +65,7 @@ public class SettingFragment extends Fragment {
     private Setting setAutoCompletionDeletion;
     private Setting setManageUnits;
     private Setting itemDeletionSetting;
+    private Setting parserSeparatorWord;
 
 
     @Inject
@@ -118,8 +119,13 @@ public class SettingFragment extends Fragment {
                 }
 
                 // Item deletion
-                if(settingsList.get(position).equals(itemDeletionSetting)) {
+                if (settingsList.get(position).equals(itemDeletionSetting)) {
                     setItemDeletionSetting(position);
+                }
+
+                // Parser separator word
+                if (settingsList.get(position).equals(parserSeparatorWord)) {
+                    setParserSeparatorWord();
                 }
 
 
@@ -175,6 +181,13 @@ public class SettingFragment extends Fragment {
         itemDeletionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false, getActivity()));
         itemDeletionSetting.setViewVisibility(View.VISIBLE);
         settingsList.add(itemDeletionSetting);
+
+        //Choose separator word for the parser
+        parserSeparatorWord = new Setting(context);
+        parserSeparatorWord.setName(R.string.settings_option_7_parser_separate_word_name);
+        parserSeparatorWord.setCaption(R.string.settings_option_7_parser_separate_word_descr);
+        settingsList.add(parserSeparatorWord);
+
 
         // Adapter for settings view
         objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, settingsList);
@@ -341,6 +354,25 @@ public class SettingFragment extends Fragment {
             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG,true,getActivity());
         }
         objAdapter.notifyDataSetChanged();
+    }
+
+    private void setParserSeparatorWord(){
+
+        viewLauncher.showTextInputDialog(getString(R.string.settings_option_7_parser_separate_word_name),
+                SharedPreferencesHelper.loadString(SharedPreferencesHelper.ITEM_SEPARATOR_WORD, getString(R.string.item_divider), context),
+                new Command<String>() {
+                    @Override
+                    public void execute(String word) {
+                        saveString(ITEM_SEPARATOR_WORD, word, context);
+                    }
+                },
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+                    }
+                });
+
     }
 
 

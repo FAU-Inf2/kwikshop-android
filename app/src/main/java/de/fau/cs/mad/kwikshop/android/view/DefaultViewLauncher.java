@@ -126,7 +126,8 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-    public void showTextInputDialog(String title, String value, final Command<String> positiveCommand, final Command<String> negativeCommand) {
+    public void showTextInputDialog(String title, String value, final Command<String> positiveCommand,
+                                    final Command<String> negativeCommand) {
 
         showTextInputDialog(title, value,
                 resourceProvider.getString(android.R.string.ok), positiveCommand,

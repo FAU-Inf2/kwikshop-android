@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
@@ -123,7 +124,8 @@ public class ItemParser {
             }
             if(input.charAt(i) == ' ' && i != positionAfterLastWhiteSpace){
                 String word = input.substring(positionAfterLastWhiteSpace, i);
-                if(word.equalsIgnoreCase(context.getString(R.string.item_divider))){
+                if(word.equalsIgnoreCase(SharedPreferencesHelper.loadString(SharedPreferencesHelper.ITEM_SEPARATOR_WORD,
+                        context.getString(R.string.item_divider), context))){
                     output.add(input.substring(positionWordBegin, positionAfterLastWhiteSpace - 1));
                     positionWordBegin = i + 1;
                 }

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -48,6 +49,7 @@ public class DefaultViewLauncher implements ViewLauncher {
 
     private static final String MAILTO = "mailto";
 
+    private ProgressDialog progress;
     private final Activity activity;
     private final ResourceProvider resourceProvider;
 
@@ -453,7 +455,50 @@ public class DefaultViewLauncher implements ViewLauncher {
         alert.show();
     }
 
+    @Override
+    public void showProgressDialog(String message, String negativeMessage, boolean cancelable, final Command<Void> negativeCommand) {
 
+
+
+        progress = new ProgressDialog(activity);
+        progress.setMessage(message);
+        progress.setCancelable(true);
+
+        //progress.setMessage(activity.getString(R.string.supermarket_finder_progress_dialog_message));
+        //progress.setCancelable(true);
+
+
+
+        progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if (negativeCommand != null && negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(null);
+                }
+
+            }
+        });
+        progress.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if (negativeCommand != null && negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(null);
+                }
+            }
+        });
+
+        progress.show();
+
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        if (progress != null) {
+            progress.dismiss();
+            progress = null;
+        }
+    }
 
 
 }

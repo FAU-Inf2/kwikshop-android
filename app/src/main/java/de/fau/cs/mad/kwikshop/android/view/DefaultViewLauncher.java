@@ -392,8 +392,8 @@ public class DefaultViewLauncher implements ViewLauncher {
                                   String positiveMessage, final Command<Void> positiveCommand,
                                   String neutralMessage, final Command<Void> neutralCommand,
                                   String negativeMessage, final Command<Void> negativeCommand,
-                                  String checkBoxMessage, final Command <Void> checkedCommand,
-                                  final Command<Void> uncheckedCommand) {
+                                  String checkBoxMessage, boolean checkBoxDefaultValue,
+                                  final Command <Void> checkedCommand, final Command<Void> uncheckedCommand) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title);
@@ -401,7 +401,7 @@ public class DefaultViewLauncher implements ViewLauncher {
 
         final CheckBox checkBox = new CheckBox(activity);
         checkBox.setText(checkBoxMessage);
-        checkBox.setChecked(false);
+        checkBox.setChecked(checkBoxDefaultValue);
         builder.setView(checkBox);
 
 

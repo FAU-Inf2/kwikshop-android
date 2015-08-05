@@ -165,6 +165,21 @@ public class ItemDetailsViewModel{
         }
     };
 
+    final Command<Void> deleteNegativeCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            //do nothing
+            //this is just so the command is executable
+        }
+    };
+
+    final Command<Void> deleteCheckBoxCheckedCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            //Todo: change setting to not show the dialog again
+        }
+    };
+
     public void sortUnitsByName(){
         Collections.sort(units, new Comparator<Unit>() {
             @Override
@@ -220,7 +235,7 @@ public class ItemDetailsViewModel{
     }
 
     public void showDeleteItemDialog(String title, String message, String positiveString, String negativeString, String checkBoxMessage){
-        viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, null, checkBoxMessage, null, null);
+        viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, deleteNegativeCommand, checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);
     }
 
     public void mergeAndSaveItem(){

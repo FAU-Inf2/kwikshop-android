@@ -68,7 +68,7 @@ public interface ViewLauncher {
                                        String positiveMessage, final Command<Void> positiveCommand,
                                        String neutralMessage, final Command<Void> neutralCommand,
                                        String negativeMessage, final Command<Void> negativeCommand,
-                                       String checkBoxMessage, final Command <Void> checkedCommand,
-                                       final Command<Void> uncheckedCommand);
+                                       String checkBoxMessage, boolean checkBoxDefaultValue,
+                                       final Command <Void> checkedCommand, final Command<Void> uncheckedCommand);
 
     }

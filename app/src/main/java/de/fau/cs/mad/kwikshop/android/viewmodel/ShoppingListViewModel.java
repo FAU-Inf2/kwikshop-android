@@ -28,12 +28,15 @@ import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
+import de.greenrobot.event.EventBus;
 import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
 
 public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
+    private Context tmp_context;
+    private int tmp_item_id;
 
     private final ResourceProvider resourceProvider;
     private final RegularlyRepeatHelper repeatHelper;
@@ -48,6 +51,28 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     private final Command<Integer> deleteItemCommand = new Command<Integer>() {
         @Override
         public void execute(Integer parameter) { deleteItemCommandExecute(parameter);}
+    };
+
+    final Command<Void> deleteCheckBoxCheckedCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false, tmp_context);
+        }
+    };
+
+    final Command<Void> deleteNegativeCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            //do nothing
+            //this is just so the command is executable
+        }
+    };
+
+    final Command<Void> deletePositiveCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            listManager.deleteItem(listId, tmp_item_id);
+        }
     };
 
 
@@ -189,6 +214,15 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             locationAsyncTask.execute();
         }
 
+    }
+
+    public void deleteItem(int itemId, String title, String message, String positiveString, String negativeString, String checkBoxMessage, Context context ){
+        this.tmp_context = context;
+        this.tmp_item_id = itemId;
+        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, true, context))
+            viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, deleteNegativeCommand, checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);
+        else
+            deletePositiveCommand.execute(null);
     }
 
 

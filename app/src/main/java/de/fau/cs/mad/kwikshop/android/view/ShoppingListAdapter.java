@@ -264,10 +264,10 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                 public void onClick(View v){
                     Iterator<Item> itr = items.iterator();
                     while (itr.hasNext()){
-                        Item itm = itr.next();
-                        if (itm.isChecked()) {
+                        Item itemLocal = itr.next();
+                        if (itemLocal.isChecked()) {
                             //Do something
-                            itm.setBought(true);
+                            itemLocal.setBought(true);
                         }
                     }
                     shoppingListViewModel.moveBoughtItemsToEnd();
@@ -278,9 +278,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             public void onClick(View v){
                 Iterator<Item> itr = items.iterator();
                 while (itr.hasNext()){
-                    Item itm = itr.next();
-                    if (itm.isChecked()) {
-                        itm.setBought(false);
+                    Item itemLocal2 = itr.next();
+                    if (itemLocal2.isChecked()) {
+                        itemLocal2.setBought(false);
 
                     }
                 }

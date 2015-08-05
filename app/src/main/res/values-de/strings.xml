@@ -199,5 +199,6 @@
     <string name="settings_option_5_location_permission_title">Standortbestimmung</string>
     <string name="item">Artikel</string>
     <string name="kwikshop_login_success">Du bist eingeloggt.</string>
+    <string name="unit_teaspoon"></string>
 
 </resources>

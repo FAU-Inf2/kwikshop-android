@@ -42,6 +42,7 @@ public class DefaultDataProvider {
         public static final String LITRE = "litre";
         public static final String CUP = "cup";
         public static final String TABLESPOON = "tablespoon";
+        public static final String TEASPOON = "teaspoon";
         public static final String CAN = "can";
 
     }
@@ -81,7 +82,8 @@ public class DefaultDataProvider {
                     new Unit(UnitNames.LITRE, ResourceId.Unit_Litre, ResourceId.Unit_short_Litre),
                     new Unit(UnitNames.CUP, ResourceId.Unit_Cup),
                     new Unit(UnitNames.TABLESPOON, ResourceId.Unit_Tablespoon, ResourceId.Unit_short_Tablespoon),
-                    new Unit(UnitNames.CAN, ResourceId.Unit_Can)
+                    new Unit(UnitNames.CAN, ResourceId.Unit_Can),
+                    new Unit(UnitNames.TEASPOON, ResourceId.Unit_Teaspoon, ResourceId.Unit_short_Teaspoon)
             };
         }
 

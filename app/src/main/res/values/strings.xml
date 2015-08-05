@@ -295,10 +295,12 @@
     <string name="recipe_sweetenedCondensedMilk">Sweetened condensed milk</string>
     <string name="recipe_coconutFlakes">Coconut flakes</string>
     <string name="unit_cup">cups</string>
-    <string name="unit_tablespoon">Tablespoons</string>
+    <string name="unit_tablespoon">tablespoons</string>
     <string name="unit_tablespoon_short">tbsp</string>
     <string name="unit_can">cans</string>
     <string name="every_time_i_create_a_list">Every time I create a list</string>
     <string name="on_a_schedule">On a schedule</string>
+    <string name="unit_teaspoon">teaspoon</string>
+    <string name="unit_teaspoon_short">tsp</string>
 
 </resources>

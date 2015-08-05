@@ -190,4 +190,5 @@
     <string name="unit_tablespoon">colheres de sopa</string>
     <string name="unit_can">latas</string>
     <string name="item">Iten</string>
+    <string name="unit_teaspoon">colheres de chá</string>
 </resources>

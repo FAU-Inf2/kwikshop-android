@@ -44,7 +44,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 36; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 37; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -424,6 +424,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             }
 
         }
+        if(oldVersion < 37){
+            try {
+                TableUtils.dropTable(connectionSource, Unit.class, true);
+                TableUtils.createTable(connectionSource, Unit.class);
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
 
 
     }
@@ -696,6 +704,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_tablespoon), ResourceId.Unit_Tablespoon);
         migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_tablespoon_short), ResourceId.Unit_short_Tablespoon);
         migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_can), ResourceId.Unit_Can);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_teaspoon), ResourceId.Unit_Teaspoon);
+        migrationResourceMapping.put(context.getResources().getResourceName(R.string.unit_teaspoon_short), ResourceId.Unit_short_Teaspoon);
 
         resourceMappingInitialized = true;
     }

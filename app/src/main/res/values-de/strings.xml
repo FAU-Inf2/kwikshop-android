@@ -31,7 +31,7 @@
     <string name="group_tobacco">Tabak</string>
     <string name="hello_world">Hello World</string>
     <string name="highlight">Hervorheben</string>
-    <string name="itemdeleted">Artikel gekauft</string>
+    <string name="itembought">Artikel gekauft</string>
     <string name="itemdetails_amount">Menge</string>
     <string name="itemdetails_brand">Marke</string>
     <string name="itemdetails_comment">Kommentar</string>

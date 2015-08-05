@@ -7,6 +7,9 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -14,6 +17,8 @@ import android.widget.TextView;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 
 import org.w3c.dom.Text;
+
+import java.util.Iterator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -74,7 +79,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.fragment_shoppinglist_row, parent, false);
             viewHolder = new ViewHolder(view);
@@ -84,7 +89,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         }
 
 
-        Item item = items.get(position);
+        final Item item = items.get(position);
 
         boolean showDivider = false;
         Item before = null;
@@ -210,7 +215,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         if (item.isBought()) {
             viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
-
+            viewHolder.checkBox_move.setChecked(false);
             // Hide details - maybe allow the user to toggle this
             viewHolder.textView_Comment.setVisibility(View.GONE);
             viewHolder.textView_Brand.setVisibility(View.GONE);
@@ -240,12 +245,51 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             // Remove delete button
             viewHolder.imageView_delete.setVisibility(View.GONE);
             viewHolder.imageView_delete.setOnClickListener(null);
+            viewHolder.checkBox_move.setChecked(false);
 
             // Remove strikethrough, reset text appearance
             viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
             viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_Medium);
         }
 
+        viewHolder.checkBox_move.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    item.setChecked(true);
+                else
+                    item.setChecked(false);
+            }
+        });
+
+        viewHolder.button_moveDown.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Iterator<Item> itr = items.iterator();
+                    while (itr.hasNext()){
+                        Item itemLocal = itr.next();
+                        if (itemLocal.isChecked()) {
+                            //Do something
+                            itemLocal.setBought(true);
+                        }
+                    }
+                    shoppingListViewModel.moveBoughtItemsToEnd();
+                }
+            });
+        viewHolder.button_moveUp.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Iterator<Item> itr = items.iterator();
+                while (itr.hasNext()){
+                    Item itemLocal2 = itr.next();
+                    if (itemLocal2.isChecked()) {
+                        itemLocal2.setBought(false);
+
+                    }
+                }
+                shoppingListViewModel.moveBoughtItemsToEnd();
+            }
+        });
         return view;
     }
 
@@ -324,6 +368,14 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         @InjectView(R.id.list_row_imageView_delete)
         ImageView imageView_delete;
 
+        @InjectView(R.id.button_moveUp)
+        Button button_moveUp;
+
+        @InjectView(R.id.button_moveDown)
+        Button button_moveDown;
+
+        @InjectView(R.id.checkBox_move)
+        CheckBox checkBox_move;
     }
 
 }

@@ -402,13 +402,14 @@ public class DefaultViewLauncher implements ViewLauncher {
         final CheckBox checkBox = new CheckBox(activity);
         checkBox.setText(checkBoxMessage);
         checkBox.setChecked(false);
+        builder.setView(checkBox);
 
 
         //android.R.string.yes
         builder.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
 
-                if (positiveCommand.getCanExecute()) {
+                if (positiveCommand != null && positiveCommand.getCanExecute()) {
                     if(checkBox.isChecked() && checkedCommand != null && checkedCommand.getCanExecute())
                         checkedCommand.execute(null);
                     else if (!checkBox.isChecked() && uncheckedCommand != null && uncheckedCommand.getCanExecute())
@@ -437,7 +438,7 @@ public class DefaultViewLauncher implements ViewLauncher {
         //android.R.string.no
         builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
-                if (negativeCommand.getCanExecute()) {
+                if (negativeCommand != null && negativeCommand.getCanExecute()) {
                     if(checkBox.isChecked() && checkedCommand != null && checkedCommand.getCanExecute())
                         checkedCommand.execute(null);
                     else if (!checkBox.isChecked() && uncheckedCommand != null && uncheckedCommand.getCanExecute())

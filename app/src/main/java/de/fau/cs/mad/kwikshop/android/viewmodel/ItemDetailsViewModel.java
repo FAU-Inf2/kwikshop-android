@@ -210,6 +210,10 @@ public class ItemDetailsViewModel{
         }
     }
 
+    public void showDeleteItemDialog(String title, String message, String positiveString, String negativeString, String checkBoxMessage){
+        viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, null, null, null, negativeString, null, checkBoxMessage, null, null);
+    }
+
     public void mergeAndSaveItem(){
         ItemMerger<ShoppingList> itemMerger = new ItemMerger<>(shoppingListManager);
         if(isNewItem()) {

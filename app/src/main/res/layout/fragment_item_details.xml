@@ -22,7 +22,8 @@
             android:layout_gravity="left|top"
             android:background="@color/text_icons"
             android:focusable="false"
-            android:focusableInTouchMode="false">
+            android:focusableInTouchMode="false"
+            android:weightSum="1">
 
             <Space
                 android:layout_width="wrap_content"

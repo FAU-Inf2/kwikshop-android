@@ -14,6 +14,8 @@ public class SharedPreferencesHelper {
     public static final String LOCALE = "locale";
     public static final String API_ENDPOINT = "API_ENDPOINT";
     public static final String LOCATION_PERMISSION = "location_permission";
+    public static final String ITEM_DELETION_SHOW_AGAIN_MSG = "ITEM_DELETION_SHOW_AGAIN_MSG";
+    public static final String ITEM_SEPARATOR_WORD = "ITEM_SEPARATOR_WORD";
 
     private static final String sharedPreferencesName = "settings";
 

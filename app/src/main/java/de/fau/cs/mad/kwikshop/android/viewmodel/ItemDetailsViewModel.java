@@ -1,5 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.DeleteItemEvent;
 import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
@@ -30,6 +32,8 @@ import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.greenrobot.event.EventBus;
 
 public class ItemDetailsViewModel{
+
+    private Context context;
 
     private boolean initialized = false;
     private boolean isNewItem = false;
@@ -157,6 +161,8 @@ public class ItemDetailsViewModel{
         return groups.get(index);
     }
 
+    public void setContext(Context context){ this.context = context; }
+
 
     final Command<Void> deletePositiveCommand = new Command<Void>() {
         @Override
@@ -176,7 +182,7 @@ public class ItemDetailsViewModel{
     final Command<Void> deleteCheckBoxCheckedCommand = new Command<Void>() {
         @Override
         public void execute(Void parameter) {
-            //Todo: change setting to not show the dialog again
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false, context);
         }
     };
 
@@ -235,7 +241,10 @@ public class ItemDetailsViewModel{
     }
 
     public void showDeleteItemDialog(String title, String message, String positiveString, String negativeString, String checkBoxMessage){
-        viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, deleteNegativeCommand, checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);
+        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, true, context))
+            viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, deleteNegativeCommand, checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);
+        else
+            EventBus.getDefault().post(new DeleteItemEvent(listId, itemId));
     }
 
     public void mergeAndSaveItem(){

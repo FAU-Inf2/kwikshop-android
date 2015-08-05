@@ -232,10 +232,13 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                     } catch (IndexOutOfBoundsException e) {
                         return;
                     }
+
+                    shoppingListViewModel.deleteItem(itemId,context.getString(R.string.title_delete_item), context.getString(R.string.message_delete_item),
+                                    context.getString(R.string.yes), context.getString(R.string.no),
+                                    context.getString(R.string.dont_show_this_message_again), context);
+
                     Command<Integer> deleteCommand = shoppingListViewModel.getDeleteItemCommand();
-                    if (deleteCommand.getCanExecute()) {
-                        deleteCommand.execute(itemId);
-                    }
+
                 }
             });
         } else {

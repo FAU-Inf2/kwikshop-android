@@ -136,6 +136,10 @@ public class LocationFinderHelper implements LocationListener {
         return location != null ? longitude  : 0.0;
     }
 
+    public LatLng getLatLng(){
+        return new LatLng(getLatitude(),getLongitude());
+    }
+
     public String getAddressToString() {
 
         try {

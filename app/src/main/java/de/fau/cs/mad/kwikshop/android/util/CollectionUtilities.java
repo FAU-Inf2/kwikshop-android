@@ -31,6 +31,15 @@ public class CollectionUtilities {
         return result;
     }
 
+    public static Map<Integer, Item> toItemMapByClientId(Collection<Item> items) {
+
+        Map<Integer, Item> result = new HashMap<>();
+        for(Item item : items) {
+            result.put(item.getId(), item);
+        }
+        return result;
+    }
+
 
     public static Map<Integer, Map<Integer, DeletedItem>> toDeletedItemMapByClientId(Collection<DeletedItem> deltedItems) {
 

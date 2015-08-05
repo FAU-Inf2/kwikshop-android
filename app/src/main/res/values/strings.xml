@@ -77,7 +77,10 @@
     <string name="settings_option_5_location_permission_title">Location tracking</string>
     <string name="settings_option_5_location_permission_desc">Enable location tracking while shopping</string>
     <string name="dont_show_this_message_again">Do not show me this message again</string>
-
+    <string name="settings_option_6_item_deletion_name">Item Deletion</string>
+    <string name="settings_option_6_item_deletion_descr">Always ask before deleting an item</string>
+    <string name="settings_option_7_parser_separate_word_name">Item separator word</string>
+    <string name="settings_option_7_parser_separate_word_descr">Choose word to separate multiple items </string>
 
     <!-- Overflow Action Menu -->
     <string name="overflow_action_menu_settings">Settings</string>
@@ -89,7 +92,8 @@
 
     <!-- Shopping list -->
     <!--<string name="itemdeleted">Moved to shopping cart</string> -->
-    <string name="itemdeleted">Item bought</string>
+    <string name="itembought">Item bought</string>
+    <string name="item_deleted">Item deleted</string>
     <string name="taptoundo">UNDO</string>
     <string name="magic">magic</string>
     <string name="sort_by">Sort by</string>

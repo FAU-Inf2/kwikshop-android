@@ -197,6 +197,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         viewModel = objectGraph.get(ItemDetailsViewModel.class);
         viewModel.initialize(listId, itemId);
+        viewModel.setContext(getActivity());
         objectGraph.inject(this);
 
         isNewItem = viewModel.isNewItem();
@@ -247,6 +248,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         //TODO: this is only a temporal solution untill ListManager works in ItemDetailsViewModel
         if(event.getListId() == listId && event.getItemId() == itemId){
             deleteItem();
+            Toast.makeText(getActivity(), getString(R.string.item_deleted), Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
     }

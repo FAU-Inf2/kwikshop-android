@@ -98,7 +98,21 @@
             </RelativeLayout>
 
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal">
 
+                <ImageButton
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/upButton"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/ic_keyboard_arrow_up_black_24dp"
+                    android:layout_marginLeft="116dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true" />
+            </RelativeLayout>
 
             <TableRow
                 android:layout_width="match_parent"
@@ -131,13 +145,30 @@
 
             </TableRow>
 
-            <CheckBox
-                android:layout_width="132dp"
-                android:layout_height="wrap_content"
-                android:text="@string/highlight"
-                android:id="@+id/highlight_checkBox"
-                android:layout_gravity="right"
-                android:checked="false" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/downButton"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/ic_keyboard_arrow_down_black_24dp"
+                    android:layout_weight="5.33"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="116dp" />
+
+                <CheckBox
+                    android:layout_width="132dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/highlight"
+                    android:id="@+id/highlight_checkBox"
+                    android:layout_gravity="right"
+                    android:checked="false"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true" />
+            </RelativeLayout>
 
             <Space
                 android:layout_width="wrap_content"

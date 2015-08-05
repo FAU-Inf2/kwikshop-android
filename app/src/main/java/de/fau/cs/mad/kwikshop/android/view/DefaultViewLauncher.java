@@ -15,6 +15,7 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -385,5 +386,73 @@ public class DefaultViewLauncher implements ViewLauncher {
         activity.startActivityForResult(intent, requestCode);
 
     }
+
+    @Override
+    public void showMessageDialogWithCheckbox(String title, String message,
+                                  String positiveMessage, final Command<Void> positiveCommand,
+                                  String neutralMessage, final Command<Void> neutralCommand,
+                                  String negativeMessage, final Command<Void> negativeCommand,
+                                  String checkBoxMessage, final Command <Void> checkedCommand,
+                                  final Command<Void> uncheckedCommand) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        final CheckBox checkBox = new CheckBox(activity);
+        checkBox.setText(checkBoxMessage);
+        checkBox.setChecked(false);
+
+
+        //android.R.string.yes
+        builder.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+
+                if (positiveCommand.getCanExecute()) {
+                    if(checkBox.isChecked() && checkedCommand != null && checkedCommand.getCanExecute())
+                        checkedCommand.execute(null);
+                    else if (!checkBox.isChecked() && uncheckedCommand != null && uncheckedCommand.getCanExecute())
+                        uncheckedCommand.execute(null);
+                    positiveCommand.execute(null);
+                }
+            }
+        });
+
+        if(neutralCommand != null) {
+            builder.setNeutralButton(neutralMessage, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(neutralCommand.getCanExecute()) {
+                        if(checkBox.isChecked() && checkedCommand != null && checkedCommand.getCanExecute())
+                            checkedCommand.execute(null);
+                        else if (!checkBox.isChecked() && uncheckedCommand != null && uncheckedCommand.getCanExecute())
+                            uncheckedCommand.execute(null);
+
+                        neutralCommand.execute(null);
+                    }
+                }
+            });
+        }
+
+        //android.R.string.no
+        builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+                if (negativeCommand.getCanExecute()) {
+                    if(checkBox.isChecked() && checkedCommand != null && checkedCommand.getCanExecute())
+                        checkedCommand.execute(null);
+                    else if (!checkBox.isChecked() && uncheckedCommand != null && uncheckedCommand.getCanExecute())
+                        uncheckedCommand.execute(null);
+
+                    negativeCommand.execute(null);
+                }
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
+
 
 }

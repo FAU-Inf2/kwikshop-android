@@ -64,5 +64,11 @@ public interface ViewLauncher {
 
     void openVoiceRecognition(int requestCode);
 
+    void showMessageDialogWithCheckbox(String title, String message,
+                                       String positiveMessage, final Command<Void> positiveCommand,
+                                       String neutralMessage, final Command<Void> neutralCommand,
+                                       String negativeMessage, final Command<Void> negativeCommand,
+                                       String checkBoxMessage, final Command <Void> checkedCommand,
+                                       final Command<Void> uncheckedCommand);
 
     }

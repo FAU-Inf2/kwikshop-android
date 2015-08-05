@@ -80,7 +80,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
-
+//
     protected boolean isNewItem;
 
 

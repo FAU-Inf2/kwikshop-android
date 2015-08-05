@@ -64,6 +64,7 @@ public class SettingFragment extends Fragment {
     private Setting setLocale;
     private Setting setAutoCompletionDeletion;
     private Setting setManageUnits;
+    private Setting itemDeletionSetting;
 
 
     @Inject
@@ -108,14 +109,18 @@ public class SettingFragment extends Fragment {
                     manageUnits(position);
 
                 // set API endpoint
-                if(settingsList.get(position).equals(apiEndpointSetting))
+                if (settingsList.get(position).equals(apiEndpointSetting))
                     setApiEndpoint();
 
                 // location permission
-                if(settingsList.get(position).equals(locationPermission)){
+                if (settingsList.get(position).equals(locationPermission)) {
                     setLocationPermission(position);
                 }
 
+                // Item deletion
+                if(settingsList.get(position).equals(itemDeletionSetting)) {
+                    setItemDeletionSetting(position);
+                }
 
 
             }
@@ -159,9 +164,17 @@ public class SettingFragment extends Fragment {
         locationPermission = new Setting(context);
         locationPermission.setName(R.string.settings_option_5_location_permission_title);
         locationPermission.setCaption(R.string.settings_option_5_location_permission_desc);
-        locationPermission.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,false,getActivity()));
+        locationPermission.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity()));
         locationPermission.setViewVisibility(View.VISIBLE);
         settingsList.add(locationPermission);
+
+        //Show Dialog when deleting an item
+        itemDeletionSetting = new Setting(context);
+        itemDeletionSetting.setName(R.string.settings_option_6_item_deletion_name);
+        itemDeletionSetting.setCaption(R.string.settings_option_6_item_deletion_descr);
+        itemDeletionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false, getActivity()));
+        itemDeletionSetting.setViewVisibility(View.VISIBLE);
+        settingsList.add(itemDeletionSetting);
 
         // Adapter for settings view
         objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, settingsList);
@@ -315,6 +328,17 @@ public class SettingFragment extends Fragment {
         } else {
             objAdapter.getItem(position).setChecked(true);
             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,true,getActivity());
+        }
+        objAdapter.notifyDataSetChanged();
+    }
+
+    private void setItemDeletionSetting(int position){
+        if(objAdapter.getItem(position).isChecked()){
+            objAdapter.getItem(position).setChecked(false);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG,false,getActivity());
+        } else {
+            objAdapter.getItem(position).setChecked(true);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG,true,getActivity());
         }
         objAdapter.notifyDataSetChanged();
     }

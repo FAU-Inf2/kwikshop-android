@@ -53,6 +53,7 @@ import de.fau.cs.mad.kwikshop.android.model.GroupStorage;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.android.model.UnitStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.DeleteItemEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
@@ -238,6 +239,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     public void onEventMainThread(ItemChangedEvent event) {
         if (event.getListType() == getListType() && event.getListId() == listId && event.getItemId() == item.getId()) {
             setupUI();
+        }
+    }
+
+    public void onEvent(DeleteItemEvent event){
+        //TODO: this is only a temporal solution untill ListManager works in ItemDetailsViewModel
+        if(event.getListId() == listId && event.getItemId() == itemId){
+            deleteItem();
+            getActivity().finish();
         }
     }
 
@@ -645,9 +654,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     @Override
                     public void onClick(View v) {
                         viewModel.showDeleteItemDialog(getString(R.string.title_delete_item), getString(R.string.message_delete_item),
-                                            getString(R.string.yes), getString(R.string.no), getString(R.string.dont_show_this_message_again));
-                        deleteItem();
-                        getActivity().finish();
+                                getString(R.string.yes), getString(R.string.no), getString(R.string.dont_show_this_message_again));
+
                     }
                 });
             }

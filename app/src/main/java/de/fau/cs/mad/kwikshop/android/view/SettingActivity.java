@@ -1,6 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 
 import de.fau.cs.mad.kwikshop.android.R;
@@ -35,6 +37,15 @@ public class SettingActivity extends BaseActivity {
 
         // Commit the transaction
         transaction.commit();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        MenuItem settings = menu.findItem(R.id.action_settings);
+        settings.setVisible(false);
+
+        return true;
     }
 
 

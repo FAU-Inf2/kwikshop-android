@@ -17,8 +17,10 @@ import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.DeleteItemEvent;
 import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
@@ -156,6 +158,28 @@ public class ItemDetailsViewModel{
     }
 
 
+    final Command<Void> deletePositiveCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            EventBus.getDefault().post(new DeleteItemEvent(listId, itemId));
+        }
+    };
+
+    final Command<Void> deleteNegativeCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            //do nothing
+            //this is just so the command is executable
+        }
+    };
+
+    final Command<Void> deleteCheckBoxCheckedCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            //Todo: change setting to not show the dialog again
+        }
+    };
+
     public void sortUnitsByName(){
         Collections.sort(units, new Comparator<Unit>() {
             @Override
@@ -208,6 +232,10 @@ public class ItemDetailsViewModel{
         if (imageItem != null) {
             item.setImageItem(imageId);
         }
+    }
+
+    public void showDeleteItemDialog(String title, String message, String positiveString, String negativeString, String checkBoxMessage){
+        viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, deleteNegativeCommand, checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);
     }
 
     public void mergeAndSaveItem(){

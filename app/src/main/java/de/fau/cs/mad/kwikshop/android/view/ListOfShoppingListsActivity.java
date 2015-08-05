@@ -3,6 +3,8 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import javax.inject.Inject;
 
@@ -39,4 +41,13 @@ public class ListOfShoppingListsActivity extends BaseActivity {
         repeatHelper.checkIfReminderIsOver();
     }
 
-}
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        MenuItem shoppingLists = menu.findItem(R.id.action_listofshoppinglists);
+        shoppingLists.setVisible(false);
+
+        return true;
+    }
+
+    }

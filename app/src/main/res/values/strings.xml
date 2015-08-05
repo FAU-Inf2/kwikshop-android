@@ -51,6 +51,8 @@
     <string name="every">every</string>
     <string name="from_now_on">from now on</string>
     <string name="from_time_of_next_purchase_on">from time of next purchase on</string>
+    <string name="title_delete_item">Delete item</string>
+    <string name="message_delete_item">Are you sure you want to delete this item?</string>
 
 
 
@@ -74,6 +76,8 @@
     <string name="settings_option_4_APIEndPoint_Desc">Change the address of KwikShop server to use</string>
     <string name="settings_option_5_location_permission_title">Location tracking</string>
     <string name="settings_option_5_location_permission_desc">Enable location tracking while shopping</string>
+    <string name="dont_show_this_message_again">Do not show me this message again</string>
+
 
     <!-- Overflow Action Menu -->
     <string name="overflow_action_menu_settings">Settings</string>
@@ -115,6 +119,8 @@
     <string name="manual">Manual</string>
     <string name="nothing">Nothing</string>
     <string name="alphabetically">Alphabetically</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 
     <string name="githubLink" translatable="false">https://github.com/FAU-Inf2/kwikshop-android</string>

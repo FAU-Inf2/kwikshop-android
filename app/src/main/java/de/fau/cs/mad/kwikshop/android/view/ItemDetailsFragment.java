@@ -532,14 +532,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         upButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                numberPicker.setValue(numberPicker.getValue() + 1);
+                numberPicker.setValue(numberPicker.getValue() - 1);
             }
         });
 
         downButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                numberPicker.setValue(numberPicker.getValue()  -1);
+                numberPicker.setValue(numberPicker.getValue()  +1);
             }
         });
         micButton.setOnClickListener(new View.OnClickListener() {

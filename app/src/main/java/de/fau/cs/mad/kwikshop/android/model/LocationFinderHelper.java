@@ -20,9 +20,11 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
 import se.walkercrou.places.Place;
+import se.walkercrou.places.Status;
 
 public class LocationFinderHelper implements LocationListener {
 
@@ -280,6 +282,33 @@ public class LocationFinderHelper implements LocationListener {
         return null;
     }
 
+    public static String convertStatus(Status status, Context context){
+        if(status.toString().equals(Status.OPENED.toString())){
+            return context.getResources().getString(R.string.place_status_opened);
+        } else if(status.toString().equals(Status.CLOSED.toString())){
+            return context.getResources().getString(R.string.place_status_closed);
+        } else
+            return "";
+    }
+
+    public static String getDistanceBetweenLastLocationAndPlace(Place place, LatLng latLng){
+        Location shopLocation = new Location("place");
+        shopLocation.setLatitude(place.getLatitude());
+        shopLocation.setLongitude(place.getLongitude());
+
+        Location lastLocation = new Location("current");
+        lastLocation.setLatitude(latLng.latitude);
+        lastLocation.setLongitude(latLng.longitude);
+
+        return distanceConverter(lastLocation.distanceTo(shopLocation));
+    }
+
+    private static String distanceConverter(double distance){
+        if(distance >= 1000){
+            return Math.round((distance / 1000) * 10.0) / 10.0 + " km";
+        } else
+            return Math.round(distance * 10.0) / 10.0 + " m";
+    }
 
 
 }

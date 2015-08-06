@@ -66,12 +66,5 @@ public class SupermarketPlace {
         return lastLocation.getLatLng();
     }
 
-    public static String convertStatus(Status status, Context context){
-        if(status.toString().equals(Status.OPENED.toString())){
-            return context.getResources().getString(R.string.place_status_opened);
-        } else if(status.toString().equals(Status.CLOSED.toString())){
-            return context.getResources().getString(R.string.place_status_closed);
-        } else
-            return "";
-    }
+
 }

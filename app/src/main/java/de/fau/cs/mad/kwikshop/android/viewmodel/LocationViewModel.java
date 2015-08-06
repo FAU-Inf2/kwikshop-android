@@ -137,29 +137,13 @@ public class LocationViewModel {
     }
 
     public String converStatus(Status status){
-       return SupermarketPlace.convertStatus(status, context);
+       return LocationFinderHelper.convertStatus(status, context);
     }
 
     public String getDistanceBetweenLastLocationAndPlace(Place place, LatLng latLng){
-
-        Location shopLocation = new Location("place");
-        shopLocation.setLatitude(place.getLatitude());
-        shopLocation.setLongitude(place.getLongitude());
-
-        Location lastLocation = new Location("current");
-        lastLocation.setLatitude(latLng.latitude);
-        lastLocation.setLongitude(latLng.longitude);
-
-        return distanceConverter(lastLocation.distanceTo(shopLocation));
-
+        return LocationFinderHelper.getDistanceBetweenLastLocationAndPlace(place, latLng);
     }
 
-    private String distanceConverter(double distance){
-        if(distance >= 1000){
-            return Math.round((distance / 1000) * 10.0) / 10.0 + " km";
-        } else
-            return Math.round(distance * 10.0) / 10.0 + " m";
-    }
 
 
 

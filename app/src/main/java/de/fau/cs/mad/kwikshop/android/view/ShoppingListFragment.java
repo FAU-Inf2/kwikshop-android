@@ -131,6 +131,7 @@ public class ShoppingListFragment
         DisplayHelper displayHelper = objectGraph.get(DisplayHelper.class);
         viewModel = objectGraph.get(ShoppingListViewModel.class);
         autoCompletion = objectGraph.get(AutoCompletionHelper.class);
+        objectGraph.inject(this);
         viewModel.initialize(this.listID);
 
         getActivity().setTitle(viewModel.getName());
@@ -257,14 +258,14 @@ public class ShoppingListFragment
             ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
             ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
 
-            /*
+
 
             if(viewLauncher == null){
                 Log.e("SLF", "VL is null");
             } else
                 Log.e("SLF", "VL is not null");
 
-            */
+
 
             /*
             if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){

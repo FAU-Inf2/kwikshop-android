@@ -186,6 +186,8 @@ public class LoginActivity extends FragmentActivity implements
         }
 
         if (isSignedIn) {
+            mStatus.setText(getString(R.string.kwikshop_login_success));
+
             login_sign_in_button.setEnabled(false);
             login_sign_in_button.setVisibility(View.GONE);
             login_sign_out_button.setEnabled(true);

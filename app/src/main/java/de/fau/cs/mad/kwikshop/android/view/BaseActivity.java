@@ -134,7 +134,7 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     private void restartActivity(){
-        Intent intent = new Intent(this, getClass());
+        Intent intent = getIntent();
         finish();
         startActivity(intent);
     }

@@ -83,9 +83,7 @@ public class ShoppingListActivity extends BaseActivity {
             case R.id.action_shopping_mode:
                 // save enabled shopping mode setting and restart activity to update view
                 SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
-                Intent intent = getIntent();
-                finish();
-                startActivity(intent);
+                startActivity(ShoppingListActivity.getIntent(getApplicationContext(), getIntent().getExtras().getInt(SHOPPING_LIST_ID)));
                 break;
         }
         if(type != null) EventBus.getDefault().post(type);
@@ -116,8 +114,12 @@ public class ShoppingListActivity extends BaseActivity {
             }
             intent.putExtra(SHOPPING_LIST_ID, id);
         }else {
+
             Bundle extras = getIntent().getExtras();
-            id = extras.getInt(SHOPPING_LIST_ID);
+            if(extras != null){
+                id = extras.getInt(SHOPPING_LIST_ID);
+            }
+
         }
 
         if (savedInstanceState == null) {

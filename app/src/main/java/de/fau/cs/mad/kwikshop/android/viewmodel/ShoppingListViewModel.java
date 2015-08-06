@@ -165,6 +165,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     public void setLocationOnItemBought(final int id, final String googleBrowserApiKey){
 
+        /*
+
         AsyncTask<Void, Void, Void> locationAsyncTask =  new AsyncTask<Void, Void, Void>() {
 
              Item item;
@@ -213,6 +215,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         if(listManager.getListItem(listId, id).getLocation() == null) {
             locationAsyncTask.execute();
         }
+
+        */
 
     }
 

@@ -33,6 +33,8 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCa
 import java.util.Iterator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.*;
 import dagger.ObjectGraph;
@@ -66,6 +68,12 @@ public class ShoppingListFragment
 
     private ShoppingListViewModel viewModel;
     private boolean updatingViewModel;
+
+    @Inject
+    ViewLauncher viewLauncher;
+
+    @Inject
+    ResourceProvider resourceProvider;
 
     @InjectView(R.id.list_shoppingList)
     DynamicListView shoppingListView;

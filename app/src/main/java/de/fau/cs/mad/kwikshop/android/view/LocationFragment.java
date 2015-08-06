@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
@@ -44,9 +45,12 @@ import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
 import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
@@ -62,11 +66,13 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
     private GoogleMap map;
     private AlertDialog alert;
     private LocationFinderHelper lastLocation;
-    double lastLat;
-    double lastLng;
-    String address;
-    ProgressDialog progress;
-    List<Place> places;
+    private double lastLat;
+    private double lastLng;
+
+    private Context context;
+    private List<Place> places;
+
+    private LocationViewModel viewModel;
 
     @Inject
     ViewLauncher viewLauncher;
@@ -91,17 +97,15 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
 
     private static final String LOG_TAG = "LocationFragment";
 
-
     public static LocationFragment newInstance() {
         LocationFragment fragment = new LocationFragment();
         return fragment;
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        context = getActivity().getApplicationContext();
     }
 
 
@@ -112,110 +116,60 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
         ButterKnife.inject(this, rootView);
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
+        viewModel = objectGraph.get(LocationViewModel.class);
         objectGraph.inject(this);
 
+        viewModel.setActivity(getActivity());
+        viewModel.setContext(context);
+
+        showProgressDialog();
+
+        // async places request
+        if(viewLauncher.checkInternetConnection()){
+            viewModel.getNearbySupermarketPlaces(this);
+            viewModel.getLastLatLng();
+        } else {
+            notificationOfNoConnection();
+        }
+
         hideInfoBox();
-
-        whereIsTheNextSupermarketRequest();
-
-         //SupermarketPlace.initiateSupermarketPlace(getActivity()).performAsyncPlaceRequest();
-
         return rootView;
+
+    }
+
+    public void showProgressDialog(){
+        viewLauncher.showProgressDialog(
+                resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
+                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
+                true,
+                viewModel.getCancelProgressDialogCommand()
+        );
 
     }
 
     // called when place request is ready
     @Override
-    public void postResult(List<Place> places) {
-
-
+    public void postResult(List<Place> pPlaces) {
+        places = pPlaces;
+        initiateMap();
+        dismissProgressDialog();
     }
-
-    private void whereIsTheNextSupermarketRequest(){
-
-        AsyncTask<Void, Void, Void> aTask = new AsyncTask<Void, Void, Void>(){
-            List<Place> places;
-            private final String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-                viewLauncher.showProgressDialog(
-                        resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
-                        resourceProvider.getString(R.string.alert_dialog_connection_cancel),
-                        true,
-                        new Command<Void>() {
-                            @Override
-                            public void execute(Void parameter) {
-                                Intent intent = new Intent(getActivity(), ListOfShoppingListsActivity.class);
-                                getActivity().finish();
-                                startActivity(intent);
-                            }
-                        }
-
-                );
-
-            }
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                // check connection to internet
-
-                GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
-                try {
-                    places = client.getNearbyPlaces(lastLat, lastLng, 5000, 30, Param.name("types").value("grocery_or_supermarket"));
-                } catch (Exception e) {
-                    Log.e("LocationFragment", "no places was found");
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                initiateMap(places);
-                progressDismiss();
-            }
-
-        };
-
-        // no last location was found
-        if(!InternetHelper.checkInternetConnection(getActivity())){
-            progressDismiss();
-            notificationOfNoConnection();
-        } else {
-            // retrieve last location from gps or mobile internet
-            lastLocation = new LocationFinderHelper(getActivity());
-            lastLat = lastLocation.getLatitude();
-            lastLng = lastLocation.getLongitude();
-            address = lastLocation.getAddressToString();
-            aTask.execute();
-        }
-
-    }
-
-
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        progressDismiss();
+        dismissProgressDialog();
     }
 
-    void progressDismiss(){
+    void dismissProgressDialog(){
        viewLauncher.dismissProgressDialog();
     }
 
-
-    private void initiateMap(final List<Place> places){
-
-        // set up map
-        MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
-        this.places = places;
-        mapFragment.getMapAsync(this);
-
+    private void initiateMap(){
+        if(!viewModel.isCanceld()){
+            MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+        }
     }
 
     private void showInfoBox(){
@@ -230,137 +184,59 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
         mapDirectionButton.setVisibility(View.INVISIBLE);
     }
 
-    private String convertStatus(Status status){
-        if(status.toString().equals(Status.OPENED.toString())){
-            return getResources().getString(R.string.place_status_opened);
-        } else if(status.toString().equals(Status.CLOSED.toString())){
-            return getResources().getString(R.string.place_status_closed);
-        } else
-            return "";
-    }
-
-    private Place findCorrespondPlaceToMarker(Marker marker, List<Place> places){
-        for(Place place : places){
-            if(place.getLatitude() - marker.getPosition().latitude == 0.0 && place.getLongitude() - marker.getPosition().longitude == 0.0){
-                return place;
-            }
-        }
-        return null;
-    }
-
-    private String getDistanceBetweenLastLocationAndPlace(Place place){
-        Location shopLocation = new Location("place");
-        shopLocation.setLatitude(place.getLatitude());
-        shopLocation.setLongitude(place.getLongitude());
-
-        Location lastLocation = new Location("current");
-        lastLocation.setLatitude(lastLat);
-        lastLocation.setLongitude(lastLng);
-
-        return  distanceConverter(lastLocation.distanceTo(shopLocation));
-
-    }
-
-
-    private String distanceConverter(double distance){
-        if(distance >= 1000){
-            return Math.round((distance / 1000) * 10.0) / 10.0 + " km";
-        } else
-            return Math.round(distance * 10.0) / 10.0 + " m";
-    }
-
-    private void addIcon(IconGenerator iconFactory, String text, LatLng position) {
-        MarkerOptions markerOptions = new MarkerOptions().
-                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
-                position(position).
-                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-        map.addMarker(markerOptions);
-    }
-
-    // Method to inform user about no internet connection
     private void notificationOfNoConnection(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.alert_dialog_connection_label);
-        builder.setMessage(R.string.alert_dialog_connection_message);
-        builder.setPositiveButton(R.string.alert_dialog_connection_try, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                if(InternetHelper.checkInternetConnection(getActivity())){
-                    getActivity().finish();
-                    getActivity().startActivity(new Intent(getActivity().getApplicationContext(), LocationActivity.class));
-                } else {
-                    notificationOfNoConnection();
-                }
-            }
-        });
 
-        builder.setNegativeButton(R.string.alert_dialog_connection_cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                getActivity().finish();
-            }
-        });
-
-        alert = builder.create();
-        alert.show();
+        viewLauncher.showMessageDialog(
+                resourceProvider.getString(R.string.alert_dialog_connection_label),
+                resourceProvider.getString(R.string.alert_dialog_connection_message),
+                resourceProvider.getString(R.string.alert_dialog_connection_try),
+                new Command<Void>() {
+                    @Override
+                    public void execute(Void parameter) {
+                        if(viewLauncher.checkInternetConnection())
+                            viewLauncher.showLocationActivity();
+                        else {
+                            notificationOfNoConnection();
+                        }
+                    }
+                },
+                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
+                viewModel.getFinishActivityCommand()
+        );
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if(alert != null)
-            alert.dismiss();
-
+        viewLauncher.dismissDialog();
     }
 
-
     @Override
-    public void onMapReady(GoogleMap map) {
+    public void onMapReady(GoogleMap gmap) {
 
-        this.map = map;
-        map.setMyLocationEnabled(true);
-        map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lastLat,lastLng) , 15.0f) );
-        UiSettings settings = map.getUiSettings();
-        settings.setAllGesturesEnabled(true);
-        settings.setMapToolbarEnabled(false);
-
-
-        if(places == null){
-            return;
-        }
-
-        // display place on the map
-        for(Place place : places){
-            IconGenerator iconFactory = new IconGenerator(getActivity().getApplicationContext());
-            addIcon(iconFactory, place.getName(), new LatLng(place.getLatitude(), place.getLongitude()));
-        }
+        map =  viewModel.setupGoogleMap(gmap);
+        viewModel.showPlacesInGoogleMap(places, map);
 
         // display info box
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                final Place clickedPlace = findCorrespondPlaceToMarker(marker, places);
-                final String clickedAdress = LocationFinderHelper.getAddressConverted(new LatLng(clickedPlace.getLatitude(), clickedPlace.getLongitude()),
-                        getActivity().getApplicationContext());
-
+                final Place clickedPlace = viewModel.findClickedPlace(marker, places);
+                final String clickedAddress = viewModel.findClickedAddress(clickedPlace);
 
                 showInfoBox();
 
                 mapPlaceName.setText(clickedPlace.getName());
-                mapPlaceOpenStatus.setText(convertStatus(clickedPlace.getStatus()));
-                mapPlaceDistance.setText(getDistanceBetweenLastLocationAndPlace(clickedPlace));
+                mapPlaceOpenStatus.setText(viewModel.converStatus(clickedPlace.getStatus()));
+                mapPlaceDistance.setText(viewModel.getDistanceBetweenLastLocationAndPlace(clickedPlace, new LatLng(lastLat,lastLng)));
                 mapDirectionButton.setOnClickListener(new View.OnClickListener() {
-
                     @Override
                     public void onClick(View v) {
-
-                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                                Uri.parse("http://maps.google.com/maps?daddr=" + clickedAdress));
-                        startActivity(intent);
+                        viewModel.getrouteIntentCommand().execute(clickedAddress);
                     }
                 });
-
-
                 return false;
             }
         });

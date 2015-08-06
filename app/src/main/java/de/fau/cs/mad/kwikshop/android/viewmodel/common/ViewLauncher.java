@@ -30,6 +30,10 @@ public interface ViewLauncher {
                            String neutralMessage, Command<Void> neutralCommand,
                            String negativeMessage, Command<Void> negativeCommand);
 
+    void showMessageDialog(String title, String message,
+                           String positiveMessage, Command<Void> positiveCommand,
+                           String negativeMessage, Command<Void> negativeCommand);
+
     void showToast(String message, int duration);
 
     void showToast(int resId, int duration);
@@ -75,8 +79,21 @@ public interface ViewLauncher {
                             String negativeMessage, boolean cancelable,
                             final Command<Void> negativeCommand);
 
-
     void dismissProgressDialog();
+
+    void showListOfShoppingListsActivity();
+
+    void showLocationActivity();
+
+    boolean checkInternetConnection();
+
+    void finishActivity();
+
+    void dismissDialog();
+
+    void startActivity(Intent intent);
+
+
 
 
 }

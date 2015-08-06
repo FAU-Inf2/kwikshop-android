@@ -63,7 +63,7 @@ public class ShoppingListActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
 
-        ItemSortType type = null;
+        ItemSortType  type = null;
         switch (item.getItemId()){
             case R.id.sort_by_group_option: type = ItemSortType.GROUP; break;
             case R.id.sort_by_alphabet_option: type = ItemSortType.ALPHABETICALLY; break;

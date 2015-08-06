@@ -35,6 +35,8 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -366,7 +368,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         //populate number picker
         numbersForAmountPicker = new String[1003];
-        String [] numsOnce = new String[]{
+        final String [] numsOnce = new String[]{
                 "1/4","1/2","3/4","1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
                 "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
                 "450", "500", "600", "700", "750", "800", "900", "1000"
@@ -392,6 +394,29 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         numberPicker.setWrapSelectorWheel(false);
         numberPicker.setDisplayedValues(numbersForAmountPicker);
 
+        numberPicker.setFormatter(new NumberPicker.Formatter() {
+
+            @Override
+            public String format(int value) {
+                // TODO Auto-generated method stub
+                return numsOnce[value];
+            }
+        });
+        //seems terrible but it is a trick to bypass a numberpicker bug
+        try {
+            Method method = numberPicker.getClass().getDeclaredMethod("changeValueByOne", boolean.class);
+            method.setAccessible(true);
+            method.invoke(numberPicker, true);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        numberPicker.invalidate();
         //wire up auto-complete for product name and brand
         productname_text.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
         productname_text.setTokenizer(new SpaceTokenizer());

@@ -182,12 +182,9 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-
                 final Place clickedPlace = viewModel.findClickedPlace(marker, places);
                 final String clickedAddress = viewModel.findClickedAddress(clickedPlace);
-
                 showInfoBox();
-
                 mapPlaceName.setText(clickedPlace.getName());
                 mapPlaceOpenStatus.setText(viewModel.converStatus(clickedPlace.getStatus()));
                 mapPlaceDistance.setText(viewModel.getDistanceBetweenLastLocationAndPlace(clickedPlace, latLng));

@@ -75,6 +75,7 @@ public interface ViewLauncher {
                                        String checkBoxMessage, boolean checkBoxDefaultValue,
                                        final Command<Void> checkedCommand, final Command<Void> uncheckedCommand);
 
+
     void showProgressDialog(String message,
                             String negativeMessage, boolean cancelable,
                             final Command<Void> negativeCommand);

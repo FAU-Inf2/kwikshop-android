@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -250,12 +251,30 @@ public class ShoppingListFragment
 
         });
 
-        // shopping mode is on
+        // shopping mode
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getActivity())){
              // remove quick add view
-
             ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
             ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
+
+            /*
+
+            if(viewLauncher == null){
+                Log.e("SLF", "VL is null");
+            } else
+                Log.e("SLF", "VL is not null");
+
+            */
+
+            /*
+            if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
+                viewModel.getViewLauncher().showProgressDialog(
+                        resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
+                        resourceProvider.getString(R.string.alert_dialog_connection_cancel),
+                        true,
+                        viewModel.getCancelProgressDialogCommand());
+            }
+            */
         }
 
         return rootView;

@@ -7,6 +7,8 @@ import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
+import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
@@ -19,16 +21,39 @@ public class ShoppingListItemDetailsViewModel extends ItemDetailsViewModel{
 
     private final RegularlyRepeatHelper repeatHelper;
 
+    private final ListManager<ShoppingList> listManager;
+
+    private final ItemMerger<ShoppingList> itemMerger;
+
+    @Override
+    protected ListType getListType() {
+        return ListType.ShoppingList;
+    }
+
+    @Override
+    protected ListManager<ShoppingList> getListManager() {
+        return this.listManager;
+    }
+
+    @Override
+    protected ItemMerger<ShoppingList> getItemMerger() { return this.itemMerger; }
+
     @Inject
-    public ShoppingListItemDetailsViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> shoppingListManager, SimpleStorage<Unit> unitStorage,
+    public ShoppingListItemDetailsViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> listManager, SimpleStorage<Unit> unitStorage,
                                             SimpleStorage<Group> groupStorage, DisplayHelper displayHelper, AutoCompletionHelper autoCompletionHelper,
                                             RegularlyRepeatHelper repeatHelper){
 
-        super(viewLauncher, shoppingListManager, unitStorage, groupStorage, displayHelper, autoCompletionHelper);
+        super(viewLauncher, unitStorage, groupStorage, displayHelper, autoCompletionHelper);
 
         if(repeatHelper == null) throw new ArgumentNullException("repeatHelper");
 
+        if(listManager == null) throw new ArgumentNullException("listManager");
+
         this.repeatHelper = repeatHelper;
+
+        this.listManager = listManager;
+
+        this.itemMerger = new ItemMerger<>(listManager);
     }
 
     public RegularlyRepeatHelper getRepeatHelper(){ return repeatHelper; }

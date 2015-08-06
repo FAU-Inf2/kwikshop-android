@@ -188,7 +188,7 @@
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
     <string name="overflow_action_menu_recipes">Manage recipes</string>
     <string name="overflow_action_menu_add_recipes">Add recipes to the list</string>
-    <string name="recipe_scaleName_person">persons</string>
+    <string name="recipe_scaleName_person">people</string>
     <string name="recipe_scaleName_piece">pieces</string>
     <string name="recipe_choose_amount">Choose amount of </string>
 
@@ -299,10 +299,12 @@
     <string name="recipe_sweetenedCondensedMilk">Sweetened condensed milk</string>
     <string name="recipe_coconutFlakes">Coconut flakes</string>
     <string name="unit_cup">cups</string>
-    <string name="unit_tablespoon">Tablespoons</string>
+    <string name="unit_tablespoon">tablespoons</string>
     <string name="unit_tablespoon_short">tbsp</string>
     <string name="unit_can">cans</string>
     <string name="every_time_i_create_a_list">Every time I create a list</string>
     <string name="on_a_schedule">On a schedule</string>
+    <string name="unit_teaspoon">teaspoon</string>
+    <string name="unit_teaspoon_short">tsp</string>
 
 </resources>

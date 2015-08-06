@@ -140,6 +140,12 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @InjectView(R.id.button_remove)
     ImageView button_remove;
 
+    @InjectView(R.id.upButton)
+    ImageButton upButton;
+
+    @InjectView(R.id.downButton)
+    ImageButton downButton;
+
     @Inject
     AutoCompletionHelper autoCompletionHelper;
 
@@ -148,6 +154,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     @Inject
     SimpleStorage<Group> groupStorage;
+
+
 
     private ItemDetailsViewModel viewModel;
 
@@ -521,6 +529,19 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         });
 
+        upButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                numberPicker.setValue(numberPicker.getValue() - 1);
+            }
+        });
+
+        downButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                numberPicker.setValue(numberPicker.getValue()  +1);
+            }
+        });
         micButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

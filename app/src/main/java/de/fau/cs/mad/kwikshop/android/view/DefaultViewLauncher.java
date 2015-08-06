@@ -23,6 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.ui.IconGenerator;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +35,7 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
@@ -44,14 +48,17 @@ import de.fau.cs.mad.kwikshop.android.model.messages.DialogFinishedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
+import se.walkercrou.places.Place;
 
 public class DefaultViewLauncher implements ViewLauncher {
 
     private static final String MAILTO = "mailto";
 
     private ProgressDialog progress;
+    private AlertDialog alert;
     private final Activity activity;
     private final ResourceProvider resourceProvider;
+
 
     @Inject
     public DefaultViewLauncher(Activity activity, ResourceProvider resourceProvider) {
@@ -238,7 +245,34 @@ public class DefaultViewLauncher implements ViewLauncher {
             }
         });
 
-        AlertDialog alert = builder.create();
+        alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void showMessageDialog(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage, final Command<Void> negativeCommand) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        builder.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+
+                if (positiveCommand.getCanExecute()) {
+                    positiveCommand.execute(null);
+                }
+            }
+        });
+
+        builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+                if (negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(null);
+                }
+            }
+        });
+
+        alert = builder.create();
         alert.show();
     }
 
@@ -308,7 +342,7 @@ public class DefaultViewLauncher implements ViewLauncher {
             }
         });
 
-        AlertDialog alert = builder.create();
+        alert = builder.create();
         alert.show();
 
     }
@@ -452,24 +486,16 @@ public class DefaultViewLauncher implements ViewLauncher {
             }
         });
 
-        AlertDialog alert = builder.create();
+        alert = builder.create();
         alert.show();
     }
 
     @Override
     public void showProgressDialog(String message, String negativeMessage, boolean cancelable, final Command<Void> negativeCommand) {
 
-
-
         progress = new ProgressDialog(activity);
         progress.setMessage(message);
         progress.setCancelable(true);
-
-        //progress.setMessage(activity.getString(R.string.supermarket_finder_progress_dialog_message));
-        //progress.setCancelable(true);
-
-
-
         progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
@@ -490,15 +516,45 @@ public class DefaultViewLauncher implements ViewLauncher {
         });
 
         progress.show();
-
     }
 
     @Override
     public void dismissProgressDialog() {
-        if (progress != null) {
-            progress.dismiss();
-            progress = null;
-        }
+        if (progress != null) { progress.dismiss();}
+    }
+
+    @Override
+        public void showListOfShoppingListsActivity() {
+        activity.finish();
+        Intent intent = ListOfShoppingListsActivity.getIntent(activity.getApplicationContext());
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public void showLocationActivity() {
+        activity.finish();
+        Intent intent =  LocationActivity.getIntent(activity.getApplicationContext());
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public boolean checkInternetConnection() {
+        return InternetHelper.checkInternetConnection(activity);
+    }
+
+    @Override
+    public void finishActivity() {
+        activity.finish();
+    }
+
+    @Override
+    public void dismissDialog() {
+        if (alert != null) { alert.dismiss(); }
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        activity.startActivity(intent);
     }
 
 

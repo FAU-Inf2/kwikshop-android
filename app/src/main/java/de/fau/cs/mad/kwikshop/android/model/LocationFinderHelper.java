@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
+import se.walkercrou.places.Place;
 
 public class LocationFinderHelper implements LocationListener {
 
@@ -60,9 +62,12 @@ public class LocationFinderHelper implements LocationListener {
         getLocation();
     }
 
-    public LastLocation getLastLocation(){
 
-        // create new LastLocation object
+    public static LocationFinderHelper initiateLocationFinderHelper(Context context){
+        return new LocationFinderHelper(context);
+    }
+
+    public LastLocation getLastLocation(){
         LastLocation lastLocation = new LastLocation();
         lastLocation.setLatitude(latitude);
         lastLocation.setLongitude(longitude);
@@ -264,5 +269,17 @@ public class LocationFinderHelper implements LocationListener {
         }
         return provider1.equals(provider2);
     }
+
+
+    public static Place findClickedPlace(Marker marker, List<Place> places){
+        for(Place place : places){
+            if(place.getLatitude() - marker.getPosition().latitude == 0.0 && place.getLongitude() - marker.getPosition().longitude == 0.0){
+                return place;
+            }
+        }
+        return null;
+    }
+
+
 
 }

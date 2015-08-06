@@ -19,6 +19,7 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.DeleteItemEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
@@ -39,7 +40,6 @@ public class ItemDetailsViewModel{
     private boolean isNewItem = false;
     private int listId;
     private int itemId;
-    private ShoppingList shoppingList;
     private Item item;
 
     private List<Unit> units;
@@ -47,7 +47,6 @@ public class ItemDetailsViewModel{
 
 
     private final ViewLauncher viewLauncher;
-    private final ListManager<ShoppingList> shoppingListManager;
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<Group> groupStorage;
     private final DisplayHelper displayHelper;
@@ -68,23 +67,39 @@ public class ItemDetailsViewModel{
 
 
     @Inject
-    public ItemDetailsViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> shoppingListManager, SimpleStorage<Unit> unitStorage,
+    public ItemDetailsViewModel(ViewLauncher viewLauncher, SimpleStorage<Unit> unitStorage,
                                 SimpleStorage<Group> groupStorage, DisplayHelper displayHelper, AutoCompletionHelper autoCompletionHelper){
 
         if(viewLauncher == null) throw new ArgumentNullException("viewLauncher");
-        if(shoppingListManager == null) throw new ArgumentNullException("shoppingListManager");
         if(unitStorage == null) throw new ArgumentNullException("unitStorage");
         if(groupStorage == null) throw new ArgumentNullException("groupStorage");
         if(displayHelper == null) throw new ArgumentNullException("displayHelper");
         if(autoCompletionHelper == null) throw new ArgumentNullException("autoCompletionHelper");
 
         this.viewLauncher = viewLauncher;
-        this.shoppingListManager = shoppingListManager;
         this.unitStorage = unitStorage;
         this.groupStorage = groupStorage;
         this.displayHelper = displayHelper;
         this.autoCompletionHelper = autoCompletionHelper;
 
+    }
+
+
+    //this should be abstract but then @Inject on the constructor does not work
+    protected ListType getListType(){
+        return null;
+    }
+
+    //work-around: right list manager cannot be injected because Dagger does not know final type
+    // probably because of generics in java are broken
+    //this should be abstract but then @Inject on the constructor does not work
+    protected ListManager getListManager(){
+        return null;
+    }
+
+    //this should be abstract but then @Inject on the constructor does not work
+    protected ItemMerger getItemMerger(){
+        return null;
     }
 
     public void initialize(int listId, int itemId){
@@ -247,17 +262,16 @@ public class ItemDetailsViewModel{
             EventBus.getDefault().post(new DeleteItemEvent(listId, itemId));
     }
 
-    public void mergeAndSaveItem(){
-        ItemMerger<ShoppingList> itemMerger = new ItemMerger<>(shoppingListManager);
+    public void mergeAndSaveItem(ListManager listManager, ItemMerger itemMerger){
         if(isNewItem()) {
             if(!itemMerger.mergeItem(listId, item)) {
-                shoppingListManager.addListItem(listId, item);
+                listManager.addListItem(listId, item);
             }
         } else {
             if(itemMerger.mergeItem(listId, item)){
-                shoppingListManager.deleteItem(listId, item.getId());
+                listManager.deleteItem(listId, item.getId());
             }else {
-                shoppingListManager.saveListItem(listId, item);
+                listManager.saveListItem(listId, item);
             }
         }
 

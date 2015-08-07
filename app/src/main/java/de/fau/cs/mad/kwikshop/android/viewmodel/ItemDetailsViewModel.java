@@ -27,9 +27,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
-import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
-import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.greenrobot.event.EventBus;
 
 public class ItemDetailsViewModel{
@@ -51,12 +49,6 @@ public class ItemDetailsViewModel{
     private final SimpleStorage<Group> groupStorage;
     private final DisplayHelper displayHelper;
     private final AutoCompletionHelper autoCompletionHelper;
-
-
-    private static final int GALLERY = 1;
-    private static final int GALLERY_INTENT_CALLED = 1;
-    private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
-    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
 
     private Bitmap imageItem = null;
@@ -82,24 +74,6 @@ public class ItemDetailsViewModel{
         this.displayHelper = displayHelper;
         this.autoCompletionHelper = autoCompletionHelper;
 
-    }
-
-
-    //this should be abstract but then @Inject on the constructor does not work
-    protected ListType getListType(){
-        return null;
-    }
-
-    //work-around: right list manager cannot be injected because Dagger does not know final type
-    // probably because of generics in java are broken
-    //this should be abstract but then @Inject on the constructor does not work
-    protected ListManager getListManager(){
-        return null;
-    }
-
-    //this should be abstract but then @Inject on the constructor does not work
-    protected ItemMerger getItemMerger(){
-        return null;
     }
 
     public void initialize(int listId, int itemId){
@@ -241,9 +215,6 @@ public class ItemDetailsViewModel{
         return selectedGroup;
     }
 
-    public void openVoiceRecognition(){
-        viewLauncher.openVoiceRecognition(VOICE_RECOGNITION_REQUEST_CODE);
-    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         EventBus.getDefault().post(new ActivityResultEvent(requestCode, resultCode, data));
@@ -262,7 +233,7 @@ public class ItemDetailsViewModel{
             EventBus.getDefault().post(new DeleteItemEvent(listId, itemId));
     }
 
-    public void mergeAndSaveItem(ListManager listManager, ItemMerger itemMerger){
+    public void mergeAndSaveItem(ListManager listManager, ItemMerger itemMerger, Item item){
         if(isNewItem()) {
             if(!itemMerger.mergeItem(listId, item)) {
                 listManager.addListItem(listId, item);
@@ -273,6 +244,20 @@ public class ItemDetailsViewModel{
             }else {
                 listManager.saveListItem(listId, item);
             }
+        }
+
+    }
+
+    public void offerAutoCompletion(String name, Group group, String brand){
+        autoCompletionHelper.offerNameAndGroup(name, group);
+        autoCompletionHelper.offerBrand(brand);
+
+    }
+
+    public void deleteItem(ListManager listManager){
+
+        if(!isNewItem()){
+            listManager.deleteItem(listId, itemId);
         }
 
     }

@@ -66,8 +66,6 @@ public interface ViewLauncher {
 
     void launchEmailChooser(String chooserTitle, String recipient, String subject, String body);
 
-    void openVoiceRecognition(int requestCode);
-
     void showMessageDialogWithCheckbox(String title, String message,
                                        String positiveMessage, final Command<Void> positiveCommand,
                                        String neutralMessage, final Command<Void> neutralCommand,

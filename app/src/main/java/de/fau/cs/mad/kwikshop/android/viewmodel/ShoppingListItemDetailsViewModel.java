@@ -21,23 +21,6 @@ public class ShoppingListItemDetailsViewModel extends ItemDetailsViewModel{
 
     private final RegularlyRepeatHelper repeatHelper;
 
-    private final ListManager<ShoppingList> listManager;
-
-    private final ItemMerger<ShoppingList> itemMerger;
-
-    @Override
-    protected ListType getListType() {
-        return ListType.ShoppingList;
-    }
-
-    @Override
-    protected ListManager<ShoppingList> getListManager() {
-        return this.listManager;
-    }
-
-    @Override
-    protected ItemMerger<ShoppingList> getItemMerger() { return this.itemMerger; }
-
     @Inject
     public ShoppingListItemDetailsViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> listManager, SimpleStorage<Unit> unitStorage,
                                             SimpleStorage<Group> groupStorage, DisplayHelper displayHelper, AutoCompletionHelper autoCompletionHelper,
@@ -50,10 +33,6 @@ public class ShoppingListItemDetailsViewModel extends ItemDetailsViewModel{
         if(listManager == null) throw new ArgumentNullException("listManager");
 
         this.repeatHelper = repeatHelper;
-
-        this.listManager = listManager;
-
-        this.itemMerger = new ItemMerger<>(listManager);
     }
 
     public RegularlyRepeatHelper getRepeatHelper(){ return repeatHelper; }

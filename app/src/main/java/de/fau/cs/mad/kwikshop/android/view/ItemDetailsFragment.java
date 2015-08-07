@@ -304,22 +304,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         setAdditionalItemProperties();
 
-        autoCompletionHelper.offerNameAndGroup(item.getName(), item.getGroup());
-        autoCompletionHelper.offerBrand(item.getBrand());
-
-        ItemMerger<TList> itemMerger = new ItemMerger<>(getListManager());
-        if(viewModel.isNewItem()) {
-            if(!itemMerger.mergeItem(listId, item)) {
-                getListManager().addListItem(listId, item);
-            }
-        } else {
-            if(itemMerger.mergeItem(listId, item)){
-                getListManager().deleteItem(listId, item.getId());
-            }else {
-                getListManager().saveListItem(listId, item);
-            }
-        }
-
+        viewModel.offerAutoCompletion(item.getName(), item.getGroup(), item.getBrand());
+        viewModel.mergeAndSaveItem(getListManager(), new ItemMerger(getListManager()), item);
 
         hideKeyboard();
 
@@ -327,10 +313,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     protected void deleteItem() {
 
-        if(!viewModel.isNewItem()){
-            getListManager().deleteItem(listId, itemId);
-        }
-
+        viewModel.deleteItem(getListManager());
         hideKeyboard();
     }
 
@@ -545,7 +528,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         micButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.openVoiceRecognition();
+                SpeechRecognitionHelper.run(getActivity());
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+                startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+
             }
 
         });

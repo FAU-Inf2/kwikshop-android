@@ -43,8 +43,9 @@
     <string name="no_place_dialog_title">No Supermarket</string>
     <string name="dialog_OK">OK</string>
     <string name="dialog_retry">Retry</string>
-
     <string name="supermarket_select_dialog_title">Select your current Supermarket</string>
+    <string name="localization_permisson_dialog_title">Localization</string>
+    <string name="localization_permisson_dialog_message">Kwik Shop wants to locate your position. Do you agree?</string>
 
 
     <!-- Item Details Fragment -->

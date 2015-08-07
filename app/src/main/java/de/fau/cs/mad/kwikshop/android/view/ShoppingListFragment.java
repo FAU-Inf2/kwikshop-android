@@ -261,6 +261,11 @@ public class ShoppingListFragment
 
         // shopping mode
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getActivity())){
+
+            locationViewModel.setContext(getActivity().getApplicationContext());
+            locationViewModel.setActivity(getActivity());
+            locationViewModel.setListId(listID);
+
              // remove quick add view
             ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
             ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
@@ -269,20 +274,10 @@ public class ShoppingListFragment
 
                 if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
 
-                    if(viewLauncher.checkInternetConnection()){
+                    if(locationViewModel.checkInternetConnection()){
 
-                        // progress dialog with cancel option
-                        viewLauncher.showProgressDialogWithListID(
-                                resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
-                                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
-                                listID,
-                                true,
-                                locationViewModel.getStartShoppingListFragmemtWithoutPlaceRequestCommand()
-                                  );
-
-                                locationViewModel.setContext(getActivity().getApplicationContext());
-
-                        locationViewModel.setActivity(getActivity());
+                        // progress dialog with listID to cance progress
+                        locationViewModel.showProgressDialogWithListID(listID);
 
                         // place request: radius 1500 result count 5
                         locationViewModel.getNearbySupermarketPlaces(this, 1500, 5);
@@ -292,6 +287,13 @@ public class ShoppingListFragment
                         // no connection dialog
                         locationViewModel.notificationOfNoConnection();
                     }
+                } else {
+
+                    // No permission for location tracking - ask for permission dialog
+                    if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, getActivity())){
+                        locationViewModel.showAskForLocalizationPermission();
+                    }
+
                 }
 
             }
@@ -302,36 +304,21 @@ public class ShoppingListFragment
     }
 
 
+    // results of place request
     @Override
     public void postResult(List<Place> places) {
 
-        viewLauncher.dismissProgressDialog();
+        locationViewModel.dismissProgressDialog();
 
         if(!locationViewModel.checkPlaces(places)){
-
             // no place info dialog
-            viewLauncher.showMessageDialogWithTwoButtons(
-                    resourceProvider.getString(R.string.no_place_dialog_title),
-                    resourceProvider.getString(R.string.no_place_dialog_message),
-                    resourceProvider.getString(R.string.dialog_OK),
-                    locationViewModel.getAcceptDialogCommand(),
-                    resourceProvider.getString(R.string.dialog_retry),
-                    locationViewModel.getRestartActivityCommand()
-            );
+            locationViewModel.showNoPlaceWasFoundDialog();
             return;
         }
 
-        CharSequence[] placeNames = locationViewModel.getNamesFromPlaces(places);
-
         // Select the current Supermarket
-        viewLauncher.showMessageDialogWithRadioButtons(
-                resourceProvider.getString(R.string.supermarket_select_dialog_title),
-                placeNames,
-                resourceProvider.getString(R.string.dialog_OK),
-                locationViewModel.getSavePlaceToShoppingListCommand(),
-                resourceProvider.getString(R.string.dialog_retry),
-                locationViewModel.getRestartActivityCommand()
-        );
+        locationViewModel.showSelectCurrentSupermarket(places);
+
     }
 
 

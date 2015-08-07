@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -618,7 +619,14 @@ public class DefaultViewLauncher implements ViewLauncher {
 
     @Override
     public void dismissProgressDialog() {
-        if (progress != null) { progress.dismiss();}
+        if (progress != null) {
+            progress.dismiss();
+            progress = null;
+        } else {
+            Log.e("Progressbar", " is null!");
+        }
+
+
     }
 
     @Override

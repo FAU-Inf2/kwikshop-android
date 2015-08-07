@@ -25,6 +25,7 @@ import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
@@ -38,6 +39,7 @@ public class LocationViewModel {
 
     private Activity activity;
     private Context context;
+    private int listId;
 
     private Boolean canceled = false;
 
@@ -59,6 +61,8 @@ public class LocationViewModel {
         this.viewLauncher = viewLauncher;
         this.shoppingListManager = shoppingListManager;
     }
+
+    public void setListId(int listId){ this.listId = listId; }
 
     public void setContext(Context context){ this.context = context; }
 
@@ -113,7 +117,7 @@ public class LocationViewModel {
     final Command savePlaceToShoppingListCommand = new Command<Void>(){
         @Override
         public void execute(Void parameter) {
-
+            // save place to shopping list
         }
     };
 
@@ -131,6 +135,37 @@ public class LocationViewModel {
         }
     };
 
+
+    final Command grantLocalizationPermissionCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, true, context);
+            Intent intent = ShoppingListActivity.getIntent(context, listId);
+            viewLauncher.startActivity(intent);
+        }
+    };
+
+    final Command withdrawLocalizationPermissionCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context);
+        }
+    };
+
+    final Command doMotShowLocalizationPermissionAgainCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, false, context );
+        }
+    };
+
+    final Command showLocalizationPermissionAgainCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, context );
+        }
+    };
+
     public void getNearbySupermarketPlaces(Object instance, int radius, int resultCount){
         SupermarketPlace.initiateSupermarketPlaceRequest(context, instance, radius, resultCount);
     }
@@ -139,7 +174,6 @@ public class LocationViewModel {
         LastLocation lastLocation = LocationFinderHelper.initiateLocationFinderHelper(context).getLastLocation();
         return new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
     }
-
 
     public GoogleMap setupGoogleMap(GoogleMap map){
 
@@ -207,6 +241,66 @@ public class LocationViewModel {
 
     }
 
+    public void showProgressDialogWithListID(int listID){
+
+        viewLauncher.showProgressDialogWithListID(
+                resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
+                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
+                listID,
+                true,
+                getStartShoppingListFragmemtWithoutPlaceRequestCommand()
+        );
+    }
+
+    public void showNoPlaceWasFoundDialog(){
+
+        viewLauncher.showMessageDialogWithTwoButtons(
+                resourceProvider.getString(R.string.no_place_dialog_title),
+                resourceProvider.getString(R.string.no_place_dialog_message),
+                resourceProvider.getString(R.string.dialog_OK),
+                getAcceptDialogCommand(),
+                resourceProvider.getString(R.string.dialog_retry),
+                getRestartActivityCommand()
+        );
+
+    }
+
+    public void showSelectCurrentSupermarket(List<Place> places){
+
+        CharSequence[] placeNames = getNamesFromPlaces(places);
+
+        viewLauncher.showMessageDialogWithRadioButtons(
+                resourceProvider.getString(R.string.supermarket_select_dialog_title),
+                placeNames,
+                resourceProvider.getString(R.string.dialog_OK),
+                getSavePlaceToShoppingListCommand(),
+                resourceProvider.getString(R.string.dialog_retry),
+                getRestartActivityCommand()
+        );
+    }
+
+    public void showAskForLocalizationPermission(){
+
+        viewLauncher.showMessageDialogWithCheckbox(
+                resourceProvider.getString(R.string.localization_permisson_dialog_title),
+                resourceProvider.getString(R.string.localization_permisson_dialog_message),
+                resourceProvider.getString(R.string.yes),
+                grantLocalizationPermissionCommand,
+                null,
+                null,
+                resourceProvider.getString(R.string.no),
+                withdrawLocalizationPermissionCommand,
+                resourceProvider.getString(R.string.dont_show_this_message_again),
+                false,
+                doMotShowLocalizationPermissionAgainCommand,
+                showLocalizationPermissionAgainCommand
+
+        );
+
+    }
+
+
+
     public CharSequence[] getNamesFromPlaces(List<Place> places){
         return LocationFinderHelper.getNamesFromPlaces(places);
     }
@@ -222,6 +316,12 @@ public class LocationViewModel {
         viewLauncher.startActivity(intent);
     }
 
+    public void dismissProgressDialog(){
+        viewLauncher.dismissProgressDialog();
+    }
 
+    public boolean checkInternetConnection(){
+        return viewLauncher.checkInternetConnection();
+    }
 
 }

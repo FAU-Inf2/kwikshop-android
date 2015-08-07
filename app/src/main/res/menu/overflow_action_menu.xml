@@ -61,6 +61,10 @@
                 app:showAsAction="ifRoom"
                 android:title="Server Integration Debug Console" />
 
+            <item android:id="@+id/action_startSynchronization"
+                app:showAsAction="ifRoom"
+                android:title="@string/start_synchronization" />
+
 
         </menu>
 

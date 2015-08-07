@@ -111,6 +111,10 @@ public class BaseActivity extends ActionBarActivity {
                 startActivity(ServerIntegrationDebugActivity.getIntent(this));
                 return true;
 
+            case R.id.action_startSynchronization:
+                startSynchronization();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -166,6 +170,12 @@ public class BaseActivity extends ActionBarActivity {
         restartActivity();
     }
 
+
+    protected void startSynchronization() {
+
+
+
+    }
 
 
 

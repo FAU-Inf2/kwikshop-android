@@ -1,11 +1,13 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
@@ -22,19 +24,22 @@ import java.util.Locale;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.util.TopExceptionHandler;
+import de.greenrobot.event.EventBus;
 
 /**
  * BaseActivity: all activities have to inherit
  */
 public class BaseActivity extends ActionBarActivity {
 
-
-
     public static FrameLayout frameLayout;
     public static boolean refreshed = false;
+
+    ProgressDialog syncProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +70,8 @@ public class BaseActivity extends ActionBarActivity {
         // home icon in actionbar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_home);
+
+        EventBus.getDefault().register(this);
 
     }
 
@@ -134,7 +141,7 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        EventBus.getDefault().unregister(this);
     }
 
     private void restartActivity(){
@@ -142,7 +149,6 @@ public class BaseActivity extends ActionBarActivity {
         finish();
         startActivity(intent);
     }
-
 
     public void setSavedLocale() {
 
@@ -170,9 +176,41 @@ public class BaseActivity extends ActionBarActivity {
         restartActivity();
     }
 
+    @SuppressWarnings("unused")
+    public void onEventMainThread(SynchronizationEvent event) {
+
+        switch (event.getEventType()) {
+            case Started:
+                syncProgress =  ProgressDialog.show(this, "Synchronizing", "", true);
+                EventBus.getDefault().cancelEventDelivery(event);
+                break;
+
+            case Completed:
+                if(syncProgress != null) {
+                    syncProgress.dismiss();
+                    EventBus.getDefault().cancelEventDelivery(event);
+                }
+                break;
+        }
+
+    }
+
 
     protected void startSynchronization() {
 
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(this));
+        final ShoppingListSynchronizer synchronizer = objectGraph.get(ShoppingListSynchronizer.class);
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                synchronizer.synchronize();
+
+                return null;
+            }
+        }.execute();
 
 
     }

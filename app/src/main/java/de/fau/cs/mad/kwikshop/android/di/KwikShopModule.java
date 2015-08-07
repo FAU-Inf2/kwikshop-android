@@ -57,6 +57,8 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
+import de.fau.cs.mad.kwikshop.common.conversion.ShoppingListConverter;
 import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
 
 @Module(injects = {
@@ -239,4 +241,10 @@ public class KwikShopModule {
     public ListClient<ShoppingListServer> provideShoppingListClient(RestClientFactory clientFactory) {
         return clientFactory.getShoppingListClient();
     }
+
+    @Provides
+    public ObjectConverter<ShoppingList, ShoppingListServer> provideShoppingListConverter() {
+        return new ShoppingListConverter();
+    }
+
 }

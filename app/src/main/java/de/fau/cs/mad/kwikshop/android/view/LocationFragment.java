@@ -86,7 +86,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
 
         // async places request
         if(viewLauncher.checkInternetConnection()){
-            viewModel.getNearbySupermarketPlaces(this);
+            viewModel.getNearbySupermarketPlaces(this, 5000, 30);
             latLng = viewModel.getLastLatLng();
         } else {
             notificationOfNoConnection();
@@ -145,25 +145,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
     }
 
     private void notificationOfNoConnection(){
-
-        viewLauncher.showMessageDialog(
-                resourceProvider.getString(R.string.alert_dialog_connection_label),
-                resourceProvider.getString(R.string.alert_dialog_connection_message),
-                resourceProvider.getString(R.string.alert_dialog_connection_try),
-                new Command<Void>() {
-                    @Override
-                    public void execute(Void parameter) {
-                        if(viewLauncher.checkInternetConnection())
-                            viewLauncher.showLocationActivity();
-                        else {
-                            notificationOfNoConnection();
-                        }
-                    }
-                },
-                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
-                viewModel.getFinishActivityCommand()
-        );
-
+        viewModel.notificationOfNoConnection();
     }
 
     @Override
@@ -191,7 +173,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
                 mapDirectionButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        viewModel.getrouteIntentCommand().execute(clickedAddress);
+                        viewModel.getRouteIntentCommand().execute(clickedAddress);
                     }
                 });
                 return false;

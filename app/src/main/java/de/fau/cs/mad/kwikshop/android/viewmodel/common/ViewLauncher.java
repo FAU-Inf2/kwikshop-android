@@ -80,6 +80,13 @@ public interface ViewLauncher {
                             String negativeMessage, boolean cancelable,
                             final Command<Void> negativeCommand);
 
+    void showMessageDialogWithRadioButtons(String title, CharSequence[] items,
+                           String positiveMessage, Command<Void> positiveCommand,
+                           String negativeMessage, Command<Void> negativeCommand);
+
+    void showMessageDialogWithTwoButtons(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage,
+                                                final Command<Void> negativeCommand);
+
     void dismissProgressDialog();
 
     void showListOfShoppingListsActivity();
@@ -93,6 +100,8 @@ public interface ViewLauncher {
     void dismissDialog();
 
     void startActivity(Intent intent);
+
+    void showProgressDialogWithListID(String message, String negativeMessage, final int listId, boolean cancelable, final Command<Integer> negativeCommand);
 
 
 

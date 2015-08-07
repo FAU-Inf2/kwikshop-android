@@ -25,10 +25,10 @@ import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
-import de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity;
+import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
-import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import se.walkercrou.places.Place;
@@ -43,14 +43,19 @@ public class LocationViewModel {
 
     private final ViewLauncher viewLauncher;
     private final ListManager<ShoppingList> shoppingListManager;
+    private final ResourceProvider resourceProvider;
+
+    public static String SHOPPINGMODEPLACEREQUEST_CANCEL = "ShoppingModePlaceRequest_cancel";
 
 
     @Inject
-    public LocationViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> shoppingListManager){
+    public LocationViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> shoppingListManager, ResourceProvider resourceProvider){
 
         if(viewLauncher == null) throw new ArgumentNullException("viewLauncher");
         if(shoppingListManager == null) throw new ArgumentNullException("shoppingListManager");
+        if(resourceProvider == null) {throw new ArgumentNullException("resourceProvider");}
 
+        this.resourceProvider = resourceProvider;
         this.viewLauncher = viewLauncher;
         this.shoppingListManager = shoppingListManager;
     }
@@ -65,7 +70,15 @@ public class LocationViewModel {
 
     public Command<Void> getFinishActivityCommand(){ return finishCommand; }
 
-    public Command<String> getrouteIntentCommand(){ return routeIntentCommand; }
+    public Command<String> getRouteIntentCommand(){ return routeIntentCommand; }
+
+    public Command<Void> getRestartActivityCommand(){ return restartActivityCommand; }
+
+    public Command<Void> getSavePlaceToShoppingListCommand(){ return savePlaceToShoppingListCommand; }
+
+    public Command<Void> getAcceptDialogCommand() {return acceptDialogCommand;  }
+
+    public Command<Integer> getStartShoppingListFragmemtWithoutPlaceRequestCommand(){ return startShoppingListFragmemtWithoutPlaceRequestCommand; }
 
     final Command cancelProgressDialogCommand =  new Command<Void>() {
         @Override
@@ -90,8 +103,36 @@ public class LocationViewModel {
         }
     };
 
-    public void getNearbySupermarketPlaces(Object instance){
-        SupermarketPlace.initiateSupermarketPlaceRequest(context, instance);
+    final Command restartActivityCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            viewLauncher.startActivity(activity.getIntent());
+        }
+    };
+
+    final Command savePlaceToShoppingListCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+
+        }
+    };
+
+    final Command acceptDialogCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+
+        }
+    };
+
+    final Command startShoppingListFragmemtWithoutPlaceRequestCommand = new Command<Integer>(){
+        @Override
+        public void execute(Integer listId) {
+            startShoppingListFragmentWithoutPlaceRequest(listId.intValue());
+        }
+    };
+
+    public void getNearbySupermarketPlaces(Object instance, int radius, int resultCount){
+        SupermarketPlace.initiateSupermarketPlaceRequest(context, instance, radius, resultCount);
     }
 
     public LatLng getLastLatLng(){
@@ -144,10 +185,42 @@ public class LocationViewModel {
         return LocationFinderHelper.getDistanceBetweenLastLocationAndPlace(place, latLng);
     }
 
+    public void notificationOfNoConnection(){
+
+        viewLauncher.showMessageDialog(
+                resourceProvider.getString(R.string.alert_dialog_connection_label),
+                resourceProvider.getString(R.string.alert_dialog_connection_message),
+                resourceProvider.getString(R.string.alert_dialog_connection_try),
+                new Command<Void>() {
+                    @Override
+                    public void execute(Void parameter) {
+                        if(viewLauncher.checkInternetConnection())
+                            viewLauncher.showLocationActivity();
+                        else {
+                            notificationOfNoConnection();
+                        }
+                    }
+                },
+                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
+                getFinishActivityCommand()
+        );
+
+    }
+
+    public CharSequence[] getNamesFromPlaces(List<Place> places){
+        return LocationFinderHelper.getNamesFromPlaces(places);
+    }
 
 
+    public boolean checkPlaces(List<Place> places){
+        return LocationFinderHelper.checkPlaces(places);
+    }
 
-
+    public void startShoppingListFragmentWithoutPlaceRequest(int listId){
+        Intent intent = ShoppingListActivity.getIntent(context, listId);
+        intent.putExtra(SHOPPINGMODEPLACEREQUEST_CANCEL, true);
+        viewLauncher.startActivity(intent);
+    }
 
 
 

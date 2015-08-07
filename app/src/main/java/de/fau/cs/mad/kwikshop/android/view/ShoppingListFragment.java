@@ -2,6 +2,8 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -46,17 +48,19 @@ import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
+import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.greenrobot.event.EventBus;
+import se.walkercrou.places.Place;
 
 
 public class ShoppingListFragment
         extends Fragment
-        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Item> {
+        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Item>, SupermarketPlace.AsyncPlaceRequestListener {
 
 
     private static final String ARG_LISTID = "list_id";
@@ -66,6 +70,8 @@ public class ShoppingListFragment
     private int listID = -1;
 
     private AutoCompletionHelper autoCompletion;
+
+    private LocationViewModel locationViewModel;
 
     private ShoppingListViewModel viewModel;
     private boolean updatingViewModel;
@@ -131,6 +137,7 @@ public class ShoppingListFragment
         DisplayHelper displayHelper = objectGraph.get(DisplayHelper.class);
         viewModel = objectGraph.get(ShoppingListViewModel.class);
         autoCompletion = objectGraph.get(AutoCompletionHelper.class);
+        locationViewModel = objectGraph.get(LocationViewModel.class);
         objectGraph.inject(this);
         viewModel.initialize(this.listID);
 
@@ -258,28 +265,78 @@ public class ShoppingListFragment
             ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
             ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
 
+            if(!getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL)){
 
+                if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
 
-            if(viewLauncher == null){
-                Log.e("SLF", "VL is null");
-            } else
-                Log.e("SLF", "VL is not null");
+                    if(viewLauncher.checkInternetConnection()){
 
+                        // progress dialog with cancel option
+                        viewLauncher.showProgressDialogWithListID(
+                                resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
+                                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
+                                listID,
+                                true,
+                                locationViewModel.getStartShoppingListFragmemtWithoutPlaceRequestCommand()
+                                  );
 
+                                locationViewModel.setContext(getActivity().getApplicationContext());
 
-            /*
-            if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
-                viewModel.getViewLauncher().showProgressDialog(
-                        resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
-                        resourceProvider.getString(R.string.alert_dialog_connection_cancel),
-                        true,
-                        viewModel.getCancelProgressDialogCommand());
+                        locationViewModel.setActivity(getActivity());
+
+                        // place request: radius 1500 result count 5
+                        locationViewModel.getNearbySupermarketPlaces(this, 1500, 5);
+
+                    } else {
+
+                        // no connection dialog
+                        locationViewModel.notificationOfNoConnection();
+                    }
+                }
+
             }
-            */
+
         }
 
         return rootView;
     }
+
+
+    @Override
+    public void postResult(List<Place> places) {
+
+        viewLauncher.dismissProgressDialog();
+
+        if(!locationViewModel.checkPlaces(places)){
+
+            // no place info dialog
+            viewLauncher.showMessageDialogWithTwoButtons(
+                    "No Place",
+                    "No Place was found.",
+                    "Ok",
+                    locationViewModel.getAcceptDialogCommand(),
+                    "Retry",
+                    locationViewModel.getRestartActivityCommand()
+            );
+
+            return;
+        }
+
+        CharSequence[] placeNames = locationViewModel.getNamesFromPlaces(places);
+
+        // Select the current Supermarket
+        viewLauncher.showMessageDialogWithRadioButtons(
+                "Place Finder",
+                placeNames,
+                "OK",
+                locationViewModel.getSavePlaceToShoppingListCommand(),
+                "Retry",
+                locationViewModel.getRestartActivityCommand()
+        );
+    }
+
+
+
 
     @Override
     public void onResume() {
@@ -414,4 +471,6 @@ public class ShoppingListFragment
             // Do something with spokenText
         }
     }
+
+
 }

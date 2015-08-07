@@ -310,5 +310,24 @@ public class LocationFinderHelper implements LocationListener {
             return Math.round(distance * 10.0) / 10.0 + " m";
     }
 
+    public static CharSequence[] getNamesFromPlaces(List<Place> places){
+        CharSequence[] placeNames = new CharSequence[places.size()];
+        int i = 0;
+        for(Place place : places){
+            placeNames[i] = place.getName();
+            i++;
+        }
+        return placeNames;
+    }
+
+    public static boolean checkPlaces(List<Place> places){
+        if(places == null)
+            return false;
+
+        if(places.size() == 0)
+            return false;
+
+        return true;
+    }
 
 }

@@ -39,6 +39,7 @@ import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -540,8 +541,10 @@ public class DefaultViewLauncher implements ViewLauncher {
 
 
     @Override
-    public void showMessageDialogWithRadioButtons(String title, CharSequence[] items, String positiveMessage,
-                                                  final Command<Void> positiveCommand, String negativeMessage, final Command<Void> negativeCommand) {
+    public void showMessageDialogWithRadioButtons(String title, CharSequence[] items,
+                                                  String positiveMessage, final Command<Void> positiveCommand,
+                                                  String neutralMessage, final Command<Void> neutralCommand,
+                                                  String negativeMessage, final Command<Void> negativeCommand, final Command<Integer> selectCommand) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title);
@@ -549,15 +552,25 @@ public class DefaultViewLauncher implements ViewLauncher {
         builder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (selectCommand.getCanExecute()) {
+                    selectCommand.execute(which);
+                }
+
             }
         });
 
-
         builder.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
-
                 if (positiveCommand.getCanExecute()) {
                     positiveCommand.execute(null);
+                }
+            }
+        });
+
+        builder.setNeutralButton(neutralMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+                if (neutralCommand.getCanExecute()) {
+                    neutralCommand.execute(null);
                 }
             }
         });

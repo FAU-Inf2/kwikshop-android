@@ -22,24 +22,35 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
+import de.fau.cs.mad.kwikshop.android.model.ItemParser;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
+import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import se.walkercrou.places.Place;
 import se.walkercrou.places.Status;
 
-public class LocationViewModel {
+public class LocationViewModel extends ListViewModel<ShoppingList> {
 
     private Activity activity;
     private Context context;
     private int listId;
+    private int placeChoiceIndex;
+    private List<Place> places;
+    private boolean cancelSelectionOfSupermarket = false;
 
     private Boolean canceled = false;
 
@@ -51,16 +62,30 @@ public class LocationViewModel {
 
 
     @Inject
-    public LocationViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> shoppingListManager, ResourceProvider resourceProvider){
+    public LocationViewModel(ViewLauncher viewLauncher,
+                             ListManager<ShoppingList> shoppingListManager,
+                             SimpleStorage<Unit> unitStorage,
+                             SimpleStorage<Group> groupStorage,
+                             ItemParser itemParser,
+                             DisplayHelper displayHelper,
+                             AutoCompletionHelper autoCompletionHelper,
+                             LocationFinderHelper locationFinderHelper,
+                             ResourceProvider resourceProvider,
+                             RegularlyRepeatHelper repeatHelper) {
 
-        if(viewLauncher == null) throw new ArgumentNullException("viewLauncher");
-        if(shoppingListManager == null) throw new ArgumentNullException("shoppingListManager");
+        super(viewLauncher, shoppingListManager, unitStorage, groupStorage, itemParser, displayHelper,
+                autoCompletionHelper, locationFinderHelper);
+
         if(resourceProvider == null) {throw new ArgumentNullException("resourceProvider");}
 
         this.resourceProvider = resourceProvider;
         this.viewLauncher = viewLauncher;
         this.shoppingListManager = shoppingListManager;
     }
+
+    public void setCancelSelectionOfSupermarket(boolean status){ this.cancelSelectionOfSupermarket = status; }
+
+    public void setPlaces(List<Place> places){ this.places = places; }
 
     public void setListId(int listId){ this.listId = listId; }
 
@@ -71,6 +96,23 @@ public class LocationViewModel {
     public Boolean isCanceld(){ return canceled; }
 
     public Command<Void> getCancelProgressDialogCommand(){ return cancelProgressDialogCommand; }
+
+    public void setPlaceChoiceIndex(int choice){ this.placeChoiceIndex = choice; }
+
+    @Override
+    protected void loadList() {
+
+    }
+
+    @Override
+    protected void addItemCommandExecute() {
+
+    }
+
+    @Override
+    protected void selectItemCommandExecute(int parameter) {
+
+    }
 
     public Command<Void> getFinishActivityCommand(){ return finishCommand; }
 
@@ -83,6 +125,8 @@ public class LocationViewModel {
     public Command<Void> getAcceptDialogCommand() {return acceptDialogCommand;  }
 
     public Command<Integer> getStartShoppingListFragmemtWithoutPlaceRequestCommand(){ return startShoppingListFragmemtWithoutPlaceRequestCommand; }
+
+
 
     final Command cancelProgressDialogCommand =  new Command<Void>() {
         @Override
@@ -165,6 +209,23 @@ public class LocationViewModel {
             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, context );
         }
     };
+
+    final Command selectionOfPlaceChoiceCommand = new Command<Integer>(){
+        @Override
+        public void execute(Integer index) {
+            setPlaceChoiceIndex(index);
+        }
+    };
+
+    final Command cancelSelectinOfPlaceChoiceCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            setCancelSelectionOfSupermarket(true);
+        }
+    };
+
+
+
 
     public void getNearbySupermarketPlaces(Object instance, int radius, int resultCount){
         SupermarketPlace.initiateSupermarketPlaceRequest(context, instance, radius, resultCount);
@@ -275,7 +336,11 @@ public class LocationViewModel {
                 resourceProvider.getString(R.string.dialog_OK),
                 getSavePlaceToShoppingListCommand(),
                 resourceProvider.getString(R.string.dialog_retry),
-                getRestartActivityCommand()
+                getRestartActivityCommand(),
+                resourceProvider.getString(R.string.cancel),
+                cancelSelectinOfPlaceChoiceCommand,
+                selectionOfPlaceChoiceCommand
+
         );
     }
 
@@ -294,15 +359,12 @@ public class LocationViewModel {
                 false,
                 doMotShowLocalizationPermissionAgainCommand,
                 showLocalizationPermissionAgainCommand
-
         );
 
     }
 
-
-
     public CharSequence[] getNamesFromPlaces(List<Place> places){
-        return LocationFinderHelper.getNamesFromPlaces(places);
+        return LocationFinderHelper.getNamesFromPlaces(places, context);
     }
 
 
@@ -320,8 +382,31 @@ public class LocationViewModel {
         viewLauncher.dismissProgressDialog();
     }
 
+    public void dismissDialog(){
+        viewLauncher.dismissDialog();
+    }
+
     public boolean checkInternetConnection(){
         return viewLauncher.checkInternetConnection();
+    }
+
+    public void setLocationOnItemBought(Item item){
+
+        if(!cancelSelectionOfSupermarket){
+            if(checkPlaces(places)){
+                Place selectedPlace = places.get(placeChoiceIndex);
+
+                // set new lastLocation object
+                LastLocation lastLocation = new LastLocation();
+                lastLocation.setName(selectedPlace.getName());
+                lastLocation.setLatitude(selectedPlace.getLatitude());
+                lastLocation.setLongitude(selectedPlace.getLongitude());
+                lastLocation.setAddress(selectedPlace.getAddress());
+                lastLocation.setTimestamp(System.currentTimeMillis());
+                item.setLocation(lastLocation);
+                listManager.saveListItem(listId, item);
+            }
+        }
     }
 
 }

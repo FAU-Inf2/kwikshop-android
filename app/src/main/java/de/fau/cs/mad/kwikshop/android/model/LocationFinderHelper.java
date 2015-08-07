@@ -310,11 +310,11 @@ public class LocationFinderHelper implements LocationListener {
             return Math.round(distance * 10.0) / 10.0 + " m";
     }
 
-    public static CharSequence[] getNamesFromPlaces(List<Place> places){
+    public static CharSequence[] getNamesFromPlaces(List<Place> places, Context context){
         CharSequence[] placeNames = new CharSequence[places.size()];
         int i = 0;
         for(Place place : places){
-            placeNames[i] = place.getName();
+            placeNames[i] = place.getName() + " " + LocationFinderHelper.getAddressConverted(new LatLng(place.getLatitude(), place.getLongitude()), context);
             i++;
         }
         return placeNames;

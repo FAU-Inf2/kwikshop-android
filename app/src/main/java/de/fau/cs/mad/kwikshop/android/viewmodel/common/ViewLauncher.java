@@ -80,7 +80,9 @@ public interface ViewLauncher {
 
     void showMessageDialogWithRadioButtons(String title, CharSequence[] items,
                            String positiveMessage, Command<Void> positiveCommand,
-                           String negativeMessage, Command<Void> negativeCommand);
+                           String neutralMessage, final Command<Void> neutralCommand,
+                           String negativeMessage, Command<Void> negativeCommand,
+                                           final Command<Integer> selectCommand);
 
     void showMessageDialogWithTwoButtons(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage,
                                                 final Command<Void> negativeCommand);

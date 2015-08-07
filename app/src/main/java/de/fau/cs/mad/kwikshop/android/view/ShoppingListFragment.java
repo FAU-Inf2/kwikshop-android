@@ -121,6 +121,21 @@ public class ShoppingListFragment
 
     }
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        locationViewModel.dismissProgressDialog();
+        locationViewModel.dismissDialog();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        locationViewModel.dismissProgressDialog();
+        locationViewModel.dismissDialog();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -168,7 +183,7 @@ public class ShoppingListFragment
                                     Item item = shoppingListAdapter.getItem(position);
                                     command.execute(item.getId());
                                     if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,false,getActivity())){
-                                        viewModel.setLocationOnItemBought(item.getId(), googleBrowserApiKey);
+                                        locationViewModel.setLocationOnItemBought(item);
                                     }
                                 } catch (IndexOutOfBoundsException ex) {
                                     //nothing to do
@@ -259,44 +274,43 @@ public class ShoppingListFragment
 
         });
 
+        // get current supermarket
+        locationViewModel.setContext(getActivity().getApplicationContext());
+        locationViewModel.setActivity(getActivity());
+        locationViewModel.setListId(listID);
+
+        if(!getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL)){
+
+            if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
+
+                if(locationViewModel.checkInternetConnection()){
+
+                    // progress dialog with listID to cance progress
+                    locationViewModel.showProgressDialogWithListID(listID);
+
+                    // place request: radius 1500 result count 5
+                    locationViewModel.getNearbySupermarketPlaces(this, 2000, 6);
+
+                } else {
+
+                    // no connection dialog
+                    locationViewModel.notificationOfNoConnection();
+                }
+            } else {
+
+                // No permission for location tracking - ask for permission dialog
+                if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, getActivity())){
+                    locationViewModel.showAskForLocalizationPermission();
+                }
+            }
+        }
+
         // shopping mode
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getActivity())){
-
-            locationViewModel.setContext(getActivity().getApplicationContext());
-            locationViewModel.setActivity(getActivity());
-            locationViewModel.setListId(listID);
 
              // remove quick add view
             ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
             ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
-
-            if(!getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL)){
-
-                if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
-
-                    if(locationViewModel.checkInternetConnection()){
-
-                        // progress dialog with listID to cance progress
-                        locationViewModel.showProgressDialogWithListID(listID);
-
-                        // place request: radius 1500 result count 5
-                        locationViewModel.getNearbySupermarketPlaces(this, 1500, 5);
-
-                    } else {
-
-                        // no connection dialog
-                        locationViewModel.notificationOfNoConnection();
-                    }
-                } else {
-
-                    // No permission for location tracking - ask for permission dialog
-                    if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, getActivity())){
-                        locationViewModel.showAskForLocalizationPermission();
-                    }
-
-                }
-
-            }
 
         }
 
@@ -304,10 +318,13 @@ public class ShoppingListFragment
     }
 
 
+
+
     // results of place request
     @Override
     public void postResult(List<Place> places) {
 
+        locationViewModel.setPlaces(places);
         locationViewModel.dismissProgressDialog();
 
         if(!locationViewModel.checkPlaces(places)){
@@ -318,7 +335,6 @@ public class ShoppingListFragment
 
         // Select the current Supermarket
         locationViewModel.showSelectCurrentSupermarket(places);
-
     }
 
 

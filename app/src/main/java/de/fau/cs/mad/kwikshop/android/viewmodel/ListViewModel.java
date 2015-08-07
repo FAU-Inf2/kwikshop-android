@@ -296,7 +296,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
      */
     public void itemsSwapped(int position1, int position2) {
 
-        setLocationOnItemSwapped(position1);
+      //  setLocationOnItemSwapped(position1);
 
         Item item1 = items.get(position1);
         Item item2 = items.get(position2);

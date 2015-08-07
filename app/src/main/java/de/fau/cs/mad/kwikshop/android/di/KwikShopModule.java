@@ -8,6 +8,8 @@ import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
+import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactoryImplementation;
 import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
@@ -28,6 +30,7 @@ import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
@@ -79,7 +82,8 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         RecipeItemDetailsViewModel.class,
         ShoppingListFragment.class,
         LocationFragment.class,
-        LocationViewModel.class
+        LocationViewModel.class,
+        ShoppingListSynchronizer.class
 
 },
         library = true)
@@ -229,5 +233,10 @@ public class KwikShopModule {
     @Provides
     public SimpleStorage<DeletedItem> provideDeletedItemStorage() {
         return ListStorageFragment.getDeletedItemStorage();
+    }
+
+    @Provides
+    public ListClient<ShoppingListServer> provideShoppingListClient(RestClientFactory clientFactory) {
+        return clientFactory.getShoppingListClient();
     }
 }

@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
 import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
@@ -20,12 +22,13 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     private final ObjectConverter<TListClient, TListServer> clientToServerObjectConverter;
     private final ListManager<TListClient> listManager;
     private final ListClient<TListServer> listClient;
-
+    private final SimpleStorage<DeletedList> deletedListStorage;
 
 
     public ListSynchronizer(ObjectConverter<TListClient, TListServer> clientToServerObjectConverter,
                             ListClient<TListServer> listClient,
-                            ListManager<TListClient> listManager) {
+                            ListManager<TListClient> listManager,
+                            SimpleStorage<DeletedList> deletedListStorage) {
 
         if(clientToServerObjectConverter == null) {
             throw new ArgumentNullException("clientToServerObjectConverter");
@@ -39,15 +42,24 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             throw new ArgumentNullException("listManager");
         }
 
+        if(deletedListStorage == null) {
+            throw new ArgumentNullException("deletedListStorage");
+        }
+
         this.clientToServerObjectConverter = clientToServerObjectConverter;
         this.listClient = listClient;
         this.listManager = listManager;
+        this.deletedListStorage = deletedListStorage;
     }
 
 
 
     @Override
-    protected abstract ListSyncData<TListClient, TListServer> initializeSyncData();
+    protected ListSyncData<TListClient, TListServer> initializeSyncData() {
+
+        return new ListSyncData<>(listManager.getLists(), deletedListStorage.getItems(),
+                                  listClient.getLists(), listClient.getDeletedLists());
+    }
 
     @Override
     protected void cleanUpSyncData(ListSyncData<TListClient, TListServer> syncData) {

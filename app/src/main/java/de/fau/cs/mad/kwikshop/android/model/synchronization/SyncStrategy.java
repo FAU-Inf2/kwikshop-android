@@ -264,9 +264,9 @@ public abstract class SyncStrategy<TClient, TServer, TSyncData> {
 
     protected abstract int getServerId(TSyncData syncData, TServer object);
 
-    protected abstract List<TClient> getClientObjects(TSyncData syncData);
+    protected abstract Collection<TClient> getClientObjects(TSyncData syncData);
 
-    protected abstract List<TServer> getServerObjects(TSyncData syncData);
+    protected abstract Collection<TServer> getServerObjects(TSyncData syncData);
 
     protected abstract boolean clientObjectExistsOnServer(TSyncData syncData, TClient object);
 

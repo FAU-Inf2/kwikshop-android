@@ -7,6 +7,7 @@ import java.util.Map;
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainObject;
 
 public class CollectionUtilities {
@@ -21,6 +22,14 @@ public class CollectionUtilities {
         return result;
     }
 
+    public static <T extends DomainListObject>Map<Integer, T> toMapByServerId(Collection<T> list) {
+
+        Map<Integer, T> result = new HashMap<>();
+        for(T item : list) {
+            result.put(item.getServerId(), item);
+        }
+        return result;
+    }
 
     public static Map<Integer, Item> toItemMapByServerId(Collection<Item> items) {
 

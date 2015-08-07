@@ -1,4 +1,4 @@
-package de.fau.cs.mad.kwikshop.android.model;
+package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,6 +9,9 @@ import java.util.Set;
 
 import javax.ws.rs.NotSupportedException;
 
+import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
+import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
@@ -422,15 +425,12 @@ public abstract class AbstractListSynchronizer<TListClient extends DomainListObj
         }
 
 
-
-
         serverList = listClient.getLists(serverListId);
         clientList.setServerVersion(serverList.getVersion());
 
         processedServerIds.add(serverListId);
         listManager.saveList(clientList.getId());
 
-        // TODO: add id to processedServerIds
     }
 
     /**

@@ -250,7 +250,7 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-    public void showMessageDialog(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage, final Command<Void> negativeCommand) {
+       public void showMessageDialog(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage, final Command<Void> negativeCommand) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title);
         builder.setMessage(message);
@@ -275,6 +275,9 @@ public class DefaultViewLauncher implements ViewLauncher {
         alert = builder.create();
         alert.show();
     }
+
+
+
 
     @Override
     public void showToast(String message, int duration) {
@@ -494,7 +497,7 @@ public class DefaultViewLauncher implements ViewLauncher {
 
             }
         });
-        progress.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+        progress.setButton(DialogInterface.BUTTON_NEGATIVE, negativeMessage, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -505,6 +508,101 @@ public class DefaultViewLauncher implements ViewLauncher {
         });
 
         progress.show();
+    }
+
+    @Override
+    public void showProgressDialogWithListID(String message, String negativeMessage, final int listId, boolean cancelable, final Command<Integer> negativeCommand) {
+
+        progress = new ProgressDialog(activity);
+        progress.setMessage(message);
+        progress.setCancelable(true);
+        progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if (negativeCommand != null && negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(listId);
+                }
+
+            }
+        });
+        progress.setButton(DialogInterface.BUTTON_NEGATIVE, negativeMessage, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (negativeCommand != null && negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(listId);
+                }
+            }
+        });
+
+        progress.show();
+    }
+
+
+    @Override
+    public void showMessageDialogWithRadioButtons(String title, CharSequence[] items, String positiveMessage,
+                                                  final Command<Void> positiveCommand, String negativeMessage, final Command<Void> negativeCommand) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+
+        builder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+
+        builder.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+
+                if (positiveCommand.getCanExecute()) {
+                    positiveCommand.execute(null);
+                }
+            }
+        });
+
+        builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+                if (negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(null);
+                }
+            }
+        });
+
+        alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void showMessageDialogWithTwoButtons(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage,
+                                                final Command<Void> negativeCommand) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        builder.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (positiveCommand.getCanExecute()) {
+                    positiveCommand.execute(null);
+                }
+            }
+        });
+
+        builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(null);
+                }
+            }
+        });
+
+        alert = builder.create();
+        alert.show();
     }
 
     @Override

@@ -22,11 +22,11 @@ public class SupermarketPlace {
         this.context = context;
     }
 
-    public static void initiateSupermarketPlaceRequest(Context context, final Object instance){
-       new SupermarketPlace(context).performAsyncPlaceRequest(instance);
+    public static void initiateSupermarketPlaceRequest(Context context, final Object instance, int radius, int resultCount){
+       new SupermarketPlace(context).performAsyncPlaceRequest(instance, radius, resultCount);
     }
 
-    public void performAsyncPlaceRequest(final Object instance){
+    public void performAsyncPlaceRequest(final Object instance, final int radius, final int resultCount){
 
         final LatLng latlng =  getLastPosition();
         new AsyncTask<Void, Void, List<Place>>(){
@@ -39,11 +39,11 @@ public class SupermarketPlace {
                 GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
                 List<Place> places = null;
                 try {
-                    /* radius: 5000m
-                    *  #results: 30
+                    /* radius: 5000m (default)
+                    *  #results: 30 (default)
                     *  types: grocery or supermarket
                     */
-                    places = client.getNearbyPlaces(latlng.latitude, latlng.longitude, 5000, 30, Param.name("types").value("grocery_or_supermarket"));
+                    places = client.getNearbyPlaces(latlng.latitude, latlng.longitude, radius, resultCount, Param.name("types").value("grocery_or_supermarket"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -66,12 +66,5 @@ public class SupermarketPlace {
         return lastLocation.getLatLng();
     }
 
-    public static String convertStatus(Status status, Context context){
-        if(status.toString().equals(Status.OPENED.toString())){
-            return context.getResources().getString(R.string.place_status_opened);
-        } else if(status.toString().equals(Status.CLOSED.toString())){
-            return context.getResources().getString(R.string.place_status_closed);
-        } else
-            return "";
-    }
+
 }

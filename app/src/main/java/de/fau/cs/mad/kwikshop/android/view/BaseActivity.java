@@ -134,7 +134,7 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     private void restartActivity(){
-        Intent intent = new Intent(this, getClass());
+        Intent intent = getIntent();
         finish();
         startActivity(intent);
     }
@@ -148,7 +148,8 @@ public class BaseActivity extends ActionBarActivity {
         refreshed = true;
 
         // get current locale index
-        int currentLocaleIdIndex =  SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, getApplicationContext());
+       // int currentLocaleIdIndex = getSharedPreferences(SettingFragment.SETTINGS, Context.MODE_PRIVATE).getInt(SharedPreferencesHelper.LOCALE, 0);
+        int currentLocaleIdIndex =  SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE,0,getApplicationContext());
         Locale setLocale= new Locale(SettingFragment.localeIds[currentLocaleIdIndex].toString());
 
         if(currentLocaleIdIndex == 0) // default

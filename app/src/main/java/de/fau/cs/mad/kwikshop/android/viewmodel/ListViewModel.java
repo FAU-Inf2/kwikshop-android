@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
 
@@ -35,7 +36,6 @@ import de.greenrobot.event.EventBus;
 public abstract class ListViewModel<TList extends DomainListObject> extends ListViewModelBase {
 
     public interface Listener extends ListViewModelBase.Listener {
-
         void onQuickAddTextChanged();
 
         void onItemSortTypeChanged();
@@ -77,6 +77,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
 
     private boolean initialized = false;
+
 
     protected final ViewLauncher viewLauncher;
     protected final ListManager<TList> listManager;
@@ -275,7 +276,6 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         if(!value.equals(quickAddText)) {
             quickAddText = value;
             quickAddCommand.setCanExecute(!StringHelper.isNullOrWhiteSpace(quickAddText));
-
             listener.onQuickAddTextChanged();
         }
     }
@@ -399,13 +399,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
     protected void quickAddUnitsCommandExecute(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddUnit){
 
-
-
-
         final String text = getQuickAddText();
         //reset quick add text
-
-
 
                 if (!StringHelper.isNullOrWhiteSpace(text)) {
                     Unit newUnit = new Unit();
@@ -417,13 +412,9 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
                     viewLauncher.notifyUnitSpinnerChange(adapter);
                 }
 
-
         qAddUnit.setText("");
     }
     protected void quickAddGroupsCommandExecute(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddGroup){
-
-
-
 
         final String text = getQuickAddText();
         //reset quick add text
@@ -434,9 +425,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
             Group newGroup = new Group();
             newGroup.setName(text);
             groupStorage.addItem(newGroup);
-
             autoCompletionHelper.offerName(newGroup.getName());
-
             viewLauncher.notifyGroupSpinnerChange(adapter);
         }
 
@@ -479,6 +468,20 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
         }
     }
+
+    final Command<Void> cancelProgressDialogCommand =  new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            viewLauncher.showShoppingList(listId);
+        }
+    };
+
+    public ViewLauncher getViewLauncher(){
+        return viewLauncher;
+    }
+
+    public Command<Void> getCancelProgressDialogCommand() { return cancelProgressDialogCommand; }
+
     protected abstract void loadList();
 
     protected abstract void addItemCommandExecute();

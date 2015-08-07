@@ -39,6 +39,14 @@
     <string name="delete_shopping_list">Delete Shopping List</string>
 
 
+    <!-- Place Finder -->
+    <string name="no_place_dialog_title">No Supermarket</string>
+    <string name="dialog_OK">OK</string>
+    <string name="dialog_retry">Retry</string>
+
+    <string name="supermarket_select_dialog_title">Select your current Supermarket</string>
+
+
     <!-- Item Details Fragment -->
     <string name="itemdetails_brand">Brand</string>
     <string name="itemdetails_comment">Comment</string>
@@ -306,5 +314,6 @@
     <string name="on_a_schedule">On a schedule</string>
     <string name="unit_teaspoon">teaspoon</string>
     <string name="unit_teaspoon_short">tsp</string>
+    <string name="no_place_dialog_message">KwikShop finds no Supermarket in your area.</string>
 
 </resources>

@@ -311,14 +311,13 @@ public class ShoppingListFragment
 
             // no place info dialog
             viewLauncher.showMessageDialogWithTwoButtons(
-                    "No Place",
-                    "No Place was found.",
-                    "Ok",
+                    resourceProvider.getString(R.string.no_place_dialog_title),
+                    resourceProvider.getString(R.string.no_place_dialog_message),
+                    resourceProvider.getString(R.string.dialog_OK),
                     locationViewModel.getAcceptDialogCommand(),
-                    "Retry",
+                    resourceProvider.getString(R.string.dialog_retry),
                     locationViewModel.getRestartActivityCommand()
             );
-
             return;
         }
 
@@ -326,11 +325,11 @@ public class ShoppingListFragment
 
         // Select the current Supermarket
         viewLauncher.showMessageDialogWithRadioButtons(
-                "Place Finder",
+                resourceProvider.getString(R.string.supermarket_select_dialog_title),
                 placeNames,
-                "OK",
+                resourceProvider.getString(R.string.dialog_OK),
                 locationViewModel.getSavePlaceToShoppingListCommand(),
-                "Retry",
+                resourceProvider.getString(R.string.dialog_retry),
                 locationViewModel.getRestartActivityCommand()
         );
     }

@@ -200,5 +200,12 @@
     <string name="item">Artikel</string>
     <string name="kwikshop_login_success">Du bist eingeloggt.</string>
     <string name="unit_teaspoon"></string>
+    <string name="dialog_OK">OK</string>
+    <string name="no_place_dialog_message">KwikShop findet keinen Supermarkt in deiner Umgebung.</string>
+    <string name="dialog_retry">Wiederholen</string>
+    <string name="no_place_dialog_title">Kein Supermarkt</string>
+    <string name="nothing">Nichts</string>
+    <string name="no">Nein</string>
+    <string name="message_delete_item">Willst du sicher das Produkt löschen?</string>
 
 </resources>

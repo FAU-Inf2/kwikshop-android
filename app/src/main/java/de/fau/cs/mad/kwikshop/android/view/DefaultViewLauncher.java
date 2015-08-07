@@ -418,17 +418,6 @@ public class DefaultViewLauncher implements ViewLauncher {
 
 
     @Override
-    public void openVoiceRecognition(int requestCode){
-        SpeechRecognitionHelper.run(activity);
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
-        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
-        activity.startActivityForResult(intent, requestCode);
-
-    }
-
-    @Override
     public void showMessageDialogWithCheckbox(String title, String message,
                                   String positiveMessage, final Command<Void> positiveCommand,
                                   String neutralMessage, final Command<Void> neutralCommand,

@@ -18,23 +18,6 @@ import de.fau.cs.mad.kwikshop.common.Unit;
 public class RecipeItemDetailsViewModel extends ItemDetailsViewModel {
 
 
-    private final ListManager<Recipe> listManager;
-
-    private final ItemMerger<Recipe> itemMerger;
-
-    @Override
-    protected ListType getListType() {
-        return ListType.Recipe;
-    }
-
-    @Override
-    protected ListManager<Recipe> getListManager() {
-        return this.listManager;
-    }
-
-    @Override
-    protected ItemMerger<Recipe> getItemMerger(){ return this.itemMerger; }
-
     @Inject
     public RecipeItemDetailsViewModel(ViewLauncher viewLauncher, ListManager<Recipe> listManager, SimpleStorage<Unit> unitStorage,
                                       SimpleStorage<Group> groupStorage, DisplayHelper displayHelper, AutoCompletionHelper autoCompletionHelper){
@@ -42,9 +25,6 @@ public class RecipeItemDetailsViewModel extends ItemDetailsViewModel {
 
         if(listManager == null) throw new ArgumentNullException("listManager");
 
-        this.listManager = listManager;
-
-        this.itemMerger = new ItemMerger<>(listManager);
     }
 
 

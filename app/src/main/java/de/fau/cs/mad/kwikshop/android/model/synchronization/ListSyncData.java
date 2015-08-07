@@ -14,7 +14,7 @@ import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObjectServer;
 public class ListSyncData<TListClient extends DomainListObject, TListServer extends DomainListObjectServer> {
 
 
-    private Collection<TListClient> clientLists;
+    private Map<Integer, TListClient> clientLists;
     private Map<Integer, TListServer> serverLists;
     private Map<Integer, TListClient> clientListsByServerId;
     private Map<Integer, DeletionInfo> deletedListsServer;
@@ -40,14 +40,14 @@ public class ListSyncData<TListClient extends DomainListObject, TListServer exte
         }
 
 
-        this.clientLists = clientLists;
+        this.clientLists = CollectionUtilities.toMap(clientLists);
         this.serverLists = CollectionUtilities.toMap(serverLists);
         this.clientListsByServerId = CollectionUtilities.toMapByServerId(clientLists);
         this.deletedListsServer = CollectionUtilities.toMap(deletedListsServer);
         this.deletedListsClientByServerId = CollectionUtilities.toDeletedListMapByServerId(deletedListsClient);
     }
 
-    public Collection<TListClient> getClientLists() {
+    public Map<Integer, TListClient> getClientLists() {
         return clientLists;
     }
 

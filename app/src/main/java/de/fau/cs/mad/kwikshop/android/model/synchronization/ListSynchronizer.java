@@ -67,7 +67,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
     @Override
     protected Collection<TListClient> getClientObjects(ListSyncData<TListClient, TListServer> syncData) {
-        return syncData.getClientLists();
+        return syncData.getClientLists().values();
     }
 
     @Override

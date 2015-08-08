@@ -84,6 +84,9 @@ public class LoginActivity extends FragmentActivity implements
     @InjectView(R.id.login_skip_button)
     Button login_skip_button;
 
+    @InjectView(R.id.login_back_button)
+    Button login_back_button;
+
     @InjectView(R.id.login_retry_button)
     Button login_retry_button;
 
@@ -149,17 +152,13 @@ public class LoginActivity extends FragmentActivity implements
         login_skip_button.setOnClickListener(this);
         login_debug_login.setOnClickListener(this);
         login_retry_button.setOnClickListener(this);
+        login_back_button.setOnClickListener(this);
 
         // Large sign-in
         login_sign_in_button.setSize(SignInButton.SIZE_WIDE);
 
         // Start with sign-in button disabled until sign-in either succeeds or fails
         login_sign_in_button.setEnabled(false);
-
-        /*if (!BuildConfig.DEBUG) {
-            mDebugStatus.setEnabled(false);
-            mDebugStatus.setVisibility(View.GONE);
-        }*/
 
         // [START create_google_api_client]
         // Build GoogleApiClient with access to basic profile
@@ -173,11 +172,10 @@ public class LoginActivity extends FragmentActivity implements
 
     }
 
-    private void updateUI(boolean isSignedIn) {
+    private void updateUI() {
         mDebugStatus.setText(SessionHandler.getSessionUser(getApplicationContext()) + " - " + SessionHandler.getSessionToken(getApplicationContext()));
 
-        if(SessionHandler.isAuthenticated(getApplicationContext()))
-            isSignedIn = true;
+        boolean isSignedIn = (mGoogleApiClient.isConnected() && SessionHandler.isAuthenticated(getApplicationContext()));
 
         // Hide debug buttons if this is not a debug build
         if (!BuildConfig.DEBUG) {
@@ -185,30 +183,29 @@ public class LoginActivity extends FragmentActivity implements
             login_debug_login.setVisibility(View.GONE);
         }
 
-        if (isSignedIn) {
-            mStatus.setText(getString(R.string.kwikshop_login_success));
-
+        if (mGoogleApiClient.isConnected()) {
             login_sign_in_button.setEnabled(false);
             login_sign_in_button.setVisibility(View.GONE);
             login_sign_out_button.setEnabled(true);
             login_sign_out_button.setVisibility(View.VISIBLE);
             login_skip_button.setEnabled(false);
             login_skip_button.setVisibility(View.GONE);
+            login_back_button.setEnabled(true);
+            login_back_button.setVisibility(View.VISIBLE);
 
             if(!SessionHandler.isAuthenticated(getApplicationContext())) {
                 login_retry_button.setEnabled(true);
                 login_retry_button.setVisibility(View.VISIBLE);
             } else {
+                mStatus.setVisibility(View.VISIBLE);
+                mStatus.setText(getString(R.string.kwikshop_login_success));
+
                 if(!SessionHandler.getSessionToken(getApplicationContext()).equals("DEBUG")) {
                     // Show signed-in user's name
-                    if(mGoogleApiClient.isConnected()) {
-                        Person p = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-                        if (p != null) {
-                            String name = p.getDisplayName();
-                            mStatus.setText(getText(R.string.signed_in_fmt) + " " + name);
-                        }
-                    } else {
-                        mShouldResolve = true;
+                    Person p = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+                    if (p != null) {
+                        String name = p.getDisplayName();
+                        mStatus.setText(getText(R.string.signed_in_fmt) + " " + name);
                     }
                 } else {
                     mStatus.setText("DEBUG logged in");
@@ -229,8 +226,7 @@ public class LoginActivity extends FragmentActivity implements
             }
 
         } else {
-            // Show signed-out message
-            mStatus.setText(R.string.signed_out);
+            mStatus.setVisibility(View.GONE);
 
             // Set button visibility
             login_sign_in_button.setEnabled(true);
@@ -243,6 +239,8 @@ public class LoginActivity extends FragmentActivity implements
             login_retry_button.setVisibility(View.GONE);
             login_skip_button.setEnabled(true);
             login_skip_button.setVisibility(View.VISIBLE);
+            login_back_button.setEnabled(false);
+            login_back_button.setVisibility(View.GONE);
         }
     }
 
@@ -298,7 +296,7 @@ public class LoginActivity extends FragmentActivity implements
             new GetIdTokenTask().execute(null, null, null);
 
         // Show the signed-in UI
-        updateUI(true);
+        updateUI();
     }
 
     @Override
@@ -334,7 +332,7 @@ public class LoginActivity extends FragmentActivity implements
             }
         } else {
             // Show the signed-out UI
-            updateUI(false);
+            updateUI();
         }
     }
     // [END on_connection_failed]
@@ -350,7 +348,7 @@ public class LoginActivity extends FragmentActivity implements
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             mShouldResolve = false;
-                            updateUI(false);
+                            updateUI();
                         }
                     }).show();
         } else {
@@ -359,7 +357,7 @@ public class LoginActivity extends FragmentActivity implements
             Toast.makeText(this, errorString, Toast.LENGTH_SHORT).show();
 
             mShouldResolve = false;
-            updateUI(false);
+            updateUI();
         }
     }
 
@@ -379,7 +377,7 @@ public class LoginActivity extends FragmentActivity implements
             }
 
             //TODO: Use RestClientFactoryImplementation if possible
-            String authResponse = null;
+            String authResponse;
             try {
                 // Load cert from raw res
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
@@ -431,17 +429,6 @@ public class LoginActivity extends FragmentActivity implements
                 return false;
             }
 
-            /*String uri = SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, getString(R.string.API_URL), LoginActivity.this);
-            WebTarget target = ClientBuilder.newClient().register(JacksonJsonProvider.class).target(uri);
-            UserResource endpoint = WebResourceFactory.newResource(UserResource.class, target);
-            String authResponse;
-            try {
-                authResponse = endpoint.auth(idToken);
-            } catch (Exception e) {
-                Log.e(TAG, "Error contacting server.", e);
-                return null;
-            }*/
-
             Boolean success = false;
 
             if(authResponse != null) {
@@ -465,7 +452,7 @@ public class LoginActivity extends FragmentActivity implements
                 Toast.makeText(getApplicationContext(), R.string.kwikshop_login_failed, Toast.LENGTH_LONG).show();
                 mStatus.setText(R.string.kwikshop_login_failed);
             }
-            updateUI(success);
+            updateUI();
         }
 
     }
@@ -503,7 +490,7 @@ public class LoginActivity extends FragmentActivity implements
                 }
                 // [END sign_out_clicked]
                 SessionHandler.logout(getApplicationContext());
-                updateUI(false);
+                updateUI();
                 break;
             case R.id.login_skip_button:
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
@@ -530,7 +517,10 @@ public class LoginActivity extends FragmentActivity implements
             case R.id.login_debug_login:
                 SessionHandler.setSessionUser(getApplicationContext(), "DEBUG");
                 SessionHandler.setSessionToken(getApplicationContext(), "DEBUG");
-                updateUI(true);
+                updateUI();
+                break;
+            case R.id.login_back_button:
+                finish();
                 break;
         }
     }

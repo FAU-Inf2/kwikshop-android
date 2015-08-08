@@ -83,5 +83,13 @@
             android:layout_weight="0"
             android:layout_gravity="center_horizontal"
             android:text="@string/login_skip"/>
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_back_button"
+            android:layout_weight="0"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/login_back"/>
     </LinearLayout>
 </LinearLayout>

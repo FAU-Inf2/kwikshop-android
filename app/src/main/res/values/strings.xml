@@ -317,5 +317,6 @@
     <string name="unit_teaspoon_short">tsp</string>
     <string name="no_place_dialog_message">KwikShop finds no Supermarket in your area.</string>
     <string name="start_synchronization">Start Synchronization</string>
+    <string name="login_back">Back</string>
 
 </resources>

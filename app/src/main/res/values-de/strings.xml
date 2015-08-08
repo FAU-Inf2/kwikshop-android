@@ -211,5 +211,6 @@
     <string name="localization_permisson_dialog_title">Standortbestimmung</string>
     <string name="yes">Ja</string>
     <string name="dont_show_this_message_again">Meldung nicht mehr anzeigen</string>
+    <string name="login_back">Zurück</string>
 
 </resources>

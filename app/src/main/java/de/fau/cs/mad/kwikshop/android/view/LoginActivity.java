@@ -74,6 +74,9 @@ public class LoginActivity extends FragmentActivity implements
     /* Should we automatically resolve ConnectionResults when possible? */
     private boolean mShouldResolve = false;
 
+    /* Is there a connection attempt to the backend in progress? */
+    private boolean mIsConnecting = false;
+
     /* UI elements */
     @InjectView(R.id.login_sign_in_button)
     SignInButton login_sign_in_button;
@@ -192,8 +195,10 @@ public class LoginActivity extends FragmentActivity implements
             login_back_button.setVisibility(View.VISIBLE);
 
             if(!SessionHandler.isAuthenticated(getApplicationContext())) {
-                login_retry_button.setEnabled(true);
-                login_retry_button.setVisibility(View.VISIBLE);
+                if(!mIsConnecting) {
+                    login_retry_button.setEnabled(true);
+                    login_retry_button.setVisibility(View.VISIBLE);
+                }
             } else {
                 mStatus.setVisibility(View.VISIBLE);
                 mStatus.setText(getString(R.string.kwikshop_login_success));
@@ -289,6 +294,8 @@ public class LoginActivity extends FragmentActivity implements
         // account has granted any requested permissions to our app and that we were able to
         // establish a service connection to Google Play services.
         Log.d(TAG, "onConnected:" + bundle);
+
+        mIsConnecting = true;
 
         if(!SessionHandler.isAuthenticated(getApplicationContext()))
             new GetIdTokenTask().execute(null, null, null);
@@ -446,6 +453,8 @@ public class LoginActivity extends FragmentActivity implements
 
         @Override
         protected void onPostExecute(Boolean success) {
+            mIsConnecting = false;
+
             if(!success) {
                 Toast.makeText(getApplicationContext(), R.string.kwikshop_login_failed, Toast.LENGTH_LONG).show();
                 mStatus.setText(R.string.kwikshop_login_failed);

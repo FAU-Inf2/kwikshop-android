@@ -39,7 +39,8 @@
         android:layout_weight="0"
         android:text="DEBUG Login"
         android:textColor="@android:color/white"
-        android:theme="@style/ThemeOverlay.MyDarkButton"/>
+        android:theme="@style/ThemeOverlay.MyDarkButton"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -65,7 +66,8 @@
             android:layout_weight="0"
             android:text="@string/retry"
             android:textColor="@android:color/white"
-            android:theme="@style/ThemeOverlay.MyDarkButton"/>
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/login_sign_out_button"
@@ -74,7 +76,8 @@
             android:layout_weight="0"
             android:text="@string/sign_out"
             android:textColor="@android:color/white"
-            android:theme="@style/ThemeOverlay.MyDarkButton" />
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:visibility="gone" />
 
         <Button
             android:layout_width="fill_parent"
@@ -82,7 +85,8 @@
             android:id="@+id/login_skip_button"
             android:layout_weight="0"
             android:layout_gravity="center_horizontal"
-            android:text="@string/login_skip"/>
+            android:text="@string/login_skip"
+            android:visibility="gone" />
 
         <Button
             android:layout_width="fill_parent"
@@ -90,6 +94,7 @@
             android:id="@+id/login_back_button"
             android:layout_weight="0"
             android:layout_gravity="center_horizontal"
-            android:text="@string/login_back"/>
+            android:text="@string/login_back"
+            android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

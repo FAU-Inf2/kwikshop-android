@@ -175,8 +175,6 @@ public class LoginActivity extends FragmentActivity implements
     private void updateUI() {
         mDebugStatus.setText(SessionHandler.getSessionUser(getApplicationContext()) + " - " + SessionHandler.getSessionToken(getApplicationContext()));
 
-        boolean isSignedIn = (mGoogleApiClient.isConnected() && SessionHandler.isAuthenticated(getApplicationContext()));
-
         // Hide debug buttons if this is not a debug build
         if (!BuildConfig.DEBUG) {
             login_debug_login.setEnabled(false);

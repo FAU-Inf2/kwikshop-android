@@ -160,9 +160,6 @@ public class LoginActivity extends FragmentActivity implements
         // Large sign-in
         login_sign_in_button.setSize(SignInButton.SIZE_WIDE);
 
-        // Start with sign-in button disabled until sign-in either succeeds or fails
-        login_sign_in_button.setEnabled(false);
-
         // [START create_google_api_client]
         // Build GoogleApiClient with access to basic profile
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -180,26 +177,26 @@ public class LoginActivity extends FragmentActivity implements
 
         // Hide debug buttons if this is not a debug build
         if (!BuildConfig.DEBUG) {
-            login_debug_login.setEnabled(false);
             login_debug_login.setVisibility(View.GONE);
         }
 
         if (mGoogleApiClient.isConnected()) {
-            login_sign_in_button.setEnabled(false);
             login_sign_in_button.setVisibility(View.GONE);
-            login_sign_out_button.setEnabled(true);
             login_sign_out_button.setVisibility(View.VISIBLE);
-            login_skip_button.setEnabled(false);
-            login_skip_button.setVisibility(View.GONE);
-            login_back_button.setEnabled(true);
-            login_back_button.setVisibility(View.VISIBLE);
 
             if(!SessionHandler.isAuthenticated(getApplicationContext())) {
+                login_skip_button.setVisibility(View.VISIBLE);
+                login_back_button.setVisibility(View.GONE);
+
                 if(!mIsConnecting) {
-                    login_retry_button.setEnabled(true);
                     login_retry_button.setVisibility(View.VISIBLE);
+                } else {
+                    login_retry_button.setVisibility(View.GONE);
                 }
             } else {
+                login_skip_button.setVisibility(View.GONE);
+                login_back_button.setVisibility(View.VISIBLE);
+
                 mStatus.setVisibility(View.VISIBLE);
                 mStatus.setText(getString(R.string.kwikshop_login_success));
 
@@ -214,9 +211,7 @@ public class LoginActivity extends FragmentActivity implements
                     mStatus.setText("DEBUG logged in");
                 }
 
-                login_retry_button.setEnabled(false);
                 login_retry_button.setVisibility(View.GONE);
-                login_debug_login.setEnabled(false);
                 login_debug_login.setVisibility(View.GONE);
 
                 boolean force = false;
@@ -232,17 +227,11 @@ public class LoginActivity extends FragmentActivity implements
             mStatus.setVisibility(View.GONE);
 
             // Set button visibility
-            login_sign_in_button.setEnabled(true);
             login_sign_in_button.setVisibility(View.VISIBLE);
-            login_sign_out_button.setEnabled(false);
             login_sign_out_button.setVisibility(View.GONE);
-            login_debug_login.setEnabled(true);
             login_debug_login.setVisibility(View.VISIBLE);
-            login_retry_button.setEnabled(false);
             login_retry_button.setVisibility(View.GONE);
-            login_skip_button.setEnabled(true);
             login_skip_button.setVisibility(View.VISIBLE);
-            login_back_button.setEnabled(false);
             login_back_button.setVisibility(View.GONE);
         }
     }
@@ -519,7 +508,9 @@ public class LoginActivity extends FragmentActivity implements
                 break;
             case R.id.login_retry_button:
                 mStatus.setText(R.string.signing_in);
+                mIsConnecting = true;
                 new GetIdTokenTask().execute(null, null, null);
+                updateUI();
                 break;
             case R.id.login_debug_login:
                 SessionHandler.setSessionUser(getApplicationContext(), "DEBUG");

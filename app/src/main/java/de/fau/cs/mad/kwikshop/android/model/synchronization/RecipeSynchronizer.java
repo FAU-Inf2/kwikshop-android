@@ -1,5 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
+import javax.inject.Inject;
+
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
@@ -10,6 +12,7 @@ import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
 
 public class RecipeSynchronizer extends ListSynchronizer<Recipe, RecipeServer> {
 
+    @Inject
     public RecipeSynchronizer(ObjectConverter<Recipe, RecipeServer> clientToServerObjectConverter,
                               ListClient<RecipeServer> listClient,
                               ListManager<Recipe> listManager,

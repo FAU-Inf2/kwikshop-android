@@ -32,6 +32,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.IoService;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.RecipeServer;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
@@ -149,6 +150,11 @@ public class KwikShopModule {
     @Provides
     public SimpleStorage<Group> provideGroupStorage() {
         return ListStorageFragment.getGroupStorage();
+    }
+
+    @Provides
+    public SimpleStorage<LastLocation> provideLocationStorage() {
+        return ListStorageFragment.getLastLocationStorage();
     }
 
     @Provides

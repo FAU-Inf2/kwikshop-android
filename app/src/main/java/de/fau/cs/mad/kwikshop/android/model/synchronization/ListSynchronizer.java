@@ -2,15 +2,19 @@ package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEventType;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
+import de.fau.cs.mad.kwikshop.common.DeletionInfo;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObjectServer;
@@ -21,16 +25,26 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             SyncStrategy<TListClient, TListServer, ListSyncData<TListClient, TListServer>> {
 
 
+
     private final ObjectConverter<TListClient, TListServer> clientToServerObjectConverter;
     private final ListManager<TListClient> listManager;
     private final ListClient<TListServer> listClient;
     private final SimpleStorage<DeletedList> deletedListStorage;
+    private final SimpleStorage<DeletedItem> deletedItemStorage;
+    private final SimpleStorage<Group> groupStorage;
+    private final SimpleStorage<Unit> unitStorage;
+    private final SimpleStorage<LastLocation> locationStorage;
+
 
 
     public ListSynchronizer(ObjectConverter<TListClient, TListServer> clientToServerObjectConverter,
                             ListClient<TListServer> listClient,
                             ListManager<TListClient> listManager,
-                            SimpleStorage<DeletedList> deletedListStorage) {
+                            SimpleStorage<DeletedList> deletedListStorage,
+                            SimpleStorage<DeletedItem> deletedItemStorage,
+                            SimpleStorage<Group> groupStorage,
+                            SimpleStorage<Unit> unitStorage,
+                            SimpleStorage<LastLocation> locationStorage) {
 
         if(clientToServerObjectConverter == null) {
             throw new ArgumentNullException("clientToServerObjectConverter");
@@ -48,10 +62,30 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             throw new ArgumentNullException("deletedListStorage");
         }
 
+        if(deletedItemStorage == null) {
+            throw new ArgumentNullException("deletedItemStorage");
+        }
+
+        if(groupStorage == null) {
+            throw new ArgumentNullException("groupStorage");
+        }
+
+        if(unitStorage == null) {
+            throw new ArgumentNullException("unitStorage");
+        }
+
+        if(locationStorage == null) {
+            throw new ArgumentNullException("locationStorage");
+        }
+
         this.clientToServerObjectConverter = clientToServerObjectConverter;
         this.listClient = listClient;
         this.listManager = listManager;
         this.deletedListStorage = deletedListStorage;
+        this.deletedItemStorage = deletedItemStorage;
+        this.groupStorage = groupStorage;
+        this.unitStorage = unitStorage;
+        this.locationStorage = locationStorage;
     }
 
 
@@ -60,8 +94,26 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     protected ListSyncData<TListClient, TListServer> initializeSyncData() {
 
 
-        return new ListSyncData<>(listManager.getLists(), deletedListStorage.getItems(),
-                                  listClient.getLists(), listClient.getDeletedLists());
+        Collection<TListClient> clientLists = listManager.getLists();
+        Collection<DeletedList> clientDeletedLists = deletedListStorage.getItems();
+        Collection<DeletedItem> clientDeletedItems = deletedItemStorage.getItems();
+
+        Collection<TListServer> serverLists = listClient.getLists();
+        Collection<DeletionInfo> serverDeletedLists = listClient.getDeletedLists();
+
+        Map<Integer, Collection<DeletionInfo>> serverDeletedItems = new HashMap<>();
+        for(TListServer serverList : serverLists) {
+            serverDeletedItems.put(serverList.getId(), listClient.getDeletedListItems(serverList.getId()));
+        }
+
+        Collection<Group> groups = groupStorage.getItems();
+        Collection<Unit> units = unitStorage.getItems();
+        Collection<LastLocation> locations = locationStorage.getItems();
+
+
+        return new ItemSyncData<>(clientLists, clientDeletedLists, clientDeletedItems,
+                                  serverLists, serverDeletedLists, serverDeletedItems,
+                                  groups, units, locations);
     }
 
     @Override

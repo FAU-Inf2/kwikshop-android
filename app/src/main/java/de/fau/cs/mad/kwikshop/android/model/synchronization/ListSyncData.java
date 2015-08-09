@@ -21,7 +21,7 @@ public class ListSyncData<TListClient extends DomainListObject, TListServer exte
     private Map<Integer, DeletedList> deletedListsClientByServerId;
 
     public ListSyncData(Collection<TListClient> clientLists, Collection<DeletedList> deletedListsClient,
-                        Collection<TListServer> serverLists, List<DeletionInfo> deletedListsServer) {
+                        Collection<TListServer> serverLists, Collection<DeletionInfo> deletedListsServer) {
 
         if(clientLists == null) {
             throw new ArgumentNullException("clientLists");

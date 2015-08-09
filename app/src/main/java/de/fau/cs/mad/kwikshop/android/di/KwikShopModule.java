@@ -8,6 +8,7 @@ import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
@@ -29,6 +30,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListItemDetailsViewModel
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.RecipeServer;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.fau.cs.mad.kwikshop.common.Unit;
@@ -58,6 +60,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
+import de.fau.cs.mad.kwikshop.common.conversion.RecipeConverter;
 import de.fau.cs.mad.kwikshop.common.conversion.ShoppingListConverter;
 import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
 
@@ -85,8 +88,8 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         ShoppingListFragment.class,
         LocationFragment.class,
         LocationViewModel.class,
-        ShoppingListSynchronizer.class
-
+        ShoppingListSynchronizer.class,
+        RecipeSynchronizer.class
 },
         library = true)
 @SuppressWarnings("unused")
@@ -246,5 +249,15 @@ public class KwikShopModule {
     public ObjectConverter<ShoppingList, ShoppingListServer> provideShoppingListConverter() {
         return new ShoppingListConverter();
     }
+
+    @Provides ListClient<RecipeServer> provideRecipeClient(RestClientFactory clientFactory) {
+        return clientFactory.getRecipeClient();
+    }
+
+    @Provides ObjectConverter<Recipe, RecipeServer> provideRecipeConverter() {
+        return new RecipeConverter();
+    }
+
+
 
 }

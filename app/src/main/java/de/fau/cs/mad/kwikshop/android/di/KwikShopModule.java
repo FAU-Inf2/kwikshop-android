@@ -250,11 +250,13 @@ public class KwikShopModule {
         return new ShoppingListConverter();
     }
 
-    @Provides ListClient<RecipeServer> provideRecipeClient(RestClientFactory clientFactory) {
+    @Provides
+    public ListClient<RecipeServer> provideRecipeClient(RestClientFactory clientFactory) {
         return clientFactory.getRecipeClient();
     }
 
-    @Provides ObjectConverter<Recipe, RecipeServer> provideRecipeConverter() {
+    @Provides
+    public ObjectConverter<Recipe, RecipeServer> provideRecipeConverter() {
         return new RecipeConverter();
     }
 

@@ -1,7 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -25,10 +23,10 @@ import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEventType;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
-import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
-import de.fau.cs.mad.kwikshop.android.util.TopExceptionHandler;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -39,7 +37,7 @@ public class BaseActivity extends ActionBarActivity {
     public static FrameLayout frameLayout;
     public static boolean refreshed = false;
 
-    ProgressDialog syncProgress;
+    ProgressDialog syncProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,27 +177,45 @@ public class BaseActivity extends ActionBarActivity {
     @SuppressWarnings("unused")
     public void onEventMainThread(SynchronizationEvent event) {
 
-        switch (event.getEventType()) {
-            case Started:
-                syncProgress =  ProgressDialog.show(this, "Synchronizing", "", true);
-                EventBus.getDefault().cancelEventDelivery(event);
-                break;
+        ProgressDialog dialog = getSyncProgressDialog();
+        dialog.setMessage(event.getMessage());
 
-            case Completed:
-                if(syncProgress != null) {
-                    syncProgress.dismiss();
-                    EventBus.getDefault().cancelEventDelivery(event);
-                }
-                break;
+        if(event.getEventType() == SynchronizationEventType.Completed) {
+            dismissSyncProgressDialog();
+        }
+
+        EventBus.getDefault().cancelEventDelivery(event);
+    }
+
+    //Only call from main thread (not thread-safe)
+    private ProgressDialog getSyncProgressDialog() {
+
+        if(syncProgressDialog == null) {
+
+            syncProgressDialog =  ProgressDialog.show(
+                    this,
+                    getResources().getString(R.string.synchronizing),
+                    "",
+                    true);
+        }
+        return this.syncProgressDialog;
+    }
+
+    //Only call from main thread (not thread-safe)
+    private void dismissSyncProgressDialog() {
+
+        if(syncProgressDialog != null) {
+            syncProgressDialog.dismiss();
+            syncProgressDialog = null;
         }
 
     }
 
-
     protected void startSynchronization() {
 
+
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(this));
-        final ShoppingListSynchronizer synchronizer = objectGraph.get(ShoppingListSynchronizer.class);
+        final CompositeSynchronizer synchronizer = objectGraph.get(CompositeSynchronizer.class);
 
         new AsyncTask<Void, Void, Void>() {
 
@@ -211,7 +227,6 @@ public class BaseActivity extends ActionBarActivity {
                 return null;
             }
         }.execute();
-
 
     }
 

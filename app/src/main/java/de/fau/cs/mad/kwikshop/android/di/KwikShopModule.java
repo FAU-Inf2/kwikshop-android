@@ -8,6 +8,8 @@ import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.ListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
@@ -89,7 +91,8 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         LocationFragment.class,
         LocationViewModel.class,
         ShoppingListSynchronizer.class,
-        RecipeSynchronizer.class
+        RecipeSynchronizer.class,
+        CompositeSynchronizer.class
 },
         library = true)
 @SuppressWarnings("unused")
@@ -261,5 +264,13 @@ public class KwikShopModule {
     }
 
 
+    @Provides
+    public ListSynchronizer<ShoppingList, ShoppingListServer> provideShoppingListSynchronizer(ShoppingListSynchronizer shoppingListSynchronizer) {
+        return shoppingListSynchronizer;
+    }
 
+    @Provides
+    public ListSynchronizer<Recipe, RecipeServer> provideRecipeSynchronizer(RecipeSynchronizer recipeSynchronizer) {
+        return recipeSynchronizer;
+    }
 }

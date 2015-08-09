@@ -316,7 +316,11 @@
     <string name="unit_teaspoon">teaspoon</string>
     <string name="unit_teaspoon_short">tsp</string>
     <string name="no_place_dialog_message">KwikShop finds no Supermarket in your area.</string>
+	<string name="login_back">Back</string>
+	
     <string name="start_synchronization">Start Synchronization</string>
-    <string name="login_back">Back</string>
+    <string name="synchronizing">Synchronizing</string>
+    <string name="synchronizing_shoppingLists">Synchronizing Shopping Lists</string>
+    <string name="synchronizing_recipes">Synchronizing Recipes</string>
 
 </resources>

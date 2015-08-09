@@ -14,7 +14,6 @@ import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
 import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObjectServer;
-import de.greenrobot.event.EventBus;
 
 public abstract class ListSynchronizer<TListClient extends DomainListObject,
                                        TListServer extends DomainListObjectServer>
@@ -60,7 +59,6 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     @Override
     protected ListSyncData<TListClient, TListServer> initializeSyncData() {
 
-        EventBus.getDefault().post(new SynchronizationEvent(SynchronizationEventType.Started));
 
         return new ListSyncData<>(listManager.getLists(), deletedListStorage.getItems(),
                                   listClient.getLists(), listClient.getDeletedLists());
@@ -70,8 +68,6 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     protected void cleanUpSyncData(ListSyncData<TListClient, TListServer> syncData) {
 
         listManager.clearSyncData();
-        EventBus.getDefault().post(new SynchronizationEvent(SynchronizationEventType.Completed));
-
     }
 
     @Override

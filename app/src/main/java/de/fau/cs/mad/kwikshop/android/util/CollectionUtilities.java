@@ -6,7 +6,10 @@ import java.util.Map;
 
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
+import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainObject;
 
@@ -98,5 +101,28 @@ public class CollectionUtilities {
         return result;
     }
 
+    public static Map<Integer, Group> toGroupMapByServerId(Collection<Group> groups) {
+        Map<Integer, Group> result = new HashMap<>();
+        for(Group g : groups) {
+            result.put(g.getServerId(), g);
+        }
+        return result;
+    }
 
+    public static Map<Integer, Unit> toUnitMapByServerId(Collection<Unit> units) {
+        Map<Integer, Unit> result = new HashMap<>();
+        for(Unit u : units) {
+            result.put(u.getServerId(), u);
+        }
+        return result;
+    }
+
+    public static Map<Integer, LastLocation> toLocationMapByServerId(Collection<LastLocation> locations) {
+
+        Map<Integer, LastLocation> result = new HashMap<>();
+        for(LastLocation l : locations) {
+            result.put(l.getServerId(), l);
+        }
+        return result;
+    }
 }

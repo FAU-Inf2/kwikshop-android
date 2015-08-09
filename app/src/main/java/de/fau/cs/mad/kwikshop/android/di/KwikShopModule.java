@@ -9,6 +9,7 @@ import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.ItemSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
@@ -92,7 +93,8 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         LocationViewModel.class,
         ShoppingListSynchronizer.class,
         RecipeSynchronizer.class,
-        CompositeSynchronizer.class
+        CompositeSynchronizer.class,
+        ItemSynchronizer.class
 },
         library = true)
 @SuppressWarnings("unused")
@@ -171,7 +173,8 @@ public class KwikShopModule {
 
     @Provides
     public LocationFinderHelper provideLocationFinderHelper(Context context) {
-        return new LocationFinderHelper(context); }
+        return new LocationFinderHelper(context);
+    }
 
 
     @Provides
@@ -180,9 +183,9 @@ public class KwikShopModule {
                                                                 EqualityComparer equalityComparer,
                                                                 SimpleStorage<DeletedList> deletedListStorage,
                                                                 SimpleStorage<DeletedItem> deletedItemStorage) {
-        if(shoppingListManager == null) {
+        if (shoppingListManager == null) {
             shoppingListManager = new ShoppingListManager(listStorage, repeatHelper, equalityComparer,
-                                                          deletedListStorage, deletedItemStorage);
+                    deletedListStorage, deletedItemStorage);
         }
         return shoppingListManager;
     }
@@ -192,9 +195,9 @@ public class KwikShopModule {
                                                     EqualityComparer equalityComparer,
                                                     SimpleStorage<DeletedList> deletedListStorage,
                                                     SimpleStorage<DeletedItem> deltedItemStorage) {
-        if(recipeManager == null) {
+        if (recipeManager == null) {
             recipeManager = new RecipeManager(listStorage, equalityComparer,
-                                              deletedListStorage, deltedItemStorage);
+                    deletedListStorage, deltedItemStorage);
         }
         return recipeManager;
     }
@@ -202,7 +205,7 @@ public class KwikShopModule {
     @Provides
     public RegularlyRepeatHelper provideRegularlyRepeatHelper(DatabaseHelper databaseHelper) {
 
-        if(regularlyRepeatHelper == null) {
+        if (regularlyRepeatHelper == null) {
             regularlyRepeatHelper = new RegularlyRepeatHelper(databaseHelper);
         }
         return regularlyRepeatHelper;
@@ -273,4 +276,5 @@ public class KwikShopModule {
     public ListSynchronizer<Recipe, RecipeServer> provideRecipeSynchronizer(RecipeSynchronizer recipeSynchronizer) {
         return recipeSynchronizer;
     }
+
 }

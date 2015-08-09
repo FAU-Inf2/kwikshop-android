@@ -102,14 +102,15 @@ public abstract class SyncStrategy<TClient, TServer, TSyncData> {
             // - Modified
             // - Added
 
-            ChangeType serverChangeType = serverObjectModified(syncData, serverObject)
-                    ? ChangeType.Modified
-                    : ChangeType.None;
-
+            ChangeType serverChangeType;
             ChangeType clientChangeType;
             TClient clientObject = null;
 
             if(serverObjectExistsOnClient(syncData, serverObject)) {
+
+                serverChangeType = serverObjectModified(syncData, serverObject)
+                        ? ChangeType.Modified
+                        : ChangeType.None;
 
                 clientObject = getClientObjectForServerObject(syncData, serverObject);
 
@@ -122,6 +123,10 @@ public abstract class SyncStrategy<TClient, TServer, TSyncData> {
 
                 if(serverObjectDeletedOnClient(syncData, serverObject)) {
                     clientChangeType = ChangeType.Deleted;
+
+                    serverChangeType = serverObjectModified(syncData, serverObject)
+                            ? ChangeType.Modified
+                            : ChangeType.None;
                 } else {
                     clientChangeType = ChangeType.None;
                     serverChangeType = ChangeType.Added;
@@ -182,7 +187,7 @@ public abstract class SyncStrategy<TClient, TServer, TSyncData> {
                 change.getServerChangeType() == ChangeType.Modified) {
 
             //Conflict: Server data takes precedence over client data
-            updateServerObject(syncData, change.getClientObject(), change.getServerObject());
+            updateClientObject(syncData, change.getClientObject(), change.getServerObject());
         }
 
         if(change.getClientChangeType() == ChangeType.Modified &&

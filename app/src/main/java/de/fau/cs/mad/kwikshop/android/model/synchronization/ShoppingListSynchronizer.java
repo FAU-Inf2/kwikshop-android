@@ -25,10 +25,10 @@ public class ShoppingListSynchronizer extends ListSynchronizer<ShoppingList, Sho
     @Override
     protected void applyPropertiesToClientData(ShoppingListServer source, ShoppingList target) {
 
-        target.setName(target.getName());
-        target.setSortTypeInt(target.getSortTypeInt());
-        target.setLocation(target.getLocation());
-        target.setLastModifiedDate(target.getLastModifiedDate());
+        target.setName(source.getName());
+        target.setSortTypeInt(source.getSortTypeInt());
+        target.setLocation(source.getLocation());
+        target.setLastModifiedDate(source.getLastModifiedDate());
 
         target.setServerVersion(source.getVersion());
         target.setServerId(source.getId());
@@ -37,9 +37,9 @@ public class ShoppingListSynchronizer extends ListSynchronizer<ShoppingList, Sho
     @Override
     protected void applyPropertiesToServerData(ShoppingList source, ShoppingListServer target) {
 
-        target.setName(target.getName());
-        target.setSortTypeInt(target.getSortTypeInt());
-        target.setLocation(target.getLocation());
-        target.setLastModifiedDate(target.getLastModifiedDate());
+        target.setName(source.getName());
+        target.setSortTypeInt(source.getSortTypeInt());
+        target.setLocation(source.getLocation());
+        target.setLastModifiedDate(source.getLastModifiedDate());
     }
 }

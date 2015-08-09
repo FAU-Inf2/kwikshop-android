@@ -128,8 +128,21 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
     @Override
     protected boolean serverObjectModified(ListSyncData<TListClient, TListServer> syncData, TListServer serverList) {
+
+        int serverListId = serverList.getId();
+        int lastSeenVersion;
+
         TListClient clientList = getClientObjectForServerObject(syncData, serverList);
-        return clientList.getServerVersion() != serverList.getVersion();
+
+        if(syncData.getDeletedListsClientByServerId().containsKey(serverListId)) {
+            lastSeenVersion = syncData.getDeletedListsClientByServerId().get(serverListId).getServerVersion();
+        } else if(clientList != null) {
+            lastSeenVersion = clientList.getServerVersion();
+        } else {
+            return true;
+        }
+
+        return lastSeenVersion != serverList.getVersion();
     }
 
     @Override

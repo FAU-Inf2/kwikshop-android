@@ -268,7 +268,7 @@ public class ShoppingListFragment
 
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
                 intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
-                startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+                //startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 
             }
 
@@ -463,8 +463,7 @@ public class ShoppingListFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode,
                                  Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        getActivity();
+
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
@@ -472,6 +471,7 @@ public class ShoppingListFragment
             textView_QuickAdd.setText(spokenText);
             // Do something with spokenText
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 

@@ -14,6 +14,7 @@ import android.speech.RecognizerIntent;
 import de.fau.cs.mad.kwikshop.android.R;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.widget.Toast;
 
 
 public class SpeechRecognitionHelper{
@@ -57,7 +58,7 @@ public class SpeechRecognitionHelper{
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
 
 
-        //ownerActivity.startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+        ownerActivity.startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 	}
 
 	private static void installGoogleVoiceSearch(final Activity ownerActivity) {
@@ -71,7 +72,7 @@ public class SpeechRecognitionHelper{
 				public void onClick(DialogInterface dialog, int which) {	
 					try {
 
-						Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.voicesearch"));
+						Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.googlequicksearchbox"));
 
 						intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 

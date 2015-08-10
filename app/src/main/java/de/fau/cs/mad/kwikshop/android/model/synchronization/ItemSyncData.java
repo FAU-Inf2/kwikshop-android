@@ -27,6 +27,7 @@ public class ItemSyncData<TListClient extends DomainListObject,
     private Map<Integer, Item> clientItemsByServerId;
     private Map<Integer, DeletionInfo> deletedItemsServer;
 
+    private final Map<Integer, Map<Integer, Item>> serverListItems;
     private final Map<Integer, Collection<DeletionInfo>> allDeletedItemsServer;
     private final Map<Integer, Map<Integer, DeletedItem>> allDeletedItemsClientByServerId;
 
@@ -39,6 +40,7 @@ public class ItemSyncData<TListClient extends DomainListObject,
                         Collection<DeletedList> deletedListsClient,
                         Collection<DeletedItem> allDeletedItemsClient,
                         Collection<TListServer> serverLists,
+                        Map<Integer, Map<Integer, Item>> serverListItems,
                         Collection<DeletionInfo> deletedListsServer,
                         Map<Integer, Collection<DeletionInfo>> deletedItemsServer,
                         Collection<Group> groups,
@@ -51,11 +53,16 @@ public class ItemSyncData<TListClient extends DomainListObject,
             throw new ArgumentNullException("allDeletedItemsClient");
         }
 
+        if(serverListItems == null) {
+            throw new ArgumentNullException("serverListItems");
+        }
+
         if(deletedItemsServer == null) {
             throw new ArgumentNullException("allDeletedItemsServer");
         }
 
         this.allDeletedItemsServer = deletedItemsServer;
+        this.serverListItems = serverListItems;
         this.allDeletedItemsClientByServerId = CollectionUtilities.toDeletedItemMapByServerId(allDeletedItemsClient);
 
 
@@ -78,8 +85,7 @@ public class ItemSyncData<TListClient extends DomainListObject,
         }
 
         lastServerListId = serverListId;
-        TListServer serverList = getServerLists().get(serverListId);
-        serverItems = CollectionUtilities.toItemMapByServerId(serverList.getItems());
+        serverItems = serverListItems.get(serverListId);
 
         return serverItems;
     }

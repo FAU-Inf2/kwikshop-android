@@ -24,10 +24,11 @@ public class RecipeSynchronizer extends ListSynchronizer<Recipe, RecipeServer> {
                               SimpleStorage<DeletedItem> deletedItemStorage,
                               SimpleStorage<Group> groupStorage,
                               SimpleStorage<Unit> unitStorage,
-                              SimpleStorage<LastLocation> locationStorage) {
+                              SimpleStorage<LastLocation> locationStorage,
+                              ItemSynchronizer<Recipe, RecipeServer> itemSynchronizer) {
 
         super(clientToServerObjectConverter, listClient, listManager, deletedListStorage,
-              deletedItemStorage, groupStorage, unitStorage, locationStorage);
+              deletedItemStorage, groupStorage, unitStorage, locationStorage, itemSynchronizer);
 
     }
 

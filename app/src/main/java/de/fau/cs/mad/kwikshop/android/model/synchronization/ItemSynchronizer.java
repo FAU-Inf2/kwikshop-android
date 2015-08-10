@@ -2,6 +2,8 @@ package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import java.util.Collection;
 
+import javax.inject.Inject;
+
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
@@ -19,27 +21,22 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
             SyncStrategy<Item, Item, ItemSyncData<TListClient, TListServer>> {
 
 
-    private final ItemSyncData<TListClient, TListServer> syncData;
     private final ListClient<TListServer> listClient;
     private final ListManager<TListClient> listManager;
     private final SimpleStorage<Group> groupStorage;
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<LastLocation> locationStorage;
 
+    private ItemSyncData<TListClient, TListServer> syncData;
     private int serverListId = -1;
     private int clientListId = -1;
 
 
-    public ItemSynchronizer(ItemSyncData<TListClient, TListServer> syncData,
-                            ListClient<TListServer> listClient,
+    public ItemSynchronizer(ListClient<TListServer> listClient,
                             ListManager<TListClient> listManager,
                             SimpleStorage<Group> groupStorage,
                             SimpleStorage<Unit> unitStorage,
                             SimpleStorage<LastLocation> locationStorage) {
-
-        if(syncData == null) {
-            throw new ArgumentNullException("syncData");
-        }
 
         if(listClient == null) {
             throw new ArgumentNullException("listClient");
@@ -57,7 +54,6 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
             throw new ArgumentNullException("unitStorage");
         }
 
-        this.syncData = syncData;
         this.listClient = listClient;
         this.listManager = listManager;
         this.groupStorage = groupStorage;
@@ -66,6 +62,16 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
     }
 
 
+
+    public void synchronize(int clientListId, int serverListId, ItemSyncData<TListClient, TListServer> syncData) {
+
+        this.clientListId = clientListId;
+        this.serverListId = serverListId;
+        this.syncData = syncData;
+
+        synchronize();
+
+    }
 
     @Override
     protected ItemSyncData<TListClient, TListServer> initializeSyncData() {
@@ -124,7 +130,8 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
 
     @Override
     protected boolean serverObjectDeletedOnClient(ItemSyncData<TListClient, TListServer> itemSyncData, Item object) {
-        return itemSyncData.getDeletedItemsClientByServerId(clientListId).containsKey(object.getServerId());
+        return itemSyncData.getDeletedItemsClientByServerId(clientListId) != null &&
+               itemSyncData.getDeletedItemsClientByServerId(clientListId).containsKey(object.getServerId());
     }
 
     @Override
@@ -139,8 +146,24 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
 
     @Override
     protected boolean serverObjectModified(ItemSyncData<TListClient, TListServer> itemSyncData, Item serverItem) {
+
+        int serverItemId = serverItem.getServerId();
+        int lastSeenVersion;
+
         Item clientItem = getClientObjectForServerObject(itemSyncData, serverItem);
-        return clientItem.getVersion() != serverItem.getVersion();
+
+        if(syncData.getDeletedItemsClientByServerId(serverListId) != null &&
+           syncData.getDeletedItemsClientByServerId(serverListId).containsKey(serverItemId)) {
+
+            lastSeenVersion = syncData.getDeletedItemsClientByServerId(serverListId).get(serverItemId).getServerVersion();
+
+        } else if(clientItem != null) {
+            lastSeenVersion = clientItem.getVersion();
+        } else {
+            return true;
+        }
+
+        return lastSeenVersion != serverItem.getVersion();
     }
 
     @Override

@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
@@ -11,8 +12,10 @@ import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
+import de.fau.cs.mad.kwikshop.android.util.CollectionUtilities;
 import de.fau.cs.mad.kwikshop.common.DeletionInfo;
 import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
@@ -22,7 +25,7 @@ import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObjectServer;
 public abstract class ListSynchronizer<TListClient extends DomainListObject,
                                        TListServer extends DomainListObjectServer>
         extends
-            SyncStrategy<TListClient, TListServer, ListSyncData<TListClient, TListServer>> {
+            SyncStrategy<TListClient, TListServer, ItemSyncData<TListClient, TListServer>> {
 
 
 
@@ -34,7 +37,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     private final SimpleStorage<Group> groupStorage;
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<LastLocation> locationStorage;
-
+    private final ItemSynchronizer<TListClient, TListServer> itemSynchronizer;
 
 
     public ListSynchronizer(ObjectConverter<TListClient, TListServer> clientToServerObjectConverter,
@@ -44,7 +47,8 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
                             SimpleStorage<DeletedItem> deletedItemStorage,
                             SimpleStorage<Group> groupStorage,
                             SimpleStorage<Unit> unitStorage,
-                            SimpleStorage<LastLocation> locationStorage) {
+                            SimpleStorage<LastLocation> locationStorage,
+                            ItemSynchronizer<TListClient, TListServer> itemSynchronizer) {
 
         if(clientToServerObjectConverter == null) {
             throw new ArgumentNullException("clientToServerObjectConverter");
@@ -78,6 +82,10 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             throw new ArgumentNullException("locationStorage");
         }
 
+        if(itemSynchronizer == null) {
+            throw new ArgumentNullException("itemSynchronizer");
+        }
+
         this.clientToServerObjectConverter = clientToServerObjectConverter;
         this.listClient = listClient;
         this.listManager = listManager;
@@ -86,12 +94,13 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         this.groupStorage = groupStorage;
         this.unitStorage = unitStorage;
         this.locationStorage = locationStorage;
+        this.itemSynchronizer = itemSynchronizer;
     }
 
 
 
     @Override
-    protected ListSyncData<TListClient, TListServer> initializeSyncData() {
+    protected ItemSyncData<TListClient, TListServer> initializeSyncData() {
 
 
         Collection<TListClient> clientLists = listManager.getLists();
@@ -102,8 +111,10 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         Collection<DeletionInfo> serverDeletedLists = listClient.getDeletedLists();
 
         Map<Integer, Collection<DeletionInfo>> serverDeletedItems = new HashMap<>();
+        Map<Integer, Map<Integer, Item>> allServerListItems = new HashMap<>();
         for(TListServer serverList : serverLists) {
             serverDeletedItems.put(serverList.getId(), listClient.getDeletedListItems(serverList.getId()));
+            allServerListItems.put(serverList.getId(), CollectionUtilities.toItemMapByServerId(listClient.getListItems(serverList.getId())));
         }
 
         Collection<Group> groups = groupStorage.getItems();
@@ -112,70 +123,70 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
 
         return new ItemSyncData<>(clientLists, clientDeletedLists, clientDeletedItems,
-                                  serverLists, serverDeletedLists, serverDeletedItems,
+                                  serverLists, allServerListItems, serverDeletedLists, serverDeletedItems,
                                   groups, units, locations);
     }
 
     @Override
-    protected void cleanUpSyncData(ListSyncData<TListClient, TListServer> syncData) {
+    protected void cleanUpSyncData(ItemSyncData<TListClient, TListServer> syncData) {
 
         listManager.clearSyncData();
     }
 
     @Override
-    protected int getClientId(ListSyncData<TListClient, TListServer> syncData, TListClient object) {
+    protected int getClientId(ItemSyncData<TListClient, TListServer> syncData, TListClient object) {
         return object.getId();
     }
 
     @Override
-    protected int getServerId(ListSyncData<TListClient, TListServer> syncData, TListServer object) {
+    protected int getServerId(ItemSyncData<TListClient, TListServer> syncData, TListServer object) {
         return object.getId();
     }
 
     @Override
-    protected Collection<TListClient> getClientObjects(ListSyncData<TListClient, TListServer> syncData) {
+    protected Collection<TListClient> getClientObjects(ItemSyncData<TListClient, TListServer> syncData) {
         return syncData.getClientLists().values();
     }
 
     @Override
-    protected Collection<TListServer> getServerObjects(ListSyncData<TListClient, TListServer> syncData) {
+    protected Collection<TListServer> getServerObjects(ItemSyncData<TListClient, TListServer> syncData) {
         return syncData.getServerLists().values();
     }
 
     @Override
-    protected boolean clientObjectExistsOnServer(ListSyncData<TListClient, TListServer> syncData, TListClient clientList) {
+    protected boolean clientObjectExistsOnServer(ItemSyncData<TListClient, TListServer> syncData, TListClient clientList) {
         return clientList.getServerId() > 0;
     }
 
     @Override
-    protected boolean serverObjectExistsOnClient(ListSyncData<TListClient, TListServer> syncData, TListServer serverList) {
+    protected boolean serverObjectExistsOnClient(ItemSyncData<TListClient, TListServer> syncData, TListServer serverList) {
         int serverId = serverList.getId();
         return  syncData.getClientListsByServerId().containsKey(serverId);
     }
 
     @Override
-    protected boolean clientObjectDeletedOnServer(ListSyncData<TListClient, TListServer> syncData, TListClient clientList) {
+    protected boolean clientObjectDeletedOnServer(ItemSyncData<TListClient, TListServer> syncData, TListClient clientList) {
         return syncData.getDeletedListsServerByServerId().containsKey(clientList.getServerId());
     }
 
     @Override
-    protected boolean serverObjectDeletedOnClient(ListSyncData<TListClient, TListServer> syncData, TListServer serverList) {
+    protected boolean serverObjectDeletedOnClient(ItemSyncData<TListClient, TListServer> syncData, TListServer serverList) {
         return syncData.getDeletedListsClientByServerId().containsKey(serverList.getId());
     }
 
     @Override
-    protected TListClient getClientObjectForServerObject(ListSyncData<TListClient, TListServer> syncData, TListServer serverList) {
+    protected TListClient getClientObjectForServerObject(ItemSyncData<TListClient, TListServer> syncData, TListServer serverList) {
         return syncData.getClientListsByServerId().get(serverList.getId());
     }
 
     @Override
-    protected TListServer getServerObjectForClientObject(ListSyncData<TListClient, TListServer> syncData, TListClient clientList) {
+    protected TListServer getServerObjectForClientObject(ItemSyncData<TListClient, TListServer> syncData, TListClient clientList) {
         int serverId = clientList.getServerId();
         return syncData.getServerLists().get(serverId);
     }
 
     @Override
-    protected boolean serverObjectModified(ListSyncData<TListClient, TListServer> syncData, TListServer serverList) {
+    protected boolean serverObjectModified(ItemSyncData<TListClient, TListServer> syncData, TListServer serverList) {
 
         int serverListId = serverList.getId();
         int lastSeenVersion;
@@ -194,36 +205,54 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     }
 
     @Override
-    protected boolean clientObjectModified(ListSyncData<TListClient, TListServer> syncData, TListClient clientList) {
+    protected boolean clientObjectModified(ItemSyncData<TListClient, TListServer> syncData, TListClient clientList) {
         return clientList.getModifiedSinceLastSync();
     }
 
     @Override
-    protected void deleteServerObject(ListSyncData<TListClient, TListServer> syncData, TListServer serverList) {
+    protected void deleteServerObject(ItemSyncData<TListClient, TListServer> syncData, TListServer serverList) {
 
         int serverId = serverList.getId();
         listClient.deleteList(serverId);
+
+
+        //sync items: nothing to do, deleting the list will also delete the items
     }
 
     @Override
-    protected void deleteClientObject(ListSyncData<TListClient, TListServer> syncData, TListClient clientList) {
+    protected void deleteClientObject(ItemSyncData<TListClient, TListServer> syncData, TListClient clientList) {
 
         listManager.deleteList(clientList.getId());
+
+        //sync items: nothing to do, deleting the list will also delete the items
     }
 
     @Override
-    protected void createServerObject(ListSyncData<TListClient, TListServer> syncData, TListClient clientList) {
+    protected void createServerObject(ItemSyncData<TListClient, TListServer> syncData, TListClient clientList) {
 
         TListServer serverList = clientToServerObjectConverter.convert(clientList);
         serverList = listClient.createList(serverList);
 
-        clientList.setServerVersion(serverList.getVersion());
         clientList.setServerId(serverList.getId());
+
+
+        //also upload items
+        for(Item clientItem : clientList.getItems()) {
+            Item serverItem = listClient.createItem(serverList.getId(), clientItem);
+
+            clientItem.setServerId(serverItem.getServerId());
+            clientItem.setVersion(serverItem.getVersion());
+            listManager.saveListItem(clientList.getId(), clientItem);
+        }
+
+        //get server list again to get the new version
+        serverList = listClient.getLists(serverList.getId());
+        clientList.setServerVersion(serverList.getVersion());
         listManager.saveList(clientList.getId());
     }
 
     @Override
-    protected void createClientObject(ListSyncData<TListClient, TListServer> syncData, TListServer serverList) {
+    protected void createClientObject(ItemSyncData<TListClient, TListServer> syncData, TListServer serverList) {
 
         int clientListId = listManager.createList();
         TListClient clientList = listManager.getList(clientListId);
@@ -231,28 +260,41 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         applyPropertiesToClientData(serverList, clientList);
         clientList.setServerVersion(serverList.getVersion());
         clientList.setServerId(serverList.getId());
+        listManager.saveList(clientList.getId());
 
+        List<Item> serverItems = listClient.getListItems(serverList.getId());
+
+        for(Item serverItem : serverItems) {
+            listManager.addListItem(clientListId, serverItem);
+        }
+
+
+    }
+
+    @Override
+    protected void updateServerObject(ItemSyncData<TListClient, TListServer> syncData, TListClient clientList, TListServer serverList) {
+
+        applyPropertiesToServerData(clientList, serverList);
+
+        serverList = listClient.updateList(serverList.getId(), serverList);
+
+        itemSynchronizer.synchronize(clientList.getId(), serverList.getId(), syncData);
+
+        serverList = listClient.getLists(serverList.getId());
+        clientList.setServerVersion(serverList.getVersion());
         listManager.saveList(clientList.getId());
     }
 
     @Override
-    protected void updateServerObject(ListSyncData<TListClient, TListServer> syncData, TListClient clientObject, TListServer serverList) {
-
-        applyPropertiesToServerData(clientObject, serverList);
-
-        serverList = listClient.updateList(serverList.getId(), serverList);
-
-        clientObject.setServerVersion(serverList.getVersion());
-        listManager.saveList(clientObject.getId());
-    }
-
-    @Override
-    protected void updateClientObject(ListSyncData<TListClient, TListServer> syncData, TListClient clientList, TListServer serverList) {
+    protected void updateClientObject(ItemSyncData<TListClient, TListServer> syncData, TListClient clientList, TListServer serverList) {
 
         applyPropertiesToClientData(serverList, clientList);
-        clientList.setServerVersion(serverList.getVersion());
         clientList.setServerId(serverList.getId());
 
+        itemSynchronizer.synchronize(clientList.getId(), serverList.getId(), syncData);
+
+        serverList = listClient.getLists(serverList.getId());
+        clientList.setServerVersion(serverList.getVersion());
         listManager.saveList(clientList.getId());
 
     }

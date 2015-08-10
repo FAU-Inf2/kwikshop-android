@@ -19,7 +19,7 @@ public abstract class SyncStrategy<TClient, TServer, TSyncData> {
 
 
 
-    public final void synchronize() {
+    public void synchronize() {
 
         TSyncData syncData = initializeSyncData();
 
@@ -140,7 +140,7 @@ public abstract class SyncStrategy<TClient, TServer, TSyncData> {
 
     }
 
-    private void processChanges(TSyncData syncData, Collection<Change<TClient, TServer>> changes) {
+    protected void processChanges(TSyncData syncData, Collection<Change<TClient, TServer>> changes) {
 
         for(Change<TClient, TServer> change : changes) {
             processChange(syncData, change);

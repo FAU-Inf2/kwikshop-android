@@ -25,10 +25,11 @@ public class ShoppingListSynchronizer extends ListSynchronizer<ShoppingList, Sho
                                     SimpleStorage<DeletedItem> deletedItemStorage,
                                     SimpleStorage<Group> groupStorage,
                                     SimpleStorage<Unit> unitStorage,
-                                    SimpleStorage<LastLocation> locationStorage) {
+                                    SimpleStorage<LastLocation> locationStorage,
+                                    ItemSynchronizer<ShoppingList, ShoppingListServer> itemSynchronizer) {
 
         super(clientToServerObjectConverter, listClient, listManager, deletedListStorage,
-              deletedItemStorage, groupStorage, unitStorage, locationStorage);
+              deletedItemStorage, groupStorage, unitStorage, locationStorage, itemSynchronizer);
     }
 
 

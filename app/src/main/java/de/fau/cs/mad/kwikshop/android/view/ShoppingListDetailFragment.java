@@ -118,7 +118,6 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
                 intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
-                startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
             }
 
         });

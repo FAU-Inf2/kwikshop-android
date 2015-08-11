@@ -80,7 +80,7 @@ public class ItemSyncData<TListClient extends DomainListObject,
 
     public Map<Integer, Item> getServerItems(int serverListId) {
 
-        if(lastServerListId == serverListId) {
+        if(lastServerListId == serverListId && serverItems != null) {
             return serverItems;
         }
 
@@ -93,7 +93,7 @@ public class ItemSyncData<TListClient extends DomainListObject,
 
     public Map<Integer, Item> getClientItemsByServerId(int clientListId){
 
-        if(clientListId == lastClientListId) {
+        if(clientListId == lastClientListId && clientItemsByServerId != null) {
             return  clientItemsByServerId;
         } else {
 
@@ -106,7 +106,7 @@ public class ItemSyncData<TListClient extends DomainListObject,
 
     public Map<Integer, DeletionInfo> getDeletedItemsServer(int serverListId) {
 
-        if(lastServerListId == serverListId) {
+        if(lastServerListId == serverListId && deletedItemsServer != null) {
             return deletedItemsServer;
         }
 

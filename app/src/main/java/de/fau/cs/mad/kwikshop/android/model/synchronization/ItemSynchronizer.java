@@ -112,7 +112,7 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
 
     @Override
     protected boolean clientObjectExistsOnServer(ItemSyncData<TListClient, TListServer> itemSyncData, Item object) {
-        return object.getServerId() > 0;
+        return object.getServerId() > 0 && !clientObjectDeletedOnServer(itemSyncData, object);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
             throw new SynchronizationException(ex, "Error creating item on server in list %s", serverListId);
         }
 
-        clientItem.setServerId(clientItem.getServerId());
+        clientItem.setServerId(serverItem.getServerId());
         clientItem.setVersion(serverItem.getVersion());
         if(clientItem.getUnit() != null && serverItem.getUnit() != null) {
             clientItem.getUnit().setServerId(serverItem.getUnit().getServerId());

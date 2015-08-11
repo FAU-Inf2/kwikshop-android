@@ -130,8 +130,8 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
 
     @Override
     protected boolean serverObjectDeletedOnClient(ItemSyncData<TListClient, TListServer> itemSyncData, Item object) {
-        return itemSyncData.getDeletedItemsClientByServerId(clientListId) != null &&
-               itemSyncData.getDeletedItemsClientByServerId(clientListId).containsKey(object.getServerId());
+        return itemSyncData.getDeletedItemsClientByServerId(serverListId) != null &&
+               itemSyncData.getDeletedItemsClientByServerId(serverListId).containsKey(object.getServerId());
     }
 
     @Override

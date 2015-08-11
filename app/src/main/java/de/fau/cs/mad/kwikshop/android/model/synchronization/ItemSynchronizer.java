@@ -2,7 +2,6 @@ package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import java.util.Collection;
 
-import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
@@ -14,6 +13,7 @@ import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObjectServer;
+import retrofit.RetrofitError;
 
 public class ItemSynchronizer<TListClient extends DomainListObject,
                               TListServer extends DomainListObjectServer>
@@ -21,7 +21,7 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
             SyncStrategy<Item, Item, ItemSyncData<TListClient, TListServer>> {
 
 
-    private final ListClient<TListServer> listClient;
+    private final ListClient<TListServer> apiClient;
     private final ListManager<TListClient> listManager;
     private final SimpleStorage<Group> groupStorage;
     private final SimpleStorage<Unit> unitStorage;
@@ -32,14 +32,14 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
     private int clientListId = -1;
 
 
-    public ItemSynchronizer(ListClient<TListServer> listClient,
+    public ItemSynchronizer(ListClient<TListServer> apiClient,
                             ListManager<TListClient> listManager,
                             SimpleStorage<Group> groupStorage,
                             SimpleStorage<Unit> unitStorage,
                             SimpleStorage<LastLocation> locationStorage) {
 
-        if(listClient == null) {
-            throw new ArgumentNullException("listClient");
+        if(apiClient == null) {
+            throw new ArgumentNullException("apiClient");
         }
 
         if(listManager == null) {
@@ -54,7 +54,7 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
             throw new ArgumentNullException("unitStorage");
         }
 
-        this.listClient = listClient;
+        this.apiClient = apiClient;
         this.listManager = listManager;
         this.groupStorage = groupStorage;
         this.unitStorage = unitStorage;
@@ -174,7 +174,11 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
     @Override
     protected void deleteServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item serverItem) {
 
-        listClient.deleteListItem(serverListId, serverItem.getServerId());
+        try {
+            apiClient.deleteListItem(serverListId, serverItem.getServerId());
+        } catch (RetrofitError ex) {
+            throw new SynchronizationException(ex, "Error deleting item %s in list %s", serverListId, serverItem.getServerId());
+        }
     }
 
     @Override
@@ -186,7 +190,13 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
     @Override
     protected void createServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item clientItem) {
 
-        Item serverItem = listClient.createItem(serverListId, clientItem);
+        Item serverItem;
+
+        try {
+            serverItem = apiClient.createItem(serverListId, clientItem);
+        } catch (RetrofitError ex) {
+            throw new SynchronizationException(ex, "Error creating item on server in list %s", serverListId);
+        }
 
         clientItem.setServerId(clientItem.getServerId());
         clientItem.setVersion(serverItem.getVersion());
@@ -215,7 +225,11 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
 
         applyPropertiesToServerData(itemSyncData, clientItem, serverItem);
 
-        serverItem = listClient.updateItem(serverListId, serverItem.getServerId(), serverItem);
+        try {
+            serverItem = apiClient.updateItem(serverListId, serverItem.getServerId(), serverItem);
+        } catch (RetrofitError ex) {
+            throw new SynchronizationException(ex, "Error updating item %s in list %s on server", serverItem.getServerId(), serverListId);
+        }
 
         clientItem.setVersion(serverItem.getVersion());
 

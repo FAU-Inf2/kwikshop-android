@@ -21,6 +21,7 @@ import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObjectServer;
+import retrofit.RetrofitError;
 
 public abstract class ListSynchronizer<TListClient extends DomainListObject,
                                        TListServer extends DomainListObjectServer>
@@ -31,7 +32,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
     private final ObjectConverter<TListClient, TListServer> clientToServerObjectConverter;
     private final ListManager<TListClient> listManager;
-    private final ListClient<TListServer> listClient;
+    private final ListClient<TListServer> apiClient;
     private final SimpleStorage<DeletedList> deletedListStorage;
     private final SimpleStorage<DeletedItem> deletedItemStorage;
     private final SimpleStorage<Group> groupStorage;
@@ -41,7 +42,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
 
     public ListSynchronizer(ObjectConverter<TListClient, TListServer> clientToServerObjectConverter,
-                            ListClient<TListServer> listClient,
+                            ListClient<TListServer> apiClient,
                             ListManager<TListClient> listManager,
                             SimpleStorage<DeletedList> deletedListStorage,
                             SimpleStorage<DeletedItem> deletedItemStorage,
@@ -54,8 +55,8 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             throw new ArgumentNullException("clientToServerObjectConverter");
         }
 
-        if(listClient == null) {
-            throw new ArgumentNullException("listClient");
+        if(apiClient == null) {
+            throw new ArgumentNullException("apiClient");
         }
 
         if(listManager == null) {
@@ -87,7 +88,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         }
 
         this.clientToServerObjectConverter = clientToServerObjectConverter;
-        this.listClient = listClient;
+        this.apiClient = apiClient;
         this.listManager = listManager;
         this.deletedListStorage = deletedListStorage;
         this.deletedItemStorage = deletedItemStorage;
@@ -107,20 +108,29 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         Collection<DeletedList> clientDeletedLists = deletedListStorage.getItems();
         Collection<DeletedItem> clientDeletedItems = deletedItemStorage.getItems();
 
-        Collection<TListServer> serverLists = listClient.getLists();
-        Collection<DeletionInfo> serverDeletedLists = listClient.getDeletedLists();
-
+        Collection<TListServer> serverLists;
+        Collection<DeletionInfo> serverDeletedLists;
         Map<Integer, Collection<DeletionInfo>> serverDeletedItems = new HashMap<>();
         Map<Integer, Map<Integer, Item>> allServerListItems = new HashMap<>();
-        for(TListServer serverList : serverLists) {
-            serverDeletedItems.put(serverList.getId(), listClient.getDeletedListItems(serverList.getId()));
-            allServerListItems.put(serverList.getId(), CollectionUtilities.toItemMapByServerId(listClient.getListItems(serverList.getId())));
+
+
+        try {
+
+            serverLists = apiClient.getLists();
+            serverDeletedLists = apiClient.getDeletedLists();
+
+            for(TListServer serverList : serverLists) {
+                serverDeletedItems.put(serverList.getId(), apiClient.getDeletedListItems(serverList.getId()));
+                allServerListItems.put(serverList.getId(), CollectionUtilities.toItemMapByServerId(apiClient.getListItems(serverList.getId())));
+            }
+
+        } catch (RetrofitError ex) {
+            throw new SynchronizationException(ex, "Error getting data from server for syncing");
         }
 
         Collection<Group> groups = groupStorage.getItems();
         Collection<Unit> units = unitStorage.getItems();
         Collection<LastLocation> locations = locationStorage.getItems();
-
 
         return new ItemSyncData<>(clientLists, clientDeletedLists, clientDeletedItems,
                                   serverLists, allServerListItems, serverDeletedLists, serverDeletedItems,
@@ -213,7 +223,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     protected void deleteServerObject(ItemSyncData<TListClient, TListServer> syncData, TListServer serverList) {
 
         int serverId = serverList.getId();
-        listClient.deleteList(serverId);
+        apiClient.deleteList(serverId);
 
 
         //sync items: nothing to do, deleting the list will also delete the items
@@ -231,14 +241,20 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     protected void createServerObject(ItemSyncData<TListClient, TListServer> syncData, TListClient clientList) {
 
         TListServer serverList = clientToServerObjectConverter.convert(clientList);
-        serverList = listClient.createList(serverList);
+
+        try {
+            serverList = apiClient.createList(serverList);
+
+        } catch (RetrofitError ex) {
+            throw new SynchronizationException(ex, "Error creating list on server");
+        }
 
         clientList.setServerId(serverList.getId());
 
 
         //also upload items
         for(Item clientItem : clientList.getItems()) {
-            Item serverItem = listClient.createItem(serverList.getId(), clientItem);
+            Item serverItem = apiClient.createItem(serverList.getId(), clientItem);
 
             clientItem.setServerId(serverItem.getServerId());
             clientItem.setVersion(serverItem.getVersion());
@@ -246,7 +262,12 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         }
 
         //get server list again to get the new version
-        serverList = listClient.getLists(serverList.getId());
+        try {
+            serverList = apiClient.getLists(serverList.getId());
+        } catch (RetrofitError ex) {
+            throw new SynchronizationException(ex, "Could not get list %s from server", serverList.getId());
+        }
+
         clientList.setServerVersion(serverList.getVersion());
         listManager.saveList(clientList.getId());
     }
@@ -262,7 +283,15 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         clientList.setServerId(serverList.getId());
         listManager.saveList(clientList.getId());
 
-        List<Item> serverItems = listClient.getListItems(serverList.getId());
+        List<Item> serverItems;
+        try {
+
+            serverItems = apiClient.getListItems(serverList.getId());
+
+        } catch (RetrofitError ex) {
+
+            throw new SynchronizationException(ex, "Could not get items for list %s", serverList.getId());
+        }
 
         for(Item serverItem : serverItems) {
             listManager.addListItem(clientListId, serverItem);
@@ -276,11 +305,19 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
         applyPropertiesToServerData(clientList, serverList);
 
-        serverList = listClient.updateList(serverList.getId(), serverList);
+        try {
+            serverList = apiClient.updateList(serverList.getId(), serverList);
+        } catch (RetrofitError ex) {
+            throw new SynchronizationException(ex, "Could not update list %s on server", serverList.getId());
+        }
 
         itemSynchronizer.synchronize(clientList.getId(), serverList.getId(), syncData);
 
-        serverList = listClient.getLists(serverList.getId());
+        try {
+            serverList = apiClient.getLists(serverList.getId());
+        } catch (RetrofitError ex) {
+            throw new SynchronizationException(ex, "Could not get list %s from server", serverList.getId());
+        }
         clientList.setServerVersion(serverList.getVersion());
         listManager.saveList(clientList.getId());
     }
@@ -293,7 +330,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
         itemSynchronizer.synchronize(clientList.getId(), serverList.getId(), syncData);
 
-        serverList = listClient.getLists(serverList.getId());
+        serverList = apiClient.getLists(serverList.getId());
         clientList.setServerVersion(serverList.getVersion());
         listManager.saveList(clientList.getId());
 

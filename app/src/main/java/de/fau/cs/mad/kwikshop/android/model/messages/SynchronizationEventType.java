@@ -4,6 +4,7 @@ public enum SynchronizationEventType {
 
     Started,
     Completed,
-    Progress
+    Progress,
+    Failed
 
 }

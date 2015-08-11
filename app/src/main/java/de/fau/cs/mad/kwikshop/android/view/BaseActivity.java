@@ -1,5 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -182,6 +183,15 @@ public class BaseActivity extends ActionBarActivity {
 
         if(event.getEventType() == SynchronizationEventType.Completed) {
             dismissSyncProgressDialog();
+        } else if(event.getEventType() == SynchronizationEventType.Failed) {
+            dismissSyncProgressDialog();
+
+            AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
+            messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
+            messageBox.setMessage(event.getMessage());
+            messageBox.setCancelable(false);
+            messageBox.create().show();
+
         }
 
         EventBus.getDefault().cancelEventDelivery(event);

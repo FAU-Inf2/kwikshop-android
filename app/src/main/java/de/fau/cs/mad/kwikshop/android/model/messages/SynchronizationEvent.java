@@ -43,4 +43,8 @@ public class SynchronizationEvent {
     public static SynchronizationEvent CreateProgressMessage(String message) {
         return new SynchronizationEvent(SynchronizationEventType.Progress, message);
     }
+
+    public static SynchronizationEvent CreateFailedMessage(String message) {
+        return new SynchronizationEvent(SynchronizationEventType.Failed, message);
+    }
 }

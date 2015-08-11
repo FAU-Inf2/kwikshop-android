@@ -50,10 +50,25 @@ public class CompositeSynchronizer {
         post(SynchronizationEvent.CreateStartedMessage());
 
         post(SynchronizationEvent.CreateProgressMessage(resourceProvider.getString(R.string.synchronizing_shoppingLists)));
-        shoppingListSynchronizer.synchronize();
+
+        try {
+            shoppingListSynchronizer.synchronize();
+        } catch (SynchronizationException ex) {
+
+            String message = String.format("%s\n\n%s", resourceProvider.getString(R.string.error_synchronizing_shoppingLists), ex.toString());
+            post(SynchronizationEvent.CreateFailedMessage(message));
+            return;
+        }
 
         post(SynchronizationEvent.CreateProgressMessage(resourceProvider.getString(R.string.synchronizing_recipes)));
-        recipeSynchronizer.synchronize();
+        try {
+            recipeSynchronizer.synchronize();
+        }catch (SynchronizationException ex) {
+
+            String message = String.format("%s\n\n%s", resourceProvider.getString(R.string.error_synchronizing_recipes), ex.toString());
+            post(SynchronizationEvent.CreateFailedMessage(message));
+            return;
+        }
 
         post(SynchronizationEvent.CreateCompletedMessage());
 

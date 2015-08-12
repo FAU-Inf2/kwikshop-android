@@ -85,6 +85,9 @@ public class ShoppingListActivity extends BaseActivity {
                 SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
                 startActivity(ShoppingListActivity.getIntent(getApplicationContext(), getIntent().getExtras().getInt(SHOPPING_LIST_ID)));
                 break;
+            case R.id.share_option:
+                
+                break;
         }
         if(type != null) EventBus.getDefault().post(type);
 

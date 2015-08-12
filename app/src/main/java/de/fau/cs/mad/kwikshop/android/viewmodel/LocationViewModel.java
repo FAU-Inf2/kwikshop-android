@@ -420,7 +420,7 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
             if(checkPlaces(places)){
                 // not listed supermarket selection has index 0
                 if(placeChoiceIndex != 0){
-                    Place selectedPlace = places.get(placeChoiceIndex);
+                    Place selectedPlace = places.get(placeChoiceIndex + 1);
                     // set new lastLocation object
                     LastLocation lastLocation = new LastLocation();
                     lastLocation.setName(selectedPlace.getName());

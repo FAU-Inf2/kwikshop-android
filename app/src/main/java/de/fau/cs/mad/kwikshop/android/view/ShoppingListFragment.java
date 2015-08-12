@@ -80,11 +80,6 @@ public class ShoppingListFragment
     private boolean updatingViewModel;
     private boolean shoppingPlaceRequestisCanceled;
 
-    @Inject
-    ViewLauncher viewLauncher;
-
-    @Inject
-    ResourceProvider resourceProvider;
 
     @InjectView(R.id.list_shoppingList)
     DynamicListView shoppingListView;
@@ -119,31 +114,22 @@ public class ShoppingListFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             listID = getArguments().getInt(ARG_LISTID);
         }
 
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem findLocationItem =  menu.findItem(R.id.refresh_current_supermarket);
-
-        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity()))
-            findLocationItem.setVisible(true);
-         else
-            findLocationItem.setVisible(false);
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch(item.getItemId()){
             case R.id.refresh_current_supermarket:
+                shoppingPlaceRequestisCanceled = false;
                 findNearbySupermarket();
-                break;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -162,12 +148,11 @@ public class ShoppingListFragment
         locationViewModel.dismissDialog();
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         EventBus.getDefault().register(this);
-
-        final String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
 
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
@@ -300,7 +285,11 @@ public class ShoppingListFragment
 
         });
 
-       findNearbySupermarket();
+        // find supermarket places
+
+        shoppingPlaceRequestisCanceled = getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL);
+
+        findNearbySupermarket();
 
         // shopping mode
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getActivity())){
@@ -339,8 +328,6 @@ public class ShoppingListFragment
         locationViewModel.setContext(getActivity().getApplicationContext());
         locationViewModel.setActivity(getActivity());
         locationViewModel.setListId(listID);
-        shoppingPlaceRequestisCanceled = getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL);
-
 
         if(!shoppingPlaceRequestisCanceled){
 
@@ -352,7 +339,7 @@ public class ShoppingListFragment
                     locationViewModel.showProgressDialogWithListID(listID);
 
                     // place request: radius 1500 result count 5
-                    locationViewModel.getNearbySupermarketPlaces(this, 2500, 10);
+                    locationViewModel.getNearbySupermarketPlaces(this, 500, 10);
 
                 } else {
 

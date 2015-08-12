@@ -57,6 +57,14 @@ public class ShoppingListActivity extends BaseActivity {
         }
 
 
+        MenuItem findLocationItem =  menu.findItem(R.id.refresh_current_supermarket);
+
+        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, this))
+            findLocationItem.setVisible(true);
+        else
+            findLocationItem.setVisible(false);
+
+
         return true;
     }
 
@@ -85,6 +93,8 @@ public class ShoppingListActivity extends BaseActivity {
                 SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
                 startActivity(ShoppingListActivity.getIntent(getApplicationContext(), getIntent().getExtras().getInt(SHOPPING_LIST_ID)));
                 break;
+            case R.id.refresh_current_supermarket:
+                return false;
         }
         if(type != null) EventBus.getDefault().post(type);
 

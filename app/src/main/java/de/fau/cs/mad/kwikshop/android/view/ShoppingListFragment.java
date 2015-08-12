@@ -12,6 +12,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
@@ -122,6 +125,28 @@ public class ShoppingListFragment
 
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem findLocationItem =  menu.findItem(R.id.refresh_current_supermarket);
+
+        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity()))
+            findLocationItem.setVisible(true);
+         else
+            findLocationItem.setVisible(false);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()){
+            case R.id.refresh_current_supermarket:
+                findNearbySupermarket();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onPause() {
@@ -275,37 +300,7 @@ public class ShoppingListFragment
 
         });
 
-        // get current supermarket
-        locationViewModel.setContext(getActivity().getApplicationContext());
-        locationViewModel.setActivity(getActivity());
-        locationViewModel.setListId(listID);
-        shoppingPlaceRequestisCanceled = getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL);
-
-        if(!shoppingPlaceRequestisCanceled){
-
-            if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
-
-                if(locationViewModel.checkInternetConnection()){
-
-                    // progress dialog with listID to cancel progress
-                    locationViewModel.showProgressDialogWithListID(listID);
-
-                    // place request: radius 1500 result count 5
-                    locationViewModel.getNearbySupermarketPlaces(this, 2500, 10);
-
-                } else {
-
-                    // no connection dialog
-                    locationViewModel.notificationOfNoConnectionWithLocationPermission();
-                }
-            } else {
-
-                // No permission for location tracking - ask for permission dialog
-                if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, getActivity())){
-                    locationViewModel.showAskForLocalizationPermission();
-                }
-            }
-        }
+       findNearbySupermarket();
 
         // shopping mode
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getActivity())){
@@ -335,6 +330,42 @@ public class ShoppingListFragment
             }
             // Select the current Supermarket
             locationViewModel.showSelectCurrentSupermarket(places);
+        }
+    }
+
+
+    private void findNearbySupermarket(){
+        // get current supermarket
+        locationViewModel.setContext(getActivity().getApplicationContext());
+        locationViewModel.setActivity(getActivity());
+        locationViewModel.setListId(listID);
+        shoppingPlaceRequestisCanceled = getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL);
+
+
+        if(!shoppingPlaceRequestisCanceled){
+
+            if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
+
+                if(locationViewModel.checkInternetConnection()){
+
+                    // progress dialog with listID to cancel progress
+                    locationViewModel.showProgressDialogWithListID(listID);
+
+                    // place request: radius 1500 result count 5
+                    locationViewModel.getNearbySupermarketPlaces(this, 2500, 10);
+
+                } else {
+
+                    // no connection dialog
+                    locationViewModel.notificationOfNoConnectionWithLocationPermission();
+                }
+            } else {
+
+                // No permission for location tracking - ask for permission dialog
+                if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, getActivity())){
+                    locationViewModel.showAskForLocalizationPermission();
+                }
+            }
         }
     }
 

@@ -23,7 +23,7 @@ public class ShoppingListActivity extends BaseActivity {
     public static Intent getIntent(Context context, int shoppingListId) {
 
         Intent intent = new Intent(context, ShoppingListActivity.class);
-        intent.putExtra(SHOPPING_LIST_ID, (int) shoppingListId);
+        intent.putExtra(SHOPPING_LIST_ID, shoppingListId);
         return intent;
     }
 

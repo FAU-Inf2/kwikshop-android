@@ -588,47 +588,11 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-    public void showMessageDialogWithTwoButtons(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage,
-                                                final Command<Void> negativeCommand) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(title);
-        builder.setMessage(message);
-
-        builder.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (positiveCommand.getCanExecute()) {
-                    positiveCommand.execute(null);
-                }
-            }
-        });
-
-        builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (negativeCommand.getCanExecute()) {
-                    negativeCommand.execute(null);
-                }
-            }
-        });
-
-        alert = builder.create();
-        alert.show();
-    }
-
-    @Override
     public void dismissProgressDialog() {
         if (progress != null) {
             progress.dismiss();
             progress = null;
-        } else {
-            Log.e("Progressbar", " is null!");
         }
-
-
     }
 
     @Override

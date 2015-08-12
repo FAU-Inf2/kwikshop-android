@@ -207,10 +207,13 @@
     <string name="nothing">Nichts</string>
     <string name="no">Nein</string>
     <string name="message_delete_item">Willst du sicher das Produkt löschen?</string>
-    <string name="localization_permisson_dialog_message">Kwik Shop möchte deinen Standort bestimmen. Bist du einverstanden?</string>
-    <string name="localization_permisson_dialog_title">Standortbestimmung</string>
     <string name="yes">Ja</string>
     <string name="dont_show_this_message_again">Meldung nicht mehr anzeigen</string>
     <string name="login_back">Zurück</string>
+    <string name="localization_dialog_message">Kwik Shop möchte deinen Standort bestimmen. Bist du einverstanden?</string>
+    <string name="localization_dialog_title">Standortbestimmung</string>
+    <string name="localization_disable_localization">Deaktiviere Standortbestimmung</string>
+    <string name="localization_no_connection_message">Kwik Shop benötigt eine Internetverbinfung um alle  Supermärkte in der Nähe zu finden.</string>
+    <string name="localization_no_place_dialog_title">Kein Supermarkt</string>
 
 </resources>

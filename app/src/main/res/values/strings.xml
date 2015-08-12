@@ -40,12 +40,15 @@
 
 
     <!-- Place Finder -->
-    <string name="no_place_dialog_title">No Supermarket</string>
+    <string name="localization_no_place_dialog_title">No Supermarket</string>
     <string name="dialog_OK">OK</string>
     <string name="dialog_retry">Retry</string>
-    <string name="supermarket_select_dialog_title">Select your current Supermarket</string>
-    <string name="localization_permisson_dialog_title">Localization</string>
-    <string name="localization_permisson_dialog_message">Kwik Shop wants to locate your position. Do you agree?</string>
+    <string name="localization_supermarket_select_dialog_title">Select your current Supermarket</string>
+    <string name="localization_supermarket_select_dialog_not_found">Not listed</string>
+    <string name="localization_dialog_title">Localization</string>
+    <string name="localization_dialog_message">Kwik Shop wants to locate your position. Do you agree?</string>
+    <string name="localization_disable_localization">disable localization</string>
+    <string name="localization_no_connection_message">Kwik Shop needs a connection to the internet to find all nearby supermarkets.</string>
 
 
     <!-- Item Details Fragment -->
@@ -225,7 +228,7 @@
 
     <!-- Location -->
     <string name="supermarket_finder">Supermarket Finder</string>
-    <string name="supermarket_finder_progress_dialog_message">Find nearby Supermarkets. </string>
+    <string name="supermarket_finder_progress_dialog_message">Find nearby Supermarkets.</string>
 
     <!-- Place -->
     <string name="place_status_opened">opened</string>
@@ -324,5 +327,6 @@
     <string name="synchronizing_recipes">Synchronizing Recipes</string>
     <string name="error_synchronizing_shoppingLists">Error synchronizing Shopping Lists</string>
     <string name="error_synchronizing_recipes">Error synchronizing Recipes</string>
+    <string name="localization_permisson_dialog_title"></string>
 
 </resources>

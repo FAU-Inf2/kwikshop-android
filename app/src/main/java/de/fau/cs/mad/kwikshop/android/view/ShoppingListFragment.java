@@ -75,6 +75,7 @@ public class ShoppingListFragment
 
     private ShoppingListViewModel viewModel;
     private boolean updatingViewModel;
+    private boolean shoppingPlaceRequestisCanceled;
 
     @Inject
     ViewLauncher viewLauncher;
@@ -278,23 +279,24 @@ public class ShoppingListFragment
         locationViewModel.setContext(getActivity().getApplicationContext());
         locationViewModel.setActivity(getActivity());
         locationViewModel.setListId(listID);
+        shoppingPlaceRequestisCanceled = getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL);
 
-        if(!getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL)){
+        if(!shoppingPlaceRequestisCanceled){
 
             if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
 
                 if(locationViewModel.checkInternetConnection()){
 
-                    // progress dialog with listID to cance progress
+                    // progress dialog with listID to cancel progress
                     locationViewModel.showProgressDialogWithListID(listID);
 
                     // place request: radius 1500 result count 5
-                    locationViewModel.getNearbySupermarketPlaces(this, 2000, 6);
+                    locationViewModel.getNearbySupermarketPlaces(this, 2500, 10);
 
                 } else {
 
                     // no connection dialog
-                    locationViewModel.notificationOfNoConnection();
+                    locationViewModel.notificationOfNoConnectionWithLocationPermission();
                 }
             } else {
 
@@ -318,27 +320,23 @@ public class ShoppingListFragment
     }
 
 
-
-
     // results of place request
     @Override
     public void postResult(List<Place> places) {
 
-        locationViewModel.setPlaces(places);
-        locationViewModel.dismissProgressDialog();
+        if(!shoppingPlaceRequestisCanceled){
+            locationViewModel.setPlaces(places);
+            locationViewModel.dismissProgressDialog();
 
-        if(!locationViewModel.checkPlaces(places)){
-            // no place info dialog
-            locationViewModel.showNoPlaceWasFoundDialog();
-            return;
+            if(!locationViewModel.checkPlaces(places)){
+                // no place info dialog
+                locationViewModel.showNoPlaceWasFoundDialog();
+                return;
+            }
+            // Select the current Supermarket
+            locationViewModel.showSelectCurrentSupermarket(places);
         }
-
-        // Select the current Supermarket
-        locationViewModel.showSelectCurrentSupermarket(places);
     }
-
-
-
 
     @Override
     public void onResume() {

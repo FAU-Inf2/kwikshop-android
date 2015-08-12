@@ -176,7 +176,7 @@
 
     <!-- Login -->
     <string name="login_skip">Jetzt nicht einloggen</string>
-    <string name="signed_in_fmt">Eingeloggt als: %s</string>
+    <string name="signed_in_fmt">Eingeloggt als:</string>
     <string name="signing_in">Login läuft…</string>
     <string name="signed_out">Nicht eingeloggt</string>
     <string name="play_services_error_fmt">Google Play Services Fehler</string>

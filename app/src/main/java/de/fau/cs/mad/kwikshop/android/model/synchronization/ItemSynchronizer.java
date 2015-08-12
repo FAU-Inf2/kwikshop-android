@@ -190,6 +190,10 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
     @Override
     protected void createServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item clientItem) {
 
+        unitStorage.refresh(clientItem.getUnit());
+        groupStorage.refresh(clientItem.getGroup());
+        locationStorage.refresh(clientItem.getLocation());
+
         Item serverItem;
 
         try {
@@ -200,14 +204,18 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
 
         clientItem.setServerId(serverItem.getServerId());
         clientItem.setVersion(serverItem.getVersion());
+
         if(clientItem.getUnit() != null && serverItem.getUnit() != null) {
             clientItem.getUnit().setServerId(serverItem.getUnit().getServerId());
+            unitStorage.updateItem(clientItem.getUnit());
         }
         if(clientItem.getGroup() != null && serverItem.getGroup() != null) {
             clientItem.getGroup().setServerId(serverItem.getGroup().getServerId());
+            groupStorage.updateItem(clientItem.getGroup());
         }
         if(clientItem.getLocation() != null && serverItem.getLocation() != null) {
             clientItem.getLocation().setServerId(serverItem.getLocation().getServerId());
+            locationStorage.updateItem(clientItem.getLocation());
         }
 
         listManager.saveListItem(clientListId, clientItem);
@@ -215,9 +223,13 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
     }
 
     @Override
-    protected void createClientObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item serverObject) {
+    protected void createClientObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item serverItem) {
 
-        listManager.addListItem(clientListId, serverObject);
+        serverItem.setGroup(getClientGroup(itemSyncData, serverItem.getGroup()));
+        serverItem.setUnit(getClientUnit(itemSyncData, serverItem.getUnit()));
+        serverItem.setLocation(getClientLocation(itemSyncData, serverItem.getLocation()));
+
+        listManager.addListItem(clientListId, serverItem);
     }
 
     @Override
@@ -235,12 +247,15 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
 
         if(clientItem.getUnit() != null && serverItem.getUnit() != null) {
             clientItem.getUnit().setServerId(serverItem.getUnit().getServerId());
+            unitStorage.updateItem(clientItem.getUnit());
         }
         if(clientItem.getGroup() != null && serverItem.getGroup() != null) {
             clientItem.getGroup().setServerId(serverItem.getGroup().getServerId());
+            groupStorage.updateItem(clientItem.getGroup());
         }
         if(clientItem.getLocation() != null && serverItem.getLocation() != null) {
             clientItem.getLocation().setServerId(serverItem.getLocation().getServerId());
+            locationStorage.updateItem(clientItem.getLocation());
         }
 
         listManager.saveListItem(clientListId, clientItem);
@@ -271,6 +286,10 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
     protected void applyPropertiesToServerData(ItemSyncData<TListClient, TListServer> itemSyncData, Item source, Item target){
 
         applyPropertiesCommon(source, target);
+
+        unitStorage.refresh(source.getUnit());
+        groupStorage.refresh(source.getGroup());
+        locationStorage.refresh(source.getLocation());
 
         //no special treatment necessary for Group, Unit and location. The appropriate
         // server instances will be created implicitly if they do not yet exist
@@ -351,3 +370,4 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
         }
     }
 }
+

@@ -20,6 +20,7 @@ public class SimpleStorageBase<T> implements SimpleStorage<T> {
         this.dao = dao;
     }
 
+    @Override
     public List<T> getItems() {
         try {
             return dao.queryForAll();
@@ -29,6 +30,7 @@ public class SimpleStorageBase<T> implements SimpleStorage<T> {
         }
     }
 
+    @Override
     public void addItem(T item) {
         try {
             dao.create(item);
@@ -37,6 +39,7 @@ public class SimpleStorageBase<T> implements SimpleStorage<T> {
         }
     }
 
+    @Override
     public void updateItem(T item) {
         try {
             dao.update(item);
@@ -46,6 +49,7 @@ public class SimpleStorageBase<T> implements SimpleStorage<T> {
         }
     }
 
+    @Override
     public void deleteSingleItem(T item) {
         try {
             dao.delete(item);
@@ -54,6 +58,7 @@ public class SimpleStorageBase<T> implements SimpleStorage<T> {
         }
     }
 
+    @Override
     public void deleteAll() {
         try {
             List<T> items = dao.queryForAll();
@@ -63,6 +68,7 @@ public class SimpleStorageBase<T> implements SimpleStorage<T> {
         }
     }
 
+    @Override
     public T getDefaultValue() {
         return null;
     }
@@ -72,6 +78,23 @@ public class SimpleStorageBase<T> implements SimpleStorage<T> {
         //override in sub-classes if necessary
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void refresh(T instance) {
+
+        if(instance != null) {
+
+            try {
+                dao.refresh(instance);
+            } catch (SQLException e) {
+                //whatever...
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
 
 
 }

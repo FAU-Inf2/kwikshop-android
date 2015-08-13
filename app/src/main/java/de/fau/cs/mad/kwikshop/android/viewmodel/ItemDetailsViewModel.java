@@ -224,6 +224,8 @@ public class ItemDetailsViewModel{
         if (imageItem != null) {
             item.setImageItem(imageId);
         }
+        else
+            item.setImageItem(null);
     }
 
     public void showDeleteItemDialog(String title, String message, String positiveString, String negativeString, String checkBoxMessage){

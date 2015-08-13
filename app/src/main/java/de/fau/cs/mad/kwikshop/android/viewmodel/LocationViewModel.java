@@ -419,10 +419,8 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
         if(!cancelSelectionOfSupermarket){
             if(checkPlaces(places)){
                 // not listed supermarket selection has index 0
-                Log.e("LocationViewModel", "Current place choice: " + placeChoiceIndex);
                 if(placeChoiceIndex > 0){
                     Place selectedPlace = places.get(placeChoiceIndex - 1);
-                    Log.e("LocationViewModel", "Current place choice: " + placeChoiceIndex + " Place name: " + selectedPlace.getName());
                     // set new lastLocation object
                     LastLocation lastLocation = new LastLocation();
                     lastLocation.setName(selectedPlace.getName());

@@ -8,7 +8,7 @@ public class SessionHandler {
 
 
     public static boolean isAuthenticated(Context context) {
-        return (getSessionToken(context) != null && getSessionUser(context) != null ? true : false);
+        return (getSessionToken(context) != null && getSessionUser(context) != null);
     }
 
     public static void setSessionUser(Context context, String token) {

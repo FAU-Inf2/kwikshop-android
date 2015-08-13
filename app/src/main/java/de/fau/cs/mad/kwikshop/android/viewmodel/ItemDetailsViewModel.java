@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import javax.inject.Inject;
 
@@ -59,6 +60,8 @@ public class ItemDetailsViewModel{
     private String imageId = "";
 
     private AsyncTask<Void, Void, Void> loadTask;
+    private final Object loadLock = new Object();
+    private final CountDownLatch loadLatch = new CountDownLatch(1);
 
 
     @Inject
@@ -239,26 +242,38 @@ public class ItemDetailsViewModel{
     }
 
     public void mergeAndSaveItem(final ListManager listManager, final ItemMerger itemMerger, final Item item){
-        loadTask = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                if (isNewItem()) {
-                    if (!itemMerger.mergeItem(listId, item)) {
-                        listManager.addListItem(listId, item);
+        synchronized (loadLock) {
+
+            if (loadTask == null) {
+                loadTask = new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        if (isNewItem()) {
+                            if (!itemMerger.mergeItem(listId, item)) {
+                                listManager.addListItem(listId, item);
+                            }
+                        } else {
+                            if (itemMerger.mergeItem(listId, item)) {
+                                listManager.deleteItem(listId, item.getId());
+                            } else {
+                                listManager.saveListItem(listId, item);
+                            }
+                        }
+                        loadLatch.countDown();
+                        return null;
                     }
-                } else {
-                    if (itemMerger.mergeItem(listId, item)) {
-                        listManager.deleteItem(listId, item.getId());
-                    } else {
-                        listManager.saveListItem(listId, item);
-                    }
-                }
-                return null;
+
+                };
+                loadTask.execute();
+
             }
+        }
 
-        };
-        loadTask.execute();
-
+        try {
+            loadLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void offerAutoCompletion(String name, Group group, String brand){

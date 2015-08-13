@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -56,6 +57,8 @@ public class ItemDetailsViewModel{
     private String pathImage = "";
     private Uri mImageUri;
     private String imageId = "";
+
+    private AsyncTask<Void, Void, Void> loadTask;
 
 
     @Inject
@@ -235,18 +238,26 @@ public class ItemDetailsViewModel{
             EventBus.getDefault().post(new DeleteItemEvent(listId, itemId));
     }
 
-    public void mergeAndSaveItem(ListManager listManager, ItemMerger itemMerger, Item item){
-        if(isNewItem()) {
-            if(!itemMerger.mergeItem(listId, item)) {
-                listManager.addListItem(listId, item);
+    public void mergeAndSaveItem(final ListManager listManager, final ItemMerger itemMerger, final Item item){
+        loadTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                if (isNewItem()) {
+                    if (!itemMerger.mergeItem(listId, item)) {
+                        listManager.addListItem(listId, item);
+                    }
+                } else {
+                    if (itemMerger.mergeItem(listId, item)) {
+                        listManager.deleteItem(listId, item.getId());
+                    } else {
+                        listManager.saveListItem(listId, item);
+                    }
+                }
+                return null;
             }
-        } else {
-            if(itemMerger.mergeItem(listId, item)){
-                listManager.deleteItem(listId, item.getId());
-            }else {
-                listManager.saveListItem(listId, item);
-            }
-        }
+
+        };
+        loadTask.execute();
 
     }
 

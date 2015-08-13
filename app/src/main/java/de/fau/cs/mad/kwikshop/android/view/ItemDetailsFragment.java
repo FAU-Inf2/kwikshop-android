@@ -519,7 +519,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         } else {
             highlight_checkbox.setChecked(false);
         }
-
+        //TODO Async this method
         //set on click listener to item's image
         itemImageView.setOnClickListener(new View.OnClickListener() {
             @Override

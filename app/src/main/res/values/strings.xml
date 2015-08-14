@@ -324,5 +324,6 @@
     <string name="synchronizing_recipes">Synchronizing Recipes</string>
     <string name="error_synchronizing_shoppingLists">Error synchronizing Shopping Lists</string>
     <string name="error_synchronizing_recipes">Error synchronizing Recipes</string>
+    <string name="share_notloggedin">You need to be logged in to share this shopping list.</string>
 
 </resources>

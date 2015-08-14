@@ -338,7 +338,7 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
     public void showNoPlaceWasFoundDialog(){
 
         viewLauncher.showMessageDialog(
-                resourceProvider.getString(R.string.no_place_dialog_title),
+                resourceProvider.getString(R.string.localization_no_place_dialog_title),
                 resourceProvider.getString(R.string.no_place_dialog_message),
                 resourceProvider.getString(R.string.dialog_OK),
                 getAcceptDialogCommand(),

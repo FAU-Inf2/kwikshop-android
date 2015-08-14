@@ -4,6 +4,14 @@
 
 
     <item
+        android:id="@+id/refresh_current_supermarket"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_mylocation">
+    </item>
+
+
+
+    <item
         android:id="@+id/sortby_options_icon"
         android:title="sortby_options"
         app:showAsAction="always"
@@ -28,6 +36,9 @@
         app:showAsAction="always"
         android:icon="@drawable/ic_share_white_24dp">
     </item>
+
+
+
 
 
 

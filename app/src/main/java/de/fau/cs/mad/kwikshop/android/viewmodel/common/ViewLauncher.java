@@ -84,9 +84,6 @@ public interface ViewLauncher {
                            String negativeMessage, Command<Void> negativeCommand,
                                            final Command<Integer> selectCommand);
 
-    void showMessageDialogWithTwoButtons(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage,
-                                                final Command<Void> negativeCommand);
-
     void dismissProgressDialog();
 
     void showListOfShoppingListsActivity();

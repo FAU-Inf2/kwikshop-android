@@ -236,8 +236,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     }
     public Command<Void> getQuickAddUnitCommand(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddUnit) { this.unitAdapter = adapter; this.qAddUnit = qAddUnit; return quickAddUnitCommand;}
     public Command<Void> getQuickAddGroupCommand(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddGroup) { this.groupAdapter = adapter; this.qAddGroup = qAddGroup; return quickAddGroupCommand;}
-    public Command<Void> getQuickRemoveGroupCommand(ArrayAdapter<String> adapter, int index){this.groupAdapter = adapter; this.quickRemoveUnitIndex = index; return quickRemoveGroupCommand;}
-    public Command<Void> getQuickRemoveUnitCommand(ArrayAdapter<String> adapter, int index){this.unitAdapter = adapter; this.quickRemoveGroupIndex = index; return quickRemoveUnitCommand;}
+    public Command<Void> getQuickRemoveGroupCommand(ArrayAdapter<String> adapter, int index){this.groupAdapter = adapter; this.quickRemoveGroupIndex = index; return quickRemoveGroupCommand;}
+    public Command<Void> getQuickRemoveUnitCommand(ArrayAdapter<String> adapter, int index){this.unitAdapter = adapter; this.quickRemoveUnitIndex = index; return quickRemoveUnitCommand;}
     /**
      * Gets the command to be executed when a shopping list item in the view is selected
      */
@@ -455,13 +455,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
             List<Group> groups;
             //get units from the database and sort them by name
             groups = groupStorage.getItems();
-            Collections.sort(groups, new Comparator<Group>() {
-                @Override
-                public int compare(Group lhs, Group rhs) {
-                    return lhs.getName().compareTo(rhs.getName());
-                }
-            });
-            Group g = groups.get(quickRemoveUnitIndex);
+
+            Group g = groups.get(quickRemoveGroupIndex);
             groupStorage.deleteSingleItem(g);
             viewLauncher.notifyGroupSpinnerChange(adapter);
 

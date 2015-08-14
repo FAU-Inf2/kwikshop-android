@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import javax.inject.Inject;
 
@@ -56,6 +58,10 @@ public class ItemDetailsViewModel{
     private String pathImage = "";
     private Uri mImageUri;
     private String imageId = "";
+
+    private AsyncTask<Void, Void, Void> loadTask;
+    private final Object loadLock = new Object();
+    private final CountDownLatch loadLatch = new CountDownLatch(1);
 
 
     @Inject
@@ -224,6 +230,8 @@ public class ItemDetailsViewModel{
         if (imageItem != null) {
             item.setImageItem(imageId);
         }
+        else
+            item.setImageItem(null);
     }
 
     public void showDeleteItemDialog(String title, String message, String positiveString, String negativeString, String checkBoxMessage){
@@ -233,19 +241,39 @@ public class ItemDetailsViewModel{
             EventBus.getDefault().post(new DeleteItemEvent(listId, itemId));
     }
 
-    public void mergeAndSaveItem(ListManager listManager, ItemMerger itemMerger, Item item){
-        if(isNewItem()) {
-            if(!itemMerger.mergeItem(listId, item)) {
-                listManager.addListItem(listId, item);
-            }
-        } else {
-            if(itemMerger.mergeItem(listId, item)){
-                listManager.deleteItem(listId, item.getId());
-            }else {
-                listManager.saveListItem(listId, item);
+    public void mergeAndSaveItem(final ListManager listManager, final ItemMerger itemMerger, final Item item){
+        synchronized (loadLock) {
+
+            if (loadTask == null) {
+                loadTask = new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        if (isNewItem()) {
+                            if (!itemMerger.mergeItem(listId, item)) {
+                                listManager.addListItem(listId, item);
+                            }
+                        } else {
+                            if (itemMerger.mergeItem(listId, item)) {
+                                listManager.deleteItem(listId, item.getId());
+                            } else {
+                                listManager.saveListItem(listId, item);
+                            }
+                        }
+                        loadLatch.countDown();
+                        return null;
+                    }
+
+                };
+                loadTask.execute();
+
             }
         }
 
+        try {
+            loadLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void offerAutoCompletion(String name, Group group, String brand){

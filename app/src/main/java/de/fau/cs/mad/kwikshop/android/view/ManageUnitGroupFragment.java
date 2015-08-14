@@ -73,6 +73,7 @@ public class ManageUnitGroupFragment
     private int selectedGroupIndex = -1;
     private boolean updatingViewModel;
 
+    ArrayAdapter<String> groupSpinnerArrayAdapter;
     ArrayAdapter<String> spinnerArrayAdapter;
     private int listID = -1;
 
@@ -214,12 +215,13 @@ public class ManageUnitGroupFragment
 
         //get groups from the database and populate group spinner
         groups = ListStorageFragment.getGroupStorage().getItems();
+
         ArrayList<String> groupNames = new ArrayList<>();
         for (Group g : groups) {
             groupNames.add(displayHelper.getDisplayName(g));
         }
 
-        final ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groupNames);
+        groupSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groupNames);
         groupSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         group_spinner.setAdapter(groupSpinnerArrayAdapter);
         group_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

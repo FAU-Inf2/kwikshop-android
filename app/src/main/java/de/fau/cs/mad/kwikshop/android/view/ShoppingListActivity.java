@@ -23,7 +23,7 @@ public class ShoppingListActivity extends BaseActivity {
     public static Intent getIntent(Context context, int shoppingListId) {
 
         Intent intent = new Intent(context, ShoppingListActivity.class);
-        intent.putExtra(SHOPPING_LIST_ID, (int) shoppingListId);
+        intent.putExtra(SHOPPING_LIST_ID, shoppingListId);
         return intent;
     }
 
@@ -57,6 +57,14 @@ public class ShoppingListActivity extends BaseActivity {
         }
 
 
+        MenuItem findLocationItem =  menu.findItem(R.id.refresh_current_supermarket);
+
+        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, this))
+            findLocationItem.setVisible(true);
+        else
+            findLocationItem.setVisible(false);
+
+
         return true;
     }
 
@@ -85,6 +93,8 @@ public class ShoppingListActivity extends BaseActivity {
                 SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
                 startActivity(ShoppingListActivity.getIntent(getApplicationContext(), getIntent().getExtras().getInt(SHOPPING_LIST_ID)));
                 break;
+            case R.id.refresh_current_supermarket:
+                return false;
             case R.id.share_option:
                 
                 break;

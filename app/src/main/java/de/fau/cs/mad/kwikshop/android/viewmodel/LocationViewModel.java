@@ -3,8 +3,8 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,7 +16,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -127,7 +126,6 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
     public Command<Integer> getStartShoppingListFragmemtWithoutPlaceRequestCommand(){ return startShoppingListFragmemtWithoutPlaceRequestCommand; }
 
 
-
     final Command cancelProgressDialogCommand =  new Command<Void>() {
         @Override
         public void execute(Void parameter) {
@@ -217,13 +215,31 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
         }
     };
 
-    final Command cancelSelectinOfPlaceChoiceCommand = new Command<Void>(){
+    final Command cancelSelectionOfPlaceChoiceCommand = new Command<Void>(){
         @Override
         public void execute(Void parameter) {
             setCancelSelectionOfSupermarket(true);
         }
     };
 
+
+    final Command retryConnectionCheck = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            if(viewLauncher.checkInternetConnection())
+                viewLauncher.showLocationActivity();
+            else {
+                notificationOfNoConnectionWithLocationPermission();
+            }
+        }
+    };
+
+    final Command disableLocalization = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context);
+        }
+    };
 
 
 
@@ -280,24 +296,30 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
         return LocationFinderHelper.getDistanceBetweenLastLocationAndPlace(place, latLng);
     }
 
+    @SuppressWarnings("unchecked")
     public void notificationOfNoConnection(){
 
         viewLauncher.showMessageDialog(
                 resourceProvider.getString(R.string.alert_dialog_connection_label),
                 resourceProvider.getString(R.string.alert_dialog_connection_message),
                 resourceProvider.getString(R.string.alert_dialog_connection_try),
-                new Command<Void>() {
-                    @Override
-                    public void execute(Void parameter) {
-                        if(viewLauncher.checkInternetConnection())
-                            viewLauncher.showLocationActivity();
-                        else {
-                            notificationOfNoConnection();
-                        }
-                    }
-                },
+                retryConnectionCheck,
                 resourceProvider.getString(R.string.alert_dialog_connection_cancel),
                 getFinishActivityCommand()
+        );
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public void notificationOfNoConnectionWithLocationPermission(){
+
+        viewLauncher.showMessageDialog(
+                resourceProvider.getString(R.string.localization_dialog_title),
+                resourceProvider.getString(R.string.localization_no_connection_message),
+                resourceProvider.getString(R.string.alert_dialog_connection_try),
+                retryConnectionCheck,
+                resourceProvider.getString(R.string.localization_disable_localization),
+                disableLocalization
         );
 
     }
@@ -306,7 +328,7 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
 
         viewLauncher.showProgressDialogWithListID(
                 resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
-                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
+                resourceProvider.getString(R.string.cancel),
                 listID,
                 true,
                 getStartShoppingListFragmemtWithoutPlaceRequestCommand()
@@ -315,7 +337,7 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
 
     public void showNoPlaceWasFoundDialog(){
 
-        viewLauncher.showMessageDialogWithTwoButtons(
+        viewLauncher.showMessageDialog(
                 resourceProvider.getString(R.string.no_place_dialog_title),
                 resourceProvider.getString(R.string.no_place_dialog_message),
                 resourceProvider.getString(R.string.dialog_OK),
@@ -326,29 +348,31 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
 
     }
 
+    @SuppressWarnings("unchecked")
     public void showSelectCurrentSupermarket(List<Place> places){
 
         CharSequence[] placeNames = getNamesFromPlaces(places);
 
         viewLauncher.showMessageDialogWithRadioButtons(
-                resourceProvider.getString(R.string.supermarket_select_dialog_title),
+                resourceProvider.getString(R.string.localization_supermarket_select_dialog_title),
                 placeNames,
                 resourceProvider.getString(R.string.dialog_OK),
                 getSavePlaceToShoppingListCommand(),
                 resourceProvider.getString(R.string.dialog_retry),
                 getRestartActivityCommand(),
                 resourceProvider.getString(R.string.cancel),
-                cancelSelectinOfPlaceChoiceCommand,
+                cancelSelectionOfPlaceChoiceCommand,
                 selectionOfPlaceChoiceCommand
 
         );
     }
 
+    @SuppressWarnings("unchecked")
     public void showAskForLocalizationPermission(){
 
         viewLauncher.showMessageDialogWithCheckbox(
-                resourceProvider.getString(R.string.localization_permisson_dialog_title),
-                resourceProvider.getString(R.string.localization_permisson_dialog_message),
+                resourceProvider.getString(R.string.localization_dialog_title),
+                resourceProvider.getString(R.string.localization_dialog_message),
                 resourceProvider.getString(R.string.yes),
                 grantLocalizationPermissionCommand,
                 null,
@@ -394,17 +418,19 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
 
         if(!cancelSelectionOfSupermarket){
             if(checkPlaces(places)){
-                Place selectedPlace = places.get(placeChoiceIndex);
-
-                // set new lastLocation object
-                LastLocation lastLocation = new LastLocation();
-                lastLocation.setName(selectedPlace.getName());
-                lastLocation.setLatitude(selectedPlace.getLatitude());
-                lastLocation.setLongitude(selectedPlace.getLongitude());
-                lastLocation.setAddress(selectedPlace.getAddress());
-                lastLocation.setTimestamp(System.currentTimeMillis());
-                item.setLocation(lastLocation);
-                listManager.saveListItem(listId, item);
+                // not listed supermarket selection has index 0
+                if(placeChoiceIndex > 0){
+                    Place selectedPlace = places.get(placeChoiceIndex - 1);
+                    // set new lastLocation object
+                    LastLocation lastLocation = new LastLocation();
+                    lastLocation.setName(selectedPlace.getName());
+                    lastLocation.setLatitude(selectedPlace.getLatitude());
+                    lastLocation.setLongitude(selectedPlace.getLongitude());
+                    lastLocation.setAddress(selectedPlace.getAddress());
+                    lastLocation.setTimestamp(System.currentTimeMillis());
+                    item.setLocation(lastLocation);
+                    listManager.saveListItem(listId, item);
+                }
             }
         }
     }

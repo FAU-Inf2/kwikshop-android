@@ -12,6 +12,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
@@ -75,12 +78,8 @@ public class ShoppingListFragment
 
     private ShoppingListViewModel viewModel;
     private boolean updatingViewModel;
+    private boolean shoppingPlaceRequestisCanceled;
 
-    @Inject
-    ViewLauncher viewLauncher;
-
-    @Inject
-    ResourceProvider resourceProvider;
 
     @InjectView(R.id.list_shoppingList)
     DynamicListView shoppingListView;
@@ -115,12 +114,25 @@ public class ShoppingListFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             listID = getArguments().getInt(ARG_LISTID);
         }
 
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()){
+            case R.id.refresh_current_supermarket:
+                shoppingPlaceRequestisCanceled = false;
+                findNearbySupermarket();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onPause() {
@@ -136,12 +148,11 @@ public class ShoppingListFragment
         locationViewModel.dismissDialog();
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         EventBus.getDefault().register(this);
-
-        final String googleBrowserApiKey = getResources().getString(R.string.google_browser_api_key);
 
         new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
 
@@ -274,36 +285,11 @@ public class ShoppingListFragment
 
         });
 
-        // get current supermarket
-        locationViewModel.setContext(getActivity().getApplicationContext());
-        locationViewModel.setActivity(getActivity());
-        locationViewModel.setListId(listID);
+        // find supermarket places
 
-        if(!getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL)){
+        shoppingPlaceRequestisCanceled = getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL);
 
-            if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
-
-                if(locationViewModel.checkInternetConnection()){
-
-                    // progress dialog with listID to cance progress
-                    locationViewModel.showProgressDialogWithListID(listID);
-
-                    // place request: radius 1500 result count 5
-                    locationViewModel.getNearbySupermarketPlaces(this, 2000, 6);
-
-                } else {
-
-                    // no connection dialog
-                    locationViewModel.notificationOfNoConnection();
-                }
-            } else {
-
-                // No permission for location tracking - ask for permission dialog
-                if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, getActivity())){
-                    locationViewModel.showAskForLocalizationPermission();
-                }
-            }
-        }
+        findNearbySupermarket();
 
         // shopping mode
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getActivity())){
@@ -318,27 +304,57 @@ public class ShoppingListFragment
     }
 
 
-
-
     // results of place request
     @Override
     public void postResult(List<Place> places) {
 
-        locationViewModel.setPlaces(places);
-        locationViewModel.dismissProgressDialog();
+        if(!shoppingPlaceRequestisCanceled){
+            locationViewModel.setPlaces(places);
+            locationViewModel.dismissProgressDialog();
 
-        if(!locationViewModel.checkPlaces(places)){
-            // no place info dialog
-            locationViewModel.showNoPlaceWasFoundDialog();
-            return;
+            if(!locationViewModel.checkPlaces(places)){
+                // no place info dialog
+                locationViewModel.showNoPlaceWasFoundDialog();
+                return;
+            }
+            // Select the current Supermarket
+            locationViewModel.showSelectCurrentSupermarket(places);
         }
-
-        // Select the current Supermarket
-        locationViewModel.showSelectCurrentSupermarket(places);
     }
 
 
+    private void findNearbySupermarket(){
+        // get current supermarket
+        locationViewModel.setContext(getActivity().getApplicationContext());
+        locationViewModel.setActivity(getActivity());
+        locationViewModel.setListId(listID);
 
+        if(!shoppingPlaceRequestisCanceled){
+
+            if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
+
+                if(locationViewModel.checkInternetConnection()){
+
+                    // progress dialog with listID to cancel progress
+                    locationViewModel.showProgressDialogWithListID(listID);
+
+                    // place request: radius 1500 result count 5
+                    locationViewModel.getNearbySupermarketPlaces(this, 500, 10);
+
+                } else {
+
+                    // no connection dialog
+                    locationViewModel.notificationOfNoConnectionWithLocationPermission();
+                }
+            } else {
+
+                // No permission for location tracking - ask for permission dialog
+                if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, getActivity())){
+                    locationViewModel.showAskForLocalizationPermission();
+                }
+            }
+        }
+    }
 
     @Override
     public void onResume() {

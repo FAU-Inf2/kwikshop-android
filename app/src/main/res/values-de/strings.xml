@@ -82,7 +82,7 @@
     <string name="settings_option_3_deleteHistory">Autovervollständigung</string>
     <string name="settings_option_3_desc">Verlauf löschen</string>
     <string name="settings_option_3_check_title">Verlauf löschen?</string>
-    <string name="settings_option_3_check_text">Sind Sie sicher, dass Sie den Verlauf der Autovervollständigung löschen möchten?</string>
+    <string name="settings_option_3_check_text">Bist du sicher, dass du den Verlauf der Autovervollständigung löschen möchtest?</string>
     <string name="settings_option_3_error">Leider ist beim Löschen des Verlaufs ein Fehler aufgetreten</string>
     <string name="settings_option_3_success">Verlauf erfolgreich gelöscht</string>
     <string name="sortby_manual">Manuell</string>
@@ -101,7 +101,7 @@
     <string name="viewOnGitHub">Auf GitHub anzeigen</string>
     <string name="alphabetically"></string>
     <string name="deleteShoppingList_DialogTitle">Einkaufsliste löschen?</string>
-    <string name="deleteShoppingList_DialogText">Sind Sie sicher, dass sie die Einkaufsliste löschen möchten?</string>
+    <string name="deleteShoppingList_DialogText">Bist du sicher, dass du diese Einkaufsliste löschen möchtest?</string>
 
 
 
@@ -127,7 +127,7 @@
     <!--Recipes-->
     <string name="recipes">Rezepte</string>
     <string name="deleteRecipe_DialogTitle">Rezept löschen</string>
-    <string name="deleteRecipe_DialogText">Sind Sie sicher, dass sie dieses Rezept löschen möchten?</string>
+    <string name="deleteRecipe_DialogText">Bist du sicher, dass du dieses Rezept löschen möchtest?</string>
     <string name="overflow_action_menu_recipes">Rezepte verwalten</string>
     <string name="overflow_action_menu_add_recipes">Rezept zur Liste hinzufügen</string>
     <string name="recipe_scaleName_person">Personen</string>
@@ -152,7 +152,7 @@
 
     <!-- Alert Dialog For missing connection -->
     <string name="alert_dialog_connection_label">Netzwerk</string>
-    <string name="alert_dialog_connection_message">Keine Internetverbindung vorhanden. Bitte aktiviere dein Wlan oder dein mobiles Internet.</string>
+    <string name="alert_dialog_connection_message">Keine Internetverbindung vorhanden. Bitte aktiviere dein WLAN oder dein mobiles Internet.</string>
     <string name="alert_dialog_connection_cancel">Abbrechen</string>
     <string name="alert_dialog_connection_try">Wiederholen</string>
 
@@ -201,19 +201,19 @@
     <string name="kwikshop_login_success">Du bist eingeloggt.</string>
     <string name="unit_teaspoon"></string>
     <string name="dialog_OK">OK</string>
-    <string name="no_place_dialog_message">KwikShop findet keinen Supermarkt in deiner Umgebung.</string>
+    <string name="no_place_dialog_message">Kwik Shop findet keinen Supermarkt in deiner Umgebung.</string>
     <string name="dialog_retry">Wiederholen</string>
     <string name="no_place_dialog_title">Kein Supermarkt</string>
     <string name="nothing">Nichts</string>
     <string name="no">Nein</string>
-    <string name="message_delete_item">Willst du sicher das Produkt löschen?</string>
+    <string name="message_delete_item">Bist du sicher, dass du das Produkt löschen möchtest?</string>
     <string name="yes">Ja</string>
     <string name="dont_show_this_message_again">Meldung nicht mehr anzeigen</string>
     <string name="login_back">Zurück</string>
     <string name="localization_dialog_message">Kwik Shop möchte deinen Standort bestimmen. Bist du einverstanden?</string>
     <string name="localization_dialog_title">Standortbestimmung</string>
     <string name="localization_disable_localization">Deaktiviere Standortbestimmung</string>
-    <string name="localization_no_connection_message">Kwik Shop benötigt eine Internetverbinfung um alle  Supermärkte in der Nähe zu finden.</string>
+    <string name="localization_no_connection_message">Kwik Shop benötigt eine Internetverbinfung um alle Supermärkte in der Nähe zu finden.</string>
     <string name="localization_no_place_dialog_title">Kein Supermarkt</string>
     <string name="localization_supermarket_select_dialog_not_found">Nicht aufgelistet</string>
 

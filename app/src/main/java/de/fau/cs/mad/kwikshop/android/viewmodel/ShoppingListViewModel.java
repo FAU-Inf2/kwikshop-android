@@ -197,12 +197,12 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     Item item = listManager.getListItem(listId, event.getItemId());
                     updateItem(item);
                     sortItems();
-                    //updateOrderOfItems();
+                    updateOrderOfItems();
                     break;
                 case PropertiesModified:
                     Item item1 = listManager.getListItem(listId, event.getItemId());
                     updateItem(item1);
-                    //updateOrderOfItems();
+                    updateOrderOfItems();
                     break;
                 case Deleted:
                     items.removeById(event.getItemId());

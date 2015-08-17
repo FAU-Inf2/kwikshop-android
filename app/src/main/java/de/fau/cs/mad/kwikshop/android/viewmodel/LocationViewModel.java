@@ -54,7 +54,6 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
     private Boolean canceled = false;
 
     private final ViewLauncher viewLauncher;
-    private final ListManager<ShoppingList> shoppingListManager;
     private final ResourceProvider resourceProvider;
 
     public static String SHOPPINGMODEPLACEREQUEST_CANCEL = "ShoppingModePlaceRequest_cancel";
@@ -79,7 +78,6 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
 
         this.resourceProvider = resourceProvider;
         this.viewLauncher = viewLauncher;
-        this.shoppingListManager = shoppingListManager;
     }
 
     public void setCancelSelectionOfSupermarket(boolean status){ this.cancelSelectionOfSupermarket = status; }

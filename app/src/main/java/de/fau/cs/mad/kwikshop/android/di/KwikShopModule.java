@@ -20,12 +20,14 @@ import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactoryImplementation;
 import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
+import de.fau.cs.mad.kwikshop.android.view.BarcodeScannerFragment;
 import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
 import de.fau.cs.mad.kwikshop.android.view.LocationFragment;
 import de.fau.cs.mad.kwikshop.android.view.ServerIntegrationDebugActivity;
 import de.fau.cs.mad.kwikshop.android.view.SettingFragment;
 import de.fau.cs.mad.kwikshop.android.view.ShoppingListFragment;
+import de.fau.cs.mad.kwikshop.android.viewmodel.BarcodeScannerViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeItemDetailsViewModel;
@@ -98,7 +100,9 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         RecipeSynchronizer.class,
         CompositeSynchronizer.class,
         ShoppingListItemSynchronizer.class,
-        RecipeItemSynchronizer.class
+        RecipeItemSynchronizer.class,
+        BarcodeScannerFragment.class,
+        BarcodeScannerViewModel.class
 },
         library = true)
 @SuppressWarnings("unused")

@@ -1,22 +1,20 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.google.zxing.Result;
-
+import dagger.ObjectGraph;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.viewmodel.BarcodeScannerViewModel;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 
-public class BarcodeScannerFragment extends Fragment  implements ZXingScannerView.ResultHandler {
+public class BarcodeScannerFragment extends Fragment{
 
-    private ZXingScannerView mScannerView;
-    private String TAG = "BarcodeScannerFragment";
+    BarcodeScannerViewModel viewModel;
+    private ZXingScannerView scannerView;
 
     public static BarcodeScannerFragment newInstance(){
         return new BarcodeScannerFragment();
@@ -24,29 +22,30 @@ public class BarcodeScannerFragment extends Fragment  implements ZXingScannerVie
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mScannerView = new ZXingScannerView(getActivity());
-        return mScannerView;
+
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
+        viewModel = objectGraph.get(BarcodeScannerViewModel.class);
+        objectGraph.inject(this);
+
+        viewModel.setContext(getActivity());
+        viewModel.hideActionBar();
+
+        scannerView = viewModel.getScannerView();
+
+        return scannerView;
     }
-
-
 
     @Override
     public void onResume() {
         super.onResume();
-        mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
-        mScannerView.startCamera();          // Start camera on resume
+        viewModel.onResume();
     }
-
     @Override
     public void onPause() {
         super.onPause();
-        mScannerView.stopCamera();           // Stop camera on pause
+        viewModel.onPause();
+
     }
 
-    @Override
-    public void handleResult(Result rawResult) {
-        // Do something with the result here
-        Log.v(TAG, rawResult.getText()); // Prints scan results
-        Log.v(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
-    }
+
 }

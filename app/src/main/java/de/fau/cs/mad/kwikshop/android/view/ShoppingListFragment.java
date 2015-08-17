@@ -310,8 +310,6 @@ public class ShoppingListFragment
         btBarcodeScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("ShoppingListFragment","You clicked the bar code scanner");
-
                 android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().add(BaseActivity.frameLayout.getId(),BarcodeScannerFragment.newInstance()).commit();
             }

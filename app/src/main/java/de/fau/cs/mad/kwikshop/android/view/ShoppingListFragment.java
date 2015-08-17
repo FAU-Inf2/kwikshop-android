@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -98,6 +99,9 @@ public class ShoppingListFragment
 
     @InjectView(R.id.micButton)
     ImageButton micButton;
+
+    @InjectView(R.id.button_barcode_scan)
+    ImageButton btBarcodeScan;
 
 
     public static ShoppingListFragment newInstance(int listID) {
@@ -299,6 +303,19 @@ public class ShoppingListFragment
             ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
 
         }
+
+
+        // barcode scanner
+
+        btBarcodeScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("ShoppingListFragment","You clicked the bar code scanner");
+
+                android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().add(BaseActivity.frameLayout.getId(),BarcodeScannerFragment.newInstance()).commit();
+            }
+        });
 
         return rootView;
     }

@@ -19,6 +19,8 @@ import org.jsoup.select.Elements;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.fau.cs.mad.kwikshop.common.Item;
+
 public class OpenEANparser {
 
     private Context context;
@@ -34,7 +36,7 @@ public class OpenEANparser {
 
 
     public interface onEANParserResponseListener{
-        void handleParserResult(String title);
+        void handleParserResult(Item item);
     }
 
     public void parseWebsite(String EAN, final onEANParserResponseListener listener){
@@ -50,10 +52,13 @@ public class OpenEANparser {
                     @Override
                     public void onResponse(String data) {
                         Document doc = Jsoup.parse(data);
-
                         Elements link = doc.select("a[href*=/gp/]");
                         String linkText = link.text();
-                        mListener.handleParserResult(linkText);
+
+                        Item parsedItem = new Item();
+                        parsedItem.setName(linkText);
+
+                        mListener.handleParserResult(parsedItem);
                     }
                 },
                 new Response.ErrorListener() {
@@ -70,8 +75,6 @@ public class OpenEANparser {
                 return headers;
             }
         };
-
-
 
         queue.add(req);
     }

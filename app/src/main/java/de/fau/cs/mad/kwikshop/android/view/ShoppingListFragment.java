@@ -311,7 +311,7 @@ public class ShoppingListFragment
             @Override
             public void onClick(View v) {
                 android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().add(BaseActivity.frameLayout.getId(),BarcodeScannerFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().add(BaseActivity.frameLayout.getId(),BarcodeScannerFragment.newInstance(listID)).commit();
             }
         });
 

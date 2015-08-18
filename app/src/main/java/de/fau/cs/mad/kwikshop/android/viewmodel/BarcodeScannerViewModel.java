@@ -105,7 +105,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     @Override
     public void handleParserResult(Item item) {
         if(!item.getName().isEmpty()){
-            Toast.makeText(context,  "Name: " + item.getName() + "Found on: opengtindb.org", Toast.LENGTH_LONG).show();
+            Toast.makeText(context,  "Debug: " + item.getName() + "Found on: opengtindb.org", Toast.LENGTH_LONG).show();
             addItemToShoppingList(item);
         } else {
             getRestResponse(EAN);
@@ -117,7 +117,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     @Override
     public void handleRESTresponse(Item item) {
         if(!item.getName().isEmpty()){
-            Toast.makeText(context, "Name: " + item.getName() + "Found on: outpan.com", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Debug: " + item.getName() + "Found on: outpan.com", Toast.LENGTH_LONG).show();
             addItemToShoppingList(item);
         } else {
             Toast.makeText(context, "No product found for EAN", Toast.LENGTH_LONG).show();
@@ -131,8 +131,15 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                item.setUnit(unitStorage.getDefaultValue());
-                item.setGroup(groupStorage.getDefaultValue());
+
+                Group group = new Group();
+                group.setName(DefaultDataProvider.GroupNames.OTHER);
+
+                Unit unit = new Unit();
+                unit.setName(DefaultDataProvider.UnitNames.PIECE);
+
+                item.setUnit(unit);
+                item.setGroup(group);
 
                 if(!itemMerger.mergeItem(listID, item))
                     listManager.addListItem(listID, item);

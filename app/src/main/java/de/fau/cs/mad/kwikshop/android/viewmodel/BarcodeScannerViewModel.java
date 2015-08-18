@@ -86,61 +86,59 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
         EANrestClient.initiateEANrest(context).getRestResponse(EAN, this);
     }
 
-
-
-    // Barcode Result
+    // barcode result
     @Override
     public void handleResult(Result result) {
         if(result.getBarcodeFormat() == BarcodeFormat.EAN_13 || result.getBarcodeFormat() == BarcodeFormat.EAN_8) {
             EAN = result.getText();
+            viewLauncher.showProgressDialog("Fetching Data...", null, false, null);
             parseWebsite(EAN);
             viewLauncher.showShoppingList(listID);
         } else {
-            Toast.makeText(context, "Not a EAN Barcode Format", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Not a EAN Barcode Format: " + result.getBarcodeFormat().name(), Toast.LENGTH_LONG).show();
             scannerView.startCamera();
         }
     }
 
-    // Parser Result
+    // parser result
     @Override
-    public void handleParserResult(Item parsedItem) {
-            handleParsedItem(parsedItem);
-    }
-
-    @Override
-    public void handleRESTresponse(Item restItem) {
-            handleRestItem(restItem);
-    }
-
-    private void handleParsedItem(Item item){
+    public void handleParserResult(Item item) {
         if(!item.getName().isEmpty()){
-            Toast.makeText(context, item.getName(), Toast.LENGTH_LONG).show();
+            Toast.makeText(context,  "Name: " + item.getName() + "Found on: opengtindb.org", Toast.LENGTH_LONG).show();
             addItemToShoppingList(item);
         } else {
             getRestResponse(EAN);
         }
+        viewLauncher.dismissProgressDialog();
     }
 
-    private void handleRestItem(Item item){
+    // rest client result
+    @Override
+    public void handleRESTresponse(Item item) {
         if(!item.getName().isEmpty()){
-            Toast.makeText(context, item.getName(), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Name: " + item.getName() + "Found on: outpan.com", Toast.LENGTH_LONG).show();
             addItemToShoppingList(item);
         } else {
             Toast.makeText(context, "No product found for EAN", Toast.LENGTH_LONG).show();
-            viewLauncher.showShoppingList(listID);
         }
+        viewLauncher.dismissProgressDialog();
     }
 
 
-    public void addItemToShoppingList(final Item parsedItem){
+    public void addItemToShoppingList(final Item item){
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                // TODO Merge Items
-                listManager.addListItem(listID, parsedItem);
+
+                item.setUnit(unitStorage.getDefaultValue());
+                item.setGroup(groupStorage.getDefaultValue());
+
+                if(!itemMerger.mergeItem(listID, item))
+                    listManager.addListItem(listID, item);
                 return null;
             }
         }.execute();
+
     }
 
 

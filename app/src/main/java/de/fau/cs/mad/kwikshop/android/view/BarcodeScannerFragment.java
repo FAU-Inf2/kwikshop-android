@@ -1,5 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -45,11 +46,13 @@ public class BarcodeScannerFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         viewModel.onResume();
     }
     @Override
     public void onPause() {
         super.onPause();
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         viewModel.onPause();
 
     }

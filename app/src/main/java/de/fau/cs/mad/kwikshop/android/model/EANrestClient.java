@@ -51,7 +51,7 @@ public class EANrestClient {
 
                     @Override
                     public void onResponse(String data) {
-                        JSONObject json = null;
+                        JSONObject json;
                         Item restItem = new Item();
                         try {
                             json = new JSONObject(data);

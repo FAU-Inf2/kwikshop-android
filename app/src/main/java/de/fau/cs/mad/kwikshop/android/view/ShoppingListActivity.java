@@ -144,10 +144,12 @@ public class ShoppingListActivity extends BaseActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
+        /*
        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-           SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
+       SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
         }
+
+        */
     }
 
 

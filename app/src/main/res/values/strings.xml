@@ -235,7 +235,7 @@
     <string name="place_status_closed">closed</string>
 
     <!-- Barcode Scanner -->
-    <string name="barcode_scanner_no_product">No Product was found for this barcode</string>
+    <string name="barcode_scanner_no_product">No Product was found</string>
     <string name="barcode_scanner_not_ean_format">Barcode has not an EAN format</string>
     <string name="barcode_scanner_progress_message">Searching for Product&#8230;</string>
     

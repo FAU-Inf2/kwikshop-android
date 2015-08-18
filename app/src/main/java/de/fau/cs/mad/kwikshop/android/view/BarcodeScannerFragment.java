@@ -29,7 +29,6 @@ public class BarcodeScannerFragment extends Fragment{
 
         viewModel.setContext(getActivity());
         viewModel.hideActionBar();
-
         scannerView = viewModel.getScannerView();
 
         return scannerView;

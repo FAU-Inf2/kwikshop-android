@@ -138,7 +138,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     public void handleResult(Result result) {
         if(result.getBarcodeFormat() == BarcodeFormat.EAN_13 || result.getBarcodeFormat() == BarcodeFormat.EAN_8) {
             EAN = result.getText();
-            viewLauncher.showProgressDialog("Fetching Data...", null, false, null);
+            viewLauncher.showProgressDialog(resourceProvider.getString(R.string.barcode_scanner_progress_message), null, false, null);
             parseWebsite(EAN);
             startShoppingListActivityWithoutSupermarketRequest();
         } else {
@@ -165,7 +165,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     // rest client result
     @Override
     public void handleRESTresponse(Item item) {
-        if(!item.getName().isEmpty()){
+        if(!item.getName().equals("null")){
             Toast.makeText(context, "Debug: " + item.getName() + " Found on: outpan.com", Toast.LENGTH_LONG).show();
             addItemToShoppingList(item);
         } else {

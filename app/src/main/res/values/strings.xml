@@ -237,7 +237,7 @@
     <!-- Barcode Scanner -->
     <string name="barcode_scanner_no_product">No Product was found for this barcode</string>
     <string name="barcode_scanner_not_ean_format">Barcode has not an EAN format</string>
-    <string name="barcode_scanner_progress_message">Find Product&#8230;</string>
+    <string name="barcode_scanner_progress_message">Searching for Product&#8230;</string>
     
     <!--Reminder-->
     <string name="reminder_question">"A reminder for the item '%1$s' was set for %2$s. What would you like to do now?"</string>

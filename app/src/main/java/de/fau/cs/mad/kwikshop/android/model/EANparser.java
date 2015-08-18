@@ -2,7 +2,6 @@ package de.fau.cs.mad.kwikshop.android.model;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -21,17 +20,17 @@ import java.util.Map;
 
 import de.fau.cs.mad.kwikshop.common.Item;
 
-public class OpenEANparser {
+public class EANparser {
 
     private Context context;
 
-    public OpenEANparser(Context context) {
+    public EANparser(Context context) {
         this.context = context;
     }
 
 
-    public static OpenEANparser initiateOpenEANparserRequest(Context context){
-        return new OpenEANparser(context);
+    public static EANparser initiateOpenEANparserRequest(Context context){
+        return new EANparser(context);
     }
 
 

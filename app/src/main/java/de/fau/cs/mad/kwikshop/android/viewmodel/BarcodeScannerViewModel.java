@@ -11,13 +11,13 @@ import com.google.zxing.Result;
 import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
+import de.fau.cs.mad.kwikshop.android.model.EANrestClient;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
-import de.fau.cs.mad.kwikshop.android.model.OpenEANparser;
+import de.fau.cs.mad.kwikshop.android.model.EANparser;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
-import de.fau.cs.mad.kwikshop.android.view.ShoppingListFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.Group;
@@ -26,13 +26,16 @@ import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> implements ZXingScannerView.ResultHandler, OpenEANparser.onEANParserResponseListener {
+public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> implements ZXingScannerView.ResultHandler,
+        EANparser.onEANParserResponseListener,
+        EANrestClient.onEANrestResponse {
 
     private Context context;
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
     private ZXingScannerView scannerView;
     private int listID;
+    private String EAN;
 
 
     @Inject
@@ -59,7 +62,6 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     }
 
     public void setListId(int listID){
-        Log.e("BSVM", "ListID11: " + listID);
         this.listID = listID;
     }
 
@@ -77,16 +79,21 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     }
 
     public void parseWebsite(String EAN){
-        OpenEANparser.initiateOpenEANparserRequest(context).parseWebsite(EAN, this);
+        EANparser.initiateOpenEANparserRequest(context).parseWebsite(EAN, this);
+    }
+
+    public void getRestResponse(String EAN){
+        EANrestClient.initiateEANrest(context).getRestResponse(EAN, this);
     }
 
 
 
+    // Barcode Result
     @Override
     public void handleResult(Result result) {
         if(result.getBarcodeFormat() == BarcodeFormat.EAN_13 || result.getBarcodeFormat() == BarcodeFormat.EAN_8) {
-            parseWebsite(result.getText());
-            Log.e("BSVM", "ListID: " + listID);
+            EAN = result.getText();
+            parseWebsite(EAN);
             viewLauncher.showShoppingList(listID);
         } else {
             Toast.makeText(context, "Not a EAN Barcode Format", Toast.LENGTH_LONG).show();
@@ -94,31 +101,47 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
         }
     }
 
-
+    // Parser Result
     @Override
     public void handleParserResult(Item parsedItem) {
-        if(!parsedItem.getName().isEmpty()){
-            Toast.makeText(context, parsedItem.getName(), Toast.LENGTH_LONG).show();
-            addItemFromParser(parsedItem);
+            handleParsedItem(parsedItem);
+    }
+
+    @Override
+    public void handleRESTresponse(Item restItem) {
+            handleRestItem(restItem);
+    }
+
+    private void handleParsedItem(Item item){
+        if(!item.getName().isEmpty()){
+            Toast.makeText(context, item.getName(), Toast.LENGTH_LONG).show();
+            addItemToShoppingList(item);
+        } else {
+            getRestResponse(EAN);
+        }
+    }
+
+    private void handleRestItem(Item item){
+        if(!item.getName().isEmpty()){
+            Toast.makeText(context, item.getName(), Toast.LENGTH_LONG).show();
+            addItemToShoppingList(item);
         } else {
             Toast.makeText(context, "No product found for EAN", Toast.LENGTH_LONG).show();
             viewLauncher.showShoppingList(listID);
         }
-
     }
 
-    public void addItemFromParser(final Item parsedItem){
+
+    public void addItemToShoppingList(final Item parsedItem){
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-
                 // TODO Merge Items
                 listManager.addListItem(listID, parsedItem);
                 return null;
             }
         }.execute();
     }
-
 
 
     @Override
@@ -135,4 +158,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     protected void selectItemCommandExecute(int parameter) {
 
     }
+
+
+
 }

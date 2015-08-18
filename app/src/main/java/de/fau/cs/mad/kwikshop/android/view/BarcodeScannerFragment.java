@@ -30,7 +30,7 @@ public class BarcodeScannerFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ZXingScannerView scannerView;
+        ZXingScannerView scannerView = null;
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         viewModel = objectGraph.get(BarcodeScannerViewModel.class);
         objectGraph.inject(this);
@@ -39,7 +39,6 @@ public class BarcodeScannerFragment extends Fragment{
         viewModel.hideActionBar();
         viewModel.setListId(getArguments().getInt(ARG_LISTID));
         scannerView = viewModel.getScannerView();
-
         return scannerView;
     }
 

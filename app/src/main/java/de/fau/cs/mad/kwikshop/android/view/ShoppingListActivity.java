@@ -15,7 +15,7 @@ import de.greenrobot.event.EventBus;
 public class ShoppingListActivity extends BaseActivity {
 
 
-    private static final String SHOPPING_LIST_ID = "shopping_list_id";
+    public static final String SHOPPING_LIST_ID = "shopping_list_id";
 
     public Menu menu;
 

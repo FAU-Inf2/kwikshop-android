@@ -1,6 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -9,16 +11,21 @@ import android.widget.Toast;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import javax.inject.Inject;
+
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
 import de.fau.cs.mad.kwikshop.android.model.EANrestClient;
+import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.EANparser;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
+import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.Group;
@@ -32,6 +39,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
         EANrestClient.onEANrestResponse {
 
     private Context context;
+    private Activity activity;
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
     private ZXingScannerView scannerView;
@@ -60,6 +68,44 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
 
     public void setContext(Context context){
         this.context = context;
+    }
+
+    public void setActivity(Activity activity){
+        this.activity = activity;
+    }
+
+    final Command retryConnectionCheck = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            if(viewLauncher.checkInternetConnection())
+                viewLauncher.showLocationActivity();
+            else {
+                notificationOfNoConnection();
+            }
+        }
+    };
+
+    final Command dismissDialogCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            viewLauncher.dismissDialog();
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    public void notificationOfNoConnection(){
+
+        viewLauncher.showMessageDialog(
+                resourceProvider.getString(R.string.alert_dialog_connection_label),
+                resourceProvider.getString(R.string.alert_dialog_connection_message),
+                resourceProvider.getString(R.string.alert_dialog_connection_try),
+                retryConnectionCheck,
+                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
+                dismissDialogCommand
+        );
+    }
+    public boolean checkInternetConnection(){
+        return viewLauncher.checkInternetConnection();
     }
 
     public void setListId(int listID){
@@ -94,12 +140,14 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
             EAN = result.getText();
             viewLauncher.showProgressDialog("Fetching Data...", null, false, null);
             parseWebsite(EAN);
-            viewLauncher.showShoppingList(listID);
+            startShoppingListActivityWithoutSupermarketRequest();
         } else {
             Toast.makeText(context, "Not a EAN Barcode Format: " + result.getBarcodeFormat().name(), Toast.LENGTH_LONG).show();
             scannerView.startCamera();
         }
     }
+
+
 
     // parser result
     @Override
@@ -112,6 +160,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
         }
         viewLauncher.dismissProgressDialog();
     }
+
 
     // rest client result
     @Override
@@ -132,22 +181,24 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
             @Override
             protected Void doInBackground(Void... params) {
 
-                Group group = new Group();
-                group.setName(DefaultDataProvider.GroupNames.OTHER);
-
-                Unit unit = new Unit();
-                unit.setName(DefaultDataProvider.UnitNames.PIECE);
-
-                item.setUnit(unit);
-                item.setGroup(group);
+                item.setUnit(unitStorage.getDefaultValue());
+                item.setGroup(groupStorage.getDefaultValue());
 
                 if(!itemMerger.mergeItem(listID, item))
                     listManager.addListItem(listID, item);
+
 
                 return null;
             }
         }.execute();
 
+    }
+
+    private void startShoppingListActivityWithoutSupermarketRequest() {
+        Intent intent = new Intent(context, ShoppingListActivity.class);
+        intent.putExtra(ShoppingListActivity.SHOPPING_LIST_ID, listID);
+        intent.putExtra(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL, true);
+        viewLauncher.startActivity(intent);
     }
 
 

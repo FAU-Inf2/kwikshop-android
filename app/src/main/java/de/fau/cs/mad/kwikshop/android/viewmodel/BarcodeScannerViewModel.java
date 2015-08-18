@@ -142,7 +142,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
             parseWebsite(EAN);
             startShoppingListActivityWithoutSupermarketRequest();
         } else {
-            Toast.makeText(context, "Not a EAN Barcode Format: " + result.getBarcodeFormat().name(), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, resourceProvider.getString(R.string.barcode_scanner_not_ean_format), Toast.LENGTH_LONG).show();
             scannerView.startCamera();
         }
     }
@@ -153,7 +153,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     @Override
     public void handleParserResult(Item item) {
         if(!item.getName().isEmpty()){
-            Toast.makeText(context,  "Debug: " + item.getName() + "Found on: opengtindb.org", Toast.LENGTH_LONG).show();
+            Toast.makeText(context,  "Debug: " + item.getName() + " Found on: opengtindb.org", Toast.LENGTH_LONG).show();
             addItemToShoppingList(item);
         } else {
             getRestResponse(EAN);
@@ -166,10 +166,10 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     @Override
     public void handleRESTresponse(Item item) {
         if(!item.getName().isEmpty()){
-            Toast.makeText(context, "Debug: " + item.getName() + "Found on: outpan.com", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Debug: " + item.getName() + " Found on: outpan.com", Toast.LENGTH_LONG).show();
             addItemToShoppingList(item);
         } else {
-            Toast.makeText(context, "No product found for EAN", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, resourceProvider.getString(R.string.barcode_scanner_no_product), Toast.LENGTH_LONG).show();
         }
         viewLauncher.dismissProgressDialog();
     }
@@ -180,13 +180,11 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-
                 item.setUnit(unitStorage.getDefaultValue());
                 item.setGroup(groupStorage.getDefaultValue());
 
                 if(!itemMerger.mergeItem(listID, item))
                     listManager.addListItem(listID, item);
-
 
                 return null;
             }
@@ -195,6 +193,8 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     }
 
     private void startShoppingListActivityWithoutSupermarketRequest() {
+
+       // Log.e("BarcodeScannerViewModel","Lisid" + listID);
         Intent intent = new Intent(context, ShoppingListActivity.class);
         intent.putExtra(ShoppingListActivity.SHOPPING_LIST_ID, listID);
         intent.putExtra(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL, true);

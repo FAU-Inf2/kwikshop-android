@@ -216,5 +216,8 @@
     <string name="localization_no_connection_message">Kwik Shop benötigt eine Internetverbinfung um alle Supermärkte in der Nähe zu finden.</string>
     <string name="localization_no_place_dialog_title">Kein Supermarkt</string>
     <string name="localization_supermarket_select_dialog_not_found">Nicht aufgelistet</string>
+    <string name="barcode_scanner_no_product">Kein Produkt für diesen Barcode gefunden</string>
+    <string name="barcode_scanner_not_ean_format">Der Barcode hat kein EAN Format</string>
+    <string name="barcode_scanner_progress_message">Suche Produkt&#8230;</string>
 
 </resources>

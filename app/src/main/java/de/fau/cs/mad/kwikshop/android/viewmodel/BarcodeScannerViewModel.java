@@ -11,6 +11,7 @@ import com.google.zxing.Result;
 import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
+import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
 import de.fau.cs.mad.kwikshop.android.model.EANrestClient;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
@@ -126,15 +127,16 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
 
 
     public void addItemToShoppingList(final Item item){
+
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-
                 item.setUnit(unitStorage.getDefaultValue());
                 item.setGroup(groupStorage.getDefaultValue());
 
                 if(!itemMerger.mergeItem(listID, item))
                     listManager.addListItem(listID, item);
+
                 return null;
             }
         }.execute();

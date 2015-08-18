@@ -58,7 +58,7 @@ public class SpeechRecognitionHelper{
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
 
 
-        ownerActivity.startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+        //ownerActivity.startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 	}
 
 	private static void installGoogleVoiceSearch(final Activity ownerActivity) {

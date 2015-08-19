@@ -2,18 +2,13 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +17,6 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.MultiAutoCompleteTextView;
 import android.support.v4.app.Fragment;
@@ -36,10 +28,7 @@ import com.nhaarman.listviewanimations.itemmanipulation.dragdrop.OnItemMovedList
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
 
 
-import java.util.Iterator;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.*;
@@ -51,6 +40,7 @@ import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
+import de.fau.cs.mad.kwikshop.android.viewmodel.BarcodeScannerViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
@@ -78,8 +68,11 @@ public class ShoppingListFragment
     private LocationViewModel locationViewModel;
 
     private ShoppingListViewModel viewModel;
+
+    private BarcodeScannerViewModel barcodeViewModel;
+
     private boolean updatingViewModel;
-    private boolean shoppingPlaceRequestisCanceled;
+    private boolean shoppingPlaceRequestIsCanceled;
 
 
     @InjectView(R.id.list_shoppingList)
@@ -99,6 +92,9 @@ public class ShoppingListFragment
 
     @InjectView(R.id.micButton)
     ImageButton micButton;
+
+    @InjectView(R.id.button_barcode_scan)
+    ImageButton btBarcodeScan;
 
 
     public static ShoppingListFragment newInstance(int listID) {
@@ -128,7 +124,7 @@ public class ShoppingListFragment
 
         switch(item.getItemId()){
             case R.id.refresh_current_supermarket:
-                shoppingPlaceRequestisCanceled = false;
+                shoppingPlaceRequestIsCanceled = false;
                 findNearbySupermarket();
                 return true;
         }
@@ -165,6 +161,7 @@ public class ShoppingListFragment
         viewModel = objectGraph.get(ShoppingListViewModel.class);
         autoCompletion = objectGraph.get(AutoCompletionHelper.class);
         locationViewModel = objectGraph.get(LocationViewModel.class);
+        barcodeViewModel = objectGraph.get(BarcodeScannerViewModel.class);
         objectGraph.inject(this);
         viewModel.initialize(this.listID);
 
@@ -280,7 +277,7 @@ public class ShoppingListFragment
 
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
                 intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
-                //startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+                startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 
             }
 
@@ -288,7 +285,7 @@ public class ShoppingListFragment
 
         // find supermarket places
 
-        shoppingPlaceRequestisCanceled = getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL);
+        shoppingPlaceRequestIsCanceled = getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL);
 
         findNearbySupermarket();
 
@@ -301,6 +298,21 @@ public class ShoppingListFragment
 
         }
 
+
+        // barcode scanner
+
+        btBarcodeScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(barcodeViewModel.checkInternetConnection()){
+                    android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction().add(BaseActivity.frameLayout.getId(),BarcodeScannerFragment.newInstance(listID)).commit();
+                } else {
+                    barcodeViewModel.notificationOfNoConnection();
+                }
+            }
+        });
+
         return rootView;
     }
 
@@ -309,7 +321,7 @@ public class ShoppingListFragment
     @Override
     public void postResult(List<Place> places) {
 
-        if(!shoppingPlaceRequestisCanceled){
+        if(!shoppingPlaceRequestIsCanceled){
             locationViewModel.setPlaces(places);
             locationViewModel.dismissProgressDialog();
 
@@ -330,7 +342,7 @@ public class ShoppingListFragment
         locationViewModel.setActivity(getActivity());
         locationViewModel.setListId(listID);
 
-        if(!shoppingPlaceRequestisCanceled){
+        if(!shoppingPlaceRequestIsCanceled){
 
             if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
 

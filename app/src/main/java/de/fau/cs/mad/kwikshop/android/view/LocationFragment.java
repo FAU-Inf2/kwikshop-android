@@ -145,7 +145,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
     }
 
     private void notificationOfNoConnection(){
-        viewModel.notificationOfNoConnection();
+        viewModel.notificationOfNoConnectionForMap();
     }
 
     @Override

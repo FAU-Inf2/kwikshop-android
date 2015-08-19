@@ -191,6 +191,11 @@ dependencies {
 
     //Joda Time
     compile 'joda-time:joda-time:2.8.1'
+
+    // BarCode Scanner
+    compile 'me.dm7.barcodescanner:zxing:1.8.2'
+    compile 'com.mcxiaoke.volley:library:1.0.18'
+    compile 'org.jsoup:jsoup:1.7.2'
 }
 
 allprojects {

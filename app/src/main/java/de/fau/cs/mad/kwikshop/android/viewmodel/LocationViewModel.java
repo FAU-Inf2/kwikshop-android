@@ -54,7 +54,6 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
     private Boolean canceled = false;
 
     private final ViewLauncher viewLauncher;
-    private final ListManager<ShoppingList> shoppingListManager;
     private final ResourceProvider resourceProvider;
 
     public static String SHOPPINGMODEPLACEREQUEST_CANCEL = "ShoppingModePlaceRequest_cancel";
@@ -79,7 +78,6 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
 
         this.resourceProvider = resourceProvider;
         this.viewLauncher = viewLauncher;
-        this.shoppingListManager = shoppingListManager;
     }
 
     public void setCancelSelectionOfSupermarket(boolean status){ this.cancelSelectionOfSupermarket = status; }
@@ -223,13 +221,24 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
     };
 
 
-    final Command retryConnectionCheck = new Command<Void>(){
+    final Command retryConnectionCheckWithLocationPermissionCommand = new Command<Void>(){
         @Override
         public void execute(Void parameter) {
             if(viewLauncher.checkInternetConnection())
                 viewLauncher.showLocationActivity();
             else {
                 notificationOfNoConnectionWithLocationPermission();
+            }
+        }
+    };
+
+    final Command retryConnectionCheckCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            if(viewLauncher.checkInternetConnection())
+                viewLauncher.showLocationActivity();
+            else {
+               notificationOfNoConnectionForMap();
             }
         }
     };
@@ -297,13 +306,27 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
     }
 
     @SuppressWarnings("unchecked")
+    public void notificationOfNoConnectionForMap(){
+
+        viewLauncher.showMessageDialog(
+                resourceProvider.getString(R.string.alert_dialog_connection_label),
+                resourceProvider.getString(R.string.alert_dialog_connection_message),
+                resourceProvider.getString(R.string.alert_dialog_connection_try),
+                retryConnectionCheckCommand,
+                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
+                getFinishActivityCommand()
+        );
+
+    }
+
+    @SuppressWarnings("unchecked")
     public void notificationOfNoConnection(){
 
         viewLauncher.showMessageDialog(
                 resourceProvider.getString(R.string.alert_dialog_connection_label),
                 resourceProvider.getString(R.string.alert_dialog_connection_message),
                 resourceProvider.getString(R.string.alert_dialog_connection_try),
-                retryConnectionCheck,
+                retryConnectionCheckWithLocationPermissionCommand,
                 resourceProvider.getString(R.string.alert_dialog_connection_cancel),
                 getFinishActivityCommand()
         );
@@ -317,7 +340,7 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
                 resourceProvider.getString(R.string.localization_dialog_title),
                 resourceProvider.getString(R.string.localization_no_connection_message),
                 resourceProvider.getString(R.string.alert_dialog_connection_try),
-                retryConnectionCheck,
+                retryConnectionCheckWithLocationPermissionCommand,
                 resourceProvider.getString(R.string.localization_disable_localization),
                 disableLocalization
         );

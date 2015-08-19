@@ -258,9 +258,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked)
-                    item.setChecked(true);
+                    shoppingListViewModel.getCheckedItems().add(item);
                 else
-                    item.setChecked(false);
+                    shoppingListViewModel.getCheckedItems().remove(item);
             }
         });
 
@@ -270,7 +270,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                     Iterator<Item> itr = items.iterator();
                     while (itr.hasNext()){
                         Item itemLocal = itr.next();
-                        if (itemLocal.isChecked()) {
+                        if (shoppingListViewModel.getCheckedItems().contains(itemLocal)) {
                             //Do something
                             itemLocal.setBought(true);
                         }
@@ -284,7 +284,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                 Iterator<Item> itr = items.iterator();
                 while (itr.hasNext()){
                     Item itemLocal2 = itr.next();
-                    if (itemLocal2.isChecked()) {
+                    if (shoppingListViewModel.getCheckedItems().contains(itemLocal2)) {
                         itemLocal2.setBought(false);
 
                     }

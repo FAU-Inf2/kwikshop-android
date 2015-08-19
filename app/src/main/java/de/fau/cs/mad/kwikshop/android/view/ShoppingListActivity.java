@@ -30,7 +30,7 @@ public class ShoppingListActivity extends BaseActivity {
     @Inject
     RestClientFactory clientFactory;
 
-    private static final String SHOPPING_LIST_ID = "shopping_list_id";
+    public static final String SHOPPING_LIST_ID = "shopping_list_id";
 
     public Menu menu;
 
@@ -230,10 +230,12 @@ public class ShoppingListActivity extends BaseActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
+        /*
        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-           SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
+       SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
         }
+
+        */
     }
 
 

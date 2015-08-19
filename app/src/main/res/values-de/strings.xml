@@ -219,6 +219,9 @@
     <string name="share_notloggedin">Du musst eingeloggt sein, um diese Einkaufsliste zu teilen.</string>
     <string name="share_sharingcodeerror">Ein Fehler ist aufgetreten, bitte versuche es später nochmal.</string>
     <string name="share_intentstring">Ich möchte meine Einkaufsliste mit dir teilen! Kopiere diese Nachricht, erstelle eine neue Einkaufsliste in KwikShop und füge dort diese Nachricht ein, mit dem folgendem Code: #%s#</string>
+    <string name="barcode_scanner_no_product">Kein Produkt gefunden</string>
+    <string name="barcode_scanner_not_ean_format">Der Barcode hat kein EAN Format</string>
+    <string name="barcode_scanner_progress_message">Suche Produkt&#8230;</string>
     <string name="share_helpmessage">Du kannst diese Einkaufsliste nun teilen (z.B. per SMS oder E-Mail).</string>
 
 </resources>

@@ -55,5 +55,13 @@
         android:layout_marginTop="-10dp"
         android:layout_marginBottom="5dp" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shoppinglist_imageView_shared"
+        android:layout_alignTop="@+id/list_row_textView_Secondary"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_people_black_24dp" />
+
 
 </RelativeLayout>

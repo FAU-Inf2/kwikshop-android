@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 
@@ -79,6 +81,15 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
         viewHolder.textView_LastModified.setText(dateFormatter.formatDate(list.getLastModifiedDate()));
         viewHolder.textView_ItemCount.setText(list.getItems().size() + " " + parentActivity.getString(R.string.items));
 
+        //display the 'shared' icon
+        if(list.getOwnerId() != null &&
+                SessionHandler.getSessionUser(getContext()) != null &&
+                !list.getOwnerId().equals(SessionHandler.getSessionUser(getContext()))) {
+            viewHolder.imageView_shared.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.imageView_shared.setVisibility(View.GONE);
+        }
+
         return view;
     }
 
@@ -126,6 +137,9 @@ public class ListOfShoppingListsListRowAdapter extends ArrayAdapter<ShoppingList
 
         @InjectView(R.id.shoppinglist_textView_lastModifiedDate)
         TextView textView_LastModified;
+
+        @InjectView(R.id.shoppinglist_imageView_shared)
+        ImageView imageView_shared;
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);

@@ -15,6 +15,7 @@ import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeItemSynchroniz
 import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListItemSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.tasks.RedeemSharingCodeTask;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactoryImplementation;
@@ -26,6 +27,7 @@ import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
 import de.fau.cs.mad.kwikshop.android.view.LocationFragment;
 import de.fau.cs.mad.kwikshop.android.view.ServerIntegrationDebugActivity;
 import de.fau.cs.mad.kwikshop.android.view.SettingFragment;
+import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.view.ShoppingListFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.BarcodeScannerViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
@@ -102,7 +104,9 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         ShoppingListItemSynchronizer.class,
         RecipeItemSynchronizer.class,
         BarcodeScannerFragment.class,
-        BarcodeScannerViewModel.class
+        BarcodeScannerViewModel.class,
+        ShoppingListActivity.class,
+        RedeemSharingCodeTask.class
 },
         library = true)
 @SuppressWarnings("unused")

@@ -6,6 +6,8 @@ import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.common.DeletionInfo;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.RecipeServer;
+import de.fau.cs.mad.kwikshop.common.rest.responses.SharingCode;
+import de.fau.cs.mad.kwikshop.common.rest.responses.SharingResponse;
 import retrofit.client.Response;
 
 /**
@@ -61,6 +63,16 @@ public class RecipeClient implements ListClient<RecipeServer> {
     @Override
     public Item getListItem(int listId, int itemId) {
         return RecipeResource.getListItemSynchronously(listId, itemId);
+    }
+
+    @Override
+    public SharingCode getSharingCode(int listId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SharingResponse share(String sharingCode) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

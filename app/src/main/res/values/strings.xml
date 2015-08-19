@@ -332,5 +332,14 @@
     <string name="error_synchronizing_recipes">Error synchronizing Recipes</string>
     <string name="share_notloggedin">You need to be logged in to share this shopping list.</string>
     <string name="localization_permisson_dialog_title"></string>
+    <string name="share_sharingcodeerror">Error retrieving the sharing code, please try again later.</string>
+    <string name="intent_sc_separator" translatable="false">/#sc=</string>
+    <string name="share_intentstring">I want to share my shopping list with you! Simply copy this message, create a new shopping list in KwikShop and paste the message, including this code: #%s#</string>
+    <string name="intent_sharingcode_description" translatable="false">kwikshop://kwikshop/#sc=</string>
+    <string name="sharingCode_textView">Sharing Code:</string>
+    <string name="share_helpmessage">You can now share this shopping list (e.g. via SMS, Email).</string>
+    <string name="share_loading">Loading...</string>
+    <string name="share_failure">Redeeming failed, please try again.</string>
+    <string name="share_success">You can now access the shopping list %s.</string>
 
 </resources>

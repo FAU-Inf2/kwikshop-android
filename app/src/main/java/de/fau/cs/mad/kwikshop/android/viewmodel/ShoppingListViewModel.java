@@ -137,7 +137,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     public void sortItems() {
         Collections.sort(getItems(), new ItemComparator(displayHelper, getItemSortType()));
         moveBoughtItemsToEnd();
-        //updateOrderOfItems();
+        updateOrderOfItems();
         listener.onItemSortTypeChanged();
     }
 
@@ -199,7 +199,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
             switch (event.getChangeType()) {
 
-                case Added: // TODO: New Items are moved to the top of the list, maybe we want to change this
+                case Added:
                     Item item = listManager.getListItem(listId, event.getItemId());
                     updateItem(item);
                     sortItems();

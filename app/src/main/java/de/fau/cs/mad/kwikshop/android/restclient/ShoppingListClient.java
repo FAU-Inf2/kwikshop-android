@@ -6,6 +6,8 @@ import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.common.DeletionInfo;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
+import de.fau.cs.mad.kwikshop.common.rest.responses.SharingResponse;
+import de.fau.cs.mad.kwikshop.common.rest.responses.SharingCode;
 import retrofit.client.Response;
 
 /**
@@ -61,6 +63,16 @@ public class ShoppingListClient implements ListClient<ShoppingListServer> {
     @Override
     public Item getListItem(int listId, int itemId) {
         return shoppingListResource.getListItemSynchronously(listId, itemId);
+    }
+
+    @Override
+    public SharingCode getSharingCode(int listId) {
+        return shoppingListResource.getSharingCodeSynchronously(listId);
+    }
+
+    @Override
+    public SharingResponse share(String sharingCode) {
+        return shoppingListResource.shareSynchronously(sharingCode);
     }
 
     @Override

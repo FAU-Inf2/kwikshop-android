@@ -32,14 +32,24 @@
             android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:id="@+id/button_moveDown"
-            android:background="@drawable/ic_keyboard_arrow_down_white_24dp" />
+            android:background="@drawable/ic_keyboard_arrow_down_white_24dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
-            android:layout_height="21dp"
+            android:layout_height="25dp"
             android:id="@+id/button_moveUp"
-            android:background="@drawable/ic_keyboard_arrow_up_white_24dp" />
+            android:background="@drawable/ic_keyboard_arrow_up_white_24dp"
+            android:paddingRight="30dp"
+            android:paddingLeft="30dp" />
+
+        <ImageButton
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/button_multipleSelection"
+            android:background="@drawable/multipleselection_check" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -48,7 +58,6 @@
             android:layout_gravity="right"
             android:gravity="right"
             android:textAlignment="gravity"
-            android:layout_marginRight="20dp"
             android:weightSum="1">
 
             <TextView
@@ -57,10 +66,9 @@
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
                 android:text="0"
                 android:id="@+id/textView_cartCounter"
-                android:layout_marginLeft="100dp"
                 android:layout_marginTop="3dp"
-                android:layout_marginBottom="3dp"
-                android:textColor="@color/text_icons" />
+                android:textColor="@color/text_icons"
+                android:layout_marginBottom="3dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -69,13 +77,13 @@
                 android:id="@+id/textView_items"
                 android:textColor="@color/text_icons"
                 android:layout_marginTop="3dp"
-                android:layout_marginBottom="3dp"
                 android:layout_marginLeft="5dp"
                 android:textAlignment="textEnd"
                 android:layout_gravity="center_vertical|right"
                 android:layout_weight="0.09"
                 android:singleLine="true"
-                android:text="Items" />
+                android:text="Items"
+                android:layout_marginBottom="3dp" />
         </LinearLayout>
 
     </TableRow>

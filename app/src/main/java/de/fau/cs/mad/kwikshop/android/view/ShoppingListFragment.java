@@ -96,6 +96,8 @@ public class ShoppingListFragment
     ImageButton btBarcodeScan;
 
 
+
+
     public static ShoppingListFragment newInstance(int listID) {
         ShoppingListFragment fragment = new ShoppingListFragment();
         Bundle args = new Bundle();

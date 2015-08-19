@@ -100,16 +100,15 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal">
+                android:layout_height="match_parent">
 
                 <ImageButton
-                    android:layout_width="80dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/upButton"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/ic_keyboard_arrow_up_black_24dp"
-                    android:layout_marginLeft="116dp"
+                    android:layout_marginLeft="114dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true" />
             </RelativeLayout>
@@ -150,14 +149,15 @@
                 android:layout_height="match_parent">
 
                 <ImageButton
-                    android:layout_width="80dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/downButton"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/ic_keyboard_arrow_down_black_24dp"
                     android:layout_weight="5.33"
                     android:layout_alignParentTop="true"
-                    android:layout_marginLeft="116dp" />
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="114dp" />
 
                 <CheckBox
                     android:layout_width="132dp"

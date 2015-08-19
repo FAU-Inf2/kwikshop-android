@@ -1,8 +1,11 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -254,6 +258,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_Medium);
         }
 
+
         viewHolder.checkBox_move.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -292,6 +297,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                 shoppingListViewModel.moveBoughtItemsToEnd();
             }
         });
+
+
         return view;
     }
 
@@ -376,8 +383,13 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         @InjectView(R.id.button_moveDown)
         Button button_moveDown;
 
+        @InjectView(R.id.button_multipleSelection)
+        ImageButton button_multipleSelection;
+
         @InjectView(R.id.checkBox_move)
         CheckBox checkBox_move;
+
+
     }
 
 }

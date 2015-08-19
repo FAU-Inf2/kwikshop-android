@@ -23,6 +23,7 @@ import java.util.Locale;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.model.messages.ShareSuccessEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEventType;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
@@ -37,6 +38,9 @@ public class BaseActivity extends ActionBarActivity {
 
     public static FrameLayout frameLayout;
     public static boolean refreshed = false;
+
+    /* Used by sharing. If this is true, ListOfShoppingLists will be opened after sync. */
+    private boolean returnToListOfShoppingLists = false;
 
     ProgressDialog syncProgressDialog;
 
@@ -219,6 +223,15 @@ public class BaseActivity extends ActionBarActivity {
             syncProgressDialog = null;
         }
 
+        /* Return to ListOfShoppingLists after sharing */
+        if(returnToListOfShoppingLists) {
+            returnToListOfShoppingLists = false;
+            Intent intent = new Intent(this, ListOfShoppingListsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
+
     }
 
     protected void startSynchronization() {
@@ -240,6 +253,9 @@ public class BaseActivity extends ActionBarActivity {
 
     }
 
-
+    public void onEvent(ShareSuccessEvent event) {
+        returnToListOfShoppingLists = true;
+        startSynchronization();
+    }
 
 }

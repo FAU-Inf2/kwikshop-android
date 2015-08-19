@@ -11,8 +11,10 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.model.messages.ShareSuccessEvent;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.common.rest.responses.SharingResponse;
+import de.greenrobot.event.EventBus;
 
 public class RedeemSharingCodeTask extends AsyncTask<String, String, String> {
 
@@ -39,6 +41,7 @@ public class RedeemSharingCodeTask extends AsyncTask<String, String, String> {
         progDailog.setCancelable(true);
         progDailog.show();
     }
+
     @Override
     protected String doInBackground(String... sharingCode) {
         SharingResponse response;
@@ -50,19 +53,24 @@ public class RedeemSharingCodeTask extends AsyncTask<String, String, String> {
 
         return response.getShoppingListName();
     }
+
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(final String result) {
         super.onPostExecute(result);
 
-        if(result != null)
+        if(result != null) {
             progDailog.setMessage(String.format(context.getResources().getString(R.string.share_success), result));
-        else
+        } else {
             progDailog.setMessage(context.getResources().getString(R.string.share_failure));
+        }
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 progDailog.dismiss();
+
+                if(result != null)
+                    EventBus.getDefault().post(new ShareSuccessEvent());
             }
         }, 3000);
     }

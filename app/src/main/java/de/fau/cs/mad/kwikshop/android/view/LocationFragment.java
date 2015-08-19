@@ -107,7 +107,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
         viewLauncher.showProgressDialog(
                 resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
                 resourceProvider.getString(R.string.alert_dialog_connection_cancel),
-                true,
+                false,
                 viewModel.getCancelProgressDialogCommand()
         );
 

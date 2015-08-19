@@ -4,19 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-import com.google.maps.android.ui.IconGenerator;
+
 
 import java.util.List;
 
@@ -33,6 +28,7 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.ClusterMapItem;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.util.ClusterItemRendered;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -277,8 +273,7 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
         settings.setMapToolbarEnabled(false);
 
         mClusterManager = new ClusterManager<ClusterMapItem>(context, map);
-        mClusterManager.setRenderer(new OwnIconRendered(context, map, mClusterManager));
-
+        mClusterManager.setRenderer(new ClusterItemRendered(context, map, mClusterManager));
         map.setOnCameraChangeListener(mClusterManager);
         map.setOnMarkerClickListener(mClusterManager);
 
@@ -292,36 +287,6 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
         }
         for(Place place : places){
             mClusterManager.addItem(new ClusterMapItem(place.getLatitude(),place.getLongitude(), place.getName()));
-        }
-    }
-
-    class OwnIconRendered extends DefaultClusterRenderer<ClusterMapItem> {
-
-        GoogleMap gMap;
-        Context context;
-        private IconGenerator iconFactory;
-
-        public OwnIconRendered(Context context, GoogleMap map, ClusterManager<ClusterMapItem> clusterManager) {
-            super(context, map, clusterManager);
-            this.context = context;
-            this.gMap = map;
-            this.iconFactory = new IconGenerator(context);
-        }
-
-        @Override
-        protected void onBeforeClusterItemRendered(ClusterMapItem item, MarkerOptions markerOptions) {
-
-            markerOptions.
-                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(item.getName()))).
-                    position(new LatLng(item.getPosition().latitude,item.getPosition().longitude)).
-                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-
-            super.onBeforeClusterItemRendered(item, markerOptions);
-        }
-
-        @Override
-        protected boolean shouldRenderAsCluster(Cluster<ClusterMapItem> cluster) {
-            return cluster.getSize() > 1;
         }
     }
 

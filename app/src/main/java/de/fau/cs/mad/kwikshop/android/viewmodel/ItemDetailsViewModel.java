@@ -64,6 +64,8 @@ public class ItemDetailsViewModel{
     private final CountDownLatch loadLatch = new CountDownLatch(1);
 
 
+
+
     @Inject
     public ItemDetailsViewModel(ViewLauncher viewLauncher, SimpleStorage<Unit> unitStorage,
                                 SimpleStorage<Group> groupStorage, DisplayHelper displayHelper, AutoCompletionHelper autoCompletionHelper){

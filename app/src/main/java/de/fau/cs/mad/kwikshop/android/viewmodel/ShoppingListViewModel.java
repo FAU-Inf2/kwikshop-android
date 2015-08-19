@@ -53,6 +53,12 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         public void execute(Integer parameter) { deleteItemCommandExecute(parameter);}
     };
 
+    public ObservableArrayList<Item, Integer> getCheckedItems() {
+        return checkedItems;
+    }
+
+    private final ObservableArrayList<Item, Integer> checkedItems = new ObservableArrayList<Item, Integer>(new ItemIdExtractor());
+
     final Command<Void> deleteCheckBoxCheckedCommand = new Command<Void>() {
         @Override
         public void execute(Void parameter) {

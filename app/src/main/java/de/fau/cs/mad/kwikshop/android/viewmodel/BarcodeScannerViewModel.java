@@ -184,7 +184,6 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
                 Item item = EANitem;
                 item.setUnit(unitStorage.getDefaultValue());
                 item.setGroup(groupStorage.getDefaultValue());
-                item = itemParser.parseAmountAndUnit(item);
                 if(!itemMerger.mergeItem(listID, item))
                     listManager.addListItem(listID, item);
 

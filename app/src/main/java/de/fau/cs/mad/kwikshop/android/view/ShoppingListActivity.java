@@ -1,23 +1,40 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
+import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
+import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
+import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.greenrobot.event.EventBus;
+import retrofit.RetrofitError;
 
 public class ShoppingListActivity extends BaseActivity {
 
+    @Inject
+    RestClientFactory clientFactory;
 
     private static final String SHOPPING_LIST_ID = "shopping_list_id";
 
     public Menu menu;
+
+    private int listId = -1;
 
 
     public static Intent getIntent(Context context, int shoppingListId) {
@@ -96,7 +113,28 @@ public class ShoppingListActivity extends BaseActivity {
             case R.id.refresh_current_supermarket:
                 return false;
             case R.id.share_option:
-                
+
+                /* Check if user is logged in */
+                if(!SessionHandler.isAuthenticated(getApplicationContext())) {
+                    AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
+                    messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
+                    messageBox.setMessage(getResources().getString(R.string.share_notloggedin));
+                    messageBox.create().show();
+                    break;
+                }
+
+                /* Check for internet connection */
+                if(!InternetHelper.checkInternetConnection(this)) {
+                    AlertDialog.Builder messageBox = new AlertDialog.Builder(ShoppingListActivity.this);
+                    messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
+                    messageBox.setMessage(R.string.alert_dialog_connection_message);
+                    messageBox.create().show();
+                    break;
+                }
+
+                /* Synchronize first to make sure this ShoppingList exists on the server */
+                startSynchronization();
+                startSharingCodeIntent(ListStorageFragment.getLocalListStorage().loadList(listId).getServerId());
                 break;
         }
         if(type != null) EventBus.getDefault().post(type);
@@ -104,40 +142,88 @@ public class ShoppingListActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    protected void startSharingCodeIntent(final int listId) {
 
+        new AsyncTask<Integer, Void, String>() {
+
+            @Override
+            protected String doInBackground(Integer... id) {
+                try {
+                    return clientFactory.getShoppingListClient().getSharingCode(listId).getSharingCode();
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+
+                if(result == null) {
+                    AlertDialog.Builder messageBox = new AlertDialog.Builder(ShoppingListActivity.this);
+                    messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
+                    messageBox.setMessage(R.string.share_sharingcodeerror);
+                    messageBox.create().show();
+                } else {
+                    /* Tell the user how to share this List
+                    AlertDialog.Builder messageBox = new AlertDialog.Builder(ShoppingListActivity.this);
+                    messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
+                    messageBox.setMessage(R.string.share_helpmessage);
+                    messageBox.create().show();*/
+
+                    /* Create intent and send it */
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT,
+                            String.format(getResources().getString(R.string.share_intentstring), result));
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+                }
+
+            }
+
+        }.execute();
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ButterKnife.inject(this);
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(this));
+        objectGraph.inject(this);
 
         //Get Shopping List ID
 
         Intent intent = getIntent();
         String dataString = intent.getDataString();
-        int id = -1;
-        if(dataString != null) {
-            //dataString is not null if Activity was opened by Calendar intent filter
+        listId = -1;
+        if (dataString != null) {
+            //dataString is not null if Activity was opened by intent filter (calender)
+
+            // Calendar
             for (int i = 0; i < dataString.length() - this.getString(R.string.intent_id_separator).length(); i++) {
                 if (dataString.substring(i, i + 5).equals(this.getString(R.string.intent_id_separator))) {
                     String idString = dataString.substring(i + 5);
-                    id = Integer.parseInt(idString);
+                    listId = Integer.parseInt(idString);
                     break;
                 }
             }
-            intent.putExtra(SHOPPING_LIST_ID, id);
-        }else {
+
+            intent.putExtra(SHOPPING_LIST_ID, listId);
+        } else {
 
             Bundle extras = getIntent().getExtras();
-            if(extras != null){
-                id = extras.getInt(SHOPPING_LIST_ID);
+            if (extras != null) {
+                listId = extras.getInt(SHOPPING_LIST_ID);
             }
 
         }
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().add(frameLayout.getId(), ShoppingListFragment.newInstance(id)).commit();
+            fragmentManager.beginTransaction().add(frameLayout.getId(), ShoppingListFragment.newInstance(listId)).commit();
         }
     }
 

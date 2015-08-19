@@ -1,5 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -13,6 +14,7 @@ import java.util.TimeZone;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.tasks.RedeemSharingCodeTask;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
@@ -22,6 +24,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
+import retrofit.RetrofitError;
 
 public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingList> {
 
@@ -331,6 +334,21 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
             }
         }
 
+    }
+
+    public void updateSharingCode(String value, Activity activity) {
+        String[] sharingCode = value.split("#");
+        try {
+            if (sharingCode.length == 3 ||
+                    (sharingCode.length == 2 && value.substring(value.length() - 1).equals("#")) ) {
+                new RedeemSharingCodeTask(context, activity).execute(sharingCode[1]);
+
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+
+        } catch (RetrofitError e) {
+
+        }
     }
 
 }

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -46,6 +47,12 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
     @InjectView(R.id.micButton)
     ImageButton micButton;
 
+    @InjectView(R.id.textView_sharingCpde)
+    TextView textView_sharingCode;
+
+    @InjectView(R.id.editText_sharingCode)
+    EditText editText_sharingCode;
+
     private ShoppingListDetailsViewModel viewModel;
     private boolean updatingViewModel = false;
 
@@ -68,12 +75,11 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         viewModel = objectGraph.get(ShoppingListDetailsViewModel.class);
-        initializeViewModel();
 
         View rootView = inflater.inflate(R.layout.activity_shopping_list_detail, container, false);
         ButterKnife.inject(this, rootView);
 
-
+        initializeViewModel();
 
 
         // focus test box
@@ -176,6 +182,14 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
         updatingViewModel = false;
 
     }
+
+    @OnTextChanged(R.id.editText_sharingCode)
+    public void editText_sharingCode_OnTextChanged(CharSequence s) {
+        updatingViewModel = true;
+        viewModel.updateSharingCode(s != null ? s.toString() : "", getActivity());
+        updatingViewModel = false;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode,
                                  Intent data) {
@@ -197,6 +211,10 @@ public class ShoppingListDetailFragment extends FragmentWithViewModel implements
         if (intent.hasExtra(EXTRA_SHOPPINGLISTID)) {
             int shoppingListId = ((Long) intent.getExtras().get(EXTRA_SHOPPINGLISTID)).intValue();
             viewModel.initialize(shoppingListId);
+
+            textView_sharingCode.setVisibility(View.GONE);
+            editText_sharingCode.setVisibility(View.GONE);
+
         } else {
             viewModel.initialize();
         }

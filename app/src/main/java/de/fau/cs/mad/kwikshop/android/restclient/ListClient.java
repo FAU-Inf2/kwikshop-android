@@ -5,6 +5,8 @@ import java.util.List;
 import de.fau.cs.mad.kwikshop.common.DeletionInfo;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObjectServer;
+import de.fau.cs.mad.kwikshop.common.rest.responses.SharingResponse;
+import de.fau.cs.mad.kwikshop.common.rest.responses.SharingCode;
 import retrofit.client.Response;
 
 public interface ListClient<TListServer extends DomainListObjectServer> {
@@ -23,6 +25,10 @@ public interface ListClient<TListServer extends DomainListObjectServer> {
     List<DeletionInfo> getDeletedLists();
 
     Item getListItem(int listId, int itemId);
+
+    SharingCode getSharingCode(int listId);
+
+    SharingResponse share(String sharingCode);
 
     Item createItem(int listId, Item newItem);
 

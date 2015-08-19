@@ -67,6 +67,7 @@ public class ShoppingListFragment
 
 
     private static final String ARG_LISTID = "list_id";
+    private static final String ARG_SHARINGCODE = "list_sharingcode";
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
 

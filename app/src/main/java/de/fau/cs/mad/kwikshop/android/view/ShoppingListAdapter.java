@@ -159,8 +159,10 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         double amount = item.getAmount();
         boolean unitIsPieces = false;
         if (item.getUnit() != null) {
-            if (item.getUnit().getName().equals(context.getString(R.string.unit_piece_name))) {
-                unitIsPieces = true;
+            if(item.getUnit().getName() != null) {
+                if (item.getUnit().getName().equals(context.getString(R.string.unit_piece_name))) {
+                    unitIsPieces = true;
+                }
             }
         } else {
             unitIsPieces = true;

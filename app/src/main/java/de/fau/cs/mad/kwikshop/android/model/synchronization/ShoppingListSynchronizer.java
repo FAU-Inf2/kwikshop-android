@@ -41,6 +41,7 @@ public class ShoppingListSynchronizer extends ListSynchronizer<ShoppingList, Sho
         target.setSortTypeInt(source.getSortTypeInt());
         target.setLocation(source.getLocation());
         target.setLastModifiedDate(source.getLastModifiedDate());
+        target.setOwnerId(source.getOwnerId());
 
         target.setServerVersion(source.getVersion());
         target.setServerId(source.getId());

@@ -223,5 +223,6 @@
     <string name="barcode_scanner_not_ean_format">Der Barcode hat kein EAN Format</string>
     <string name="barcode_scanner_progress_message">Suche Produkt&#8230;</string>
     <string name="share_helpmessage">Du kannst diese Einkaufsliste nun teilen (z.B. per SMS oder E-Mail).</string>
+    <string name="share_success">Du hast jetzt Zugriff auf die Einkaufsliste %s.</string>
 
 </resources>

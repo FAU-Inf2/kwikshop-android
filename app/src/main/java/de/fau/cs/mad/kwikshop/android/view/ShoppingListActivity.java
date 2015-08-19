@@ -164,12 +164,6 @@ public class ShoppingListActivity extends BaseActivity {
                     messageBox.setMessage(R.string.share_sharingcodeerror);
                     messageBox.create().show();
                 } else {
-                    /* Tell the user how to share this List
-                    AlertDialog.Builder messageBox = new AlertDialog.Builder(ShoppingListActivity.this);
-                    messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
-                    messageBox.setMessage(R.string.share_helpmessage);
-                    messageBox.create().show();*/
-
                     /* Create intent and send it */
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);

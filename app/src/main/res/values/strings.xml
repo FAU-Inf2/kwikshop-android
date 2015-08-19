@@ -339,7 +339,7 @@
     <string name="sharingCode_textView">Sharing Code:</string>
     <string name="share_helpmessage">You can now share this shopping list (e.g. via SMS, Email).</string>
     <string name="share_loading">Loading...</string>
-    <string name="share_success">Success!</string>
     <string name="share_failure">Redeeming failed, please try again.</string>
+    <string name="share_success">You can now access the shopping list %s.</string>
 
 </resources>

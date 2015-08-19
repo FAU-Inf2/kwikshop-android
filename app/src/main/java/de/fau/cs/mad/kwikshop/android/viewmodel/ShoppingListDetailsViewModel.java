@@ -338,16 +338,9 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
 
     public void updateSharingCode(String value, Activity activity) {
         String[] sharingCode = value.split("#");
-        try {
-            if (sharingCode.length == 3 ||
-                    (sharingCode.length == 2 && value.substring(value.length() - 1).equals("#")) ) {
-                new RedeemSharingCodeTask(context, activity).execute(sharingCode[1]);
-
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
-
-        } catch (RetrofitError e) {
-
+        if (sharingCode.length == 3 ||
+                (sharingCode.length == 2 && value.substring(value.length() - 1).equals("#")) ) {
+            new RedeemSharingCodeTask(context, activity).execute(sharingCode[1]);
         }
     }
 

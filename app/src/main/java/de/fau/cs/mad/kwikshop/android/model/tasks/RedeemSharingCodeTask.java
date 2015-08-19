@@ -53,8 +53,9 @@ public class RedeemSharingCodeTask extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
+
         if(result != null)
-            progDailog.setMessage(context.getResources().getString(R.string.share_success));
+            progDailog.setMessage(String.format(context.getResources().getString(R.string.share_success), result));
         else
             progDailog.setMessage(context.getResources().getString(R.string.share_failure));
 

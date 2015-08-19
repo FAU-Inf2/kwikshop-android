@@ -176,14 +176,15 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     }
 
 
-    public void addItemToShoppingList(final Item item){
+    public void addItemToShoppingList(final Item EANitem){
 
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
+                Item item = EANitem;
                 item.setUnit(unitStorage.getDefaultValue());
                 item.setGroup(groupStorage.getDefaultValue());
-
+                item = itemParser.parseAmountAndUnit(item);
                 if(!itemMerger.mergeItem(listID, item))
                     listManager.addListItem(listID, item);
 

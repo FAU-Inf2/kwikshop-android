@@ -4,16 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.ui.IconGenerator;
+import com.google.maps.android.clustering.ClusterManager;
+
 
 import java.util.List;
 
@@ -28,7 +26,9 @@ import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
+import de.fau.cs.mad.kwikshop.android.util.ClusterMapItem;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.util.ClusterItemRendered;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -57,6 +57,8 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
     private final ResourceProvider resourceProvider;
 
     public static String SHOPPINGMODEPLACEREQUEST_CANCEL = "ShoppingModePlaceRequest_cancel";
+    private GoogleMap map;
+    private ClusterManager<ClusterMapItem> mClusterManager;
 
 
     @Inject
@@ -263,26 +265,28 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
 
     public GoogleMap setupGoogleMap(GoogleMap map){
 
+
         map.setMyLocationEnabled(true);
         map.moveCamera( CameraUpdateFactory.newLatLngZoom(getLastLatLng(), 15.0f) );
         UiSettings settings = map.getUiSettings();
         settings.setAllGesturesEnabled(true);
         settings.setMapToolbarEnabled(false);
 
+        mClusterManager = new ClusterManager<ClusterMapItem>(context, map);
+        mClusterManager.setRenderer(new ClusterItemRendered(context, map, mClusterManager));
+        map.setOnCameraChangeListener(mClusterManager);
+        map.setOnMarkerClickListener(mClusterManager);
+
         return map;
     }
 
-    public void showPlacesInGoogleMap(List<Place> places, GoogleMap map){
+    public void showPlacesInGoogleMap(List<Place> places){
+
         if(places == null){
             return;
         }
         for(Place place : places){
-            IconGenerator iconFactory = new IconGenerator(activity.getApplicationContext());
-            MarkerOptions markerOptions = new MarkerOptions().
-                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(place.getName()))).
-                    position(new LatLng(place.getLatitude(), place.getLongitude())).
-                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-            map.addMarker(markerOptions);
+            mClusterManager.addItem(new ClusterMapItem(place.getLatitude(),place.getLongitude(), place.getName()));
         }
     }
 

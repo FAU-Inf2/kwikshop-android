@@ -384,7 +384,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         Button button_moveDown;
 
         @InjectView(R.id.button_multipleSelection)
-        ImageButton button_multipleSelection;
+        CheckBox button_multipleSelection;
 
         @InjectView(R.id.checkBox_move)
         CheckBox checkBox_move;

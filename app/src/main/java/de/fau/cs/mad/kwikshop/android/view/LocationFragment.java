@@ -9,11 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.maps.android.clustering.ClusterManager;
+
 import java.util.List;
 import javax.inject.Inject;
 import butterknife.ButterKnife;
@@ -22,6 +26,7 @@ import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
+import de.fau.cs.mad.kwikshop.android.util.ClusterMapItem;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
@@ -34,6 +39,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
     private List<Place> places;
     private LatLng latLng;
     private LocationViewModel viewModel;
+    private ClusterManager<ClusterMapItem> mClusterManager;
 
     @Inject
     ViewLauncher viewLauncher;
@@ -101,7 +107,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
         viewLauncher.showProgressDialog(
                 resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
                 resourceProvider.getString(R.string.alert_dialog_connection_cancel),
-                true,
+                false,
                 viewModel.getCancelProgressDialogCommand()
         );
 
@@ -158,7 +164,8 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
     public void onMapReady(GoogleMap map) {
 
         map = viewModel.setupGoogleMap(map);
-        viewModel.showPlacesInGoogleMap(places, map);
+        viewModel.showPlacesInGoogleMap(places);
+
 
         // display info box
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -187,8 +194,9 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
                 hideInfoBox();
             }
         });
-
     }
+
+
 
 
 

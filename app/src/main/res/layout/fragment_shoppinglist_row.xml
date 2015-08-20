@@ -25,7 +25,8 @@
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp"
             android:textColor="@color/text_icons"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:layout_weight="0.42" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -45,17 +46,16 @@
             android:paddingRight="30dp"
             android:paddingLeft="30dp" />
 
-        <ImageButton
-            android:layout_width="25dp"
+        <CheckBox
+            android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:id="@+id/button_multipleSelection"
-            android:background="@drawable/multipleselection_check" />
+            android:button="@drawable/multipleselection_check" />
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="116dp"
             android:layout_height="25dp"
-            android:layout_gravity="right"
             android:gravity="right"
             android:textAlignment="gravity"
             android:weightSum="1">

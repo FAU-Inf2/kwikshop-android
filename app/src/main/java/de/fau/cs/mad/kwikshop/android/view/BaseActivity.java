@@ -94,27 +94,25 @@ public class BaseActivity extends ActionBarActivity {
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingActivity.class));
                 return true;
+
             case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
+
             case R.id.action_location:
                 startActivity(new Intent(this, LocationActivity.class));
                 return true;
+
             case R.id.action_listofshoppinglists:
                 startActivity(new Intent(this, ListOfShoppingListsActivity.class));
                 return true;
+
             case android.R.id.home:
                  NavUtils.navigateUpFromSameTask(this);
                 return true;
+
             case R.id.action_listofrecipes:
                 startActivity(new Intent(this, ListOfRecipesActivity.class));
-                return true;
-            case R.id.action_openloginactivity:
-                Intent intent = new Intent(this, LoginActivity.class);
-                Bundle b = new Bundle();
-                b.putBoolean("FORCE", true); //To make sure the Activity does not close immediately
-                intent.putExtras(b);
-                startActivity(intent);
                 return true;
 
             case R.id.action_serverintegrationdebugactiviy:

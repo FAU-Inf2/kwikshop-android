@@ -341,5 +341,7 @@
     <string name="share_loading">Loading...</string>
     <string name="share_failure">Redeeming failed, please try again.</string>
     <string name="share_success">You can now access the shopping list %s.</string>
+    <string name="settings_option_8_login_name">Account / Login</string>
+    <string name="settings_option_8_login_descr">Login to synchronize and share shopping lists</string>
 
 </resources>

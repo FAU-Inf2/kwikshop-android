@@ -53,10 +53,6 @@
                   android:visible="false"
                   android:title="@string/overflow_action_menu_shopping_mode" />
 
-            <item android:id="@+id/action_openloginactivity"
-                  app:showAsAction="ifRoom"
-                  android:title="@string/overflow_action_menu_openloginactivity" />
-
             <item android:id="@+id/action_serverintegrationdebugactiviy"
                 app:showAsAction="ifRoom"
                 android:title="Server Integration Debug Console" />

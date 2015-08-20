@@ -66,6 +66,7 @@ public class SettingFragment extends Fragment {
     private Setting setManageUnits;
     private Setting itemDeletionSetting;
     private Setting parserSeparatorWord;
+    private Setting loginSetting;
 
 
     @Inject
@@ -128,6 +129,10 @@ public class SettingFragment extends Fragment {
                     setParserSeparatorWord();
                 }
 
+                if(settingsList.get(position).equals(loginSetting)) {
+                    startLoginActivity();
+                }
+
 
             }
         });
@@ -187,6 +192,12 @@ public class SettingFragment extends Fragment {
         parserSeparatorWord.setName(R.string.settings_option_7_parser_separate_word_name);
         parserSeparatorWord.setCaption(R.string.settings_option_7_parser_separate_word_descr);
         settingsList.add(parserSeparatorWord);
+
+        //LoginActivity
+        loginSetting = new Setting(context);
+        loginSetting.setName(R.string.settings_option_8_login_name);
+        loginSetting.setCaption(R.string.settings_option_8_login_descr);
+        settingsList.add(loginSetting);
 
 
         // Adapter for settings view
@@ -375,5 +386,12 @@ public class SettingFragment extends Fragment {
 
     }
 
+    private void startLoginActivity() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        Bundle b = new Bundle();
+        b.putBoolean("FORCE", true); //To make sure the Activity does not close immediately
+        intent.putExtras(b);
+        startActivity(intent);
+    }
 
 }

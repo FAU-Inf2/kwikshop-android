@@ -19,13 +19,28 @@ import de.fau.cs.mad.kwikshop.android.util.TopExceptionHandler;
 
 public class ErrorReportingActivity extends ActionBarActivity {
 
+    private final static String EXTRA_FINISH_INSTANTLY = "extra_finishInstantly";
+
     public static final Object errorReportingLock = new Object();
     public static boolean isErrorReportingInitialized = false;
     public static boolean refreshed = false;
 
+
+    public static Intent getIntent(Context context, boolean finishInstantly) {
+        Intent intent = new Intent(context, ErrorReportingActivity.class);
+        intent.putExtra(EXTRA_FINISH_INSTANTLY, finishInstantly);
+        return intent;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(getIntent().getBooleanExtra(EXTRA_FINISH_INSTANTLY, false)) {
+            finish();
+        }
+
 
         setContentView(R.layout.activity_error_reporting);
         getSupportActionBar().hide();

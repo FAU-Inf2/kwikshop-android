@@ -1,4 +1,4 @@
-package de.fau.cs.mad.kwikshop.android.view;
+package de.fau.cs.mad.kwikshop.android.util;
 
 import org.joda.time.DateTime;
 import org.joda.time.Hours;

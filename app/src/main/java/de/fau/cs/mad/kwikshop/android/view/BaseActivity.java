@@ -10,13 +10,20 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListView;
+
+import com.ikimuhendis.ldrawer.ActionBarDrawerToggle;
+import com.ikimuhendis.ldrawer.DrawerArrowDrawable;
 
 import java.util.Locale;
 
@@ -27,7 +34,6 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ShareSuccessEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEventType;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
-import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.greenrobot.event.EventBus;
 
@@ -43,6 +49,10 @@ public class BaseActivity extends ActionBarActivity {
     private boolean returnToListOfShoppingLists = false;
 
     ProgressDialog syncProgressDialog;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private DrawerArrowDrawable drawerArrow;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +69,43 @@ public class BaseActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         setSavedLocale();
         frameLayout = (FrameLayout)findViewById(R.id.content_frame);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
+
+
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.navdrawer);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_drawer, R.string.place_status_opened,
+                R.string.place_status_closed) {
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
+        String[] values = new String[]{
+                "Stop Animation (Back icon)",
+                "Stop Animation (Home icon)",
+                "Start Animation",
+                "Change Color",
+                "GitHub Page",
+                "Share",
+                "Rate"
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, values);
+        mDrawerList.setAdapter(adapter);
+
 
         // color of back arrow to white
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -71,10 +116,14 @@ public class BaseActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         // home icon in actionbar
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setIcon(R.drawable.ic_home);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        //getSupportActionBar().setIcon(R.drawable.ic_home);
 
         EventBus.getDefault().register(this);
+
+        // maks home icon clickable
+        getSupportActionBar().setHomeButtonEnabled(true);
+
 
     }
 
@@ -104,7 +153,12 @@ public class BaseActivity extends ActionBarActivity {
                 startActivity(new Intent(this, ListOfShoppingListsActivity.class));
                 return true;
             case android.R.id.home:
-                 NavUtils.navigateUpFromSameTask(this);
+              //  NavUtils.navigateUpFromSameTask(this);
+                if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+                    mDrawerLayout.closeDrawer(mDrawerList);
+                } else {
+                    mDrawerLayout.openDrawer(mDrawerList);
+                }
                 return true;
             case R.id.action_listofrecipes:
                 startActivity(new Intent(this, ListOfRecipesActivity.class));
@@ -125,6 +179,7 @@ public class BaseActivity extends ActionBarActivity {
                 startSynchronization();
                 return true;
 
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -139,6 +194,12 @@ public class BaseActivity extends ActionBarActivity {
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
     }
 
     @Override

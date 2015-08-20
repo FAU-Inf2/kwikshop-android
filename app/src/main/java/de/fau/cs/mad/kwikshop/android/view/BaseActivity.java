@@ -123,6 +123,18 @@ public class BaseActivity extends ActionBarActivity {
                 startSynchronization();
                 return true;
 
+            case R.id.action_throwException:
+                throw new RuntimeException("Unhandled exception thrown for debug purposes");
+
+            case R.id.action_throwExceptionAsync:
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        throw new RuntimeException("Unhandled exception thrown for debug purposes (AsyncTask)");
+                    }
+                }.execute();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -251,6 +263,7 @@ public class BaseActivity extends ActionBarActivity {
 
     }
 
+    @SuppressWarnings("unused")
     public void onEvent(ShareSuccessEvent event) {
         returnToListOfShoppingLists = true;
         startSynchronization();

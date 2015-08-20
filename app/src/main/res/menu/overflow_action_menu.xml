@@ -61,6 +61,13 @@
                 app:showAsAction="ifRoom"
                 android:title="@string/start_synchronization" />
 
+            <item android:id="@+id/action_throwException"
+                app:showAsAction="ifRoom"
+                android:title="@string/throw_Exception" />
+
+            <item android:id="@+id/action_throwExceptionAsync"
+                app:showAsAction="ifRoom"
+                android:title="@string/throw_ExceptionAsync" />
 
         </menu>
 

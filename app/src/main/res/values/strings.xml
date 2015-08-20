@@ -343,5 +343,7 @@
     <string name="share_success">You can now access the shopping list %s.</string>
     <string name="settings_option_8_login_name">Account / Login</string>
     <string name="settings_option_8_login_descr">Login to synchronize and share shopping lists</string>
+    <string name="throw_Exception">Throw Exception</string>
+    <string name="throw_ExceptionAsync">Throw Exception in AsyncTask</string>
 
 </resources>

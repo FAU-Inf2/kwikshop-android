@@ -1,10 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.model;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -20,16 +16,7 @@ import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 
-public class ListStorageFragment extends Fragment {
-
-    //region Constants
-
-    public static final String TAG_LISTSTORAGE = "tag_ListStorage";
-
-    //endregion
-
-
-    //region Fields
+public class ListStorageFragment  {
 
     private static LocalListStorage m_LocalListStorage;
     private static SimpleStorage<Group> m_GroupStorage;
@@ -42,18 +29,7 @@ public class ListStorageFragment extends Fragment {
     private static DatabaseHelper m_DatabaseHelper;
     private static ListStorage<Recipe> m_RecipeStorage;
 
-    //endregion
 
-
-    //region Overrides
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
-    //endregion
 
 
     //region Public Methods
@@ -91,31 +67,19 @@ public class ListStorageFragment extends Fragment {
         return m_DatabaseHelper;
     }
 
-    public static ListStorageFragment getListStorageFragment() {
-        return m_ListStorageFragment;
-    }
 
     public static ListStorage<Recipe> getRecipeStorage(){ return m_RecipeStorage;}
 
-    public void SetupLocalListStorageFragment(FragmentActivity activity) {
-        FragmentManager fm = activity.getSupportFragmentManager();
-        Context context = activity.getBaseContext();
+    public static void SetupLocalListStorageFragment(Context context) {
+
         // ListStorage is already created? -> Nothing to do
-        if(m_LocalListStorage != null)
+        if(m_LocalListStorage != null) {
             return;
+        }
 
         // Our ListStorage needs a DatabaseHelper
-        if(m_DatabaseHelper == null)
+        if(m_DatabaseHelper == null) {
             m_DatabaseHelper = new DatabaseHelper(context);
-
-        // Find / create the ListStorageFragment
-        m_ListStorageFragment = (ListStorageFragment) fm.findFragmentByTag(ListStorageFragment.TAG_LISTSTORAGE);
-        if (m_ListStorageFragment == null) {
-            m_ListStorageFragment = new ListStorageFragment();
-
-            fm.beginTransaction().add(
-                    m_ListStorageFragment, ListStorageFragment.TAG_LISTSTORAGE)
-                    .commit();
         }
 
         if(m_RecipeStorage == null)
@@ -129,10 +93,10 @@ public class ListStorageFragment extends Fragment {
 
             //create local group storage and local unit storage
             m_GroupStorage = new GroupStorage(m_DatabaseHelper.getGroupDao());
-            createGroupsInDatabase(activity, m_GroupStorage);
+            createGroupsInDatabase(context, m_GroupStorage);
 
             m_UnitStorage = new UnitStorage(m_DatabaseHelper.getUnitDao());
-            createUnitsInDatabase(activity, m_UnitStorage);
+            createUnitsInDatabase(context, m_UnitStorage);
 
             m_CalendarEventStorage = new SimpleStorageBase<>(m_DatabaseHelper.getCalendarDao());
 
@@ -321,7 +285,7 @@ public class ListStorageFragment extends Fragment {
     //endregion
 
 
-    private void createUnitsInDatabase(Context context, SimpleStorage<Unit> unitStorage) throws SQLException {
+    private static void createUnitsInDatabase(Context context, SimpleStorage<Unit> unitStorage) throws SQLException {
 
         int count = unitStorage.getItems().size();
         if (count > 0) {
@@ -334,7 +298,7 @@ public class ListStorageFragment extends Fragment {
         }
     }
 
-    private void createGroupsInDatabase(Context context, SimpleStorage<Group> groupStorage) {
+    private static void createGroupsInDatabase(Context context, SimpleStorage<Group> groupStorage) {
 
         int count = groupStorage.getItems().size();
         if (count > 0) {

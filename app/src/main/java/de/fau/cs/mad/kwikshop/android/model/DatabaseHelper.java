@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.AccountID;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
@@ -83,6 +85,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private RuntimeExceptionDao<DeletedItem, Integer> deletedItemRuntimeDao = null;
 
 
+    @Inject
     public DatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;

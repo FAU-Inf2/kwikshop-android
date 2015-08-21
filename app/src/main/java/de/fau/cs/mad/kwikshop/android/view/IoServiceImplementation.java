@@ -1,35 +1,38 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
-import android.app.Activity;
+import android.content.Context;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+
+import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.IoService;
 
 public class IoServiceImplementation implements IoService {
 
-    private final Activity activity;
+    private final Context context;
 
-    public IoServiceImplementation(Activity activity) {
+    @Inject
+    public IoServiceImplementation(Context context) {
 
-        if(activity == null) {
-            throw new ArgumentNullException("activity");
+        if(context == null) {
+            throw new ArgumentNullException("context");
         }
 
-        this.activity = activity;
+        this.context = context;
     }
 
 
 
     @Override
     public FileInputStream openFileInput(String name) throws FileNotFoundException{
-        return activity.openFileInput(name);
+        return context.openFileInput(name);
     }
 
     @Override
     public void deleteFile(String name) {
-        activity.deleteFile(name);
+        context.deleteFile(name);
     }
 }

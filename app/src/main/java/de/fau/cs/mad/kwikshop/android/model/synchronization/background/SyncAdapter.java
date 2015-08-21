@@ -1,4 +1,4 @@
-package de.fau.cs.mad.kwikshop.android.model.synchronization;
+package de.fau.cs.mad.kwikshop.android.model.synchronization.background;
 
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
@@ -8,9 +8,11 @@ import android.content.SyncResult;
 import android.os.Bundle;
 
 import dagger.ObjectGraph;
+
 import de.fau.cs.mad.kwikshop.android.di.KwikShopBackgroundModule;
-import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
+
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
@@ -43,8 +45,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopBackgroundModule(this.context));
         final CompositeSynchronizer synchronizer = objectGraph.get(CompositeSynchronizer.class);
-
-
+        synchronizer.synchronize();
 
     }
 }

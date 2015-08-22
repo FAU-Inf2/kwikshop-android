@@ -45,7 +45,6 @@ public class SettingAdapter extends ArrayAdapter<Setting> {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
 
-
         //if view is null, inflate a new one
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

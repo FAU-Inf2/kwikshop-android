@@ -9,19 +9,16 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -46,28 +43,23 @@ import static de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper.*;
 
 public class SettingFragment extends Fragment {
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
-    public static String SETTINGS = "settings";
     public static CharSequence[] localeSelectionNames = {"Default", "English", "German", "Portuguese", "Russian"};
     public static CharSequence[] localeIds = {"default", "en", "de", "pt", "ru"};
 
-    private View rootView;
     private AlertDialog alert;
-    private ListView listView;
     private Context context;
     private ArrayList<Setting> settingsList;
     private SettingAdapter objAdapter;
 
 
     private Setting apiEndpointSetting;
-    private Setting locationPermission;
-    private Setting setLocale;
-    private Setting setAutoCompletionDeletion;
-    private Setting setManageUnits;
+    private Setting locationPermissionSetting;
+    private Setting setLocaleSetting;
+    private Setting autoCompletionDeletionSetting;
+    private Setting manageUnitsSetting;
     private Setting itemDeletionSetting;
-    private Setting parserSeparatorWord;
+    private Setting parserSeparatorWordSetting;
     private Setting loginSetting;
-
 
     @Inject
     ViewLauncher viewLauncher;
@@ -75,9 +67,9 @@ public class SettingFragment extends Fragment {
     @Inject
     ResourceProvider resourceProvider;
 
-    public static SettingFragment newInstance(int sectionNumber) {
-        SettingFragment fragment = new SettingFragment();
-        return fragment;
+
+    public static SettingFragment newInstance() {
+        return new SettingFragment();
     }
 
 
@@ -90,32 +82,31 @@ public class SettingFragment extends Fragment {
 
         context = getActivity().getApplicationContext();
 
-        rootView = inflater.inflate(R.layout.fragment_setting, container, false);
-        listView = (ListView) rootView.findViewById(android.R.id.list);
+        View rootView = inflater.inflate(R.layout.fragment_setting, container, false);
+        ListView listView = (ListView) rootView.findViewById(android.R.id.list);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 // local change
-                if (settingsList.get(position).equals(setLocale))
+                if (settingsList.get(position).equals(setLocaleSetting))
                     changeLocalOption();
 
-
                 // delete history of autocompletion
-                if (settingsList.get(position).equals(setAutoCompletionDeletion))
+                if (settingsList.get(position).equals(autoCompletionDeletionSetting))
                     deleteAutoCompletionHistoryOption();
 
                 // manage units
-                if (settingsList.get(position).equals(setManageUnits))
-                    manageUnits(position);
+                if (settingsList.get(position).equals(manageUnitsSetting))
+                    manageUnits();
 
                 // set API endpoint
                 if (settingsList.get(position).equals(apiEndpointSetting))
                     setApiEndpoint();
 
                 // location permission
-                if (settingsList.get(position).equals(locationPermission)) {
+                if (settingsList.get(position).equals(locationPermissionSetting)) {
                     setLocationPermission(position);
                 }
 
@@ -125,20 +116,17 @@ public class SettingFragment extends Fragment {
                 }
 
                 // Parser separator word
-                if (settingsList.get(position).equals(parserSeparatorWord)) {
+                if (settingsList.get(position).equals(parserSeparatorWordSetting)) {
                     setParserSeparatorWord();
                 }
 
-                if(settingsList.get(position).equals(loginSetting)) {
+                if (settingsList.get(position).equals(loginSetting)) {
                     startLoginActivity();
                 }
 
 
             }
         });
-
-
-
 
 
         // set title for actionbar
@@ -148,22 +136,22 @@ public class SettingFragment extends Fragment {
         settingsList = new ArrayList<>();
 
         // Locale Setting
-        setLocale = new Setting(context);
-        setLocale.setName(R.string.settings_option_2_setlocale);
-        setLocale.setCaption(R.string.settings_option_2_desc);
-        settingsList.add(setLocale);
+        setLocaleSetting = new Setting(context);
+        setLocaleSetting.setName(R.string.settings_option_2_setlocale);
+        setLocaleSetting.setCaption(R.string.settings_option_2_desc);
+        settingsList.add(setLocaleSetting);
 
         // Autocompletion deletion
-        setAutoCompletionDeletion = new Setting(context);
-        setAutoCompletionDeletion.setName(R.string.settings_option_3_deleteHistory);
-        setAutoCompletionDeletion.setCaption(R.string.settings_option_3_desc);
-        settingsList.add(setAutoCompletionDeletion);
+        autoCompletionDeletionSetting = new Setting(context);
+        autoCompletionDeletionSetting.setName(R.string.settings_option_3_deleteHistory);
+        autoCompletionDeletionSetting.setCaption(R.string.settings_option_3_desc);
+        settingsList.add(autoCompletionDeletionSetting);
 
         // manage units
-        setManageUnits = new Setting(context);
-        setManageUnits.setName(R.string.settings_option_3_manageUnits);
-        setManageUnits.setCaption(R.string.settings_option_3_desc2);
-        settingsList.add(setManageUnits);
+        manageUnitsSetting = new Setting(context);
+        manageUnitsSetting.setName(R.string.settings_option_3_manageUnits);
+        manageUnitsSetting.setCaption(R.string.settings_option_3_desc2);
+        settingsList.add(manageUnitsSetting);
 
         // API endpoint settings
         apiEndpointSetting = new Setting(context);
@@ -172,12 +160,12 @@ public class SettingFragment extends Fragment {
         settingsList.add(apiEndpointSetting);
 
         // permission for location tracking
-        locationPermission = new Setting(context);
-        locationPermission.setName(R.string.settings_option_5_location_permission_title);
-        locationPermission.setCaption(R.string.settings_option_5_location_permission_desc);
-        locationPermission.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity()));
-        locationPermission.setViewVisibility(View.VISIBLE);
-        settingsList.add(locationPermission);
+        locationPermissionSetting = new Setting(context);
+        locationPermissionSetting.setName(R.string.settings_option_5_location_permission_title);
+        locationPermissionSetting.setCaption(R.string.settings_option_5_location_permission_desc);
+        locationPermissionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity()));
+        locationPermissionSetting.setViewVisibility(View.VISIBLE);
+        settingsList.add(locationPermissionSetting);
 
         //Show Dialog when deleting an item
         itemDeletionSetting = new Setting(context);
@@ -188,10 +176,10 @@ public class SettingFragment extends Fragment {
         settingsList.add(itemDeletionSetting);
 
         //Choose separator word for the parser
-        parserSeparatorWord = new Setting(context);
-        parserSeparatorWord.setName(R.string.settings_option_7_parser_separate_word_name);
-        parserSeparatorWord.setCaption(R.string.settings_option_7_parser_separate_word_descr);
-        settingsList.add(parserSeparatorWord);
+        parserSeparatorWordSetting = new Setting(context);
+        parserSeparatorWordSetting.setName(R.string.settings_option_7_parser_separate_word_name);
+        parserSeparatorWordSetting.setCaption(R.string.settings_option_7_parser_separate_word_descr);
+        settingsList.add(parserSeparatorWordSetting);
 
         //LoginActivity
         loginSetting = new Setting(context);
@@ -206,25 +194,6 @@ public class SettingFragment extends Fragment {
 
         return rootView;
     }
-
-
-    private void changeLocalOption() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, getActivity());
-        builder.setTitle(R.string.settings_option_2_setlocale);
-        builder.setSingleChoiceItems(localeSelectionNames, currentLocaleIdIndex, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                setLocale(localeIds[which].toString());
-                SharedPreferencesHelper.saveInt(SharedPreferencesHelper.LOCALE, which, getActivity());
-            }
-        });
-
-        alert = builder.create();
-        alert.show();
-    }
-
 
     @Override
     public void onPause() {
@@ -262,8 +231,7 @@ public class SettingFragment extends Fragment {
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
-                // don't delete history of autocompletion
-                return;
+                // do nothing
             }
         });
 
@@ -272,11 +240,30 @@ public class SettingFragment extends Fragment {
 
     }
 
+
+
+    private void changeLocalOption() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, getActivity());
+        builder.setTitle(R.string.settings_option_2_setlocale);
+        builder.setSingleChoiceItems(localeSelectionNames, currentLocaleIdIndex, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                setLocale(localeIds[which].toString());
+                SharedPreferencesHelper.saveInt(SharedPreferencesHelper.LOCALE, which, getActivity());
+            }
+        });
+
+        alert = builder.create();
+        alert.show();
+    }
+
     private void deleteAutoCompletionHistory() {
         Context context = getActivity().getBaseContext();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        SimpleStorage<AutoCompletionData> autoCompletionNameStorage = null;
-        SimpleStorage<AutoCompletionBrandData> autoCompletionBrandStorage = null;
+        SimpleStorage<AutoCompletionData> autoCompletionNameStorage;
+        SimpleStorage<AutoCompletionBrandData> autoCompletionBrandStorage;
         try {
             //create local autocompletion storage
             autoCompletionNameStorage = new SimpleStorageBase<>(databaseHelper.getAutoCompletionDao());
@@ -294,7 +281,7 @@ public class SettingFragment extends Fragment {
         Toast.makeText(getActivity(), getResources().getString(R.string.settings_option_3_success), Toast.LENGTH_LONG).show();
     }
 
-    private void manageUnits(int position) {
+    private void manageUnits() {
 
                       /*  AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 +            builder.setTitle(R.string.settings_option_3_createUnits);
@@ -317,7 +304,6 @@ public class SettingFragment extends Fragment {
 
     }
 
-    @SuppressWarnings("unchecked")
     private void setApiEndpoint() {
 
         viewLauncher.showTextInputDialog(

@@ -20,7 +20,7 @@ public class SettingActivity extends BaseActivity {
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().add(frameLayout.getId(), SettingFragment.newInstance(0)).commit();
+            fragmentManager.beginTransaction().add(frameLayout.getId(), SettingFragment.newInstance()).commit();
         }
 
     }

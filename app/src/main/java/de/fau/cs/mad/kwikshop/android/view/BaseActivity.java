@@ -119,21 +119,6 @@ public class BaseActivity extends ActionBarActivity {
                 startActivity(ServerIntegrationDebugActivity.getIntent(this));
                 return true;
 
-            case R.id.action_startSynchronization:
-                SyncingActivity.requestSync();
-                return true;
-
-            case R.id.action_throwException:
-                throw new RuntimeException("Unhandled exception thrown for debug purposes");
-
-            case R.id.action_throwExceptionAsync:
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        throw new RuntimeException("Unhandled exception thrown for debug purposes (AsyncTask)");
-                    }
-                }.execute();
-                return true;
 
             default:
                 return super.onOptionsItemSelected(item);

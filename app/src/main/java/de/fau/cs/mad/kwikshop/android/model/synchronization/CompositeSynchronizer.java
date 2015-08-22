@@ -8,6 +8,7 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.RecipeServer;
@@ -62,6 +63,12 @@ public class CompositeSynchronizer {
         if(!SessionHandler.isAuthenticated(applicationContext)) {
             return;
         }
+
+        //check if synchronization is even enabled
+        if(!SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ENABLE_SYNCHRONIZATION, true, context)) {
+            return;
+        }
+
 
         post(SynchronizationEvent.CreateStartedMessage());
 

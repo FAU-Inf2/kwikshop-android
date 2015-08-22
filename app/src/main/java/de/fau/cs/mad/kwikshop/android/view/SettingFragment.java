@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -61,6 +62,8 @@ public class SettingFragment extends Fragment {
     private Setting itemDeletionSetting;
     private Setting parserSeparatorWordSetting;
     private Setting loginSetting;
+    private Setting enableSyncSetting;
+    private Setting syncNowSetting;
 
     @Inject
     ViewLauncher viewLauncher;
@@ -125,7 +128,13 @@ public class SettingFragment extends Fragment {
                     startLoginActivity();
                 }
 
+                if (settingsList.get(position).equals(syncNowSetting)) {
+                    SyncingActivity.requestSync();
+                }
 
+                if (settingsList.get(position).equals(enableSyncSetting)) {
+                    setEnableSynchronization(position);
+                }
             }
         });
 
@@ -180,17 +189,29 @@ public class SettingFragment extends Fragment {
         loginSetting.setName(R.string.settings_option_8_login_name);
         loginSetting.setCaption(R.string.settings_option_8_login_descr);
 
+        enableSyncSetting = new Setting(context);
+        enableSyncSetting.setName(R.string.settings_option_enableSync_name);
+        enableSyncSetting.setCaption(R.string.settings_option_enableSync_descr);
+        enableSyncSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ENABLE_SYNCHRONIZATION, true, context));
+        enableSyncSetting.setViewVisibility(View.VISIBLE);
+
+        syncNowSetting = new Setting(context);
+        syncNowSetting.setName(R.string.settings_option_sync_name);
+        syncNowSetting.setCaption(R.string.settings_option_sync_descr);
+
         // add all settings to the list of settins
 
         // list of settings
         settingsList = new ArrayList<>(Arrays.asList(new Setting[]
                 {
-                        localeSetting,
+                    localeSetting,
                     autoCompletionDeletionSetting,
                     itemDeletionSetting,
                     parserSeparatorWordSetting,
                     manageUnitsSetting,
                     locationPermissionSetting,
+                    enableSyncSetting,
+                    syncNowSetting,
                     loginSetting,
                     apiEndpointSetting
                 }));
@@ -347,6 +368,16 @@ public class SettingFragment extends Fragment {
             objAdapter.getItem(position).setChecked(true);
             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,true,getActivity());
         }
+        objAdapter.notifyDataSetChanged();
+    }
+
+    private void setEnableSynchronization(int position) {
+
+        boolean isChecked =objAdapter.getItem(position).isChecked();
+
+        objAdapter.getItem(position).setChecked(!isChecked);
+        SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ENABLE_SYNCHRONIZATION, !isChecked, context);
+
         objAdapter.notifyDataSetChanged();
     }
 

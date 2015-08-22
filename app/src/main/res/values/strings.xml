@@ -354,5 +354,9 @@
     <string name="settings_option_8_login_descr">Login to synchronize and share shopping lists</string>
     <string name="throw_Exception">Throw Exception</string>
     <string name="throw_ExceptionAsync">Throw Exception in AsyncTask</string>
+    <string name="settings_option_sync_name">Synchronize now</string>
+    <string name="settings_option_sync_descr">Synchronize all data with the server now</string>
+    <string name="settings_option_enableSync_name">Enable Synchronization</string>
+    <string name="settings_option_enableSync_descr">Enable synchornization of shopping lists and recipes</string>
 
 </resources>

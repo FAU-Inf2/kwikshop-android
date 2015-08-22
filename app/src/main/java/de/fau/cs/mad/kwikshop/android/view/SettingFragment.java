@@ -1,7 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,6 +63,7 @@ public class SettingFragment extends Fragment {
     private Setting loginSetting;
     private Setting enableSyncSetting;
     private Setting syncNowSetting;
+    private Setting syncIntervalSetting;
 
     @Inject
     ViewLauncher viewLauncher;
@@ -135,6 +135,10 @@ public class SettingFragment extends Fragment {
                 if (settingsList.get(position).equals(enableSyncSetting)) {
                     setEnableSynchronization(position);
                 }
+
+                if (settingsList.get(position).equals(syncIntervalSetting)) {
+                    selectSyncInterval();
+                }
             }
         });
 
@@ -199,6 +203,10 @@ public class SettingFragment extends Fragment {
         syncNowSetting.setName(R.string.settings_option_sync_name);
         syncNowSetting.setCaption(R.string.settings_option_sync_descr);
 
+        syncIntervalSetting = new Setting(context);
+        syncIntervalSetting.setName(R.string.settings_options_syncInterval_name);
+        syncIntervalSetting.setCaption(R.string.settings_options_syncInterval_descr);
+
         // add all settings to the list of settins
 
         // list of settings
@@ -213,6 +221,7 @@ public class SettingFragment extends Fragment {
                     enableSyncSetting,
                     syncNowSetting,
                     loginSetting,
+                    syncIntervalSetting,
                     apiEndpointSetting
                 }));
 
@@ -419,4 +428,60 @@ public class SettingFragment extends Fragment {
         startActivity(intent);
     }
 
+    private void selectSyncInterval() {
+
+        final int defaultValue = resourceProvider.getInteger(R.integer.synchronizationInterval_default);
+        final int currentValue = loadInt(SYNCHRONIZATION_INTERVAL, defaultValue, context);
+
+        viewLauncher.showNumberInputDialog(
+
+                // title and message
+                resourceProvider.getString(R.string.settings_options_syncInterval_name),
+                resourceProvider.getString(R.string.settings_options_syncInterval_inputBox_message),
+
+                //current value
+                currentValue,
+
+                // ok button: save updated value
+                resourceProvider.getString(android.R.string.ok), new Command<String>() {
+                    @Override
+                    public void execute(String value) {
+
+                        try {
+
+                            int intValue = Integer.parseInt(value);
+
+                            if(intValue != currentValue && intValue > 0) {
+                                saveInt(SYNCHRONIZATION_INTERVAL, intValue, context);
+                                SyncingActivity.onSyncIntervalSettingChanged(intValue);
+                            }
+
+
+                        } catch (NumberFormatException ex) {
+                            // should not happen, because showNumberInputDialog() only allows digits as input
+                            // => just ignore the error
+                        }
+
+                    }
+                },
+
+                // reset to default value (neutral button)
+                resourceProvider.getString(R.string.str_default),
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+                        if(defaultValue != currentValue) {
+                            saveInt(SYNCHRONIZATION_INTERVAL, defaultValue, context);
+                            SyncingActivity.onSyncIntervalSettingChanged(defaultValue);
+                        }
+                    }
+                },
+
+                // cancel button: do othign
+                resourceProvider.getString(android.R.string.cancel),
+                NullCommand.StringInstance
+        );
+
+    }
 }

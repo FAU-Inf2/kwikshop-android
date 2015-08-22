@@ -7,6 +7,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
+import de.fau.cs.mad.kwikshop.android.R;
+
+import static de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper.*;
+
 /**
  * Activity that initializes syncing using Android's sync framework
  * The app's entry activity should inherit from this
@@ -16,7 +20,7 @@ public abstract class SyncingActivity extends ActionBarActivity {
     private static final String AUTHORITY = "de.fau.cs.mad.kwikshop.android.provider";
     private static final String ACCOUNT_TYPE = "de.fau.cs.mad.kwikshop.android";
     private static final String ACCOUNT_NAME = "KwikShop Default Account";
-    private static final int SYNC_INTERVAL = 10 * 60; // 15 minutes
+
 
     private static final Object initializationLock = new Object();
     private static boolean isSyncingInitialized = false;
@@ -40,7 +44,11 @@ public abstract class SyncingActivity extends ActionBarActivity {
                 //make sync framework sync automatically
 
                 ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
-                ContentResolver.addPeriodicSync(account, AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
+
+                int intervalInMinutes = loadInt(SYNCHRONIZATION_INTERVAL,
+                                                getResources().getInteger(R.integer.synchronizationInterval_default),
+                                                this);
+                ContentResolver.addPeriodicSync(account, AUTHORITY, Bundle.EMPTY, intervalInMinutes * 60);
 
                 isSyncingInitialized = true;
             }
@@ -97,4 +105,17 @@ public abstract class SyncingActivity extends ActionBarActivity {
         ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
 
     }
+
+
+    public static void onSyncIntervalSettingChanged(int newValue) {
+
+        synchronized (initializationLock) {
+            if(isSyncingInitialized) {
+                ContentResolver.addPeriodicSync(account, AUTHORITY, Bundle.EMPTY, newValue * 60);
+            }
+
+        }
+    }
+
+
 }

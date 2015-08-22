@@ -18,6 +18,7 @@ public class SharedPreferencesHelper {
     public static final String LOCATION_PERMISSION_SHOW_AGAIN_MSG = "location_permission_show_again";
     public static final String ITEM_SEPARATOR_WORD = "ITEM_SEPARATOR_WORD";
     public static final String ENABLE_SYNCHRONIZATION = "ENABLE_SYNCHRONIZATION";
+    public static final String SYNCHRONIZATION_INTERVAL = "SYNCHRONIZATION_INTERVAL";
 
     private static final String sharedPreferencesName = "settings";
 

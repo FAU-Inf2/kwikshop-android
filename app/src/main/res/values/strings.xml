@@ -358,5 +358,9 @@
     <string name="settings_option_sync_descr">Synchronize all data with the server now</string>
     <string name="settings_option_enableSync_name">Enable Synchronization</string>
     <string name="settings_option_enableSync_descr">Enable synchornization of shopping lists and recipes</string>
+    <string name="settings_options_syncInterval_name">Synchronization Interval</string>
+    <string name="settings_options_syncInterval_descr">Choose how often synchronization runs</string>
+    <string name="settings_options_syncInterval_inputBox_message">Please specify the synchronization interval in minutes</string>
+    <string name="str_default">default</string>
 
 </resources>

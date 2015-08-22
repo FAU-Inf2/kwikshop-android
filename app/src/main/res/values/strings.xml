@@ -212,6 +212,22 @@
     <string name="recipe_corn">Corn</string>
     <string name="recipe_potatoes">Potatoes</string>
     <string name="recipe_tomatoes">Tomatoes</string>
+    <string name="recipe_carrotCake">Coconut carrot cake</string>
+    <string name="recipe_carrot">Carrot</string>
+    <string name="recipe_eggs">Eggs</string>
+    <string name="recipe_oil">Oil</string>
+    <string name="recipe_sugar">Sugar</string>
+    <string name="recipe_plainFlour">Plain flour</string>
+    <string name="recipe_bakingPowder">Baking powder</string>
+    <string name="recipe_sweetenedCondensedMilk">Sweetened condensed milk</string>
+    <string name="recipe_coconutFlakes">Coconut flakes</string>
+    <string name="recipe_rhubarb_tart">Rhubarb tart</string>
+    <string name="recipe_butter">Butter</string>
+    <string name="recipe_rhubarb">Rhubarb</string>
+    <string name="recipe_vanilla_sugar">Vanilla sugar</string>
+    <string name="recipe_starch">Starch</string>
+    <string name="recipe_lowfat_quark">Lowfat quark</string>
+
 
     <!--Time-->
     <string name="days">days</string>
@@ -304,15 +320,6 @@
     <string name="askingGooglePlay">Install Voice Search from Google Play?</string>
     <string name="askingGoogleVoiceSearch">For recognition it’s necessary to install \'Google Voice Search\'</string>
     <string name="title_activity_server_integration_debug">Server Integration Debug Console</string>
-    <string name="recipe_carrotCake">Coconut carrot cake</string>
-    <string name="recipe_carrot">Carrot</string>
-    <string name="recipe_eggs">Eggs</string>
-    <string name="recipe_oil">Oil</string>
-    <string name="recipe_sugar">Sugar</string>
-    <string name="recipe_plainFlour">Plain flour</string>
-    <string name="recipe_bakingPowder">Baking powder</string>
-    <string name="recipe_sweetenedCondensedMilk">Sweetened condensed milk</string>
-    <string name="recipe_coconutFlakes">Coconut flakes</string>
     <string name="unit_cup">cups</string>
     <string name="unit_tablespoon">tablespoons</string>
     <string name="unit_tablespoon_short">tbsp</string>

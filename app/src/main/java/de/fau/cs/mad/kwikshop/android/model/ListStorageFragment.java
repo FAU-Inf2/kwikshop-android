@@ -170,9 +170,12 @@ public class ListStorageFragment  {
             Unit tbsp = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.TABLESPOON);
             Unit cans = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.CAN);
             Unit piece = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.PIECE);
+            Unit pack = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.PACK);
 
             Group meat = m_GroupStorage.getByName(DefaultDataProvider.GroupNames.MEAT_AND_FISH);
             Group vegetable = m_GroupStorage.getByName(DefaultDataProvider.GroupNames.FRUITS_AND_VEGETABLES);
+            Group milk = m_GroupStorage.getByName(DefaultDataProvider.GroupNames.MILK_AND_CHEESE);
+
 
             int id = m_RecipeStorage.createList();
             Recipe recipe1 = m_RecipeStorage.loadList(id);
@@ -276,7 +279,71 @@ public class ListStorageFragment  {
 
             m_RecipeStorage.saveList(recipe2);
 
+            int rhubarb_id = m_RecipeStorage.createList();
+            Recipe rhubarb_recipe = m_RecipeStorage.loadList(rhubarb_id);
+            rhubarb_recipe.setName(context.getString(R.string.recipe_rhubarb_tart));
+            rhubarb_recipe.setScaleFactor(1);
+            rhubarb_recipe.setScaleName(context.getString(R.string.recipe_scaleName_piece));
 
+            Item item14 = new Item();
+            item14.setName(context.getString(R.string.recipe_rhubarb));
+            item14.setAmount(1500);
+            item14.setUnit(gram);
+            item14.setGroup(vegetable);
+            rhubarb_recipe.addItem(item14);
+
+            Item item22 = new Item();
+            item22.setName(context.getString(R.string.recipe_lowfat_quark));
+            item22.setAmount(750);
+            item22.setUnit(gram);
+            rhubarb_recipe.addItem(item22);
+
+            //TODO: group
+            Item item15 = new Item();
+            item15.setName(context.getString(R.string.recipe_eggs));
+            item15.setAmount(4);
+            item15.setUnit(piece);
+            rhubarb_recipe.addItem(item15);
+
+            //Todo: group
+            Item item16 = new Item();
+            item16.setName(context.getString(R.string.recipe_vanilla_sugar));
+            item16.setAmount(2);
+            item16.setUnit(pack);
+            rhubarb_recipe.addItem(item16);
+
+            Item item17 = new Item();
+            item17.setName(context.getString(R.string.recipe_butter));
+            item17.setAmount(275);
+            item17.setUnit(gram);
+            item17.setGroup(milk);
+            rhubarb_recipe.addItem(item17);
+
+            //Todo: group
+            Item item18 = new Item();
+            item18.setName(context.getString(R.string.recipe_sugar));
+            item18.setAmount(275);
+            item18.setUnit(gram);
+            rhubarb_recipe.addItem(item18);
+
+            Item item19 = new Item();
+            item19.setName(context.getString(R.string.recipe_plainFlour));
+            item19.setAmount(175);
+            item19.setUnit(gram);
+            rhubarb_recipe.addItem(item19);
+
+            Item item20 = new Item();
+            item20.setName(context.getString(R.string.recipe_starch));
+            item20.setAmount(170);
+            item20.setUnit(gram);
+
+            Item item21 = new Item();
+            item21.setName(context.getString(R.string.recipe_bakingPowder));
+            item21.setAmount(3);
+            item21.setUnit(tbsp);
+            rhubarb_recipe.addItem(item21);
+
+            m_RecipeStorage.saveList(rhubarb_recipe);
 
         }
 

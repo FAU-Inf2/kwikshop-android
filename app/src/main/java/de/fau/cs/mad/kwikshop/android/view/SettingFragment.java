@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -54,7 +55,7 @@ public class SettingFragment extends Fragment {
 
     private Setting apiEndpointSetting;
     private Setting locationPermissionSetting;
-    private Setting setLocaleSetting;
+    private Setting localeSetting;
     private Setting autoCompletionDeletionSetting;
     private Setting manageUnitsSetting;
     private Setting itemDeletionSetting;
@@ -90,7 +91,7 @@ public class SettingFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 // local change
-                if (settingsList.get(position).equals(setLocaleSetting))
+                if (settingsList.get(position).equals(localeSetting))
                     changeLocalOption();
 
                 // delete history of autocompletion
@@ -132,32 +133,28 @@ public class SettingFragment extends Fragment {
         // set title for actionbar
         getActivity().setTitle(R.string.title_activity_settings);
 
-        // list of settings
-        settingsList = new ArrayList<>();
 
         // Locale Setting
-        setLocaleSetting = new Setting(context);
-        setLocaleSetting.setName(R.string.settings_option_2_setlocale);
-        setLocaleSetting.setCaption(R.string.settings_option_2_desc);
-        settingsList.add(setLocaleSetting);
+        localeSetting = new Setting(context);
+        localeSetting.setName(R.string.settings_option_2_setlocale);
+        localeSetting.setCaption(R.string.settings_option_2_desc);
 
         // Autocompletion deletion
         autoCompletionDeletionSetting = new Setting(context);
         autoCompletionDeletionSetting.setName(R.string.settings_option_3_deleteHistory);
         autoCompletionDeletionSetting.setCaption(R.string.settings_option_3_desc);
-        settingsList.add(autoCompletionDeletionSetting);
+
 
         // manage units
         manageUnitsSetting = new Setting(context);
         manageUnitsSetting.setName(R.string.settings_option_3_manageUnits);
         manageUnitsSetting.setCaption(R.string.settings_option_3_desc2);
-        settingsList.add(manageUnitsSetting);
+
 
         // API endpoint settings
         apiEndpointSetting = new Setting(context);
         apiEndpointSetting.setName(R.string.settings_option_4_APIEndPoint_Title);
         apiEndpointSetting.setCaption(R.string.settings_option_4_APIEndPoint_Desc);
-        settingsList.add(apiEndpointSetting);
 
         // permission for location tracking
         locationPermissionSetting = new Setting(context);
@@ -165,7 +162,6 @@ public class SettingFragment extends Fragment {
         locationPermissionSetting.setCaption(R.string.settings_option_5_location_permission_desc);
         locationPermissionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity()));
         locationPermissionSetting.setViewVisibility(View.VISIBLE);
-        settingsList.add(locationPermissionSetting);
 
         //Show Dialog when deleting an item
         itemDeletionSetting = new Setting(context);
@@ -173,19 +169,31 @@ public class SettingFragment extends Fragment {
         itemDeletionSetting.setCaption(R.string.settings_option_6_item_deletion_descr);
         itemDeletionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false, getActivity()));
         itemDeletionSetting.setViewVisibility(View.VISIBLE);
-        settingsList.add(itemDeletionSetting);
 
         //Choose separator word for the parser
         parserSeparatorWordSetting = new Setting(context);
         parserSeparatorWordSetting.setName(R.string.settings_option_7_parser_separate_word_name);
         parserSeparatorWordSetting.setCaption(R.string.settings_option_7_parser_separate_word_descr);
-        settingsList.add(parserSeparatorWordSetting);
 
         //LoginActivity
         loginSetting = new Setting(context);
         loginSetting.setName(R.string.settings_option_8_login_name);
         loginSetting.setCaption(R.string.settings_option_8_login_descr);
-        settingsList.add(loginSetting);
+
+        // add all settings to the list of settins
+
+        // list of settings
+        settingsList = new ArrayList<>(Arrays.asList(new Setting[]
+                {
+                        localeSetting,
+                    autoCompletionDeletionSetting,
+                    itemDeletionSetting,
+                    parserSeparatorWordSetting,
+                    manageUnitsSetting,
+                    locationPermissionSetting,
+                    loginSetting,
+                    apiEndpointSetting
+                }));
 
 
         // Adapter for settings view

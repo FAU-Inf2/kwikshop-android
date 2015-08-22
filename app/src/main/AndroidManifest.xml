@@ -207,7 +207,7 @@
         <service
             android:name="de.fau.cs.mad.kwikshop.android.model.synchronization.background.SyncService"
             android:exported="true"
-            android:process=":sync">
+            >
             <intent-filter>
                 <action android:name="android.content.SyncAdapter"/>
             </intent-filter>
@@ -219,6 +219,7 @@
     <provider
         android:name="de.fau.cs.mad.kwikshop.android.model.synchronization.background.StubContentProvider"
         android:authorities="de.fau.cs.mad.kwikshop.android.provider"
+        android:label="Kwik Shop Sync"
         android:exported="false"
         android:syncable="true"/>
 

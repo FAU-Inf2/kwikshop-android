@@ -15,7 +15,8 @@ public abstract class SyncingActivity extends ActionBarActivity {
 
     private static final String AUTHORITY = "de.fau.cs.mad.kwikshop.android.provider";
     private static final String ACCOUNT_TYPE = "de.fau.cs.mad.kwikshop.android";
-    private static final String ACCOUNT_NAME = "dummyAccount";
+    private static final String ACCOUNT_NAME = "KwikShop Default Account";
+    private static final int SYNC_INTERVAL = 10 * 60; // 15 minutes
 
     private static final Object initializationLock = new Object();
     private static boolean isSyncingInitialized = false;
@@ -39,7 +40,7 @@ public abstract class SyncingActivity extends ActionBarActivity {
                 //make sync framework sync automatically
 
                 ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
-
+                ContentResolver.addPeriodicSync(account, AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
 
                 isSyncingInitialized = true;
             }

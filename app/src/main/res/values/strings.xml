@@ -227,6 +227,8 @@
     <string name="recipe_vanilla_sugar">Vanilla sugar</string>
     <string name="recipe_starch">Starch</string>
     <string name="recipe_lowfat_quark">Lowfat quark</string>
+    <string name="recipe_madeira_cake">Madeira cake</string>
+    <string name="recipe_salt">Salt</string>
 
 
     <!--Time-->

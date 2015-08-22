@@ -345,6 +345,58 @@ public class ListStorageFragment  {
 
             m_RecipeStorage.saveList(rhubarb_recipe);
 
+            int id_madeira = m_RecipeStorage.createList();
+            Recipe madeira_recipe = m_RecipeStorage.loadList(id_madeira);
+            madeira_recipe.setName(context.getString(R.string.recipe_madeira_cake));
+            madeira_recipe.setScaleFactor(1);
+            madeira_recipe.setScaleName(context.getString(R.string.recipe_scaleName_piece));
+
+            Item item23 = new Item();
+            item23.setName(context.getString(R.string.recipe_butter));
+            item23.setAmount(250);
+            item23.setUnit(gram);
+            item23.setGroup(milk);
+            madeira_recipe.addItem(item23);
+
+            Item item24 = new Item();
+            item24.setName(context.getString(R.string.recipe_sugar));
+            item24.setAmount(200);
+            item24.setUnit(gram);
+            madeira_recipe.addItem(item24);
+
+            Item item25 = new Item();
+            item25.setName(context.getString(R.string.recipe_plainFlour));
+            item25.setAmount(125);
+            item25.setUnit(gram);
+            madeira_recipe.addItem(item25);
+
+            Item item26 = new Item();
+            item26.setName(context.getString(R.string.recipe_starch));
+            item26.setAmount(125);
+            item26.setUnit(gram);
+            madeira_recipe.addItem(item26);
+
+            Item item28 = new Item();
+            item28.setName(context.getString(R.string.recipe_vanilla_sugar));
+            item28.setAmount(1);
+            item28.setUnit(pack);
+            madeira_recipe.addItem(item28);
+
+            Item item27 = new Item();
+            item27.setName(context.getString(R.string.recipe_bakingPowder));
+            item27.setAmount(0.5);
+            item27.setUnit(tbsp);
+            madeira_recipe.addItem(item27);
+
+            Item item29 = new Item();
+            item29.setName(context.getString(R.string.recipe_salt));
+            item29.setAmount(0.5);
+            item29.setUnit(tbsp);
+            madeira_recipe.addItem(item29);
+
+            m_RecipeStorage.saveList(madeira_recipe);
+
+
         }
 
     }

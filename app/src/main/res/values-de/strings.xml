@@ -142,6 +142,24 @@
     <string name="recipe_corn">Mais</string>
     <string name="recipe_potatoes">Kartoffeln</string>
     <string name="recipe_tomatoes">Tomaten</string>
+    <string name="recipe_carrotCake">Kokosnuss-Karotten Kuchen</string>
+    <string name="recipe_carrot">Karotten</string>
+    <string name="recipe_eggs">Eier</string>
+    <string name="recipe_oil">Öl</string>
+    <string name="recipe_sugar">Zucker</string>
+    <string name="recipe_plainFlour">Mehl</string>
+    <string name="recipe_bakingPowder">Backpulver</string>
+    <string name="recipe_sweetenedCondensedMilk">Gesüßte Kondesmilch</string>
+    <string name="recipe_coconutFlakes">Kokosnussflock</string>
+    <string name="recipe_rhubarb_tart">Rhabarberkuchen</string>
+    <string name="recipe_butter">Butter</string>
+    <string name="recipe_rhubarb">Rhabarber</string>
+    <string name="recipe_vanilla_sugar">Vanillezucker</string>
+    <string name="recipe_starch">Speisestärke</string>
+    <string name="recipe_lowfat_quark">Magerquark</string>
+    <string name="recipe_madeira_cake">Sandkuchen</string>
+    <string name="recipe_salt">Salz</string>
+
 
 
     <!--Time-->

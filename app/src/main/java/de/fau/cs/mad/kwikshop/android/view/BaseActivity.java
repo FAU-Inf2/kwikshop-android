@@ -120,7 +120,7 @@ public class BaseActivity extends ActionBarActivity {
                 return true;
 
             case R.id.action_startSynchronization:
-                startSynchronization();
+                SyncingActivity.requestSync();
                 return true;
 
             case R.id.action_throwException:
@@ -244,29 +244,11 @@ public class BaseActivity extends ActionBarActivity {
 
     }
 
-    protected void startSynchronization() {
-
-
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(this));
-        final CompositeSynchronizer synchronizer = objectGraph.get(CompositeSynchronizer.class);
-
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-
-                synchronizer.synchronize();
-
-                return null;
-            }
-        }.execute();
-
-    }
 
     @SuppressWarnings("unused")
     public void onEvent(ShareSuccessEvent event) {
         returnToListOfShoppingLists = true;
-        startSynchronization();
+        SyncingActivity.requestSync();
     }
 
 }

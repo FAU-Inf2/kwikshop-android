@@ -215,7 +215,6 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
-    </application>
 
     <provider
         android:name="de.fau.cs.mad.kwikshop.android.model.synchronization.background.StubContentProvider"
@@ -224,5 +223,6 @@
         android:syncable="true"/>
 
 
+    </application>
 
 </manifest>

@@ -1,13 +1,10 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 
 import java.util.Locale;
@@ -19,7 +16,13 @@ import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.util.TopExceptionHandler;
 
-public class ErrorReportingActivity extends ActionBarActivity {
+/**
+ * Entry activity that checks for crash-dumps and offers to send using email or copy it to clipboard
+ *
+ * By inheritng from SyncingActivity, this also is the activity that sets up syncing with the server
+ * using andoird's sync framework
+ */
+public class ErrorReportingActivity extends SyncingActivity {
 
     private final static String EXTRA_FINISH_INSTANTLY = "extra_finishInstantly";
 
@@ -27,7 +30,6 @@ public class ErrorReportingActivity extends ActionBarActivity {
     public static boolean isErrorReportingInitialized = false;
     public static boolean refreshed = false;
 
-    Account account;
 
     public static Intent getIntent(Context context, boolean finishInstantly) {
         Intent intent = new Intent(context, ErrorReportingActivity.class);
@@ -52,11 +54,8 @@ public class ErrorReportingActivity extends ActionBarActivity {
 
         setSavedLocale();
 
-        //set up dummy account for syncing
-        account = CreateSyncAccount(this);
 
     }
-
 
     public void initializeErrorReporting() {
 
@@ -86,6 +85,7 @@ public class ErrorReportingActivity extends ActionBarActivity {
 
 
     }
+
 
 
     private void exitActivity() {
@@ -142,37 +142,7 @@ public class ErrorReportingActivity extends ActionBarActivity {
         startActivity(refresh);
     }
 
-    /**
-     * Create a new dummy account for the sync adapter
-     *
-     * @param context The application context
-     */
-    public static Account CreateSyncAccount(Context context) {
 
-        // Create the account type and default account
-        Account newAccount = new Account("dummyaccount", "kwikshop.mad.cs.fau.de");
-        // Get an instance of the Android account manager
-        AccountManager accountManager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE);
-        /*
-         * Add the account and account type, no password or user data
-         * If successful, return the Account object, otherwise report an error.
-         */
-        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
-            /*
-             * If you don't set android:syncable="true" in
-             * in your <provider> element in the manifest,
-             * then call context.setIsSyncable(account, AUTHORITY, 1)
-             * here.
-             */
-        } else {
-            /*
-             * The account exists or some other error occurred. Log this, report it,
-             * or handle it internally.
-             */
-        }
-
-        return newAccount;
-    }
 
 
 

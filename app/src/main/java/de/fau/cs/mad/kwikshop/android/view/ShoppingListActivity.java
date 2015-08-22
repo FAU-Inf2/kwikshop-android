@@ -133,7 +133,7 @@ public class ShoppingListActivity extends BaseActivity {
                 }
 
                 /* Synchronize first to make sure this ShoppingList exists on the server */
-                startSynchronization();
+                SyncingActivity.requestSync();
                 startSharingCodeIntent(ListStorageFragment.getLocalListStorage().loadList(listId).getServerId());
                 break;
         }

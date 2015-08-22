@@ -24,6 +24,10 @@ public interface ViewLauncher {
                              String neutralText, Command<String> neutralCommand,
                              String negativeText, Command<String> negativeCommand);
 
+    void showNumberInputDialog(String title, String message, int value,
+                               String positiveText, Command<String> positiveCommand,
+                               String neutralText, Command<String> neutralCommand,
+                               String negativeText, Command<String> negativeCommand);
 
     void showMessageDialog(String title, String message,
                            String positiveMessage, Command<Void> positiveCommand,

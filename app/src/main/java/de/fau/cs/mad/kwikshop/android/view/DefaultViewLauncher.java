@@ -40,6 +40,7 @@ import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -150,61 +151,22 @@ public class DefaultViewLauncher implements ViewLauncher {
                                     String neutralText,  final Command<String> neutralCommand,
                                     String negativeText, final Command<String> negativeCommand) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(title);
+        showInputDialog(title, null, value, InputType.TYPE_CLASS_TEXT,
+                positiveText, positiveCommand,
+                neutralText, neutralCommand,
+                negativeText, negativeCommand);
+    }
 
-        if(value == null) {
-            value = "";
-        }
+    @Override
+    public void showNumberInputDialog(String title, String message, int value,
+                                      String positiveText, Command<String> positiveCommand,
+                                      String neutralText, Command<String> neutralCommand,
+                                      String negativeText, Command<String> negativeCommand) {
 
-        // Set up the input
-        final View view = activity.getLayoutInflater().inflate(R.layout.dialog_textinput, null);
-        final TextView input = (TextView) view.findViewById(R.id.textView);
-
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setText(value);
-        builder.setView(view);
-
-        // Set up the buttons
-        builder.setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                if(positiveCommand.getCanExecute()) {
-                    positiveCommand.execute(input.getText().toString());
-                }
-
-            }
-        });
-
-        if(negativeCommand != null) {
-
-            builder.setNeutralButton(neutralText, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                    if(neutralCommand.getCanExecute()) {
-                        neutralCommand.execute(input.getText().toString());
-                    }
-
-                }
-            });
-        }
-
-        builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-
-                if(negativeCommand.getCanExecute()) {
-                    negativeCommand.execute(input.getText().toString());
-                }
-            }
-        });
-
-        builder.show();
-
+        showInputDialog(title, message, Integer.toString(value), InputType.TYPE_CLASS_NUMBER,
+                        positiveText, positiveCommand,
+                        neutralText, neutralCommand,
+                        negativeText, negativeCommand);
     }
 
     @Override
@@ -252,7 +214,7 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-       public void showMessageDialog(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage, final Command<Void> negativeCommand) {
+    public void showMessageDialog(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage, final Command<Void> negativeCommand) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title);
         builder.setMessage(message);
@@ -470,7 +432,7 @@ public class DefaultViewLauncher implements ViewLauncher {
         builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
                 if (negativeCommand != null && negativeCommand.getCanExecute()) {
-                    if(checkBox.isChecked() && checkedCommand != null && checkedCommand.getCanExecute())
+                    if (checkBox.isChecked() && checkedCommand != null && checkedCommand.getCanExecute())
                         checkedCommand.execute(null);
                     else if (!checkBox.isChecked() && uncheckedCommand != null && uncheckedCommand.getCanExecute())
                         uncheckedCommand.execute(null);
@@ -596,7 +558,7 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-        public void showListOfShoppingListsActivity() {
+    public void showListOfShoppingListsActivity() {
         activity.finish();
         Intent intent = ListOfShoppingListsActivity.getIntent(activity.getApplicationContext());
         activity.startActivity(intent);
@@ -629,5 +591,73 @@ public class DefaultViewLauncher implements ViewLauncher {
         activity.startActivity(intent);
     }
 
+
+
+    private void showInputDialog(String title, String message, String value, int inputType,
+                                 String positiveText, final Command<String> positiveCommand,
+                                 String neutralText,  final Command<String> neutralCommand,
+                                 String negativeText, final Command<String> negativeCommand) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+
+        if(!StringHelper.isNullOrWhiteSpace(message)) {
+            builder.setMessage(message);
+        }
+
+        if(value == null) {
+            value = "";
+        }
+
+        // Set up the input
+        final View view = activity.getLayoutInflater().inflate(R.layout.dialog_textinput, null);
+        final TextView input = (TextView) view.findViewById(R.id.textView);
+        input.setInputType(inputType);
+        input.setSingleLine();
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setText(value);
+        builder.setView(view);
+
+        // Set up the buttons
+        builder.setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if(positiveCommand.getCanExecute()) {
+                    positiveCommand.execute(input.getText().toString());
+                }
+
+            }
+        });
+
+        if(negativeCommand != null && !StringHelper.isNullOrWhiteSpace(neutralText)) {
+
+            builder.setNeutralButton(neutralText, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    if(neutralCommand.getCanExecute()) {
+                        neutralCommand.execute(input.getText().toString());
+                    }
+
+                }
+            });
+        }
+
+        builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+
+                if(negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(input.getText().toString());
+                }
+            }
+        });
+
+        builder.show();
+
+    }
 
 }

@@ -29,6 +29,11 @@ public class DefaultResourceProvider implements ResourceProvider {
     }
 
     @Override
+    public int getInteger(int id) {
+        return context.getResources().getInteger(id);
+    }
+
+    @Override
     public Locale getLocale() {
         return context.getResources().getConfiguration().locale;
     }

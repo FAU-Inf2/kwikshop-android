@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -46,12 +47,15 @@ public class AddRecipeToShoppingListFragment extends FragmentWithViewModel imple
 
     @Override
     public void onPrepareOptionsMenu(Menu menu){
-        //add recipes
-        menu.getItem(1).getSubMenu().getItem(2).setVisible(false);
-        //mark everything as bought
-        menu.getItem(1).getSubMenu().getItem(6).setVisible(false);
-        //mark nothing as bought
-        menu.getItem(1).getSubMenu().getItem(7).setVisible(false);
+
+        MenuItem addRecipe = menu.findItem(R.id.action_add_recipe);
+        addRecipe.setVisible(false);
+
+        MenuItem moveToShoppingCart = menu.findItem(R.id.action_move_all_to_shopping_cart);
+        moveToShoppingCart.setVisible(false);
+
+        MenuItem moveFromShoppingCart = menu.findItem(R.id.action_move_all_from_shopping_cart);
+        moveFromShoppingCart.setVisible(false);
     }
 
     @Override

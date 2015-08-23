@@ -3,9 +3,12 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.model.RecipeManager;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
@@ -21,14 +24,23 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 
 public class RecipeViewModel extends ListViewModel<Recipe> {
 
+    private final ListManager<ShoppingList> shoppingListManager;
+
+    private final ListManager<Recipe> recipeManager;
 
     @Inject
-    public RecipeViewModel(ViewLauncher viewLauncher, ListManager<Recipe> recipeManager,
+    public RecipeViewModel(ViewLauncher viewLauncher, ListManager<Recipe> recipeManager, ListManager<ShoppingList> shoppingListManager,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
                                  AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper) {
 
         super(viewLauncher, recipeManager, unitStorage, groupStorage, itemParser, displayHelper, autoCompletionHelper, locationFinderHelper);
+
+        if(shoppingListManager == null) throw new ArgumentNullException("shoppingListManager");
+
+        this.recipeManager = recipeManager;
+
+        this.shoppingListManager = shoppingListManager;
     }
 
 
@@ -93,6 +105,10 @@ public class RecipeViewModel extends ListViewModel<Recipe> {
 
     private void updateItem(Item item) {
         items.setOrAddById(item);
+    }
+
+    public void showAddRecipeDialog(int listId){
+        viewLauncher.showAddRecipeDialog(shoppingListManager, recipeManager, listId, false);
     }
 
 }

@@ -373,6 +373,8 @@ public class DefaultViewLauncher implements ViewLauncher {
 
                 double scaledValue = (double) numberPicker.getValue() / selectedRecipe.getScaleFactor();
 
+                int shoppinglistId = -1;
+
                 ItemMerger itemMerger = new ItemMerger(listManager);
                 for(Item item : selectedRecipe.getItems()){
                     Item newItem = new Item();
@@ -390,10 +392,15 @@ public class DefaultViewLauncher implements ViewLauncher {
                         }
                     }else{
                         ShoppingList selectedList = (ShoppingList) listManager.getLists().toArray()[spinner.getSelectedItemPosition()];
-                        if (!itemMerger.mergeItem(selectedList.getId(), newItem)) {
-                            listManager.addListItem(selectedList.getId(), newItem);
+                        shoppinglistId = selectedList.getId();
+                        if (!itemMerger.mergeItem(shoppinglistId, newItem)) {
+                            listManager.addListItem(shoppinglistId, newItem);
                         }
                     }
+                }
+
+                if(!fromShoppingList){
+                    showShoppingList(shoppinglistId);
                 }
 
             }

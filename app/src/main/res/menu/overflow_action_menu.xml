@@ -26,6 +26,12 @@
                 android:visible="false"
                 android:title="@string/overflow_action_menu_add_recipes"/>
 
+            <item android:id="@+id/action_add_to_a_shoppinglist"
+                app:showAsAction="ifRoom"
+                android:visible="false"
+                android:title="@string/overflow_action_menu_add_to_a_shoppinglist"/>
+
+
             <item android:id="@+id/action_location"
                   app:showAsAction="ifRoom"
                   android:title="@string/supermarket_finder" />

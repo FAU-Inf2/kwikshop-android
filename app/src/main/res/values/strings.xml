@@ -200,6 +200,7 @@
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
     <string name="overflow_action_menu_recipes">Manage recipes</string>
     <string name="overflow_action_menu_add_recipes">Add recipes to the list</string>
+    <string name="overflow_action_menu_add_to_a_shoppinglist">Add this to a shopping list</string>
     <string name="recipe_scaleName_person">people</string>
     <string name="recipe_scaleName_piece">pieces</string>
     <string name="recipe_choose_amount">Choose amount of </string>

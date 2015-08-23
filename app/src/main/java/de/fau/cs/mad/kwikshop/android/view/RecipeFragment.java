@@ -7,6 +7,7 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -17,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
@@ -86,11 +88,24 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             recipeID = getArguments().getInt(ARG_RECIPEID);
         }
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()){
+            case R.id.action_add_to_a_shoppinglist:
+                viewModel.showAddRecipeDialog(recipeID);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -189,7 +189,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
     public void showAddRecipeDialog(int listId){
-        viewLauncher.showAddRecipeFromShoppingListDialog(listManager, recipeManager, listId, true);
+        viewLauncher.showAddRecipeDialog(listManager, recipeManager, listId, true);
     }
 
 

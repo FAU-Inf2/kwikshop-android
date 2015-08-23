@@ -15,6 +15,7 @@ import android.util.Log;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -46,7 +47,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 40; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 41; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -468,6 +469,24 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             }
         }
 
+
+        if(oldVersion < 41) {
+
+            try {
+                itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN predefinedId INTERGER;");
+
+                groupDao = ListStorageFragment.getDatabaseHelper().getGroupDao();
+                groupDao.executeRaw("ALTER TABLE 'group' ADD COLUMN predefinedId INTERGER;");
+
+                unitDao = ListStorageFragment.getDatabaseHelper().getUnitDao();
+                unitDao.executeRaw("ALTER TABLE 'unit' ADD COLUMN predefinedId INTERGER;");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     public Dao<Item, Integer> getItemDao() throws SQLException {

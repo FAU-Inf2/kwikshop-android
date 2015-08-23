@@ -113,7 +113,6 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         Map<Integer, Collection<DeletionInfo>> serverDeletedItems = new HashMap<>();
         Map<Integer, Map<Integer, Item>> allServerListItems = new HashMap<>();
 
-
         try {
 
             serverLists = apiClient.getLists();
@@ -127,6 +126,35 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         } catch (RetrofitError ex) {
             throw new SynchronizationException(ex, "Error getting data from server for syncing");
         }
+
+        Map<Integer, TListServer> serverListsByServerId = new HashMap<>();
+        Map<Integer, Integer> predefinedIdServerIdMap = new HashMap<>();
+        for(TListServer serverList : serverLists) {
+            if(serverList.getPredefinedId() > 0) {
+                predefinedIdServerIdMap.put(serverList.getPredefinedId(), serverList.getId());
+            }
+            serverListsByServerId.put(serverList.getId(), serverList);
+        }
+        for(DeletionInfo deletedList : serverDeletedLists) {
+            if(deletedList.getPredefinedId() > 0) {
+                predefinedIdServerIdMap.put(deletedList.getPredefinedId(), deletedList.getId());
+            }
+        }
+
+        for(TListClient clientList : clientLists) {
+
+            int serverId = clientList.getServerId();
+            int predefinedId = clientList.getPredefinedId();
+
+            if(serverId == 0 && predefinedId > 0) {
+
+                if(predefinedIdServerIdMap.containsKey(predefinedId)) {
+                    clientList.setServerId(predefinedIdServerIdMap.get(predefinedId));
+                    listManager.saveList(clientList.getId());
+                }
+            }
+        }
+
 
         Collection<Group> groups = groupStorage.getItems();
         Collection<Unit> units = unitStorage.getItems();

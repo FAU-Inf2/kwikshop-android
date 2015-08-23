@@ -47,8 +47,6 @@
     <string name="overflow_action_menu_shopping_mode">Einkaufsmodus</string>
     <string name="regular_repeat">regelmäßig wiederholen</string>
     <string name="save">Speichern</string>
-    <string name="settings_option_1_desc">Beschreibung von Option 1</string>
-    <string name="settings_option_1_name">Option1</string>
     <string name="shoppinglist_divider_textview">Einkaufswagen</string>
     <string name="sort_by">Sortieren nach</string>
     <string name="taptoundo">ZURÜCK</string>

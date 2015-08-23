@@ -23,7 +23,6 @@ import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeItemSynchroniz
 import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListItemSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
-import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactoryImplementation;
 import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
@@ -210,17 +209,6 @@ public class KwikShopBaseModule {
     public RestClientFactory provideRestClientFactory(RestClientFactoryImplementation implementation) {
         return implementation;
     }
-
-    @Provides
-    public ListClient<ShoppingListServer> provideShoppingListClient(RestClientFactory clientFactory) {
-        return clientFactory.getShoppingListClient();
-    }
-
-    @Provides
-    public ListClient<RecipeServer> provideRecipeClient(RestClientFactory clientFactory) {
-        return clientFactory.getRecipeClient();
-    }
-
 
     //endregion
 

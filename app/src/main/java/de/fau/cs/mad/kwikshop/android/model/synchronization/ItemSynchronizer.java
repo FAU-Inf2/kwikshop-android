@@ -313,6 +313,7 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
         target.setSelectedRepeatTime(source.getSelectedRepeatTime());
         target.setRemindFromNextPurchaseOn(source.isRemindFromNextPurchaseOn());
         target.setRemindAtDate(source.getRemindAtDate());
+        target.setPredefinedId(source.getPredefinedId());
 
     }
 

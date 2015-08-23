@@ -442,6 +442,7 @@ public class ListStorageFragment  {
                 recipe.setName(context.getString(R.string.recipe_madeira_cake));
                 recipe.setScaleFactor(1);
                 recipe.setScaleName(context.getString(R.string.recipe_scaleName_piece));
+                recipe.setPredefinedId(PredefinedId.Recipe_MadeiraCake.toInt());
 
                 {
                     Item item1 = new Item();

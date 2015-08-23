@@ -47,7 +47,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 41; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 42; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -485,8 +485,24 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
         }
+
+        if(oldVersion < 42) {
+
+            try {
+                assignPredefinedGroupIds();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                assignPredefinedUnitIds();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public Dao<Item, Integer> getItemDao() throws SQLException {
@@ -763,6 +779,40 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         resourceMappingInitialized = true;
     }
 
+
+    private void assignPredefinedGroupIds() throws SQLException {
+
+        Map<String, Group> predefinedGroups = new HashMap<>();
+
+        for(Group g : new DefaultDataProvider().getPredefinedGroups()) {
+            predefinedGroups.put(g.getName(), g);
+        }
+
+        List<Group> currentGroups = getGroupDao().queryForAll();
+        for(Group g : currentGroups) {
+            if(g.getResourceId() != null && predefinedGroups.containsKey(g.getName())) {
+                g.setPredefinedId(predefinedGroups.get(g.getName()).getPredefinedId());
+                getGroupDao().update(g);
+            }
+        }
+    }
+
+    private void assignPredefinedUnitIds() throws SQLException {
+
+        Map<String, Unit> predefinedUnits = new HashMap<>();
+
+        for(Unit u : new DefaultDataProvider().getPredefinedUnits()) {
+            predefinedUnits.put(u.getName(), u);
+        }
+
+        List<Unit> currentUnits = getUnitDao().queryForAll();
+        for(Unit u : currentUnits) {
+            if(u.getResourceId() != null && predefinedUnits.containsKey(u.getName())) {
+                u.setPredefinedId(predefinedUnits.get(u.getName()).getPredefinedId());
+                getUnitDao().update(u);
+            }
+        }
+    }
 
     /**
      * Loads all the fields of all the supplied items which unfortunately ORMLite does not do automatically

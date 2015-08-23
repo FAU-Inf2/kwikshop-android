@@ -411,7 +411,7 @@ public class ListStorageFragment  {
             return;
         }
 
-        Unit[] units = new DefaultDataProvider(context).getPredefinedUnits();
+        Unit[] units = new DefaultDataProvider().getPredefinedUnits();
         for (Unit u : units) {
             unitStorage.addItem(u);
         }
@@ -424,7 +424,7 @@ public class ListStorageFragment  {
             return;
         }
 
-        Group[] defaultGroups = new DefaultDataProvider(context).getPredefinedGroups();
+        Group[] defaultGroups = new DefaultDataProvider().getPredefinedGroups();
         for (Group g : defaultGroups) {
             groupStorage.addItem(g);
         }

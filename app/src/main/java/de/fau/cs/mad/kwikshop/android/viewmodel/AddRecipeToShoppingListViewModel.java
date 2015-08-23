@@ -45,7 +45,7 @@ public class AddRecipeToShoppingListViewModel extends ViewModelBase {
             scaleFactor = recipe.getScaleFactor();
             scaleName = recipe.getScaleName();
 
-            viewLauncher.showAddRecipeDialog(recipe);
+            //viewLauncher.showAddRecipeDialog(recipe);
 
 /*
             for(Item item : recipe.getItems()){

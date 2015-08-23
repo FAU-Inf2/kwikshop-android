@@ -1,6 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 
 import android.content.Intent;
 import android.widget.ArrayAdapter;
@@ -58,7 +60,7 @@ public interface ViewLauncher {
 
     void showReminderView(int listId, int itemID);
 
-    void showAddRecipeDialog(final Recipe recipe);
+    void showAddRecipeFromShoppingListDialog(final ListManager<ShoppingList> listManager, final ListManager<Recipe> recipeManager, int listId);
 
     //TODO: move somewhere else, this is not a responsibility of ViewLauncher
     @Deprecated

@@ -11,15 +11,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
@@ -38,12 +42,16 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
+import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -284,23 +292,75 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-    public void showAddRecipeDialog(final Recipe recipe){
+    public void showAddRecipeFromShoppingListDialog(final ListManager<ShoppingList> listManager, final ListManager<Recipe> recipeManager, final int listId){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(recipe.getName());
-        builder.setMessage(activity.getString(R.string.recipe_choose_amount) + " " + recipe.getScaleName() + ":");
+        builder.setTitle(activity.getString(R.string.recipe_add_recipe));
+
+        LinearLayout layout = new LinearLayout(activity);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final TextView listTextView = new TextView(activity);
+        listTextView.setText("\n" + activity.getString(R.string.recipe_choose_recipe) + "\n");
+        listTextView.setTextColor(activity.getResources().getColor(R.color.primary_text));
+        layout.addView(listTextView);
 
         final NumberPicker numberPicker = new NumberPicker(activity);
+        final Spinner spinner = new Spinner(activity);
+        final TextView amoutTextView = new TextView(activity);
+
+        List<String> names = new ArrayList<>();
+        for (Recipe recipe : recipeManager.getLists()) {
+            names.add(recipe.getName());
+        }
+        final ArrayAdapter<String> arrayAdapter = new  ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, names);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Recipe curRecipe = (Recipe)(recipeManager.getLists().toArray()[position]);
+                amoutTextView.setText("\n" + activity.getString(R.string.recipe_choose_amount) + " " + curRecipe.getScaleName() + ":");
+                numberPicker.setValue(curRecipe.getScaleFactor());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        layout.addView(spinner);
+
+
+        amoutTextView.setTextColor(activity.getResources().getColor(R.color.primary_text));
+        layout.addView(amoutTextView);
+
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(50);
-        numberPicker.setValue(recipe.getScaleFactor());
-        builder.setView(numberPicker);
+        layout.addView(numberPicker);
+
+        builder.setView(layout);
 
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
 
-                double scaledValue = (double) numberPicker.getValue() / recipe.getScaleFactor();
-                EventBus.getDefault().post(new DialogFinishedEvent(scaledValue, recipe));
+                Recipe selectedRecipe = (Recipe) recipeManager.getLists().toArray()[spinner.getSelectedItemPosition()];
+                double scaledValue = (double) numberPicker.getValue() / selectedRecipe.getScaleFactor();
+
+                ItemMerger itemMerger = new ItemMerger(listManager);
+                for(Item item : selectedRecipe.getItems()){
+                    Item newItem = new Item();
+                    newItem.setName(item.getName());
+                    newItem.setAmount(scaledValue * item.getAmount());
+                    newItem.setBrand(item.getBrand());
+                    newItem.setComment(item.getComment());
+                    newItem.setHighlight(item.isHighlight());
+                    newItem.setGroup(item.getGroup());
+                    newItem.setUnit(item.getUnit());
+                    if(!itemMerger.mergeItem(listId, newItem)) {
+                        listManager.addListItem(listId, newItem);
+                    }
+                }
 
             }
         });

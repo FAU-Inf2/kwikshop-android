@@ -203,6 +203,8 @@
     <string name="recipe_scaleName_person">people</string>
     <string name="recipe_scaleName_piece">pieces</string>
     <string name="recipe_choose_amount">Choose amount of </string>
+    <string name="recipe_choose_recipe">Choose a recipe to add:</string>
+    <string name="recipe_add_recipe">Add a recipe</string>
 
     <!--Example Recipes -->
     <string name="recipe_name_chili_con_carne">Chili con carne</string>

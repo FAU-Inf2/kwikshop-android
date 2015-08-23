@@ -60,7 +60,7 @@ public interface ViewLauncher {
 
     void showReminderView(int listId, int itemID);
 
-    void showAddRecipeFromShoppingListDialog(final ListManager<ShoppingList> listManager, final ListManager<Recipe> recipeManager, int listId);
+    void showAddRecipeDialog(final ListManager<ShoppingList> listManager, final ListManager<Recipe> recipeManager, int listId, boolean fromShoppingList);
 
     //TODO: move somewhere else, this is not a responsibility of ViewLauncher
     @Deprecated

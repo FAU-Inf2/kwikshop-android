@@ -292,26 +292,44 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-    public void showAddRecipeFromShoppingListDialog(final ListManager<ShoppingList> listManager, final ListManager<Recipe> recipeManager, final int listId){
+    public void showAddRecipeDialog(final ListManager<ShoppingList> listManager, final ListManager<Recipe> recipeManager, final int listId, final boolean fromShoppingList){
+
+        //fromShoppingList indicates whether this method was called from a shopping list to add a recipe (true) or from a recipe to add to a shopping list (false)
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(activity.getString(R.string.recipe_add_recipe));
+        if(fromShoppingList)
+            builder.setTitle(activity.getString(R.string.recipe_add_recipe));
+        else
+            builder.setTitle(activity.getString(R.string.recipe_add_to_shoppinglist));
 
         LinearLayout layout = new LinearLayout(activity);
         layout.setOrientation(LinearLayout.VERTICAL);
 
+
         final TextView listTextView = new TextView(activity);
-        listTextView.setText("\n" + activity.getString(R.string.recipe_choose_recipe) + "\n");
+        final NumberPicker numberPicker = new NumberPicker(activity);
+        final Spinner spinner = new Spinner(activity);
+        final TextView amountTextView = new TextView(activity);
+
+        if(fromShoppingList)
+            listTextView.setText("\n" + activity.getString(R.string.recipe_choose_recipe) + "\n");
+        else
+            listTextView.setText("\n" + activity.getString(R.string.recipe_choose_shoppinglist) + "\n");
+
         listTextView.setTextColor(activity.getResources().getColor(R.color.primary_text));
         layout.addView(listTextView);
 
-        final NumberPicker numberPicker = new NumberPicker(activity);
-        final Spinner spinner = new Spinner(activity);
-        final TextView amoutTextView = new TextView(activity);
 
         List<String> names = new ArrayList<>();
-        for (Recipe recipe : recipeManager.getLists()) {
-            names.add(recipe.getName());
+        if(fromShoppingList) {
+            for (Recipe recipe : recipeManager.getLists()) {
+                names.add(recipe.getName());
+            }
+        }
+        else{
+            for (ShoppingList shoppingList : listManager.getLists()) {
+                names.add(shoppingList.getName());
+            }
         }
         final ArrayAdapter<String> arrayAdapter = new  ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, names);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -319,9 +337,11 @@ public class DefaultViewLauncher implements ViewLauncher {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Recipe curRecipe = (Recipe)(recipeManager.getLists().toArray()[position]);
-                amoutTextView.setText("\n" + activity.getString(R.string.recipe_choose_amount) + " " + curRecipe.getScaleName() + ":");
-                numberPicker.setValue(curRecipe.getScaleFactor());
+                if (fromShoppingList) {
+                    Recipe curRecipe = (Recipe) (recipeManager.getLists().toArray()[position]);
+                    amountTextView.setText("\n" + activity.getString(R.string.recipe_choose_amount) + " " + curRecipe.getScaleName() + ":");
+                    numberPicker.setValue(curRecipe.getScaleFactor());
+                }
             }
 
             @Override
@@ -331,12 +351,13 @@ public class DefaultViewLauncher implements ViewLauncher {
         });
         layout.addView(spinner);
 
-
-        amoutTextView.setTextColor(activity.getResources().getColor(R.color.primary_text));
-        layout.addView(amoutTextView);
+        if(!fromShoppingList)amountTextView.setText("\n" + activity.getString(R.string.recipe_choose_amount) + " " + recipeManager.getList(listId).getScaleName() + ":");
+        amountTextView.setTextColor(activity.getResources().getColor(R.color.primary_text));
+        layout.addView(amountTextView);
 
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(50);
+        if(!fromShoppingList) numberPicker.setValue(recipeManager.getList(listId).getScaleFactor());
         layout.addView(numberPicker);
 
         builder.setView(layout);
@@ -344,7 +365,12 @@ public class DefaultViewLauncher implements ViewLauncher {
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
 
-                Recipe selectedRecipe = (Recipe) recipeManager.getLists().toArray()[spinner.getSelectedItemPosition()];
+                Recipe selectedRecipe;
+                if(fromShoppingList)
+                    selectedRecipe = (Recipe) recipeManager.getLists().toArray()[spinner.getSelectedItemPosition()];
+                else
+                    selectedRecipe = recipeManager.getList(listId);
+
                 double scaledValue = (double) numberPicker.getValue() / selectedRecipe.getScaleFactor();
 
                 ItemMerger itemMerger = new ItemMerger(listManager);
@@ -357,8 +383,16 @@ public class DefaultViewLauncher implements ViewLauncher {
                     newItem.setHighlight(item.isHighlight());
                     newItem.setGroup(item.getGroup());
                     newItem.setUnit(item.getUnit());
-                    if(!itemMerger.mergeItem(listId, newItem)) {
-                        listManager.addListItem(listId, newItem);
+
+                    if(fromShoppingList) {
+                        if (!itemMerger.mergeItem(listId, newItem)) {
+                            listManager.addListItem(listId, newItem);
+                        }
+                    }else{
+                        ShoppingList selectedList = (ShoppingList) listManager.getLists().toArray()[spinner.getSelectedItemPosition()];
+                        if (!itemMerger.mergeItem(selectedList.getId(), newItem)) {
+                            listManager.addListItem(selectedList.getId(), newItem);
+                        }
                     }
                 }
 

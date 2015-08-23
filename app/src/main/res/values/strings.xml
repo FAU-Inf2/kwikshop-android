@@ -204,7 +204,9 @@
     <string name="recipe_scaleName_piece">pieces</string>
     <string name="recipe_choose_amount">Choose amount of </string>
     <string name="recipe_choose_recipe">Choose a recipe to add:</string>
-    <string name="recipe_add_recipe">Add a recipe</string>
+    <string name="recipe_choose_shoppinglist">Choose a shopping list:</string>
+    <string name="recipe_add_recipe">Add a recipe to this list</string>
+    <string name="recipe_add_to_shoppinglist">Add this recipe to a list</string>
 
     <!--Example Recipes -->
     <string name="recipe_name_chili_con_carne">Chili con carne</string>

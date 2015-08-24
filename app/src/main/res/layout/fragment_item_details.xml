@@ -108,7 +108,7 @@
                     android:id="@+id/upButton"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/ic_keyboard_arrow_up_black_24dp"
-                    android:layout_marginLeft="114dp"
+                    android:layout_marginLeft="102dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true" />
             </RelativeLayout>
@@ -157,7 +157,7 @@
                     android:layout_weight="5.33"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="114dp" />
+                    android:layout_marginLeft="102dp" />
 
                 <CheckBox
                     android:layout_width="132dp"

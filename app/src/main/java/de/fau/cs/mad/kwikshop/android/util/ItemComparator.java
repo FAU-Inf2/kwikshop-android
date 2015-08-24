@@ -43,10 +43,13 @@ public class ItemComparator implements Comparator<Item> {
                 int groupOrder = displayHelper.getDisplayName(item1.getGroup())
                         .compareTo(displayHelper.getDisplayName(item2.getGroup()));
 
-                //if groups are identical, sort alphabetically
+                //if groups are identical, use the saved order (manual)
                 res = groupOrder;
-                if(res != 0) break;
+                if(res == 0) {
+                    res = item1.getOrder() - item2.getOrder();
+                }
 
+                break;
 
             case ALPHABETICALLY:
 

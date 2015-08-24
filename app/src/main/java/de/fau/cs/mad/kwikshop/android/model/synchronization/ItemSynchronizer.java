@@ -3,10 +3,12 @@ package de.fau.cs.mad.kwikshop.android.model.synchronization;
 import java.util.Collection;
 
 
+import de.fau.cs.mad.kwikshop.android.model.AbstractListManager;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
+import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
@@ -15,13 +17,12 @@ import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObjectServer;
 import retrofit.RetrofitError;
 
-public class ItemSynchronizer<TListClient extends DomainListObject,
+public abstract class ItemSynchronizer<TListClient extends DomainListObject,
                               TListServer extends DomainListObjectServer>
         extends
             SyncStrategy<Item, Item, ItemSyncData<TListClient, TListServer>> {
 
 
-    private final ListClient<TListServer> apiClient;
     private final ListManager<TListClient> listManager;
     private final SimpleStorage<Group> groupStorage;
     private final SimpleStorage<Unit> unitStorage;
@@ -32,15 +33,11 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
     private int clientListId = -1;
 
 
-    public ItemSynchronizer(ListClient<TListServer> apiClient,
-                            ListManager<TListClient> listManager,
+    public ItemSynchronizer(ListManager<TListClient> listManager,
                             SimpleStorage<Group> groupStorage,
                             SimpleStorage<Unit> unitStorage,
                             SimpleStorage<LastLocation> locationStorage) {
 
-        if(apiClient == null) {
-            throw new ArgumentNullException("apiClient");
-        }
 
         if(listManager == null) {
             throw new ArgumentNullException("listManager");
@@ -54,12 +51,15 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
             throw new ArgumentNullException("unitStorage");
         }
 
-        this.apiClient = apiClient;
         this.listManager = listManager;
         this.groupStorage = groupStorage;
         this.unitStorage = unitStorage;
         this.locationStorage = locationStorage;
     }
+
+
+
+    protected abstract ListClient<TListServer> getApiClient();
 
 
 
@@ -175,7 +175,7 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
     protected void deleteServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item serverItem) {
 
         try {
-            apiClient.deleteListItem(serverListId, serverItem.getServerId());
+            getApiClient().deleteListItem(serverListId, serverItem.getServerId());
         } catch (RetrofitError ex) {
             throw new SynchronizationException(ex, "Error deleting item %s in list %s", serverListId, serverItem.getServerId());
         }
@@ -197,7 +197,7 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
         Item serverItem;
 
         try {
-            serverItem = apiClient.createItem(serverListId, clientItem);
+            serverItem = getApiClient().createItem(serverListId, clientItem);
         } catch (RetrofitError ex) {
             throw new SynchronizationException(ex, "Error creating item on server in list %s", serverListId);
         }
@@ -238,7 +238,7 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
         applyPropertiesToServerData(itemSyncData, clientItem, serverItem);
 
         try {
-            serverItem = apiClient.updateItem(serverListId, serverItem.getServerId(), serverItem);
+            serverItem = getApiClient().updateItem(serverListId, serverItem.getServerId(), serverItem);
         } catch (RetrofitError ex) {
             throw new SynchronizationException(ex, "Error updating item %s in list %s on server", serverItem.getServerId(), serverListId);
         }
@@ -313,6 +313,7 @@ public class ItemSynchronizer<TListClient extends DomainListObject,
         target.setSelectedRepeatTime(source.getSelectedRepeatTime());
         target.setRemindFromNextPurchaseOn(source.isRemindFromNextPurchaseOn());
         target.setRemindAtDate(source.getRemindAtDate());
+        target.setPredefinedId(source.getPredefinedId());
 
     }
 

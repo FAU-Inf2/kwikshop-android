@@ -18,11 +18,8 @@
     <string name="delete_shopping_list">Очистить список покупок</string>
     <string name="descr_apple">яблоко</string>
     <string name="descr_coke">кола</string>
-    <string name="descr_details1">Например, вы можете выделить \n важные элементы, такие как эти.</string>
     <string name="descr_already_bought">Этот пункт уже купили.</string>
-    <string name="descr_drag_and_drop1">Нажмите немного больше и переместить \n элемент в списке для сортировки.</string>
     <string name="descr_my_first_shopping_list">Мой первый список покупок</string>
-    <string name="descr_quickadd2">добавить</string>
     <string name="descr_spaghettis">спагетти</string>
     <string name="descr_sweets">сладости</string>
     <string name="descr_toilet_paper">туалетная бумага</string>

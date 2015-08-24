@@ -25,6 +25,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
+import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
@@ -40,6 +41,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     private final ResourceProvider resourceProvider;
     private final RegularlyRepeatHelper repeatHelper;
+    private final ListManager<Recipe> recipeManager;
+
 
     private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
     private ItemSortType itemSortType = ItemSortType.MANUAL;
@@ -85,6 +88,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     @Inject
     public ShoppingListViewModel(ViewLauncher viewLauncher,
                                  ListManager<ShoppingList> shoppingListManager,
+                                 ListManager<Recipe> recipeManager,
                                  SimpleStorage<Unit> unitStorage,
                                  SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser,
@@ -107,9 +111,14 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             throw new ArgumentNullException("repeatHelper");
         }
 
+        if(recipeManager == null){
+            throw new ArgumentNullException("recipeManager");
+        }
+
 
         this.resourceProvider = resourceProvider;
         this.repeatHelper = repeatHelper;
+        this.recipeManager = recipeManager;
     }
 
 
@@ -177,6 +186,10 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, deleteNegativeCommand, checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);
         else
             deletePositiveCommand.execute(null);
+    }
+
+    public void showAddRecipeDialog(int listId){
+        viewLauncher.showAddRecipeDialog(listManager, recipeManager, listId, true);
     }
 
 

@@ -129,6 +129,9 @@ public class ShoppingListFragment
                 shoppingPlaceRequestIsCanceled = false;
                 findNearbySupermarket();
                 return true;
+            case R.id.action_add_recipe:
+                viewModel.showAddRecipeDialog(listID);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

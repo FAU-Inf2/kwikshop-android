@@ -9,19 +9,17 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -46,27 +44,28 @@ import static de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper.*;
 
 public class SettingFragment extends Fragment {
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
-    public static String SETTINGS = "settings";
     public static CharSequence[] localeSelectionNames = {"Default", "English", "German", "Portuguese", "Russian"};
     public static CharSequence[] localeIds = {"default", "en", "de", "pt", "ru"};
 
-    private View rootView;
     private AlertDialog alert;
-    private ListView listView;
     private Context context;
     private ArrayList<Setting> settingsList;
     private SettingAdapter objAdapter;
 
 
     private Setting apiEndpointSetting;
-    private Setting locationPermission;
-    private Setting setLocale;
-    private Setting setAutoCompletionDeletion;
-    private Setting setManageUnits;
+    private Setting locationPermissionSetting;
+    private Setting localeSetting;
+    private Setting autoCompletionDeletionSetting;
+    private Setting manageUnitsSetting;
     private Setting itemDeletionSetting;
-    private Setting parserSeparatorWord;
-
+    private Setting slDeletionSetting;
+    private Setting recipeDeletionSetting;
+    private Setting parserSeparatorWordSetting;
+    private Setting loginSetting;
+    private Setting enableSyncSetting;
+    private Setting syncNowSetting;
+    private Setting syncIntervalSetting;
 
     @Inject
     ViewLauncher viewLauncher;
@@ -74,9 +73,9 @@ public class SettingFragment extends Fragment {
     @Inject
     ResourceProvider resourceProvider;
 
-    public static SettingFragment newInstance(int sectionNumber) {
-        SettingFragment fragment = new SettingFragment();
-        return fragment;
+
+    public static SettingFragment newInstance() {
+        return new SettingFragment();
     }
 
 
@@ -89,32 +88,31 @@ public class SettingFragment extends Fragment {
 
         context = getActivity().getApplicationContext();
 
-        rootView = inflater.inflate(R.layout.fragment_setting, container, false);
-        listView = (ListView) rootView.findViewById(android.R.id.list);
+        View rootView = inflater.inflate(R.layout.fragment_setting, container, false);
+        ListView listView = (ListView) rootView.findViewById(android.R.id.list);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 // local change
-                if (settingsList.get(position).equals(setLocale))
+                if (settingsList.get(position).equals(localeSetting))
                     changeLocalOption();
 
-
                 // delete history of autocompletion
-                if (settingsList.get(position).equals(setAutoCompletionDeletion))
+                if (settingsList.get(position).equals(autoCompletionDeletionSetting))
                     deleteAutoCompletionHistoryOption();
 
                 // manage units
-                if (settingsList.get(position).equals(setManageUnits))
-                    manageUnits(position);
+                if (settingsList.get(position).equals(manageUnitsSetting))
+                    manageUnits();
 
                 // set API endpoint
                 if (settingsList.get(position).equals(apiEndpointSetting))
                     setApiEndpoint();
 
                 // location permission
-                if (settingsList.get(position).equals(locationPermission)) {
+                if (settingsList.get(position).equals(locationPermissionSetting)) {
                     setLocationPermission(position);
                 }
 
@@ -123,56 +121,73 @@ public class SettingFragment extends Fragment {
                     setItemDeletionSetting(position);
                 }
 
-                // Parser separator word
-                if (settingsList.get(position).equals(parserSeparatorWord)) {
-                    setParserSeparatorWord();
+                // Shopping List deletion
+                if (settingsList.get(position).equals(slDeletionSetting)) {
+                    setShoppingListDeletionSetting(position);
+                }
+
+                // Item deletion
+                if (settingsList.get(position).equals(recipeDeletionSetting)) {
+                    setRecipeDeletionSetting(position);
                 }
 
 
+                // Parser separator word
+                if (settingsList.get(position).equals(parserSeparatorWordSetting)) {
+                    setParserSeparatorWord();
+                }
+
+                if (settingsList.get(position).equals(loginSetting)) {
+                    startLoginActivity();
+                }
+
+                if (settingsList.get(position).equals(syncNowSetting)) {
+                    SyncingActivity.requestSync();
+                }
+
+                if (settingsList.get(position).equals(enableSyncSetting)) {
+                    setEnableSynchronization(position);
+                }
+
+                if (settingsList.get(position).equals(syncIntervalSetting)) {
+                    selectSyncInterval();
+                }
             }
         });
-
-
-
 
 
         // set title for actionbar
         getActivity().setTitle(R.string.title_activity_settings);
 
-        // list of settings
-        settingsList = new ArrayList<>();
 
         // Locale Setting
-        setLocale = new Setting(context);
-        setLocale.setName(R.string.settings_option_2_setlocale);
-        setLocale.setCaption(R.string.settings_option_2_desc);
-        settingsList.add(setLocale);
+        localeSetting = new Setting(context);
+        localeSetting.setName(R.string.settings_option_2_setlocale);
+        localeSetting.setCaption(R.string.settings_option_2_desc);
 
         // Autocompletion deletion
-        setAutoCompletionDeletion = new Setting(context);
-        setAutoCompletionDeletion.setName(R.string.settings_option_3_deleteHistory);
-        setAutoCompletionDeletion.setCaption(R.string.settings_option_3_desc);
-        settingsList.add(setAutoCompletionDeletion);
+        autoCompletionDeletionSetting = new Setting(context);
+        autoCompletionDeletionSetting.setName(R.string.settings_option_3_deleteHistory);
+        autoCompletionDeletionSetting.setCaption(R.string.settings_option_3_desc);
+
 
         // manage units
-        setManageUnits = new Setting(context);
-        setManageUnits.setName(R.string.settings_option_3_manageUnits);
-        setManageUnits.setCaption(R.string.settings_option_3_desc2);
-        settingsList.add(setManageUnits);
+        manageUnitsSetting = new Setting(context);
+        manageUnitsSetting.setName(R.string.settings_option_3_manageUnits);
+        manageUnitsSetting.setCaption(R.string.settings_option_3_desc2);
+
 
         // API endpoint settings
         apiEndpointSetting = new Setting(context);
         apiEndpointSetting.setName(R.string.settings_option_4_APIEndPoint_Title);
         apiEndpointSetting.setCaption(R.string.settings_option_4_APIEndPoint_Desc);
-        settingsList.add(apiEndpointSetting);
 
         // permission for location tracking
-        locationPermission = new Setting(context);
-        locationPermission.setName(R.string.settings_option_5_location_permission_title);
-        locationPermission.setCaption(R.string.settings_option_5_location_permission_desc);
-        locationPermission.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity()));
-        locationPermission.setViewVisibility(View.VISIBLE);
-        settingsList.add(locationPermission);
+        locationPermissionSetting = new Setting(context);
+        locationPermissionSetting.setName(R.string.settings_option_5_location_permission_title);
+        locationPermissionSetting.setCaption(R.string.settings_option_5_location_permission_desc);
+        locationPermissionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity()));
+        locationPermissionSetting.setViewVisibility(View.VISIBLE);
 
         //Show Dialog when deleting an item
         itemDeletionSetting = new Setting(context);
@@ -180,13 +195,64 @@ public class SettingFragment extends Fragment {
         itemDeletionSetting.setCaption(R.string.settings_option_6_item_deletion_descr);
         itemDeletionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false, getActivity()));
         itemDeletionSetting.setViewVisibility(View.VISIBLE);
-        settingsList.add(itemDeletionSetting);
+
+        //Show Dialog when deleting a Shopping List
+        slDeletionSetting = new Setting(context);
+        slDeletionSetting.setName(R.string.settings_options_delete_shoppinglist_name);
+        slDeletionSetting.setCaption(R.string.settings_options_delete_shoppinglist_descr);
+        slDeletionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SL_DELETION_SHOW_AGAIN_MSG, false, getActivity()));
+        slDeletionSetting.setViewVisibility(View.VISIBLE);
+
+        //Show Dialog when deleting a recipe
+        recipeDeletionSetting = new Setting(context);
+        recipeDeletionSetting.setName(R.string.settings_options_delete_recipe_name);
+        recipeDeletionSetting.setCaption(R.string.settings_options_delete_recipe_descr);
+        recipeDeletionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.RECIPE_DELETION_SHOW_AGAIN_MSG, false, getActivity()));
+        recipeDeletionSetting.setViewVisibility(View.VISIBLE);
 
         //Choose separator word for the parser
-        parserSeparatorWord = new Setting(context);
-        parserSeparatorWord.setName(R.string.settings_option_7_parser_separate_word_name);
-        parserSeparatorWord.setCaption(R.string.settings_option_7_parser_separate_word_descr);
-        settingsList.add(parserSeparatorWord);
+        parserSeparatorWordSetting = new Setting(context);
+        parserSeparatorWordSetting.setName(R.string.settings_option_7_parser_separate_word_name);
+        parserSeparatorWordSetting.setCaption(R.string.settings_option_7_parser_separate_word_descr);
+
+        //LoginActivity
+        loginSetting = new Setting(context);
+        loginSetting.setName(R.string.settings_option_8_login_name);
+        loginSetting.setCaption(R.string.settings_option_8_login_descr);
+
+        enableSyncSetting = new Setting(context);
+        enableSyncSetting.setName(R.string.settings_option_enableSync_name);
+        enableSyncSetting.setCaption(R.string.settings_option_enableSync_descr);
+        enableSyncSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ENABLE_SYNCHRONIZATION, true, context));
+        enableSyncSetting.setViewVisibility(View.VISIBLE);
+
+        syncNowSetting = new Setting(context);
+        syncNowSetting.setName(R.string.settings_option_sync_name);
+        syncNowSetting.setCaption(R.string.settings_option_sync_descr);
+
+        syncIntervalSetting = new Setting(context);
+        syncIntervalSetting.setName(R.string.settings_options_syncInterval_name);
+        syncIntervalSetting.setCaption(R.string.settings_options_syncInterval_descr);
+
+        // add all settings to the list of settins
+
+        // list of settings
+        settingsList = new ArrayList<>(Arrays.asList(new Setting[]
+                {
+                    localeSetting,
+                    autoCompletionDeletionSetting,
+                    itemDeletionSetting,
+                    slDeletionSetting,
+                    recipeDeletionSetting,
+                    parserSeparatorWordSetting,
+                    manageUnitsSetting,
+                    locationPermissionSetting,
+                    enableSyncSetting,
+                    syncNowSetting,
+                    loginSetting,
+                    syncIntervalSetting,
+                    apiEndpointSetting
+                }));
 
 
         // Adapter for settings view
@@ -195,25 +261,6 @@ public class SettingFragment extends Fragment {
 
         return rootView;
     }
-
-
-    private void changeLocalOption() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, getActivity());
-        builder.setTitle(R.string.settings_option_2_setlocale);
-        builder.setSingleChoiceItems(localeSelectionNames, currentLocaleIdIndex, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                setLocale(localeIds[which].toString());
-                SharedPreferencesHelper.saveInt(SharedPreferencesHelper.LOCALE, which, getActivity());
-            }
-        });
-
-        alert = builder.create();
-        alert.show();
-    }
-
 
     @Override
     public void onPause() {
@@ -251,8 +298,7 @@ public class SettingFragment extends Fragment {
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
-                // don't delete history of autocompletion
-                return;
+                // do nothing
             }
         });
 
@@ -261,11 +307,30 @@ public class SettingFragment extends Fragment {
 
     }
 
+
+
+    private void changeLocalOption() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, getActivity());
+        builder.setTitle(R.string.settings_option_2_setlocale);
+        builder.setSingleChoiceItems(localeSelectionNames, currentLocaleIdIndex, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                setLocale(localeIds[which].toString());
+                SharedPreferencesHelper.saveInt(SharedPreferencesHelper.LOCALE, which, getActivity());
+            }
+        });
+
+        alert = builder.create();
+        alert.show();
+    }
+
     private void deleteAutoCompletionHistory() {
         Context context = getActivity().getBaseContext();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        SimpleStorage<AutoCompletionData> autoCompletionNameStorage = null;
-        SimpleStorage<AutoCompletionBrandData> autoCompletionBrandStorage = null;
+        SimpleStorage<AutoCompletionData> autoCompletionNameStorage;
+        SimpleStorage<AutoCompletionBrandData> autoCompletionBrandStorage;
         try {
             //create local autocompletion storage
             autoCompletionNameStorage = new SimpleStorageBase<>(databaseHelper.getAutoCompletionDao());
@@ -283,7 +348,7 @@ public class SettingFragment extends Fragment {
         Toast.makeText(getActivity(), getResources().getString(R.string.settings_option_3_success), Toast.LENGTH_LONG).show();
     }
 
-    private void manageUnits(int position) {
+    private void manageUnits() {
 
                       /*  AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 +            builder.setTitle(R.string.settings_option_3_createUnits);
@@ -306,7 +371,6 @@ public class SettingFragment extends Fragment {
 
     }
 
-    @SuppressWarnings("unchecked")
     private void setApiEndpoint() {
 
         viewLauncher.showTextInputDialog(
@@ -345,6 +409,16 @@ public class SettingFragment extends Fragment {
         objAdapter.notifyDataSetChanged();
     }
 
+    private void setEnableSynchronization(int position) {
+
+        boolean isChecked =objAdapter.getItem(position).isChecked();
+
+        objAdapter.getItem(position).setChecked(!isChecked);
+        SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ENABLE_SYNCHRONIZATION, !isChecked, context);
+
+        objAdapter.notifyDataSetChanged();
+    }
+
     private void setItemDeletionSetting(int position){
         if(objAdapter.getItem(position).isChecked()){
             objAdapter.getItem(position).setChecked(false);
@@ -355,6 +429,29 @@ public class SettingFragment extends Fragment {
         }
         objAdapter.notifyDataSetChanged();
     }
+
+    private void setShoppingListDeletionSetting(int position){
+        if(objAdapter.getItem(position).isChecked()){
+            objAdapter.getItem(position).setChecked(false);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SL_DELETION_SHOW_AGAIN_MSG,false,getActivity());
+        } else {
+            objAdapter.getItem(position).setChecked(true);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SL_DELETION_SHOW_AGAIN_MSG,true,getActivity());
+        }
+        objAdapter.notifyDataSetChanged();
+    }
+
+    private void setRecipeDeletionSetting(int position){
+        if(objAdapter.getItem(position).isChecked()){
+            objAdapter.getItem(position).setChecked(false);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.RECIPE_DELETION_SHOW_AGAIN_MSG,false,getActivity());
+        } else {
+            objAdapter.getItem(position).setChecked(true);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.RECIPE_DELETION_SHOW_AGAIN_MSG,true,getActivity());
+        }
+        objAdapter.notifyDataSetChanged();
+    }
+
 
     private void setParserSeparatorWord(){
 
@@ -375,5 +472,68 @@ public class SettingFragment extends Fragment {
 
     }
 
+    private void startLoginActivity() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        Bundle b = new Bundle();
+        b.putBoolean("FORCE", true); //To make sure the Activity does not close immediately
+        intent.putExtras(b);
+        startActivity(intent);
+    }
 
+    private void selectSyncInterval() {
+
+        final int defaultValue = resourceProvider.getInteger(R.integer.synchronizationInterval_default);
+        final int currentValue = loadInt(SYNCHRONIZATION_INTERVAL, defaultValue, context);
+
+        viewLauncher.showNumberInputDialog(
+
+                // title and message
+                resourceProvider.getString(R.string.settings_options_syncInterval_name),
+                resourceProvider.getString(R.string.settings_options_syncInterval_inputBox_message),
+
+                //current value
+                currentValue,
+
+                // ok button: save updated value
+                resourceProvider.getString(android.R.string.ok), new Command<String>() {
+                    @Override
+                    public void execute(String value) {
+
+                        try {
+
+                            int intValue = Integer.parseInt(value);
+
+                            if(intValue != currentValue && intValue > 0) {
+                                saveInt(SYNCHRONIZATION_INTERVAL, intValue, context);
+                                SyncingActivity.onSyncIntervalSettingChanged(intValue);
+                            }
+
+
+                        } catch (NumberFormatException ex) {
+                            // should not happen, because showNumberInputDialog() only allows digits as input
+                            // => just ignore the error
+                        }
+
+                    }
+                },
+
+                // reset to default value (neutral button)
+                resourceProvider.getString(R.string.str_default),
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+                        if(defaultValue != currentValue) {
+                            saveInt(SYNCHRONIZATION_INTERVAL, defaultValue, context);
+                            SyncingActivity.onSyncIntervalSettingChanged(defaultValue);
+                        }
+                    }
+                },
+
+                // cancel button: do othign
+                resourceProvider.getString(android.R.string.cancel),
+                NullCommand.StringInstance
+        );
+
+    }
 }

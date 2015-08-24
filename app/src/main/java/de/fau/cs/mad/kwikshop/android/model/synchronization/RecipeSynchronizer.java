@@ -2,11 +2,13 @@ package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
+import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -16,9 +18,12 @@ import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
 
 public class RecipeSynchronizer extends ListSynchronizer<Recipe, RecipeServer> {
 
+    private final RestClientFactory clientFactory;
+    private ListClient<RecipeServer> client;
+
     @Inject
-    public RecipeSynchronizer(ObjectConverter<Recipe, RecipeServer> clientToServerObjectConverter,
-                              ListClient<RecipeServer> listClient,
+    public RecipeSynchronizer(RestClientFactory clientFactory,
+                              ObjectConverter<Recipe, RecipeServer> clientToServerObjectConverter,
                               ListManager<Recipe> listManager,
                               SimpleStorage<DeletedList> deletedListStorage,
                               SimpleStorage<DeletedItem> deletedItemStorage,
@@ -27,9 +32,15 @@ public class RecipeSynchronizer extends ListSynchronizer<Recipe, RecipeServer> {
                               SimpleStorage<LastLocation> locationStorage,
                               ItemSynchronizer<Recipe, RecipeServer> itemSynchronizer) {
 
-        super(clientToServerObjectConverter, listClient, listManager, deletedListStorage,
+        super(clientToServerObjectConverter, listManager, deletedListStorage,
               deletedItemStorage, groupStorage, unitStorage, locationStorage, itemSynchronizer);
 
+        if(clientFactory == null) {
+            throw new ArgumentNullException("clientFactory");
+        }
+
+
+        this.clientFactory = clientFactory;
     }
 
 
@@ -54,6 +65,14 @@ public class RecipeSynchronizer extends ListSynchronizer<Recipe, RecipeServer> {
         target.setScaleName(source.getScaleName());
         target.setLastModifiedDate(source.getLastModifiedDate());
 
+    }
+
+    @Override
+    protected ListClient<RecipeServer> getApiClient() {
+        if(client == null) {
+            client = clientFactory.getRecipeClient();
+        }
+        return client;
     }
 
 }

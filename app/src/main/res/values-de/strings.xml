@@ -47,8 +47,6 @@
     <string name="overflow_action_menu_shopping_mode">Einkaufsmodus</string>
     <string name="regular_repeat">regelmäßig wiederholen</string>
     <string name="save">Speichern</string>
-    <string name="settings_option_1_desc">Beschreibung von Option 1</string>
-    <string name="settings_option_1_name">Option1</string>
     <string name="shoppinglist_divider_textview">Einkaufswagen</string>
     <string name="sort_by">Sortieren nach</string>
     <string name="taptoundo">ZURÜCK</string>
@@ -142,6 +140,24 @@
     <string name="recipe_corn">Mais</string>
     <string name="recipe_potatoes">Kartoffeln</string>
     <string name="recipe_tomatoes">Tomaten</string>
+    <string name="recipe_carrotCake">Kokosnuss-Karotten Kuchen</string>
+    <string name="recipe_carrot">Karotten</string>
+    <string name="recipe_eggs">Eier</string>
+    <string name="recipe_oil">Öl</string>
+    <string name="recipe_sugar">Zucker</string>
+    <string name="recipe_plainFlour">Mehl</string>
+    <string name="recipe_bakingPowder">Backpulver</string>
+    <string name="recipe_sweetenedCondensedMilk">Gesüßte Kondesmilch</string>
+    <string name="recipe_coconutFlakes">Kokosnussflock</string>
+    <string name="recipe_rhubarb_tart">Rhabarberkuchen</string>
+    <string name="recipe_butter">Butter</string>
+    <string name="recipe_rhubarb">Rhabarber</string>
+    <string name="recipe_vanilla_sugar">Vanillezucker</string>
+    <string name="recipe_starch">Speisestärke</string>
+    <string name="recipe_lowfat_quark">Magerquark</string>
+    <string name="recipe_madeira_cake">Sandkuchen</string>
+    <string name="recipe_salt">Salz</string>
+
 
 
     <!--Time-->
@@ -224,5 +240,7 @@
     <string name="barcode_scanner_progress_message">Suche Produkt&#8230;</string>
     <string name="share_helpmessage">Du kannst diese Einkaufsliste nun teilen (z.B. per SMS oder E-Mail).</string>
     <string name="share_success">Du hast jetzt Zugriff auf die Einkaufsliste %s.</string>
+    <string name="settings_option_8_login_name">Account / Login</string>
+    <string name="settings_option_8_login_descr">Anmelden, um Einkaufslisten zu synchronisieren und zu teilen</string>
 
 </resources>

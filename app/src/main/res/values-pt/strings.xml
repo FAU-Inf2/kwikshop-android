@@ -42,8 +42,6 @@
     <string name="overflow_action_menu_listofshoppinglists">Lista de Compras</string>
     <string name="overflow_action_menu_settings">Configurações</string>
     <string name="save">Salvar</string>
-    <string name="settings_option_1_desc">Descrição da opção 1</string>
-    <string name="settings_option_1_name">Opção 1</string>
     <string name="settings_option_2_desc">Troque de linguagem</string>
     <string name="settings_option_2_setlocale">Região</string>
     <string name="settings_option_3_check_text">Tem certeza que deseja deletar o histórico de autopreenchimento?</string>
@@ -92,8 +90,6 @@
     <string name="descr_quickadd">Escreva na caixa acima para adicionar itens</string>
     <string name="descr_spaghettis">Spaghetti</string>
     <string name="descr_sweets">Doces</string>
-    <string name="descr_swipe1">Swipe os itens para marcar como</string>
-    <string name="descr_swipe2">comprados</string>
     <string name="descr_toilet_paper">Papel higiênico</string>
     <string name="viewOnGitHub">Veja no GitHub</string>
     <string name="overflow_action_menu_move_all_from_shopping_cart">Marcar nenhum como comprado</string>

@@ -6,5 +6,7 @@ public interface ResourceProvider {
 
     String getString(int id);
 
+    int getInteger(int id);
+
     Locale getLocale();
 }

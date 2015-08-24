@@ -11,15 +11,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
@@ -38,11 +42,16 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
+import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -150,61 +159,22 @@ public class DefaultViewLauncher implements ViewLauncher {
                                     String neutralText,  final Command<String> neutralCommand,
                                     String negativeText, final Command<String> negativeCommand) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(title);
+        showInputDialog(title, null, value, InputType.TYPE_CLASS_TEXT,
+                positiveText, positiveCommand,
+                neutralText, neutralCommand,
+                negativeText, negativeCommand);
+    }
 
-        if(value == null) {
-            value = "";
-        }
+    @Override
+    public void showNumberInputDialog(String title, String message, int value,
+                                      String positiveText, Command<String> positiveCommand,
+                                      String neutralText, Command<String> neutralCommand,
+                                      String negativeText, Command<String> negativeCommand) {
 
-        // Set up the input
-        final View view = activity.getLayoutInflater().inflate(R.layout.dialog_textinput, null);
-        final TextView input = (TextView) view.findViewById(R.id.textView);
-
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setText(value);
-        builder.setView(view);
-
-        // Set up the buttons
-        builder.setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                if(positiveCommand.getCanExecute()) {
-                    positiveCommand.execute(input.getText().toString());
-                }
-
-            }
-        });
-
-        if(negativeCommand != null) {
-
-            builder.setNeutralButton(neutralText, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                    if(neutralCommand.getCanExecute()) {
-                        neutralCommand.execute(input.getText().toString());
-                    }
-
-                }
-            });
-        }
-
-        builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-
-                if(negativeCommand.getCanExecute()) {
-                    negativeCommand.execute(input.getText().toString());
-                }
-            }
-        });
-
-        builder.show();
-
+        showInputDialog(title, message, Integer.toString(value), InputType.TYPE_CLASS_NUMBER,
+                        positiveText, positiveCommand,
+                        neutralText, neutralCommand,
+                        negativeText, negativeCommand);
     }
 
     @Override
@@ -252,7 +222,7 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-       public void showMessageDialog(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage, final Command<Void> negativeCommand) {
+    public void showMessageDialog(String title, String message, String positiveMessage, final Command<Void> positiveCommand, String negativeMessage, final Command<Void> negativeCommand) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title);
         builder.setMessage(message);
@@ -322,23 +292,116 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-    public void showAddRecipeDialog(final Recipe recipe){
+    public void showAddRecipeDialog(final ListManager<ShoppingList> listManager, final ListManager<Recipe> recipeManager, final int listId, final boolean fromShoppingList){
+
+        //fromShoppingList indicates whether this method was called from a shopping list to add a recipe (true) or from a recipe to add to a shopping list (false)
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(recipe.getName());
-        builder.setMessage(activity.getString(R.string.recipe_choose_amount) + " " + recipe.getScaleName() + ":");
+        if(fromShoppingList)
+            builder.setTitle(activity.getString(R.string.recipe_add_recipe));
+        else
+            builder.setTitle(activity.getString(R.string.recipe_add_to_shoppinglist));
 
+        LinearLayout layout = new LinearLayout(activity);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+
+        final TextView listTextView = new TextView(activity);
         final NumberPicker numberPicker = new NumberPicker(activity);
+        final Spinner spinner = new Spinner(activity);
+        final TextView amountTextView = new TextView(activity);
+
+        if(fromShoppingList)
+            listTextView.setText("\n" + activity.getString(R.string.recipe_choose_recipe) + "\n");
+        else
+            listTextView.setText("\n" + activity.getString(R.string.recipe_choose_shoppinglist) + "\n");
+
+        listTextView.setTextColor(activity.getResources().getColor(R.color.primary_text));
+        layout.addView(listTextView);
+
+
+        List<String> names = new ArrayList<>();
+        if(fromShoppingList) {
+            for (Recipe recipe : recipeManager.getLists()) {
+                names.add(recipe.getName());
+            }
+        }
+        else{
+            for (ShoppingList shoppingList : listManager.getLists()) {
+                names.add(shoppingList.getName());
+            }
+        }
+        final ArrayAdapter<String> arrayAdapter = new  ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, names);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (fromShoppingList) {
+                    Recipe curRecipe = (Recipe) (recipeManager.getLists().toArray()[position]);
+                    amountTextView.setText("\n" + activity.getString(R.string.recipe_choose_amount) + " " + curRecipe.getScaleName() + ":");
+                    numberPicker.setValue(curRecipe.getScaleFactor());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        layout.addView(spinner);
+
+        if(!fromShoppingList)amountTextView.setText("\n" + activity.getString(R.string.recipe_choose_amount) + " " + recipeManager.getList(listId).getScaleName() + ":");
+        amountTextView.setTextColor(activity.getResources().getColor(R.color.primary_text));
+        layout.addView(amountTextView);
+
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(50);
-        numberPicker.setValue(recipe.getScaleFactor());
-        builder.setView(numberPicker);
+        if(!fromShoppingList) numberPicker.setValue(recipeManager.getList(listId).getScaleFactor());
+        layout.addView(numberPicker);
+
+        builder.setView(layout);
 
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
 
-                double scaledValue = (double) numberPicker.getValue() / recipe.getScaleFactor();
-                EventBus.getDefault().post(new DialogFinishedEvent(scaledValue, recipe));
+                Recipe selectedRecipe;
+                if(fromShoppingList)
+                    selectedRecipe = (Recipe) recipeManager.getLists().toArray()[spinner.getSelectedItemPosition()];
+                else
+                    selectedRecipe = recipeManager.getList(listId);
+
+                double scaledValue = (double) numberPicker.getValue() / selectedRecipe.getScaleFactor();
+
+                int shoppinglistId = -1;
+
+                ItemMerger itemMerger = new ItemMerger(listManager);
+                for(Item item : selectedRecipe.getItems()){
+                    Item newItem = new Item();
+                    newItem.setName(item.getName());
+                    newItem.setAmount(scaledValue * item.getAmount());
+                    newItem.setBrand(item.getBrand());
+                    newItem.setComment(item.getComment());
+                    newItem.setHighlight(item.isHighlight());
+                    newItem.setGroup(item.getGroup());
+                    newItem.setUnit(item.getUnit());
+
+                    if(fromShoppingList) {
+                        if (!itemMerger.mergeItem(listId, newItem)) {
+                            listManager.addListItem(listId, newItem);
+                        }
+                    }else{
+                        ShoppingList selectedList = (ShoppingList) listManager.getLists().toArray()[spinner.getSelectedItemPosition()];
+                        shoppinglistId = selectedList.getId();
+                        if (!itemMerger.mergeItem(shoppinglistId, newItem)) {
+                            listManager.addListItem(shoppinglistId, newItem);
+                        }
+                    }
+                }
+
+                if(!fromShoppingList){
+                    showShoppingList(shoppinglistId);
+                }
 
             }
         });
@@ -470,7 +533,7 @@ public class DefaultViewLauncher implements ViewLauncher {
         builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
                 if (negativeCommand != null && negativeCommand.getCanExecute()) {
-                    if(checkBox.isChecked() && checkedCommand != null && checkedCommand.getCanExecute())
+                    if (checkBox.isChecked() && checkedCommand != null && checkedCommand.getCanExecute())
                         checkedCommand.execute(null);
                     else if (!checkBox.isChecked() && uncheckedCommand != null && uncheckedCommand.getCanExecute())
                         uncheckedCommand.execute(null);
@@ -596,7 +659,7 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-        public void showListOfShoppingListsActivity() {
+    public void showListOfShoppingListsActivity() {
         activity.finish();
         Intent intent = ListOfShoppingListsActivity.getIntent(activity.getApplicationContext());
         activity.startActivity(intent);
@@ -629,5 +692,73 @@ public class DefaultViewLauncher implements ViewLauncher {
         activity.startActivity(intent);
     }
 
+
+
+    private void showInputDialog(String title, String message, String value, int inputType,
+                                 String positiveText, final Command<String> positiveCommand,
+                                 String neutralText,  final Command<String> neutralCommand,
+                                 String negativeText, final Command<String> negativeCommand) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+
+        if(!StringHelper.isNullOrWhiteSpace(message)) {
+            builder.setMessage(message);
+        }
+
+        if(value == null) {
+            value = "";
+        }
+
+        // Set up the input
+        final View view = activity.getLayoutInflater().inflate(R.layout.dialog_textinput, null);
+        final TextView input = (TextView) view.findViewById(R.id.textView);
+        input.setInputType(inputType);
+        input.setSingleLine();
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setText(value);
+        builder.setView(view);
+
+        // Set up the buttons
+        builder.setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if(positiveCommand.getCanExecute()) {
+                    positiveCommand.execute(input.getText().toString());
+                }
+
+            }
+        });
+
+        if(negativeCommand != null && !StringHelper.isNullOrWhiteSpace(neutralText)) {
+
+            builder.setNeutralButton(neutralText, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    if(neutralCommand.getCanExecute()) {
+                        neutralCommand.execute(input.getText().toString());
+                    }
+
+                }
+            });
+        }
+
+        builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+
+                if(negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(input.getText().toString());
+                }
+            }
+        });
+
+        builder.show();
+
+    }
 
 }

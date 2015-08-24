@@ -98,13 +98,6 @@ public class ShoppingListActivity extends BaseActivity {
             case R.id.action_move_all_from_shopping_cart:
                 EventBus.getDefault().post(MoveAllItemsEvent.moveAllFromBoughtEvent);
                 break;
-            case R.id.action_add_recipe:
-                Bundle extras = getIntent().getExtras();
-                int id = extras.getInt(SHOPPING_LIST_ID);
-
-                android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().add(frameLayout.getId(), AddRecipeToShoppingListFragment.newInstance(id)).commit();
-                break;
             case R.id.action_shopping_mode:
                 // save enabled shopping mode setting and restart activity to update view
                 SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
@@ -133,7 +126,7 @@ public class ShoppingListActivity extends BaseActivity {
                 }
 
                 /* Synchronize first to make sure this ShoppingList exists on the server */
-                startSynchronization();
+                SyncingActivity.requestSync();
                 startSharingCodeIntent(ListStorageFragment.getLocalListStorage().loadList(listId).getServerId());
                 break;
         }

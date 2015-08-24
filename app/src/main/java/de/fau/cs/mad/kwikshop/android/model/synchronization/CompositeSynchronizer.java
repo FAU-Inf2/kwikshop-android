@@ -1,10 +1,14 @@
 package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
+import android.content.Context;
+
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.RecipeServer;
@@ -21,11 +25,13 @@ public class CompositeSynchronizer {
     private final ListSynchronizer<ShoppingList, ShoppingListServer> shoppingListSynchronizer;
     private final ListSynchronizer<Recipe, RecipeServer> recipeSynchronizer;
     private final ResourceProvider resourceProvider;
+    private final Context context;
 
     @Inject
     public CompositeSynchronizer(ListSynchronizer<ShoppingList, ShoppingListServer> shoppingListSynchronizer,
                                  ListSynchronizer<Recipe, RecipeServer> recipeSynchronizer,
-                                 ResourceProvider resourceProvider) {
+                                 ResourceProvider resourceProvider,
+                                 Context context) {
 
         if(shoppingListSynchronizer == null) {
             throw new ArgumentNullException("shoppingListSynchronizer");
@@ -39,13 +45,30 @@ public class CompositeSynchronizer {
             throw new ArgumentNullException("resourceProvider");
         }
 
+        if(context == null) {
+            throw new ArgumentNullException("context");
+        }
+
         this.shoppingListSynchronizer = shoppingListSynchronizer;
         this.recipeSynchronizer = recipeSynchronizer;
         this.resourceProvider = resourceProvider;
+        this.context = context;
     }
 
 
     public void synchronize() {
+
+        //check if the user is logged in. otherwise we cannot sync
+        Context applicationContext = context.getApplicationContext();
+        if(!SessionHandler.isAuthenticated(applicationContext)) {
+            return;
+        }
+
+        //check if synchronization is even enabled
+        if(!SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ENABLE_SYNCHRONIZATION, true, context)) {
+            return;
+        }
+
 
         post(SynchronizationEvent.CreateStartedMessage());
 

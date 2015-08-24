@@ -11,12 +11,14 @@ package de.fau.cs.mad.kwikshop.android.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.view.ErrorReportingActivity;
 
 public class TopExceptionHandler implements Thread.UncaughtExceptionHandler {
 
@@ -74,6 +76,14 @@ public class TopExceptionHandler implements Thread.UncaughtExceptionHandler {
         } catch (IOException ioe) {
             // ...
         }
+
+
+        // start activity  with NEW_TASK and CLEAR_TASK flags in order to clear the back stack
+        // this makes sure the app restarts at the entry point and android does not start with a
+        // activity different from ErrorReportingActivity
+        Intent intent = ErrorReportingActivity.getIntent(app.getApplicationContext(), true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        app.getApplicationContext().startActivity(intent);
 
         defaultUEH.uncaughtException(t, e);
     }

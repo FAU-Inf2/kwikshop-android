@@ -148,12 +148,14 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
     @Override
     public TList saveList(int listId) {
-
-        TList shoppingList = saveListWithoutEvents(listId);
-        shoppingList.setModifiedSinceLastSync(true);
-        eventBus.post(getPropertiesModifiedListChangedEvent(shoppingList.getId()));
-        return shoppingList;
+        return saveListInternal(listId, true);
     }
+
+    @Override
+    public TList saveListWithoutModificationFlag(int listId) {
+        return saveListInternal(listId, false);
+    }
+
 
 
     @Override
@@ -183,29 +185,14 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
     @Override
     public Item saveListItem(int listId, Item item) {
-
-        TList list;
-        synchronized (listLock) {
-            if (!lists.containsKey(listId)) {
-                throw listNotFound(listId);
-            }
-
-            list = lists.get(listId);
-
-            if (listItems.get(listId).get(item.getId()) == null) {
-                throw itemNotFound(listId, item.getId());
-            }
-        }
-
-        list.setModifiedSinceLastSync(true);
-        item.setModifiedSinceLastSync(true);
-
-        saveListWithoutEvents(listId);
-
-        eventBus.post(new ItemChangedEvent(getListType(), ItemChangeType.PropertiesModified, listId, item.getId()));
-
-        return item;
+        return saveListItemInternal(listId, item, true);
     }
+
+    @Override
+    public Item saveListItemWithoutModificationFlag(int listId, Item item) {
+        return saveListItemInternal(listId, item, false);
+    }
+
 
     @Override
     public boolean deleteItem(int listId, int itemId) {
@@ -364,4 +351,51 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
 
     }
+
+
+
+    private TList saveListInternal(int listId, boolean setModificationFlags) {
+
+        TList shoppingList = getList(listId);
+
+        if(setModificationFlags) {
+            shoppingList.setModifiedSinceLastSync(true);
+        }
+
+        shoppingList = saveListWithoutEvents(listId);
+        eventBus.post(getPropertiesModifiedListChangedEvent(shoppingList.getId()));
+
+        return shoppingList;
+    }
+
+    private Item saveListItemInternal(int listId, Item item, boolean setModificationFlags) {
+
+        TList list;
+        synchronized (listLock) {
+            if (!lists.containsKey(listId)) {
+                throw listNotFound(listId);
+            }
+
+            list = lists.get(listId);
+
+            if (listItems.get(listId).get(item.getId()) == null) {
+                throw itemNotFound(listId, item.getId());
+            }
+        }
+
+
+        if(setModificationFlags) {
+            list.setModifiedSinceLastSync(true);
+            item.setModifiedSinceLastSync(true);
+        }
+
+        saveListWithoutEvents(listId);
+
+        eventBus.post(new ItemChangedEvent(getListType(), ItemChangeType.PropertiesModified, listId, item.getId()));
+
+        return item;
+
+
+    }
+
 }

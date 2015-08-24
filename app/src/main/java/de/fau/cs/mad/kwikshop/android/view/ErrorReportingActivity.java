@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 
 import java.util.Locale;
@@ -17,15 +16,36 @@ import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.util.TopExceptionHandler;
 
-public class ErrorReportingActivity extends ActionBarActivity {
+/**
+ * Entry activity that checks for crash-dumps and offers to send using email or copy it to clipboard
+ *
+ * By inheritng from SyncingActivity, this also is the activity that sets up syncing with the server
+ * using andoird's sync framework
+ */
+public class ErrorReportingActivity extends SyncingActivity {
+
+    private final static String EXTRA_FINISH_INSTANTLY = "extra_finishInstantly";
 
     public static final Object errorReportingLock = new Object();
     public static boolean isErrorReportingInitialized = false;
     public static boolean refreshed = false;
 
+
+    public static Intent getIntent(Context context, boolean finishInstantly) {
+        Intent intent = new Intent(context, ErrorReportingActivity.class);
+        intent.putExtra(EXTRA_FINISH_INSTANTLY, finishInstantly);
+        return intent;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(getIntent().getBooleanExtra(EXTRA_FINISH_INSTANTLY, false)) {
+            finish();
+        }
+
 
         setContentView(R.layout.activity_error_reporting);
         getSupportActionBar().hide();
@@ -33,8 +53,9 @@ public class ErrorReportingActivity extends ActionBarActivity {
         initializeErrorReporting();
 
         setSavedLocale();
-    }
 
+
+    }
 
     public void initializeErrorReporting() {
 
@@ -66,6 +87,7 @@ public class ErrorReportingActivity extends ActionBarActivity {
     }
 
 
+
     private void exitActivity() {
 
         Intent nextActivity;
@@ -86,7 +108,6 @@ public class ErrorReportingActivity extends ActionBarActivity {
         finish();
 
     }
-
 
     // duplicate from BaseActivity. Cannot inherit from BaseActivity because we need to
     // call into initializeErrorReporting() before setSavedLocale()
@@ -120,6 +141,8 @@ public class ErrorReportingActivity extends ActionBarActivity {
         finish();
         startActivity(refresh);
     }
+
+
 
 
 

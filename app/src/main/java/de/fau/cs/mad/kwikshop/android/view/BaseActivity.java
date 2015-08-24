@@ -142,15 +142,19 @@ public class BaseActivity extends ActionBarActivity {
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingActivity.class));
                 return true;
+
             case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
+
             case R.id.action_location:
                 startActivity(new Intent(this, LocationActivity.class));
                 return true;
+
             case R.id.action_listofshoppinglists:
                 startActivity(new Intent(this, ListOfShoppingListsActivity.class));
                 return true;
+
             case android.R.id.home:
               //  NavUtils.navigateUpFromSameTask(this);
                 if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
@@ -159,24 +163,15 @@ public class BaseActivity extends ActionBarActivity {
                     mDrawerLayout.openDrawer(mDrawerList);
                 }
                 return true;
+
             case R.id.action_listofrecipes:
                 startActivity(new Intent(this, ListOfRecipesActivity.class));
-                return true;
-            case R.id.action_openloginactivity:
-                Intent intent = new Intent(this, LoginActivity.class);
-                Bundle b = new Bundle();
-                b.putBoolean("FORCE", true); //To make sure the Activity does not close immediately
-                intent.putExtras(b);
-                startActivity(intent);
                 return true;
 
             case R.id.action_serverintegrationdebugactiviy:
                 startActivity(ServerIntegrationDebugActivity.getIntent(this));
                 return true;
 
-            case R.id.action_startSynchronization:
-                startSynchronization();
-                return true;
 
 
             default:
@@ -294,28 +289,11 @@ public class BaseActivity extends ActionBarActivity {
 
     }
 
-    protected void startSynchronization() {
 
-
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(this));
-        final CompositeSynchronizer synchronizer = objectGraph.get(CompositeSynchronizer.class);
-
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-
-                synchronizer.synchronize();
-
-                return null;
-            }
-        }.execute();
-
-    }
-
+    @SuppressWarnings("unused")
     public void onEvent(ShareSuccessEvent event) {
         returnToListOfShoppingLists = true;
-        startSynchronization();
+        SyncingActivity.requestSync();
     }
 
 }

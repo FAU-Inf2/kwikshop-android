@@ -200,9 +200,14 @@
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
     <string name="overflow_action_menu_recipes">Manage recipes</string>
     <string name="overflow_action_menu_add_recipes">Add recipes to the list</string>
+    <string name="overflow_action_menu_add_to_a_shoppinglist">Add this to a shopping list</string>
     <string name="recipe_scaleName_person">people</string>
     <string name="recipe_scaleName_piece">pieces</string>
     <string name="recipe_choose_amount">Choose amount of </string>
+    <string name="recipe_choose_recipe">Choose a recipe to add:</string>
+    <string name="recipe_choose_shoppinglist">Choose a shopping list:</string>
+    <string name="recipe_add_recipe">Add a recipe to this list</string>
+    <string name="recipe_add_to_shoppinglist">Add this recipe to a list</string>
 
     <!--Example Recipes -->
     <string name="recipe_name_chili_con_carne">Chili con carne</string>
@@ -212,6 +217,24 @@
     <string name="recipe_corn">Corn</string>
     <string name="recipe_potatoes">Potatoes</string>
     <string name="recipe_tomatoes">Tomatoes</string>
+    <string name="recipe_carrotCake">Coconut carrot cake</string>
+    <string name="recipe_carrot">Carrot</string>
+    <string name="recipe_eggs">Eggs</string>
+    <string name="recipe_oil">Oil</string>
+    <string name="recipe_sugar">Sugar</string>
+    <string name="recipe_plainFlour">Plain flour</string>
+    <string name="recipe_bakingPowder">Baking powder</string>
+    <string name="recipe_sweetenedCondensedMilk">Sweetened condensed milk</string>
+    <string name="recipe_coconutFlakes">Coconut flakes</string>
+    <string name="recipe_rhubarb_tart">Rhubarb tart</string>
+    <string name="recipe_butter">Butter</string>
+    <string name="recipe_rhubarb">Rhubarb</string>
+    <string name="recipe_vanilla_sugar">Vanilla sugar</string>
+    <string name="recipe_starch">Starch</string>
+    <string name="recipe_lowfat_quark">Lowfat quark</string>
+    <string name="recipe_madeira_cake">Madeira cake</string>
+    <string name="recipe_salt">Salt</string>
+
 
     <!--Time-->
     <string name="days">days</string>
@@ -304,15 +327,6 @@
     <string name="askingGooglePlay">Install Voice Search from Google Play?</string>
     <string name="askingGoogleVoiceSearch">For recognition it’s necessary to install \'Google Voice Search\'</string>
     <string name="title_activity_server_integration_debug">Server Integration Debug Console</string>
-    <string name="recipe_carrotCake">Coconut carrot cake</string>
-    <string name="recipe_carrot">Carrot</string>
-    <string name="recipe_eggs">Eggs</string>
-    <string name="recipe_oil">Oil</string>
-    <string name="recipe_sugar">Sugar</string>
-    <string name="recipe_plainFlour">Plain flour</string>
-    <string name="recipe_bakingPowder">Baking powder</string>
-    <string name="recipe_sweetenedCondensedMilk">Sweetened condensed milk</string>
-    <string name="recipe_coconutFlakes">Coconut flakes</string>
     <string name="unit_cup">cups</string>
     <string name="unit_tablespoon">tablespoons</string>
     <string name="unit_tablespoon_short">tbsp</string>
@@ -341,5 +355,21 @@
     <string name="share_loading">Loading...</string>
     <string name="share_failure">Redeeming failed, please try again.</string>
     <string name="share_success">You can now access the shopping list %s.</string>
+    <string name="settings_option_8_login_name">Account / Login</string>
+    <string name="settings_option_8_login_descr">Login to synchronize and share shopping lists</string>
+    <string name="throw_Exception">Throw Exception</string>
+    <string name="throw_ExceptionAsync">Throw Exception in AsyncTask</string>
+    <string name="settings_option_sync_name">Synchronize now</string>
+    <string name="settings_option_sync_descr">Synchronize all data with the server now</string>
+    <string name="settings_option_enableSync_name">Enable Synchronization</string>
+    <string name="settings_option_enableSync_descr">Enable synchornization of shopping lists and recipes</string>
+    <string name="settings_options_syncInterval_name">Synchronization Interval</string>
+    <string name="settings_options_syncInterval_descr">Choose how often synchronization runs</string>
+    <string name="settings_options_syncInterval_inputBox_message">Please specify the synchronization interval in minutes</string>
+    <string name="settings_options_delete_shoppinglist_name">Shopping List Deletion</string>
+    <string name="settings_options_delete_recipe_name">Recipe Deletion</string>
+    <string name="settings_options_delete_shoppinglist_descr">Always ask before deleting a shopping list</string>
+    <string name="settings_options_delete_recipe_descr">Always ask before deleting a recipe</string>
+    <string name="str_default">default</string>
 
 </resources>

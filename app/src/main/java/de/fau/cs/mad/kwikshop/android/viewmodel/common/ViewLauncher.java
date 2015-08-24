@@ -1,6 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
+import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 
 import android.content.Intent;
 import android.widget.ArrayAdapter;
@@ -24,6 +26,10 @@ public interface ViewLauncher {
                              String neutralText, Command<String> neutralCommand,
                              String negativeText, Command<String> negativeCommand);
 
+    void showNumberInputDialog(String title, String message, int value,
+                               String positiveText, Command<String> positiveCommand,
+                               String neutralText, Command<String> neutralCommand,
+                               String negativeText, Command<String> negativeCommand);
 
     void showMessageDialog(String title, String message,
                            String positiveMessage, Command<Void> positiveCommand,
@@ -54,7 +60,7 @@ public interface ViewLauncher {
 
     void showReminderView(int listId, int itemID);
 
-    void showAddRecipeDialog(final Recipe recipe);
+    void showAddRecipeDialog(final ListManager<ShoppingList> listManager, final ListManager<Recipe> recipeManager, int listId, boolean fromShoppingList);
 
     //TODO: move somewhere else, this is not a responsibility of ViewLauncher
     @Deprecated

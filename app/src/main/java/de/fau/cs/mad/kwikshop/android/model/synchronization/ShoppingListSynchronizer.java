@@ -2,11 +2,13 @@ package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
+import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
@@ -16,10 +18,12 @@ import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
 
 public class ShoppingListSynchronizer extends ListSynchronizer<ShoppingList, ShoppingListServer> {
 
+    private final RestClientFactory clientFactory;
+    private ListClient<ShoppingListServer> client;
 
     @Inject
-    public ShoppingListSynchronizer(ObjectConverter<ShoppingList, ShoppingListServer> clientToServerObjectConverter,
-                                    ListClient<ShoppingListServer> listClient,
+    public ShoppingListSynchronizer(RestClientFactory clientFactory,
+                                    ObjectConverter<ShoppingList, ShoppingListServer> clientToServerObjectConverter,
                                     ListManager<ShoppingList> listManager,
                                     SimpleStorage<DeletedList> deletedListStorage,
                                     SimpleStorage<DeletedItem> deletedItemStorage,
@@ -28,8 +32,15 @@ public class ShoppingListSynchronizer extends ListSynchronizer<ShoppingList, Sho
                                     SimpleStorage<LastLocation> locationStorage,
                                     ItemSynchronizer<ShoppingList, ShoppingListServer> itemSynchronizer) {
 
-        super(clientToServerObjectConverter, listClient, listManager, deletedListStorage,
+        super(clientToServerObjectConverter, listManager, deletedListStorage,
               deletedItemStorage, groupStorage, unitStorage, locationStorage, itemSynchronizer);
+
+        if(clientFactory == null) {
+            throw new ArgumentNullException("clientFactory");
+        }
+
+        this.clientFactory = clientFactory;
+
     }
 
 
@@ -54,5 +65,13 @@ public class ShoppingListSynchronizer extends ListSynchronizer<ShoppingList, Sho
         target.setSortTypeInt(source.getSortTypeInt());
         target.setLocation(source.getLocation());
         target.setLastModifiedDate(source.getLastModifiedDate());
+    }
+
+    @Override
+    protected ListClient<ShoppingListServer> getApiClient() {
+        if(client == null) {
+            client = clientFactory.getShoppingListClient();
+        }
+        return client;
     }
 }

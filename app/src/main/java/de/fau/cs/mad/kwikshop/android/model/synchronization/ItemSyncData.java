@@ -1,7 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
@@ -21,12 +21,6 @@ public class ItemSyncData<TListClient extends DomainListObject,
         extends
             ListSyncData<TListClient, TListServer> {
 
-    private int lastClientListId = -1;
-    private int lastServerListId = -1;
-    private Map<Integer, Item> serverItems;
-    private Map<Integer, Item> clientItemsByServerId;
-    private Map<Integer, DeletionInfo> deletedItemsServer;
-
     private final Map<Integer, Map<Integer, Item>> serverListItems;
     private final Map<Integer, Collection<DeletionInfo>> allDeletedItemsServer;
     private final Map<Integer, Map<Integer, DeletedItem>> allDeletedItemsClientByServerId;
@@ -34,6 +28,10 @@ public class ItemSyncData<TListClient extends DomainListObject,
     private final Map<Integer, Group> groupsByServerId;
     private final Map<Integer, Unit> unitsByServerId;
     private final Map<Integer, LastLocation> locationsByServerId;
+
+    //caches
+    Map<Integer, Map<Integer, Item>> clientItemsByServerIdCache = new HashMap<>();
+    Map<Integer, Map<Integer, DeletionInfo>> deletedItemsServerCache = new HashMap<>();
 
 
     public ItemSyncData(Collection<TListClient> clientLists,
@@ -80,45 +78,39 @@ public class ItemSyncData<TListClient extends DomainListObject,
 
     public Map<Integer, Item> getServerItems(int serverListId) {
 
-        if(lastServerListId == serverListId && serverItems != null) {
-            return serverItems;
-        }
-
-        lastServerListId = serverListId;
-        serverItems = serverListItems.get(serverListId);
-
-        return serverItems;
+        return serverListItems.get(serverListId);
     }
 
 
     public Map<Integer, Item> getClientItemsByServerId(int clientListId){
 
-        if(clientListId == lastClientListId && clientItemsByServerId != null) {
-            return  clientItemsByServerId;
-        } else {
-
-            lastClientListId = clientListId;
-
-            clientItemsByServerId = CollectionUtilities.toItemMapByServerId(getClientItems(clientListId));
-            return clientItemsByServerId;
-        }
+//        if(!clientItemsByServerIdCache.containsKey(clientListId)) {
+//
+//            clientItemsByServerIdCache.put(
+//                    clientListId,
+//                    CollectionUtilities.toItemMapByServerId(getClientItems(clientListId)));
+//        }
+//
+//        return clientItemsByServerIdCache.get(clientListId);
+        return CollectionUtilities.toItemMapByServerId(getClientItems(clientListId));
     }
 
     public Map<Integer, DeletionInfo> getDeletedItemsServer(int serverListId) {
 
-        if(lastServerListId == serverListId && deletedItemsServer != null) {
-            return deletedItemsServer;
-        }
+//        if(deletedItemsServerCache.containsKey(serverListId)) {
+//
+//            deletedItemsServerCache.put(
+//                    serverListId,
+//                    CollectionUtilities.toMap(allDeletedItemsServer.get(serverListId)));
+//        }
+//
+//        return deletedItemsServerCache.get(serverListId);
+        return CollectionUtilities.toMap(allDeletedItemsServer.get(serverListId));
 
-        lastServerListId = serverListId;
 
-        deletedItemsServer = CollectionUtilities.toMap(allDeletedItemsServer.get(serverListId));
-        return deletedItemsServer;
     }
 
     public Map<Integer, DeletedItem> getDeletedItemsClientByServerId(int clientListId) {
-
-        lastClientListId = clientListId;
         return allDeletedItemsClientByServerId.get(clientListId);
     }
 

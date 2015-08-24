@@ -23,9 +23,27 @@ public interface ListManager<TList extends DomainListObject> {
 
     TList saveList(int listId);
 
+    /**
+     * Saves the specified list but does not set the list's modifiedSinceLastSync flag
+     *
+     * IMPORTANT: Only call this if you're sure this is what you want.
+     *
+     * @param listId The is of the list to save
+     * @return Returns the updated list object
+     */
+    TList saveListWithoutModificationFlag(int listId);
+
     Item addListItem(int listId, Item item);
 
     Item saveListItem(int listId, Item item);
+
+    /**
+     * Saves the specified list item witout setting its modifiedSinceLastSync flag
+     *
+     * IMPORTANT: Only call this if you're sure this is what you want.
+     *
+     */
+    Item saveListItemWithoutModificationFlag(int listId, Item item);
 
     boolean deleteItem(int listId, int itemId);
 

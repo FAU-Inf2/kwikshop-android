@@ -21,6 +21,7 @@ import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObjectServer;
+import de.fau.cs.mad.kwikshop.common.interfaces.DomainObject;
 import retrofit.RetrofitError;
 
 public abstract class ListSynchronizer<TListClient extends DomainListObject,
@@ -96,16 +97,16 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     @Override
     protected ItemSyncData<TListClient, TListServer> initializeSyncData() {
 
-
+        // load local data
         Collection<TListClient> clientLists = listManager.getLists();
         Collection<DeletedList> clientDeletedLists = deletedListStorage.getItems();
         Collection<DeletedItem> clientDeletedItems = deletedItemStorage.getItems();
 
+        //load all the data we need for syncing from the server
         Collection<TListServer> serverLists;
         Collection<DeletionInfo> serverDeletedLists;
         Map<Integer, Collection<DeletionInfo>> serverDeletedItems = new HashMap<>();
         Map<Integer, Map<Integer, Item>> allServerListItems = new HashMap<>();
-
         try {
 
             serverLists = getApiClient().getLists();
@@ -120,33 +121,10 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             throw new SynchronizationException(ex, "Error getting data from server for syncing");
         }
 
-        Map<Integer, TListServer> serverListsByServerId = new HashMap<>();
-        Map<Integer, Integer> predefinedIdServerIdMap = new HashMap<>();
-        for(TListServer serverList : serverLists) {
-            if(serverList.getPredefinedId() > 0) {
-                predefinedIdServerIdMap.put(serverList.getPredefinedId(), serverList.getId());
-            }
-            serverListsByServerId.put(serverList.getId(), serverList);
-        }
-        for(DeletionInfo deletedList : serverDeletedLists) {
-            if(deletedList.getPredefinedId() > 0) {
-                predefinedIdServerIdMap.put(deletedList.getPredefinedId(), deletedList.getId());
-            }
-        }
+        // assign the server id for predefined data so it does not get duplicated
+        // for every device that syncs with the server
 
-        for(TListClient clientList : clientLists) {
-
-            int serverId = clientList.getServerId();
-            int predefinedId = clientList.getPredefinedId();
-
-            if(serverId == 0 && predefinedId > 0) {
-
-                if(predefinedIdServerIdMap.containsKey(predefinedId)) {
-                    clientList.setServerId(predefinedIdServerIdMap.get(predefinedId));
-                    listManager.saveList(clientList.getId());
-                }
-            }
-        }
+        linkPredefinedLists(clientLists, serverLists, serverDeletedLists, allServerListItems, serverDeletedItems);
 
 
         Collection<Group> groups = groupStorage.getItems();
@@ -364,5 +342,92 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     protected abstract void applyPropertiesToServerData(TListClient source,  TListServer target);
 
     protected abstract ListClient<TListServer> getApiClient();
+
+
+
+    private void linkPredefinedLists(Collection<TListClient> clientLists,
+                                     Collection<TListServer> serverLists,
+                                     Collection<DeletionInfo> serverDeletedLists,
+                                     Map<Integer, Map<Integer, Item>> allServerListItems,
+                                     Map<Integer, Collection<DeletionInfo>> serverDeletedItems) {
+
+        Map<Integer, Integer> predefinedIdServerIdMap = new HashMap<>();
+        for(TListServer serverList : serverLists) {
+            if(serverList.getPredefinedId() > 0) {
+                predefinedIdServerIdMap.put(serverList.getPredefinedId(), serverList.getId());
+            }
+        }
+
+        addDeletionInfosToPredefinedIdMap(serverDeletedLists, predefinedIdServerIdMap);
+
+        for(TListClient clientList : clientLists) {
+
+            int serverListId = clientList.getServerId();
+            int predefinedListId = clientList.getPredefinedId();
+
+            // if the local list does not yet have a serverId and it's a predefined list
+            // assign the correct serverId before syncing
+            if(serverListId == 0 && predefinedListId > 0) {
+
+                if(predefinedIdServerIdMap.containsKey(predefinedListId)) {
+
+                    // assign server id for list
+                    serverListId = predefinedIdServerIdMap.get(predefinedListId);
+                    clientList.setServerId(serverListId);
+                    listManager.saveListWithoutModificationFlag(clientList.getId());
+
+                    if(allServerListItems.containsKey(serverListId)) {
+                        linkPredefinedItems(
+                                clientList,
+                                allServerListItems.get(serverListId).values(),
+                                serverDeletedItems.get(serverListId));
+                    }
+                }
+            }
+        }
+    }
+
+    private void linkPredefinedItems(TListClient clientList,
+                                     Collection<Item> serverListItems,
+                                     Collection<DeletionInfo> serverDeletedItems) {
+
+        Map<Integer, Integer> predefinedIdMap = new HashMap<>();
+        for(Item item : serverListItems) {
+            if(item.getPredefinedId() > 0) {
+                predefinedIdMap.put(item.getPredefinedId(), item.getServerId());
+            }
+        }
+
+        addDeletionInfosToPredefinedIdMap(serverDeletedItems, predefinedIdMap);
+
+        for(Item item : clientList.getItems()) {
+
+            int predefinedId = item.getPredefinedId();
+            int serverItemId = item.getServerId();
+
+            if(serverItemId == 0 && predefinedId > 0 ) {
+
+                if(predefinedIdMap.containsKey(item.getPredefinedId())) {
+                    item.setServerId(predefinedIdMap.get(predefinedId));
+                    listManager.saveListItemWithoutModificationFlag(clientList.getId(), item);
+                }
+            }
+        }
+    }
+
+
+    private void addDeletionInfosToPredefinedIdMap(Collection<DeletionInfo> deletionInfos, Map<Integer, Integer> predefinedIdMap) {
+
+        if(deletionInfos == null) {
+            return;
+        }
+
+        for(DeletionInfo deletionInfo : deletionInfos) {
+            if(deletionInfo.getPredefinedId() > 0) {
+                predefinedIdMap.put(deletionInfo.getPredefinedId(), deletionInfo.getId());
+            }
+        }
+    }
+
 
 }

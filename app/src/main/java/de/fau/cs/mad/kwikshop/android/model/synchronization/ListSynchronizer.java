@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -102,6 +103,11 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         Collection<DeletedList> clientDeletedLists = deletedListStorage.getItems();
         Collection<DeletedItem> clientDeletedItems = deletedItemStorage.getItems();
 
+        Collection<Group> clientGroups = groupStorage.getItems();
+        Collection<Unit> clientUnits = unitStorage.getItems();
+        Collection<LastLocation> clientLocations = locationStorage.getItems();
+
+
         //load all the data we need for syncing from the server
         Collection<TListServer> serverLists;
         Collection<DeletionInfo> serverDeletedLists;
@@ -121,19 +127,32 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             throw new SynchronizationException(ex, "Error getting data from server for syncing");
         }
 
+        LinkedList<Unit> serverUnits = new LinkedList<>();
+        LinkedList<Group> serverGroups = new LinkedList<>();
+
+        for(Map<Integer, Item> map : allServerListItems.values()) {
+            for(Item item : map.values()) {
+                if(item.getUnit() != null) {
+                    serverUnits.add(item.getUnit());
+                }
+                if(item.getGroup() != null) {
+                    serverGroups.add(item.getGroup());
+                }
+            }
+        }
+
         // assign the server id for predefined data so it does not get duplicated
         // for every device that syncs with the server
 
         linkPredefinedLists(clientLists, serverLists, serverDeletedLists, allServerListItems, serverDeletedItems);
 
+        linkPredefinedUnits(serverUnits);
 
-        Collection<Group> groups = groupStorage.getItems();
-        Collection<Unit> units = unitStorage.getItems();
-        Collection<LastLocation> locations = locationStorage.getItems();
+        linkPredefinedGroups(serverGroups);
 
         return new ItemSyncData<>(clientLists, clientDeletedLists, clientDeletedItems,
                                   serverLists, allServerListItems, serverDeletedLists, serverDeletedItems,
-                                  groups, units, locations);
+                                  clientGroups, clientUnits, clientLocations);
     }
 
     @Override
@@ -413,6 +432,43 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
                 }
             }
         }
+    }
+
+    private void linkPredefinedUnits(Collection<Unit> serverUnits) {
+
+        Map<Integer, Unit> serverUnitsByPredefinedId = CollectionUtilities.toMapByPredefinedId(serverUnits);
+
+        for(Unit clientUnit : unitStorage.getItems()) {
+
+            int predefinedId = clientUnit.getPredefinedId();
+
+            if(clientUnit.getServerId() == 0 &&
+                predefinedId > 0 &&
+                serverUnitsByPredefinedId.containsKey(predefinedId)) {
+
+                clientUnit.setServerId(serverUnitsByPredefinedId.get(predefinedId).getServerId());
+                unitStorage.updateItem(clientUnit);
+            }
+        }
+    }
+
+    private void linkPredefinedGroups(Collection<Group> serverGroups) {
+
+        Map<Integer, Group> serverGroupsByPredefinedId = CollectionUtilities.toMapByPredefinedId(serverGroups);
+
+        for(Group clientGroup : groupStorage.getItems()) {
+
+            int predefinedId = clientGroup.getPredefinedId();
+
+            if(clientGroup.getServerId() == 0 &&
+                predefinedId > 0 &&
+                serverGroupsByPredefinedId.containsKey(predefinedId)) {
+
+                clientGroup.setServerId(serverGroupsByPredefinedId.get(predefinedId).getServerId());
+                groupStorage.updateItem(clientGroup);
+            }
+        }
+
     }
 
 

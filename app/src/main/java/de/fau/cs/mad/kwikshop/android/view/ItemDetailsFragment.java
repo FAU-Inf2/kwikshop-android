@@ -276,15 +276,21 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if(numberPickerCalledWith != numberPicker.getValue()){
             //only set amount if it got changed, so values written by parser which are not listed
             //in the numberPicker don't get overwritten
-            Double pickerAmountDouble;
-            String numberPickerString = numbersForAmountPicker[numberPicker.getValue()];
+            if (amountIsNatural(selectedUnitIndex)) {
+                item.setAmount(Double.parseDouble(intNumbersForAmountPicker[numberPicker.getValue()]));
+            }
+            else{
+                Double pickerAmountDouble;
+
+                String numberPickerString = numbersForAmountPicker[numberPicker.getValue()];
                 if (numberPickerString.contains("/")) {
                     String[] rat = numberPickerString.split("/");
                     pickerAmountDouble = Double.parseDouble(rat[0]) / Double.parseDouble(rat[1]);
                 } else {
-                    pickerAmountDouble= Double.parseDouble(numberPickerString);
+                    pickerAmountDouble = Double.parseDouble(numberPickerString);
                 }
-            item.setAmount(pickerAmountDouble);
+                item.setAmount(pickerAmountDouble);
+            }
         }
 
         item.setBrand(brand_text.getText().toString());
@@ -365,6 +371,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 "450", "500", "600", "700", "750", "800", "900", "1000"
         };
         Double [] intNumsOnce = new Double[numsOnce.length];
+        final Double [] natNumsOnce = new Double[numsInteger.length];
         for(int i = 0; i < intNumsOnce.length; i++){
             if (numsOnce[i].contains("/")) {
                 String[] rat = numsOnce[i].split("/");
@@ -373,7 +380,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 intNumsOnce[i] = Double.parseDouble(numsOnce[i]);
             }
         }
-
+        for(int i = 0; i < natNumsOnce.length; i++){
+            natNumsOnce[i] = Double.parseDouble(numsInteger[i]);
+        }
 
         //setDisplayedValues length must be as long as range
         //values with fractions
@@ -385,34 +394,105 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             intNumbersForAmountPicker[i] = numsInteger[i%numsInteger.length];
         }
 
+        //sort units by name
+        viewModel.sortUnitsByName();
+
+        //TODO implement adapter for Unit instead of String
+
+
+        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getUnitNames());
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        unit_spinner.setAdapter(spinnerArrayAdapter);
+        unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedUnitIndex = position;
+
+                if (amountIsNatural(selectedUnitIndex)){
+                    numberPicker.setMinValue(0);
+                    numberPicker.setMaxValue(1000);
+                    numberPicker.setWrapSelectorWheel(false);
+                    numberPicker.setDisplayedValues(intNumbersForAmountPicker);
+
+                    double itemAmount = item.getAmount();
+                    int index = 1;
+                    for (int i = 0; i < natNumsOnce.length; i++) {
+                        if (natNumsOnce[i].equals(itemAmount)) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    numberPicker.setValue(index);
+                }
+                else {
+                    numberPicker.setMinValue(0);
+                    numberPicker.setMaxValue(1000);
+                    numberPicker.setWrapSelectorWheel(false);
+                    numberPicker.setDisplayedValues(numbersForAmountPicker);
+
+                    numberPicker.setFormatter(new NumberPicker.Formatter() {
+
+                        @Override
+                        public String format(int value) {
+                            // TODO Auto-generated method stub
+                            return numsOnce[value];
+                        }
+                    });
+
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedUnitIndex = -1;
+            }
+        });
+
+        if (!viewModel.isNewItem()) {
+            item = getListManager().getListItem(listId, itemId);
+            viewModel.setItem(item);
+        }
+        if (viewModel.getSelectedUnit() != null) {
+            unit_spinner.setSelection(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
+        }
+
+
+
         numberPicker.setMinValue(0);
         numberPicker.setMaxValue(1000);
         numberPicker.setWrapSelectorWheel(false);
-        numberPicker.setDisplayedValues(numbersForAmountPicker);
-
-        numberPicker.setFormatter(new NumberPicker.Formatter() {
-
-            @Override
-            public String format(int value) {
-                // TODO Auto-generated method stub
-                return numsOnce[value];
-            }
-        });
-        //seems terrible but it is a trick to bypass a numberpicker bug
-        try {
-            Method method = numberPicker.getClass().getDeclaredMethod("changeValueByOne", boolean.class);
-            method.setAccessible(true);
-            method.invoke(numberPicker, true);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+        if(amountIsNatural(selectedUnitIndex)){
+            numberPicker.setDisplayedValues(intNumbersForAmountPicker);
         }
-        numberPicker.invalidate();
+        else{
+            numberPicker.setDisplayedValues(numbersForAmountPicker);
+
+            numberPicker.setFormatter(new NumberPicker.Formatter() {
+
+                @Override
+                public String format(int value) {
+                    // TODO Auto-generated method stub
+                    return numsOnce[value];
+                }
+            });
+            //seems terrible but it is a trick to bypass a numberpicker bug
+            try {
+                Method method = numberPicker.getClass().getDeclaredMethod("changeValueByOne", boolean.class);
+                method.setAccessible(true);
+                method.invoke(numberPicker, true);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            numberPicker.invalidate();
+        }
+
         //wire up auto-complete for product name and brand
         productname_text.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
         productname_text.setTokenizer(new SpaceTokenizer());
@@ -427,20 +507,31 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             comment_text.setText("");
 
         } else {
-            item = getListManager().getListItem(listId, itemId);
-            viewModel.setItem(item);
+            //item = getListManager().getListItem(listId, itemId);
+            //viewModel.setItem(item);
 
             viewModel.setImageId();
             //numberPicker.setValue(index) sets the picker to the index + numberPicker.minValue()
             double itemAmount = item.getAmount();
 
             int index = 1;
-            for(int i = 0; i < intNumsOnce.length; i++){
-                if(intNumsOnce[i].equals(itemAmount)){
-                    index = i;
-                    break;
+            if (amountIsNatural(selectedUnitIndex)) {
+                for (int i = 0; i < natNumsOnce.length; i++) {
+                    if (natNumsOnce[i].equals(itemAmount)) {
+                        index = i;
+                        break;
+                    }
                 }
             }
+            else{
+                for (int i = 0; i < intNumsOnce.length; i++) {
+                    if (intNumsOnce[i].equals(itemAmount)) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+
 
             // Fill UI elements with data from Item
             productname_text.setText(item.getName());
@@ -479,70 +570,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         });
 
-        //sort units by name
-        viewModel.sortUnitsByName();
-
-        //TODO implement adapter for Unit instead of String
 
 
-        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getUnitNames());
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        unit_spinner.setAdapter(spinnerArrayAdapter);
-        unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedUnitIndex = position;
-
-                if (selectedUnitIndex == 9 ||
-                        selectedUnitIndex == 7 ||
-                        selectedUnitIndex == 6){
-                    numberPicker.setMinValue(0);
-                    numberPicker.setMaxValue(1000);
-                    numberPicker.setWrapSelectorWheel(false);
-                    numberPicker.setDisplayedValues(intNumbersForAmountPicker);
-                }
-                else {
-                    numberPicker.setMinValue(0);
-                    numberPicker.setMaxValue(1000);
-                    numberPicker.setWrapSelectorWheel(false);
-                    numberPicker.setDisplayedValues(numbersForAmountPicker);
-
-                    numberPicker.setFormatter(new NumberPicker.Formatter() {
-
-                        @Override
-                        public String format(int value) {
-                            // TODO Auto-generated method stub
-                            return numsOnce[value];
-                        }
-                    });
-                    //seems terrible but it is a trick to bypass a numberpicker bug
-                    try {
-                        Method method = numberPicker.getClass().getDeclaredMethod("changeValueByOne", boolean.class);
-                        method.setAccessible(true);
-                        method.invoke(numberPicker, true);
-                    } catch (NoSuchMethodException e) {
-                        e.printStackTrace();
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                    numberPicker.invalidate();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                selectedUnitIndex = -1;
-            }
-        });
-
-
-        if (viewModel.getSelectedUnit() != null) {
-            unit_spinner.setSelection(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
-        }
 
 
         ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getGroupNames());
@@ -618,6 +647,17 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         });
 
     }
+
+    public boolean amountIsNatural(int selectedUnit){
+        if (selectedUnit == 9 ||
+        selectedUnit == 7 ||
+        selectedUnit == 6){
+            return true;
+        }
+        else
+            return false;
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){

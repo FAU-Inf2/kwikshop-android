@@ -164,7 +164,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
     @Override
     protected boolean clientObjectExistsOnServer(ItemSyncData<TListClient, TListServer> syncData, TListClient clientList) {
-        return clientList.getServerId() > 0;
+        return clientList.getServerId() > 0 && !clientObjectDeletedOnServer(syncData, clientList);
     }
 
     @Override

@@ -47,20 +47,24 @@ public class ItemParser {
         String output = "";
         String amount = "";
         String thisCanBeUnitOrName = "";
+        boolean amountWasSpecified = false;
         boolean lastCharWasANumber = false;
         boolean charWasReadAfterAmount = false;
         boolean emptyStringOrWhiteSpace = true;
+        boolean possibleUnitWasSpecifiedBeforeName = false;
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             //only parses the first number found to amount
             if (c > 47 && c < 58 && (lastCharWasANumber == true || amount == "") && emptyStringOrWhiteSpace) {
                 amount = amount + c;
+                amountWasSpecified = true;
                 lastCharWasANumber = true;
             } else if (lastCharWasANumber && c == ' ') {
                 //ignore all white spaces between the amount and the next char
                 emptyStringOrWhiteSpace = true;
             } else if (lastCharWasANumber || charWasReadAfterAmount && c != ' ') {
                 //String from amount to next whitespace, this should be unit or name
+                if(possibleUnitWasSpecifiedBeforeName == false && output == "") possibleUnitWasSpecifiedBeforeName = true;
                 thisCanBeUnitOrName = thisCanBeUnitOrName + c;
                 lastCharWasANumber = false;
                 charWasReadAfterAmount = true;
@@ -95,14 +99,20 @@ public class ItemParser {
         if (unitMatchFound == false && thisCanBeUnitOrName != "") {
             //if no unit was found complete string has to be restored
             if (output != "") {
-                output = thisCanBeUnitOrName + " " + output;
-            } else {
+                //if both output and thisCanBeUnitOrName are not empty there was a number between them which has to be restored
+                if(possibleUnitWasSpecifiedBeforeName)
+                    output = amount + " " + thisCanBeUnitOrName + " " + output;
+                else
+                    output = output + amount + " " + thisCanBeUnitOrName;
+                amountWasSpecified = false;
+            }
+            else {
                 output = thisCanBeUnitOrName;
             }
         }
 
         if (!StringHelper.isNullOrWhiteSpace(output)) {
-            if (amount != "") item.setAmount(Double.parseDouble(amount));
+            if (amountWasSpecified) item.setAmount(Double.parseDouble(amount));
             item.setName(output);
         }
         return item;

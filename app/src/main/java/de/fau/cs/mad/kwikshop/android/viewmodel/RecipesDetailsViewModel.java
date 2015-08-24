@@ -1,7 +1,11 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
+import android.content.Context;
+
 import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
@@ -16,17 +20,23 @@ public class RecipesDetailsViewModel extends ListDetailsViewModel<Recipe> {
     private int scaleFactor;
     private int oldScaleFactor;
     private String scaleName;
+    private final Context context;
 
     /**
      * Initializes a new instance of RecipesDetailsViewModel for the specified recipe
      * (will modify the recipe on save)
      */
     @Inject
-    public RecipesDetailsViewModel(final ViewLauncher viewLauncher,
+    public RecipesDetailsViewModel(final Context context,
+                                   final ViewLauncher viewLauncher,
                                    final ResourceProvider resourceProvider,
                                    final ListManager<Recipe> listManager) {
 
         super(viewLauncher, resourceProvider, listManager);
+
+        if(context == null) throw new ArgumentNullException("context");
+
+        this.context = context;
     }
 
 
@@ -112,18 +122,30 @@ public class RecipesDetailsViewModel extends ListDetailsViewModel<Recipe> {
             throw new UnsupportedOperationException();
         }
 
-        viewLauncher.showYesNoDialog(
-                resourceProvider.getString(R.string.deleteRecipe_DialogTitle),
-                resourceProvider.getString(R.string.deleteRecipe_DialogText),
-                new Command<Void>() {
-                    @Override
-                    public void execute(Void parameter) {
 
-                        listManager.deleteList(listId);
-                        finish();
-                    }
-                },
-                NullCommand.VoidInstance);
+        if (SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.RECIPE_DELETION_SHOW_AGAIN_MSG, true, context)) {
+            viewLauncher.showMessageDialogWithCheckbox(resourceProvider.getString(R.string.deleteRecipe_DialogTitle),
+                    resourceProvider.getString(R.string.deleteRecipe_DialogText), resourceProvider.getString(R.string.yes),
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            listManager.deleteList(listId);
+                            finish();
+                        }
+                    },
+                    null, null, resourceProvider.getString(R.string.no),
+                    NullCommand.VoidInstance, resourceProvider.getString(R.string.dont_show_this_message_again), false,
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.RECIPE_DELETION_SHOW_AGAIN_MSG, false, context);
+                        }
+                    }, null);
+        } else {
+
+            listManager.deleteList(listId);
+            finish();
+        }
     }
 
 }

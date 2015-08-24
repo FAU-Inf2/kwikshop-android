@@ -651,7 +651,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     public boolean amountIsNatural(int selectedUnit){
         if (selectedUnit == 9 ||
         selectedUnit == 7 ||
-        selectedUnit == 6){
+        selectedUnit == 6 ||
+        selectedUnit == 0){
             return true;
         }
         else

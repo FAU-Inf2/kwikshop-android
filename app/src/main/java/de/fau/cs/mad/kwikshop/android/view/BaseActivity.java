@@ -51,7 +51,6 @@ public class BaseActivity extends ActionBarActivity {
     ProgressDialog syncProgressDialog;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private DrawerArrowDrawable drawerArrow;
     private ActionBarDrawerToggle mDrawerToggle;
 
     @Override

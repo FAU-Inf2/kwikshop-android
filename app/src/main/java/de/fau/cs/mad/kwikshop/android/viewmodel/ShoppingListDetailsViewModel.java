@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.tasks.RedeemSharingCodeTask;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
@@ -205,22 +206,37 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
             throw new UnsupportedOperationException();
         }
 
-        viewLauncher.showYesNoDialog(
-                resourceProvider.getString(R.string.deleteShoppingList_DialogTitle),
-                resourceProvider.getString(R.string.deleteShoppingList_DialogText),
-                new Command<Void>() {
-                    @Override
-                    public void execute(Void parameter) {
+        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SL_DELETION_SHOW_AGAIN_MSG, true, context)) {
+            viewLauncher.showMessageDialogWithCheckbox(resourceProvider.getString(R.string.deleteShoppingList_DialogTitle),
+                    resourceProvider.getString(R.string.deleteShoppingList_DialogText), resourceProvider.getString(R.string.yes),
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
 
-                        if (getCalendarEventDate() != null) {
-                            deleteCalendarEventCommandExecute();
+                            if (getCalendarEventDate() != null) {
+                                deleteCalendarEventCommandExecute();
+                            }
+
+                            listManager.deleteList(listId);
+                            finish();
                         }
+                    },
+                    null, null, resourceProvider.getString(R.string.no),
+                    NullCommand.VoidInstance, resourceProvider.getString(R.string.dont_show_this_message_again), false,
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SL_DELETION_SHOW_AGAIN_MSG, false, context);
+                        }
+                    }, null);
+        }else{
+            if (getCalendarEventDate() != null) {
+                deleteCalendarEventCommandExecute();
+            }
 
-                        listManager.deleteList(listId);
-                        finish();
-                    }
-                },
-                NullCommand.VoidInstance);
+            listManager.deleteList(listId);
+            finish();
+        }
     }
 
 

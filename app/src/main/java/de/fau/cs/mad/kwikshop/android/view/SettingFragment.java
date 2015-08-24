@@ -59,6 +59,8 @@ public class SettingFragment extends Fragment {
     private Setting autoCompletionDeletionSetting;
     private Setting manageUnitsSetting;
     private Setting itemDeletionSetting;
+    private Setting slDeletionSetting;
+    private Setting recipeDeletionSetting;
     private Setting parserSeparatorWordSetting;
     private Setting loginSetting;
     private Setting enableSyncSetting;
@@ -118,6 +120,17 @@ public class SettingFragment extends Fragment {
                 if (settingsList.get(position).equals(itemDeletionSetting)) {
                     setItemDeletionSetting(position);
                 }
+
+                // Shopping List deletion
+                if (settingsList.get(position).equals(slDeletionSetting)) {
+                    setShoppingListDeletionSetting(position);
+                }
+
+                // Item deletion
+                if (settingsList.get(position).equals(recipeDeletionSetting)) {
+                    setRecipeDeletionSetting(position);
+                }
+
 
                 // Parser separator word
                 if (settingsList.get(position).equals(parserSeparatorWordSetting)) {
@@ -183,6 +196,20 @@ public class SettingFragment extends Fragment {
         itemDeletionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false, getActivity()));
         itemDeletionSetting.setViewVisibility(View.VISIBLE);
 
+        //Show Dialog when deleting a Shopping List
+        slDeletionSetting = new Setting(context);
+        slDeletionSetting.setName(R.string.settings_options_delete_shoppinglist_name);
+        slDeletionSetting.setCaption(R.string.settings_options_delete_shoppinglist_descr);
+        slDeletionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SL_DELETION_SHOW_AGAIN_MSG, false, getActivity()));
+        slDeletionSetting.setViewVisibility(View.VISIBLE);
+
+        //Show Dialog when deleting a recipe
+        recipeDeletionSetting = new Setting(context);
+        recipeDeletionSetting.setName(R.string.settings_options_delete_recipe_name);
+        recipeDeletionSetting.setCaption(R.string.settings_options_delete_recipe_descr);
+        recipeDeletionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.RECIPE_DELETION_SHOW_AGAIN_MSG, false, getActivity()));
+        recipeDeletionSetting.setViewVisibility(View.VISIBLE);
+
         //Choose separator word for the parser
         parserSeparatorWordSetting = new Setting(context);
         parserSeparatorWordSetting.setName(R.string.settings_option_7_parser_separate_word_name);
@@ -215,6 +242,8 @@ public class SettingFragment extends Fragment {
                     localeSetting,
                     autoCompletionDeletionSetting,
                     itemDeletionSetting,
+                    slDeletionSetting,
+                    recipeDeletionSetting,
                     parserSeparatorWordSetting,
                     manageUnitsSetting,
                     locationPermissionSetting,
@@ -400,6 +429,29 @@ public class SettingFragment extends Fragment {
         }
         objAdapter.notifyDataSetChanged();
     }
+
+    private void setShoppingListDeletionSetting(int position){
+        if(objAdapter.getItem(position).isChecked()){
+            objAdapter.getItem(position).setChecked(false);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SL_DELETION_SHOW_AGAIN_MSG,false,getActivity());
+        } else {
+            objAdapter.getItem(position).setChecked(true);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SL_DELETION_SHOW_AGAIN_MSG,true,getActivity());
+        }
+        objAdapter.notifyDataSetChanged();
+    }
+
+    private void setRecipeDeletionSetting(int position){
+        if(objAdapter.getItem(position).isChecked()){
+            objAdapter.getItem(position).setChecked(false);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.RECIPE_DELETION_SHOW_AGAIN_MSG,false,getActivity());
+        } else {
+            objAdapter.getItem(position).setChecked(true);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.RECIPE_DELETION_SHOW_AGAIN_MSG,true,getActivity());
+        }
+        objAdapter.notifyDataSetChanged();
+    }
+
 
     private void setParserSeparatorWord(){
 

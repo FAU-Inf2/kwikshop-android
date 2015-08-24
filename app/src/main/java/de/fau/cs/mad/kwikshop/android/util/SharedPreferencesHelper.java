@@ -15,6 +15,8 @@ public class SharedPreferencesHelper {
     public static final String API_ENDPOINT = "API_ENDPOINT";
     public static final String LOCATION_PERMISSION = "location_permission";
     public static final String ITEM_DELETION_SHOW_AGAIN_MSG = "ITEM_DELETION_SHOW_AGAIN_MSG";
+    public static final String SL_DELETION_SHOW_AGAIN_MSG = "SL_DELETION_SHOW_AGAIN_MSG";
+    public static final String RECIPE_DELETION_SHOW_AGAIN_MSG = "RECIPE_DELETION_SHOW_AGAIN_MSG";
     public static final String LOCATION_PERMISSION_SHOW_AGAIN_MSG = "location_permission_show_again";
     public static final String ITEM_SEPARATOR_WORD = "ITEM_SEPARATOR_WORD";
     public static final String ENABLE_SYNCHRONIZATION = "ENABLE_SYNCHRONIZATION";

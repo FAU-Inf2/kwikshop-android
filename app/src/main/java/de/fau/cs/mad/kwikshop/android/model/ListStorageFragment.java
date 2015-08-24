@@ -422,6 +422,7 @@ public class ListStorageFragment  {
                     item8.setGroup(other);
                     item8.setPredefinedId(PredefinedId.Recipe_RhubarbTart_Item8.toInt());
                     item8.setUnit(gram);
+                    recipe.addItem(item8);
                 }
                 {
                     Item item9 = new Item();

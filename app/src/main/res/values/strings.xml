@@ -208,6 +208,7 @@
     <string name="recipe_choose_shoppinglist">Choose a shopping list:</string>
     <string name="recipe_add_recipe">Add a recipe to this list</string>
     <string name="recipe_add_to_shoppinglist">Add this recipe to a list</string>
+    <string name="recipe_no_recipe">You do not have any recipes yet. Would you like to create one?</string>
 
     <!--Example Recipes -->
     <string name="recipe_name_chili_con_carne">Chili con carne</string>

@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -19,6 +20,8 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.view.BarcodeScannerFragment;
+import de.fau.cs.mad.kwikshop.android.view.BaseActivity;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
@@ -36,7 +39,7 @@ import se.walkercrou.places.Place;
 
 public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
-    private Context tmp_context;
+    private Context context;
     private int tmp_item_id;
 
     private final ResourceProvider resourceProvider;
@@ -65,7 +68,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     final Command<Void> deleteCheckBoxCheckedCommand = new Command<Void>() {
         @Override
         public void execute(Void parameter) {
-            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false, tmp_context);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false, context);
         }
     };
 
@@ -86,7 +89,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
 
     @Inject
-    public ShoppingListViewModel(ViewLauncher viewLauncher,
+    public ShoppingListViewModel(Context context,
+                                 ViewLauncher viewLauncher,
                                  ListManager<ShoppingList> shoppingListManager,
                                  ListManager<Recipe> recipeManager,
                                  SimpleStorage<Unit> unitStorage,
@@ -102,6 +106,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         super(viewLauncher, shoppingListManager, unitStorage, groupStorage, itemParser, displayHelper,
                 autoCompletionHelper, locationFinderHelper);
 
+        if(context == null) throw new ArgumentNullException("context");
 
         if (resourceProvider == null) {
             throw new ArgumentNullException("resourceProvider");
@@ -116,6 +121,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         }
 
 
+        this.context = context;
         this.resourceProvider = resourceProvider;
         this.repeatHelper = repeatHelper;
         this.recipeManager = recipeManager;
@@ -179,8 +185,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
 
 
-    public void deleteItem(int itemId, String title, String message, String positiveString, String negativeString, String checkBoxMessage, Context context ){
-        this.tmp_context = context;
+    public void deleteItem(int itemId, String title, String message, String positiveString, String negativeString, String checkBoxMessage){
         this.tmp_item_id = itemId;
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, true, context))
             viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, deleteNegativeCommand, checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);
@@ -188,10 +193,21 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             deletePositiveCommand.execute(null);
     }
 
-    public void showAddRecipeDialog(int listId){
-        viewLauncher.showAddRecipeDialog(listManager, recipeManager, listId, true);
+    public void showAddRecipeDialog(int listId) {
+        if (recipeManager.getLists().size() == 0) {
+            viewLauncher.showMessageDialog(resourceProvider.getString(R.string.recipe_add_recipe), resourceProvider.getString(R.string.recipe_no_recipe),
+                    resourceProvider.getString(R.string.yes),
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            viewLauncher.showAddRecipeView();
+                        }
+                    },
+                    resourceProvider.getString(R.string.no), null);
+        } else {
+            viewLauncher.showAddRecipeDialog(listManager, recipeManager, listId, true);
+        }
     }
-
 
     @SuppressWarnings("unused")
     public void onEventMainThread(ShoppingListChangedEvent event) {

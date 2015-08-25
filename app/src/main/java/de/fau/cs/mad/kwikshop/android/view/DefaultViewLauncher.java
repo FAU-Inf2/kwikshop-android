@@ -491,12 +491,18 @@ public class DefaultViewLauncher implements ViewLauncher {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title);
-        builder.setMessage(message);
 
-        final CheckBox checkBox = new CheckBox(activity);
+        final View view = activity.getLayoutInflater().inflate(R.layout.dialog_checkbox, null);
+        final TextView textView = (TextView) view.findViewById(R.id.checkbox_dialog_text_view);
+        final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox_dialog_checkbox);
+
+        textView.setText(message);
+
         checkBox.setText(checkBoxMessage);
         checkBox.setChecked(checkBoxDefaultValue);
-        builder.setView(checkBox);
+
+
+        builder.setView(view);
 
 
         //android.R.string.yes

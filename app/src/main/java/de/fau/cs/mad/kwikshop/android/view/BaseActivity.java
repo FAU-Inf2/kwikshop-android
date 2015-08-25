@@ -149,18 +149,6 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(new Intent(this, SettingActivity.class));
                 return true;
 
-            case R.id.action_about:
-                startActivity(new Intent(this, AboutActivity.class));
-                return true;
-
-            case R.id.action_location:
-                startActivity(new Intent(this, LocationActivity.class));
-                return true;
-
-            case R.id.action_listofshoppinglists:
-                startActivity(new Intent(this, ListOfShoppingListsActivity.class));
-                return true;
-
             case android.R.id.home:
                 if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
                     mDrawerLayout.closeDrawers();
@@ -168,13 +156,6 @@ public class BaseActivity extends AppCompatActivity {
                     mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
 
-            case R.id.action_listofrecipes:
-                startActivity(new Intent(this, ListOfRecipesActivity.class));
-                return true;
-
-            case R.id.action_serverintegrationdebugactiviy:
-                startActivity(ServerIntegrationDebugActivity.getIntent(this));
-                return true;
 
 
             default:

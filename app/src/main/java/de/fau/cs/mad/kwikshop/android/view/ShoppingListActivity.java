@@ -66,13 +66,9 @@ public class ShoppingListActivity extends BaseActivity {
         shoppingMode.setVisible(true);
 
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getApplicationContext())){
-            for(int i = 0; i <  menu.getItem(1).getSubMenu().size(); i++){
-                menu.getItem(1).getSubMenu().getItem(i).setVisible(false);
-            }
             moveToShoppingCart.setVisible(true);
             moveFromShoppingCart.setVisible(true);
         }
-
 
         MenuItem findLocationItem =  menu.findItem(R.id.refresh_current_supermarket);
 

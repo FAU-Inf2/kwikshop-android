@@ -19,13 +19,5 @@ public class ListOfRecipesActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-
-        MenuItem recipeLists = menu.findItem(R.id.action_listofrecipes);
-        recipeLists.setVisible(false);
-
-        return true;
-    }
 
 }

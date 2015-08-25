@@ -13,13 +13,6 @@
         <menu>
 
             <!-- If you change the order here, make sure to adjust the order for visibility in ShoppingListActivity -->
-            <item android:id="@+id/action_listofshoppinglists"
-                  app:showAsAction="ifRoom"
-                  android:title="@string/overflow_action_menu_listofshoppinglists" />
-
-            <item android:id="@+id/action_listofrecipes"
-                app:showAsAction="ifRoom"
-                android:title="@string/overflow_action_menu_recipes" />
 
             <item android:id="@+id/action_add_recipe"
                 app:showAsAction="ifRoom"
@@ -31,18 +24,6 @@
                 android:visible="false"
                 android:title="@string/overflow_action_menu_add_to_a_shoppinglist"/>
 
-
-            <item android:id="@+id/action_location"
-                  app:showAsAction="ifRoom"
-                  android:title="@string/supermarket_finder" />
-
-            <item android:id="@+id/action_settings"
-                  app:showAsAction="ifRoom"
-                  android:title="@string/overflow_action_menu_settings" />
-
-            <item android:id="@+id/action_about"
-                  app:showAsAction="ifRoom"
-                  android:title="@string/overflow_action_menu_about" />
 
             <item android:id="@+id/action_move_all_to_shopping_cart"
                 app:showAsAction="ifRoom"
@@ -59,9 +40,6 @@
                   android:visible="false"
                   android:title="@string/overflow_action_menu_shopping_mode" />
 
-            <item android:id="@+id/action_serverintegrationdebugactiviy"
-                app:showAsAction="ifRoom"
-                android:title="Server Integration Debug Console" />
 
         </menu>
 

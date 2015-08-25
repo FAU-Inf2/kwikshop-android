@@ -41,13 +41,6 @@ public class ListOfShoppingListsActivity extends BaseActivity {
         repeatHelper.checkIfReminderIsOver();
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
 
-        MenuItem shoppingLists = menu.findItem(R.id.action_listofshoppinglists);
-        shoppingLists.setVisible(false);
 
-        return true;
-    }
-
-    }
+}

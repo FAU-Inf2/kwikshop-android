@@ -323,19 +323,6 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
 
     }
 
-    @SuppressWarnings("unchecked")
-    public void notificationOfNoConnection(){
-
-        viewLauncher.showMessageDialog(
-                resourceProvider.getString(R.string.alert_dialog_connection_label),
-                resourceProvider.getString(R.string.alert_dialog_connection_message),
-                resourceProvider.getString(R.string.alert_dialog_connection_try),
-                retryConnectionCheckWithLocationPermissionCommand,
-                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
-                getFinishActivityCommand()
-        );
-
-    }
 
     @SuppressWarnings("unchecked")
     public void notificationOfNoConnectionWithLocationPermission(){
@@ -353,12 +340,22 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
 
     public void showProgressDialogWithListID(int listID){
 
+        /*
         viewLauncher.showProgressDialogWithListID(
                 resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
                 resourceProvider.getString(R.string.cancel),
                 listID,
                 true,
                 getStartShoppingListFragmemtWithoutPlaceRequestCommand()
+        );
+        */
+
+        viewLauncher.showProgressDialogWithListID(
+                resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
+                null,
+                listID,
+                true,
+                null
         );
     }
 
@@ -446,8 +443,7 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
         if(!cancelSelectionOfSupermarket){
             if(checkPlaces(places)){
                 // not listed supermarket selection has index 0
-                if(placeChoiceIndex > 0){
-                    Place selectedPlace = places.get(placeChoiceIndex - 1);
+                    Place selectedPlace = places.get(placeChoiceIndex);
                     // set new lastLocation object
                     LastLocation lastLocation = new LastLocation();
                     lastLocation.setName(selectedPlace.getName());
@@ -457,7 +453,7 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
                     lastLocation.setTimestamp(System.currentTimeMillis());
                     item.setLocation(lastLocation);
                     listManager.saveListItem(listId, item);
-                }
+
             }
         }
     }

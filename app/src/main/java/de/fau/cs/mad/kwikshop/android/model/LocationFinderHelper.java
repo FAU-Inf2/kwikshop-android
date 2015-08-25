@@ -311,9 +311,8 @@ public class LocationFinderHelper implements LocationListener {
     }
 
     public static CharSequence[] getNamesFromPlaces(List<Place> places, Context context){
-        CharSequence[] placeNames = new CharSequence[places.size() + 1];
-        placeNames[0] = context.getResources().getString(R.string.localization_supermarket_select_dialog_not_found);
-        int i = 1;
+        CharSequence[] placeNames = new CharSequence[places.size()];
+        int i = 0;
         for(Place place : places){
             placeNames[i] = place.getName() + " " + LocationFinderHelper.getAddressConverted(new LatLng(place.getLatitude(), place.getLongitude()), context);
             i++;

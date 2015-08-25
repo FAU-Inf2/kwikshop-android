@@ -37,14 +37,5 @@ public class RecipeActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-
-        MenuItem addRecipe = menu.findItem(R.id.action_add_to_a_shoppinglist);
-        addRecipe.setVisible(true);
-
-        return true;
-    }
-
 
 }

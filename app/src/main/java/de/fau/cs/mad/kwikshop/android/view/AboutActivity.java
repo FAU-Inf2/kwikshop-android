@@ -78,14 +78,7 @@ public class AboutActivity extends BaseActivity {
 
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
 
-        MenuItem about = menu.findItem(R.id.action_about);
-        about.setVisible(false);
-
-        return true;
-    }
 
 
 }

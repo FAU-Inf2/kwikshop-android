@@ -329,8 +329,8 @@ public class ShoppingListFragment
     public void postResult(List<Place> places) {
 
         if(!shoppingPlaceRequestIsCanceled){
-            locationViewModel.setPlaces(places);
             locationViewModel.dismissProgressDialog();
+            locationViewModel.setPlaces(places);
 
             if(!locationViewModel.checkPlaces(places)){
                 // no place info dialog
@@ -338,6 +338,8 @@ public class ShoppingListFragment
                 return;
             }
             // Select the current Supermarket
+            locationViewModel.dismissProgressDialog();
+            locationViewModel.dismissDialog();
             locationViewModel.showSelectCurrentSupermarket(places);
         }
     }

@@ -25,12 +25,6 @@ public class LocationActivity extends BaseActivity {
 
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem location = menu.findItem(R.id.action_location);
-        location.setVisible(false);
-        return true;
-    }
-
+   
 
 }

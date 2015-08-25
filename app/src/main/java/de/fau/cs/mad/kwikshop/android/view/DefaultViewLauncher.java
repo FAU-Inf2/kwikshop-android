@@ -302,22 +302,19 @@ public class DefaultViewLauncher implements ViewLauncher {
         else
             builder.setTitle(activity.getString(R.string.recipe_add_to_shoppinglist));
 
-        LinearLayout layout = new LinearLayout(activity);
-        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final View view = activity.getLayoutInflater().inflate(R.layout.dialog_add_recipe_to_shoppinglist, null);
+        final TextView listTextView = (TextView) view.findViewById(R.id.dialog_add_recipe_textview1);
+        final Spinner spinner = (Spinner) view.findViewById(R.id.dialog_add_recipe_spinner);
+        final TextView amountTextView = (TextView) view.findViewById(R.id.dialog_add_recipe_textview2);
+        final NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.dialog_add_recipe_numberpicker);
 
 
-        final TextView listTextView = new TextView(activity);
-        final NumberPicker numberPicker = new NumberPicker(activity);
-        final Spinner spinner = new Spinner(activity);
-        final TextView amountTextView = new TextView(activity);
 
         if(fromShoppingList)
-            listTextView.setText("\n" + activity.getString(R.string.recipe_choose_recipe) + "\n");
+            listTextView.setText("\n" + activity.getString(R.string.recipe_choose_recipe));
         else
-            listTextView.setText("\n" + activity.getString(R.string.recipe_choose_shoppinglist) + "\n");
-
-        listTextView.setTextColor(activity.getResources().getColor(R.color.primary_text));
-        layout.addView(listTextView);
+            listTextView.setText("\n" + activity.getString(R.string.recipe_choose_shoppinglist));
 
 
         List<String> names = new ArrayList<>();
@@ -349,18 +346,15 @@ public class DefaultViewLauncher implements ViewLauncher {
 
             }
         });
-        layout.addView(spinner);
 
         if(!fromShoppingList)amountTextView.setText("\n" + activity.getString(R.string.recipe_choose_amount) + " " + recipeManager.getList(listId).getScaleName() + ":");
         amountTextView.setTextColor(activity.getResources().getColor(R.color.primary_text));
-        layout.addView(amountTextView);
 
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(50);
         if(!fromShoppingList) numberPicker.setValue(recipeManager.getList(listId).getScaleFactor());
-        layout.addView(numberPicker);
 
-        builder.setView(layout);
+        builder.setView(view);
 
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {

@@ -1,14 +1,14 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 
 /**
  * IdExtractor implementation for use in ObservableArrayList
  */
-public class ItemIdExtractor implements ObservableArrayList.IdExtractor<Item, Integer> {
+public class ItemIdExtractor implements ObservableArrayList.IdExtractor<ItemViewModel, Integer> {
 
     @Override
-    public Integer getId(Item object) {
+    public Integer getId(ItemViewModel object) {
         return object.getId();
     }
 

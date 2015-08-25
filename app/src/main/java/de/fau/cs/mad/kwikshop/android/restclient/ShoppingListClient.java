@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.common.DeletionInfo;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.fau.cs.mad.kwikshop.common.rest.responses.SharingResponse;
 import de.fau.cs.mad.kwikshop.common.rest.responses.SharingCode;
@@ -61,7 +61,7 @@ public class ShoppingListClient implements ListClient<ShoppingListServer> {
     }
 
     @Override
-    public Item getListItem(int listId, int itemId) {
+    public ItemViewModel getListItem(int listId, int itemId) {
         return shoppingListResource.getListItemSynchronously(listId, itemId);
     }
 
@@ -76,12 +76,12 @@ public class ShoppingListClient implements ListClient<ShoppingListServer> {
     }
 
     @Override
-    public Item createItem(int listId, Item newItem) {
+    public ItemViewModel createItem(int listId, ItemViewModel newItem) {
         return shoppingListResource.createItemSynchronously(listId, newItem);
     }
 
     @Override
-    public Item updateItem(int listId, int itemId, Item item) {
+    public ItemViewModel updateItem(int listId, int itemId, ItemViewModel item) {
         return shoppingListResource.updateItemSynchronously(listId, itemId, item);
     }
 
@@ -91,7 +91,7 @@ public class ShoppingListClient implements ListClient<ShoppingListServer> {
     }
 
     @Override
-    public List<Item> getListItems(int listId) {
+    public List<ItemViewModel> getListItems(int listId) {
         return shoppingListResource.getListItemsSynchronously(listId);
     }
 

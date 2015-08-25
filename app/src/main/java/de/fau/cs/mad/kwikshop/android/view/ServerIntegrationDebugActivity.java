@@ -29,7 +29,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.DeletionInfo;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.RecipeServer;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.greenrobot.event.EventBus;
@@ -233,7 +233,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                 try {
 
                                     ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
-                                    List<Item> list = client.getListItems(listId);
+                                    List<ItemViewModel> list = client.getListItems(listId);
 
                                     privateBus.post(mapper.writeValueAsString(list));
 
@@ -366,7 +366,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                 try {
 
-                                    Item newItem = new Item();
+                                    ItemViewModel newItem = new ItemViewModel();
                                     newItem.setName("New Item on Server");
                                     newItem.setComment("Sample Comment");
 
@@ -541,7 +541,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                                 try {
                                                     ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
-                                                    Item item = client.getListItem(listId, itemId);
+                                                    ItemViewModel item = client.getListItem(listId, itemId);
 
                                                     privateBus.post(mapper.writeValueAsString(item));
 
@@ -610,7 +610,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                                 try {
                                                     ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
-                                                    Item item = client.getListItem(listId, itemId);
+                                                    ItemViewModel item = client.getListItem(listId, itemId);
                                                     item.setName(item.getName() + "_edited");
 
                                                     item = client.updateItem(listId, itemId, item);
@@ -849,7 +849,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                 try {
 
                                     ListClient<RecipeServer> client = clientFactory.getRecipeClient();
-                                    List<Item> list = client.getListItems(listId);
+                                    List<ItemViewModel> list = client.getListItems(listId);
 
                                     privateBus.post(mapper.writeValueAsString(list));
 
@@ -980,7 +980,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                 try {
 
-                                    Item newItem = new Item();
+                                    ItemViewModel newItem = new ItemViewModel();
                                     newItem.setName("New Item on Server");
                                     newItem.setComment("Sample Comment");
 
@@ -1155,7 +1155,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                                 try {
                                                     ListClient<RecipeServer> client = clientFactory.getRecipeClient();
-                                                    Item item = client.getListItem(listId, itemId);
+                                                    ItemViewModel item = client.getListItem(listId, itemId);
 
                                                     privateBus.post(mapper.writeValueAsString(item));
 
@@ -1225,7 +1225,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                                                 try {
                                                     ListClient<RecipeServer> client = clientFactory.getRecipeClient();
-                                                    Item item = client.getListItem(listId, itemId);
+                                                    ItemViewModel item = client.getListItem(listId, itemId);
                                                     item.setName(item.getName() + "_edited");
 
                                                     item = client.updateItem(listId, itemId, item);

@@ -12,7 +12,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +37,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -52,14 +48,11 @@ import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
-import de.fau.cs.mad.kwikshop.android.model.GroupStorage;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
-import de.fau.cs.mad.kwikshop.android.model.UnitStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.DeleteItemEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.common.Group;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
@@ -102,7 +95,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private int numberPickerCalledWith;
 
 
-    protected Item item;
+    protected ItemViewModel item;
 
 
     @InjectView(R.id.productname_text)
@@ -269,7 +262,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     protected void saveItem() {
 
         if (viewModel.isNewItem()) {
-            item = new Item();
+            item = new ItemViewModel();
         }
 
         item.setName(productname_text.getText().toString());

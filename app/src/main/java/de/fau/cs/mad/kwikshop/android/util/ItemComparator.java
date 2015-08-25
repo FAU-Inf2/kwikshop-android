@@ -2,11 +2,11 @@ package de.fau.cs.mad.kwikshop.android.util;
 
 import java.util.Comparator;
 
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
 
-public class ItemComparator implements Comparator<Item> {
+public class ItemComparator implements Comparator<ItemViewModel> {
 
     private final ItemSortType comparatorType;
     private final DisplayHelper displayHelper;
@@ -23,7 +23,7 @@ public class ItemComparator implements Comparator<Item> {
     }
 
     @Override
-    public int compare(Item item1, Item item2)
+    public int compare(ItemViewModel item1, ItemViewModel item2)
     {
         int res = 0;
 

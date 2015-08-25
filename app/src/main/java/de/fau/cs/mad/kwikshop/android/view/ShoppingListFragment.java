@@ -46,14 +46,14 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.greenrobot.event.EventBus;
 import se.walkercrou.places.Place;
 
 
 public class ShoppingListFragment
         extends Fragment
-        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Item>, SupermarketPlace.AsyncPlaceRequestListener {
+        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<ItemViewModel>, SupermarketPlace.AsyncPlaceRequestListener {
 
 
     private static final String ARG_LISTID = "list_id";
@@ -194,7 +194,7 @@ public class ShoppingListFragment
                         for (int position : reverseSortedPositions) {
                             if (command.getCanExecute()) {
                                 try {
-                                    Item item = shoppingListAdapter.getItem(position);
+                                    ItemViewModel item = shoppingListAdapter.getItem(position);
                                     command.execute(item.getId());
                                     if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,false,getActivity())){
                                         locationViewModel.setLocationOnItemBought(item);
@@ -478,7 +478,7 @@ public class ShoppingListFragment
 
 
     @Override
-    public void onItemAdded(Item newItem) {
+    public void onItemAdded(ItemViewModel newItem) {
         //TODO: It might make sense to move autocompletion handling to the view model
         //IMPORTANT
         if(autoCompletion != null) {
@@ -487,12 +487,12 @@ public class ShoppingListFragment
     }
 
     @Override
-    public void onItemRemoved(Item removedItem) {
+    public void onItemRemoved(ItemViewModel removedItem) {
 
     }
 
     @Override
-    public void onItemModified(Item modifiedItem) {
+    public void onItemModified(ItemViewModel modifiedItem) {
 
     }
 

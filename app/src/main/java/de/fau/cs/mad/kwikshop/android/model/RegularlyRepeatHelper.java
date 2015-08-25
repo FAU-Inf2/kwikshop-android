@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ReminderTimeIsOverEvent;
@@ -22,9 +22,9 @@ import de.greenrobot.event.EventBus;
 public class RegularlyRepeatHelper {
 
     //list of items repeating on a schedule
-    private PriorityQueue<Item> scheduleRepeatList;
+    private PriorityQueue<ItemViewModel> scheduleRepeatList;
     //list of items to be added to every new shopping list
-    private List<Item> listCreationRepeatList;
+    private List<ItemViewModel> listCreationRepeatList;
 
 
     private final DatabaseHelper databaseHelper;
@@ -47,14 +47,14 @@ public class RegularlyRepeatHelper {
 
         try {
 
-            List<Item> items = databaseHelper.getItemDao().queryForAll();
+            List<ItemViewModel> items = databaseHelper.getItemDao().queryForAll();
             databaseHelper.refreshItemsRecursively(items);
 
             scheduleRepeatList = new PriorityQueue<>(Math.max(1, items.size()), new RepeatDateItemComparator());
             listCreationRepeatList = new LinkedList<>();
 
 
-            for (Item item : items) {
+            for (ItemViewModel item : items) {
 
                 switch (item.getRepeatType()) {
 
@@ -79,7 +79,7 @@ public class RegularlyRepeatHelper {
         }
     }
 
-    public void offerRepeatData(Item item) {
+    public void offerRepeatData(ItemViewModel item) {
 
         switch (item.getRepeatType()) {
 
@@ -109,12 +109,12 @@ public class RegularlyRepeatHelper {
 
     }
 
-    public List<Item> getAll() {
+    public List<ItemViewModel> getAll() {
         return new ArrayList<>(scheduleRepeatList);
     }
 
-    public Item getItemForId(int id) {
-        Item item = getItem(id);
+    public ItemViewModel getItemForId(int id) {
+        ItemViewModel item = getItem(id);
         if (item != null) return item;
 
         // item was not found
@@ -124,15 +124,15 @@ public class RegularlyRepeatHelper {
         return item;
     }
 
-    private Item getItem(int id) {
-        for (Item item : scheduleRepeatList) {
+    private ItemViewModel getItem(int id) {
+        for (ItemViewModel item : scheduleRepeatList) {
             if (item.getId() == id)
                 return item;
         }
         return null;
     }
 
-    public void delete(Item data) {
+    public void delete(ItemViewModel data) {
         if(!scheduleRepeatList.contains(data)){
             return;
         }
@@ -142,7 +142,7 @@ public class RegularlyRepeatHelper {
     public void checkIfReminderIsOver() {
 
         Calendar now = Calendar.getInstance();
-        Item item = scheduleRepeatList.peek();
+        ItemViewModel item = scheduleRepeatList.peek();
         if (item == null || item.getRemindAtDate() == null)
             return;
 
@@ -155,8 +155,8 @@ public class RegularlyRepeatHelper {
 
     public void addListCreationRepeatingItems(ListManager<ShoppingList> shoppingListManager, int shoppingListId) {
 
-        for(Item i : listCreationRepeatList) {
-            Item newItem = new Item(i);
+        for(ItemViewModel i : listCreationRepeatList) {
+            ItemViewModel newItem = new ItemViewModel(i);
             shoppingListManager.addListItem(shoppingListId, newItem);
         }
 
@@ -175,7 +175,7 @@ public class RegularlyRepeatHelper {
     @SuppressWarnings("unused")
     public void onEventBackgroundThread(ItemChangedEvent event) {
         if (event.getChangeType() == ItemChangeType.Deleted) {
-            Item item = getItem(event.getItemId());
+            ItemViewModel item = getItem(event.getItemId());
             if (item != null)
                 scheduleRepeatList.remove(item);
         }
@@ -183,10 +183,10 @@ public class RegularlyRepeatHelper {
 
 
 
-    private static class RepeatDateItemComparator implements Comparator<Item> {
+    private static class RepeatDateItemComparator implements Comparator<ItemViewModel> {
 
         @Override
-        public int compare(Item lhs, Item rhs) {
+        public int compare(ItemViewModel lhs, ItemViewModel rhs) {
 
             if (lhs != null && lhs.getRemindAtDate() != null && rhs != null && rhs.getRemindAtDate() != null)
                 return lhs.getRemindAtDate().compareTo(rhs.getRemindAtDate());

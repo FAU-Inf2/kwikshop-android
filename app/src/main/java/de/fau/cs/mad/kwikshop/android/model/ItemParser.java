@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
@@ -41,7 +41,7 @@ public class ItemParser {
     }
 
 
-    public Item parseAmountAndUnit(Item item) {
+    public ItemViewModel parseAmountAndUnit(ItemViewModel item) {
 
         String input = item.getName();
         String output = "";

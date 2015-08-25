@@ -26,7 +26,7 @@ import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.Group;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.RepeatType;
@@ -49,8 +49,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     //note if you increment here, also add migration strategy with correct version to onUpgrade
     private static final int DATABASE_VERSION = 42; //increment every time you change the database model
 
-    private Dao<Item, Integer> itemDao = null;
-    private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
+    private Dao<ItemViewModel, Integer> itemDao = null;
+    private RuntimeExceptionDao<ItemViewModel, Integer> itemRuntimeDao = null;
 
     private Dao<AccountID, Integer> accountIDDao = null;
     private RuntimeExceptionDao<AccountID, Integer> accountIDRuntimeDao = null;
@@ -96,7 +96,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
         try {
             Log.i(DatabaseHelper.class.getName(), "onCreate");
-            TableUtils.createTable(connectionSource, Item.class);
+            TableUtils.createTable(connectionSource, ItemViewModel.class);
             TableUtils.createTable(connectionSource, AccountID.class);
             TableUtils.createTable(connectionSource, ShoppingList.class);
             TableUtils.createTable(connectionSource, Unit.class);
@@ -505,16 +505,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
     }
 
-    public Dao<Item, Integer> getItemDao() throws SQLException {
+    public Dao<ItemViewModel, Integer> getItemDao() throws SQLException {
         if (itemDao == null) {
-            itemDao = getDao(Item.class);
+            itemDao = getDao(ItemViewModel.class);
         }
         return itemDao;
     }
 
-    public RuntimeExceptionDao<Item, Integer> getItemRuntimeDao() {
+    public RuntimeExceptionDao<ItemViewModel, Integer> getItemRuntimeDao() {
         if (itemRuntimeDao == null) {
-            itemRuntimeDao = getRuntimeExceptionDao(Item.class);
+            itemRuntimeDao = getRuntimeExceptionDao(ItemViewModel.class);
         }
         return itemRuntimeDao;
     }
@@ -817,9 +817,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     /**
      * Loads all the fields of all the supplied items which unfortunately ORMLite does not do automatically
      */
-    public void refreshItemsRecursively(Collection<Item> items) throws SQLException {
+    public void refreshItemsRecursively(Collection<ItemViewModel> items) throws SQLException {
 
-        for (Item i : items) {
+        for (ItemViewModel i : items) {
 
             if (i.getUnit() != null) {
                 getUnitDao().refresh(i.getUnit());

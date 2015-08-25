@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.ItemNotFoundException;
 import de.fau.cs.mad.kwikshop.android.model.exceptions.ListNotFoundException;
@@ -39,7 +39,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
     private final Object listLock = new Object();
     private Map<Integer, TList> lists;
-    private SparseArray<SparseArray<Item>> listItems;
+    private SparseArray<SparseArray<ItemViewModel>> listItems;
 
 
 
@@ -93,7 +93,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
     }
 
     @Override
-    public Collection<Item> getListItems(int listId) {
+    public Collection<ItemViewModel> getListItems(int listId) {
 
         loadLists();
         synchronized (listLock) {
@@ -106,7 +106,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
     }
 
     @Override
-    public Item getListItem(int listId, int itemId) {
+    public ItemViewModel getListItem(int listId, int itemId) {
         loadLists();
 
         synchronized (listLock) {
@@ -137,7 +137,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         int listId = list.getId();
         synchronized (listLock) {
             lists.put(listId, list);
-            listItems.put(listId, new SparseArray<Item>());
+            listItems.put(listId, new SparseArray<ItemViewModel>());
         }
 
         eventBus.post(getAddedListChangedEvent(list.getId()));
@@ -159,7 +159,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
 
     @Override
-    public Item addListItem(int listId, Item item) {
+    public ItemViewModel addListItem(int listId, ItemViewModel item) {
         TList list;
         synchronized (listLock) {
             if (!lists.containsKey(listId)) {
@@ -184,12 +184,12 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
     }
 
     @Override
-    public Item saveListItem(int listId, Item item) {
+    public ItemViewModel saveListItem(int listId, ItemViewModel item) {
         return saveListItemInternal(listId, item, true);
     }
 
     @Override
-    public Item saveListItemWithoutModificationFlag(int listId, Item item) {
+    public ItemViewModel saveListItemWithoutModificationFlag(int listId, ItemViewModel item) {
         return saveListItemInternal(listId, item, false);
     }
 
@@ -198,7 +198,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
     public boolean deleteItem(int listId, int itemId) {
 
         TList list;
-        Item item;
+        ItemViewModel item;
 
         synchronized (listLock) {
 
@@ -267,8 +267,8 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
 
                         for (TList list : lists) {
 
-                            SparseArray<Item> items = new SparseArray<>();
-                            for (Item item : list.getItems()) {
+                            SparseArray<ItemViewModel> items = new SparseArray<>();
+                            for (ItemViewModel item : list.getItems()) {
                                 items.put(item.getId(), item);
                             }
 
@@ -331,7 +331,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         for(TList list : getLists()) {
             list.setModifiedSinceLastSync(false);
 
-            for(Item item : list.getItems()) {
+            for(ItemViewModel item : list.getItems()) {
                 item.setModifiedSinceLastSync(false);
             }
             saveListWithoutEvents(list.getId());
@@ -368,7 +368,7 @@ public abstract class AbstractListManager<TList extends DomainListObject> implem
         return shoppingList;
     }
 
-    private Item saveListItemInternal(int listId, Item item, boolean setModificationFlags) {
+    private ItemViewModel saveListItemInternal(int listId, ItemViewModel item, boolean setModificationFlags) {
 
         TList list;
         synchronized (listLock) {

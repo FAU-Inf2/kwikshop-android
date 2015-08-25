@@ -47,14 +47,16 @@
             android:paddingLeft="30dp" />
 
         <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:id="@+id/button_multipleSelection"
+            android:layout_width="43dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkBox_multipleSelection"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
             android:button="@drawable/multipleselection_check" />
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="116dp"
+            android:layout_width="92dp"
             android:layout_height="25dp"
             android:gravity="right"
             android:textAlignment="gravity"

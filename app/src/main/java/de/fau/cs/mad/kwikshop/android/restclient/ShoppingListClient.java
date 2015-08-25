@@ -8,6 +8,7 @@ import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.fau.cs.mad.kwikshop.common.rest.responses.SharingResponse;
 import de.fau.cs.mad.kwikshop.common.rest.responses.SharingCode;
+import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
 import retrofit.client.Response;
 
 /**
@@ -98,5 +99,10 @@ public class ShoppingListClient implements ListClient<ShoppingListServer> {
     @Override
     public List<DeletionInfo> getDeletedListItems(int listId) {
         return shoppingListResource.getDeletedListItemsSynchronously(listId);
+    }
+
+    @Override
+    public void postItemOrder(ItemOrderWrapper itemOrder) {
+        shoppingListResource.postBoughtItemsSynchronously(itemOrder);
     }
 }

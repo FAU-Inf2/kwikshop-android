@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +33,8 @@ import de.fau.cs.mad.kwikshop.common.DeletionInfo;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.RecipeServer;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
+import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
+import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
 import de.greenrobot.event.EventBus;
 
 /*
@@ -964,7 +967,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -1139,7 +1142,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
                                         final int itemId;
-                                        try{
+                                        try {
                                             itemId = Integer.parseInt(parameter);
                                         } catch (Exception e) {
                                             privateBus.post(getStackTrace(e));
@@ -1166,7 +1169,6 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                                 return null;
                                             }
                                         }.execute();
-
 
 
                                     }
@@ -1267,7 +1269,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -1282,7 +1284,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
                                         final int itemId;
-                                        try{
+                                        try {
                                             itemId = Integer.parseInt(parameter);
                                         } catch (Exception e) {
                                             privateBus.post(getStackTrace(e));
@@ -1311,7 +1313,6 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                         }.execute();
 
 
-
                                     }
                                 },
                                 NullCommand.StringInstance);
@@ -1320,6 +1321,48 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                     }
                 },
                 NullCommand.StringInstance);
+
+    }
+
+    @OnClick(R.id.button_postBoughtItems)
+    void postBoughtItems() {
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+
+                    privateBus.post("Posting BoughtItems...");
+
+                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
+
+                    {
+                        List<BoughtItem> boughtItems = new ArrayList<>();
+                        boughtItems.add(new BoughtItem("Test1"));
+                        boughtItems.add(new BoughtItem("Test2"));
+                        boughtItems.add(new BoughtItem("Test3"));
+                        ItemOrderWrapper itemOrder = new ItemOrderWrapper(boughtItems, "Springfield", "Kwik-E-Mart");
+                        client.postItemOrder(itemOrder);
+                    }
+
+                    {
+                        List<BoughtItem> boughtItems = new ArrayList<>();
+                        boughtItems.add(new BoughtItem("Test1"));
+                        boughtItems.add(new BoughtItem("Test4"));
+                        boughtItems.add(new BoughtItem("Test3"));
+                        ItemOrderWrapper itemOrder = new ItemOrderWrapper(boughtItems, "foo", "Kwik-E-Mart");
+                        client.postItemOrder(itemOrder);
+                    }
+
+                } catch (Exception e) {
+
+                    privateBus.post(getStackTrace(e));
+                }
+
+                return null;
+            }
+        }.execute();
 
     }
 

@@ -7,6 +7,7 @@ import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObjectServer;
 import de.fau.cs.mad.kwikshop.common.rest.responses.SharingResponse;
 import de.fau.cs.mad.kwikshop.common.rest.responses.SharingCode;
+import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
 import retrofit.client.Response;
 
 public interface ListClient<TListServer extends DomainListObjectServer> {
@@ -39,5 +40,7 @@ public interface ListClient<TListServer extends DomainListObjectServer> {
     List<Item> getListItems(int listId);
 
     List<DeletionInfo> getDeletedListItems(int listId);
+
+    void postItemOrder(ItemOrderWrapper itemOrder);
 
 }

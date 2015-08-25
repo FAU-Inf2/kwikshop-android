@@ -242,5 +242,6 @@
     <string name="share_success">Du hast jetzt Zugriff auf die Einkaufsliste %s.</string>
     <string name="settings_option_8_login_name">Account / Login</string>
     <string name="settings_option_8_login_descr">Anmelden, um Einkaufslisten zu synchronisieren und zu teilen</string>
+    <string name="title_activity_location">Supermarktfinder</string>
 
 </resources>

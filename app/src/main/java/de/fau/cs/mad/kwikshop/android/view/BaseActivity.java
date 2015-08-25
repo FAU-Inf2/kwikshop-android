@@ -7,20 +7,20 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+
+
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import java.util.Locale;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
@@ -34,7 +34,7 @@ import de.greenrobot.event.EventBus;
 /**
  * BaseActivity: all activities have to inherit
  */
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends AppCompatActivity {
 
     public static boolean refreshed = false;
 
@@ -80,15 +80,31 @@ public class BaseActivity extends ActionBarActivity {
 
         */
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
 
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
-                this,  mDrawerLayout, mToolbar,
+                this, mDrawerLayout, R.drawable.ic_drawer,
                 R.string.place_status_opened, R.string.place_status_closed
-        );
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        ) {
+            @Override
 
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                Log.d("ffawf", "onDrawerClosed: " + getTitle());
+
+                invalidateOptionsMenu();
+            }
+        };
+
+
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         mNavigationView.addHeaderView(mNavigationViewHeader);
 
@@ -98,10 +114,12 @@ public class BaseActivity extends ActionBarActivity {
                 mDrawerLayout.closeDrawers();
                 menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
+
                     case R.id.nav_login:
                         mDrawerLayout.closeDrawers();
                         viewModel.startLoginActivity();
                         return true;
+
                     case R.id.nav_shopping_lists:
                         mDrawerLayout.closeDrawers();
                         startActivity(new Intent(getApplicationContext(), ListOfShoppingListsActivity.class));

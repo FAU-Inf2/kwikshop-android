@@ -20,6 +20,7 @@ import de.fau.cs.mad.kwikshop.android.view.ShoppingListFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.BarcodeScannerViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.BaseViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
@@ -61,6 +62,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
             RecipeItemDetailsViewModel.class,
             LocationViewModel.class,
             BarcodeScannerViewModel.class,
+            BaseViewModel.class,
 
             //helpers
             DisplayHelper.class,

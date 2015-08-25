@@ -4,20 +4,39 @@
 
         <group android:checkableBehavior="single">
             <item
-                android:id="@+id/nav_home"
-                android:icon="@drawable/ic_home"
-                android:title="Home" />
+                android:id="@+id/nav_login"
+                android:icon="@drawable/ic_login"
+                android:title="@string/title_activity_login" />
             <item
-                android:id="@+id/nav_example_item_1"
-                android:icon="@drawable/ic_action_add"
-                android:title="Example Item #1" />
+                android:id="@+id/nav_shopping_lists"
+                android:icon="@drawable/ic_shopping_list_alt"
+                android:title="@string/title_activity_shopping_list" />
+            <item
+                android:id="@+id/nav_recipe"
+                android:icon="@drawable/ic_shopping_list"
+                android:title="@string/title_activity_recipe" />
+
+            <item
+                android:id="@+id/nav_supermarket_finder"
+                android:icon="@drawable/ic_location"
+                android:title="@string/title_activity_location" />
+
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_about"
+                android:title="@string/title_activity_about" />
+
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_alt"
+                android:title="@string/title_activity_recipe" />
         </group>
 
-        <item android:title="Sub items">
+        <item android:title="Debug">
             <menu>
                 <item
-                    android:id="@+id/nav_example_sub_item_1"
-                    android:title="Example Sub Item #1" />
+                    android:id="@+id/nav_server"
+                    android:title="Server Console" />
             </menu>
         </item>
 

@@ -5,36 +5,29 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 
 import com.ikimuhendis.ldrawer.ActionBarDrawerToggle;
-import com.ikimuhendis.ldrawer.DrawerArrowDrawable;
-
 import java.util.Locale;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShareSuccessEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEventType;
-import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.viewmodel.BaseViewModel;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -42,87 +35,101 @@ import de.greenrobot.event.EventBus;
  */
 public class BaseActivity extends ActionBarActivity {
 
-    public static FrameLayout frameLayout;
     public static boolean refreshed = false;
 
     /* Used by sharing. If this is true, ListOfShoppingLists will be opened after sync. */
     private boolean returnToListOfShoppingLists = false;
 
     ProgressDialog syncProgressDialog;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
+
+    BaseViewModel viewModel;
+
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+
+    @InjectView(R.id.navigation_view)
+    NavigationView mNavigationView;
+
+    public static FrameLayout frameLayout;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
+        View mNavigationViewHeader = getLayoutInflater().inflate(R.layout.navigation_drawer_header, null);
 
+        frameLayout = (FrameLayout) findViewById(R.id.content_frame);
+
+        ButterKnife.inject(this);
+
+        viewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
+
+        /*
+        // Shopping Mode
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, this)){
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
 
-        setContentView(R.layout.activity_main);
+        */
+
+        mNavigationView.addHeaderView(mNavigationViewHeader);
+
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                mDrawerLayout.closeDrawers();
+                menuItem.setChecked(true);
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_login:
+                        mDrawerLayout.closeDrawers();
+                        viewModel.startLoginActivity();
+                        return true;
+                    case R.id.nav_shopping_lists:
+                        mDrawerLayout.closeDrawers();
+                        startActivity(new Intent(getApplicationContext(), ListOfShoppingListsActivity.class));
+
+                        return true;
+                    case R.id.nav_recipe:
+                        mDrawerLayout.closeDrawers();
+                        startActivity(new Intent(getApplicationContext(), ListOfRecipesActivity.class));
+
+                        return true;
+                    case R.id.nav_supermarket_finder:
+                        mDrawerLayout.closeDrawers();
+                        startActivity(new Intent(getApplicationContext(), LocationActivity.class));
+
+                        return true;
+                    case R.id.nav_settings:
+                        mDrawerLayout.closeDrawers();
+                        startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+
+                        return true;
+                    case R.id.nav_about:
+                        mDrawerLayout.closeDrawers();
+                        startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+
+                    case R.id.nav_server:
+                        mDrawerLayout.closeDrawers();
+                        startActivity(ServerIntegrationDebugActivity.getIntent(getApplicationContext()));
+                        return true;
+
+                }
+                return true;
+            }
+        });
+
         setSavedLocale();
-        frameLayout = (FrameLayout)findViewById(R.id.content_frame);
 
 
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.navdrawer);
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, R.string.place_status_opened,
-                R.string.place_status_closed) {
-
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                invalidateOptionsMenu();
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu();
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
-
-        String[] values = new String[]{
-                "Stop Animation (Back icon)",
-                "Stop Animation (Home icon)",
-                "Start Animation",
-                "Change Color",
-                "GitHub Page",
-                "Share",
-                "Rate"
-        };
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-        mDrawerList.setAdapter(adapter);
-
-
-        // color of back arrow to white
-        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        upArrow.setColorFilter(getResources().getColor(R.color.background_material_light), PorterDuff.Mode.SRC_ATOP);
-        getSupportActionBar().setHomeAsUpIndicator(upArrow);
-
-        // disable go back arrow
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-        // home icon in actionbar
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        //getSupportActionBar().setIcon(R.drawable.ic_home);
-
-        EventBus.getDefault().register(this);
-
-        // maks home icon clickable
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
 
     }
 
@@ -156,12 +163,10 @@ public class BaseActivity extends ActionBarActivity {
                 return true;
 
             case android.R.id.home:
-              //  NavUtils.navigateUpFromSameTask(this);
-                if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
-                    mDrawerLayout.closeDrawer(mDrawerList);
-                } else {
-                    mDrawerLayout.openDrawer(mDrawerList);
-                }
+                if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
+                    mDrawerLayout.closeDrawers();
+                else
+                    mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
 
             case R.id.action_listofrecipes:
@@ -173,28 +178,12 @@ public class BaseActivity extends ActionBarActivity {
                 return true;
 
 
-
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    @Override
-    public void onBackPressed() {
 
-        if (SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, this)) {
-            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getApplicationContext());
-            restartActivity();
-            return;
-        }
-        super.onBackPressed();
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
 
     @Override
     protected void onDestroy() {
@@ -207,6 +196,7 @@ public class BaseActivity extends ActionBarActivity {
         finish();
         startActivity(intent);
     }
+
 
     public void setSavedLocale() {
 

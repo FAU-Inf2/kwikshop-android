@@ -114,7 +114,7 @@ public class BaseActivity extends ActionBarActivity {
                     case R.id.nav_about:
                         mDrawerLayout.closeDrawers();
                         startActivity(new Intent(getApplicationContext(), AboutActivity.class));
-
+                        return true;
                     case R.id.nav_server:
                         mDrawerLayout.closeDrawers();
                         startActivity(ServerIntegrationDebugActivity.getIntent(getApplicationContext()));

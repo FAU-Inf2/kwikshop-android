@@ -15,7 +15,7 @@ import de.fau.cs.mad.kwikshop.common.Unit;
  * Created by oq22eval on 8/24/15.
  */
 public class ItemViewModel {
-    private Context context;
+    private Context context;/**/
     private boolean isVisible = false;
 
 

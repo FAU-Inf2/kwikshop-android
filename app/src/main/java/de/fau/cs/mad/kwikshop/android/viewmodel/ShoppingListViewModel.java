@@ -1,10 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 
-import android.app.FragmentManager;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -20,22 +17,11 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
-import de.fau.cs.mad.kwikshop.android.view.BarcodeScannerFragment;
-import de.fau.cs.mad.kwikshop.android.view.BaseActivity;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
-import de.fau.cs.mad.kwikshop.common.Group;
-import de.fau.cs.mad.kwikshop.common.Item;
-import de.fau.cs.mad.kwikshop.common.LastLocation;
-import de.fau.cs.mad.kwikshop.common.Recipe;
-import de.fau.cs.mad.kwikshop.common.RepeatType;
-import de.fau.cs.mad.kwikshop.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.common.Unit;
-import de.greenrobot.event.EventBus;
-import se.walkercrou.places.GooglePlaces;
-import se.walkercrou.places.Param;
-import se.walkercrou.places.Place;
+import de.fau.cs.mad.kwikshop.common.*;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 
 public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
@@ -47,7 +33,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     private final ListManager<Recipe> recipeManager;
 
 
-    private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
+    private final ObservableArrayList<ItemViewModel, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
     private ItemSortType itemSortType = ItemSortType.MANUAL;
 
     private final Command<Integer> toggleIsBoughtCommand = new Command<Integer>() {
@@ -59,11 +45,11 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         public void execute(Integer parameter) { deleteItemCommandExecute(parameter);}
     };
 
-    public ObservableArrayList<Item, Integer> getCheckedItems() {
+    public ObservableArrayList<ItemViewModel, Integer> getCheckedItems() {
         return checkedItems;
     }
 
-    private final ObservableArrayList<Item, Integer> checkedItems = new ObservableArrayList<Item, Integer>(new ItemIdExtractor());
+    private final ObservableArrayList<ItemViewModel, Integer> checkedItems = new ObservableArrayList<ItemViewModel, Integer>(new ItemIdExtractor());
 
     final Command<Void> deleteCheckBoxCheckedCommand = new Command<Void>() {
         @Override
@@ -173,8 +159,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     @Override
     public void itemsSwapped(int position1, int position2) {
-        Item item1 = items.get(position1);
-        Item item2 = items.get(position2);
+        ItemViewModel item1 = items.get(position1);
+        ItemViewModel item2 = items.get(position2);
 
         item1.setOrder(position1);
         item2.setOrder(position2);
@@ -229,13 +215,13 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             switch (event.getChangeType()) {
 
                 case Added:
-                    Item item = listManager.getListItem(listId, event.getItemId());
+                    ItemViewModel item = listManager.getListItem(listId, event.getItemId());
                     updateItem(item);
                     sortItems();
                     updateOrderOfItems();
                     break;
                 case PropertiesModified:
-                    Item item1 = listManager.getListItem(listId, event.getItemId());
+                    ItemViewModel item1 = listManager.getListItem(listId, event.getItemId());
                     updateItem(item1);
                     updateOrderOfItems();
                     break;
@@ -253,16 +239,16 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         boolean isBoughtNew = event.isMoveAllToBought();
         ShoppingList list = listManager.getList(listId);
 
-        List<Item> changedItems = new LinkedList<>();
+        List<ItemViewModel> changedItems = new LinkedList<>();
 
-        for(Item item : list.getItems()) {
+        for(ItemViewModel item : list.getItems()) {
             if(item.isBought() != isBoughtNew) {
                 item.setBought(isBoughtNew);
                 changedItems.add(item);
             }
         }
 
-        for(Item item : changedItems) {
+        for(ItemViewModel item : changedItems) {
             listManager.saveListItem(listId, item);
         }
 
@@ -295,7 +281,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     protected void loadList() {
         ShoppingList shoppingList = listManager.getList(this.listId);
 
-        for(Item item : shoppingList.getItems()) {
+        for(ItemViewModel item : shoppingList.getItems()) {
             updateItem(item);
         }
 
@@ -318,7 +304,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
     private void toggleIsBoughtCommandExecute(final int id) {
-        Item item = items.getById(id);
+        ItemViewModel item = items.getById(id);
 
         if(item != null) {
 
@@ -365,7 +351,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         int i = 0;
 
         while(li.hasPrevious()) {
-            Item item = (Item)li.previous();
+            ItemViewModel item = (ItemViewModel)li.previous();
             if(item.isBought())
                 i++;
             else
@@ -381,11 +367,11 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     public void changeCheckBoxesVisibility(){
         ShoppingList shoppingList = listManager.getList(this.listId);
 
-        for(Item item : shoppingList.getItems()) {
+        for(ItemViewModel item : shoppingList.getItems()) {
             updateItem(item);
         }
     }
-    private void updateItem(Item item) {
+    private void updateItem(de.fau.cs.mad.kwikshop.common.ItemViewModel item) {
         if(item.isBought()) { // Add bought items at the end of the list
             if (items.size() - 1 >= 0) {
                 items.setOrAddById(items.size() - 1, item);

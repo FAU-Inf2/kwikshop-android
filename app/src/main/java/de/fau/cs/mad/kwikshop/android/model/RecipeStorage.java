@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 
@@ -32,7 +32,7 @@ public class RecipeStorage implements ListStorage<Recipe> {
             for(Recipe recipe : ListStorageFragment.getDatabaseHelper().getRecipeDao()) {
                 recipes.add(recipe);
 
-                for (Item i : recipe.getItems()) {
+                for (ItemViewModel i : recipe.getItems()) {
 
                     if (i.getUnit() != null) {
                         ListStorageFragment.getDatabaseHelper().getUnitDao().refresh(i.getUnit());
@@ -58,7 +58,7 @@ public class RecipeStorage implements ListStorage<Recipe> {
         try {
             loadedRecipe = ListStorageFragment.getDatabaseHelper().getRecipeDao().queryForId(recipeId);
 
-            for (Item i : loadedRecipe.getItems()) {
+            for (ItemViewModel i : loadedRecipe.getItems()) {
 
                 if (i.getUnit() != null) {
                     ListStorageFragment.getDatabaseHelper().getUnitDao().refresh(i.getUnit());
@@ -80,7 +80,7 @@ public class RecipeStorage implements ListStorage<Recipe> {
     public boolean saveList(Recipe recipe) {
         try {
             // Update all Items first
-            for (Item item : recipe.getItems()) {
+            for (ItemViewModel item : recipe.getItems()) {
                 ListStorageFragment.getDatabaseHelper().getItemDao().update(item);
             }
             ListStorageFragment.getDatabaseHelper().getRecipeDao().update(recipe);
@@ -115,7 +115,7 @@ public class RecipeStorage implements ListStorage<Recipe> {
         DeleteBuilder db;
         try {
             db = ListStorageFragment.getDatabaseHelper().getItemDao().deleteBuilder();
-            db.where().eq(Item.FOREIGN_RECIPE_FIELD_NAME, listId); // Delete all items that belong to this list
+            db.where().eq(ItemViewModel.FOREIGN_RECIPE_FIELD_NAME, listId); // Delete all items that belong to this list
             ListStorageFragment.getDatabaseHelper().getItemDao().delete(db.prepare());
         } catch (SQLException e) {
             e.printStackTrace();

@@ -3,7 +3,7 @@ package de.fau.cs.mad.kwikshop.android.model.interfaces;
 import java.util.Collection;
 
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 
 /**
@@ -15,9 +15,9 @@ public interface ListManager<TList extends DomainListObject> {
 
     TList getList(int listId);
 
-    Collection<Item> getListItems(int listId);
+    Collection<ItemViewModel> getListItems(int listId);
 
-    Item getListItem(int listId, int itemId);
+    ItemViewModel getListItem(int listId, int itemId);
 
     int createList();
 
@@ -33,9 +33,9 @@ public interface ListManager<TList extends DomainListObject> {
      */
     TList saveListWithoutModificationFlag(int listId);
 
-    Item addListItem(int listId, Item item);
+    ItemViewModel addListItem(int listId, ItemViewModel item);
 
-    Item saveListItem(int listId, Item item);
+    ItemViewModel saveListItem(int listId, ItemViewModel item);
 
     /**
      * Saves the specified list item witout setting its modifiedSinceLastSync flag
@@ -43,7 +43,7 @@ public interface ListManager<TList extends DomainListObject> {
      * IMPORTANT: Only call this if you're sure this is what you want.
      *
      */
-    Item saveListItemWithoutModificationFlag(int listId, Item item);
+    ItemViewModel saveListItemWithoutModificationFlag(int listId, ItemViewModel item);
 
     boolean deleteItem(int listId, int itemId);
 

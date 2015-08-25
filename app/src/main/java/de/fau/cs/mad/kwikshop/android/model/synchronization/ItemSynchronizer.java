@@ -3,14 +3,12 @@ package de.fau.cs.mad.kwikshop.android.model.synchronization;
 import java.util.Collection;
 
 
-import de.fau.cs.mad.kwikshop.android.model.AbstractListManager;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
-import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.common.Group;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
@@ -20,7 +18,7 @@ import retrofit.RetrofitError;
 public abstract class ItemSynchronizer<TListClient extends DomainListObject,
                               TListServer extends DomainListObjectServer>
         extends
-            SyncStrategy<Item, Item, ItemSyncData<TListClient, TListServer>> {
+            SyncStrategy<ItemViewModel, ItemViewModel, ItemSyncData<TListClient, TListServer>> {
 
 
     private final ListManager<TListClient> listManager;
@@ -91,37 +89,37 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
     }
 
     @Override
-    protected int getClientId(ItemSyncData<TListClient, TListServer> itemSyncData, Item item) {
+    protected int getClientId(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel item) {
         return item.getId();
     }
 
     @Override
-    protected int getServerId(ItemSyncData<TListClient, TListServer> itemSyncData, Item item) {
+    protected int getServerId(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel item) {
         return item.getServerId();
     }
 
     @Override
-    protected Collection<Item> getClientObjects(ItemSyncData<TListClient, TListServer> itemSyncData) {
+    protected Collection<ItemViewModel> getClientObjects(ItemSyncData<TListClient, TListServer> itemSyncData) {
         return itemSyncData.getClientItems(clientListId);
     }
 
     @Override
-    protected Collection<Item> getServerObjects(ItemSyncData<TListClient, TListServer> itemSyncData) {
+    protected Collection<ItemViewModel> getServerObjects(ItemSyncData<TListClient, TListServer> itemSyncData) {
         return itemSyncData.getServerItems(serverListId).values();
     }
 
     @Override
-    protected boolean clientObjectExistsOnServer(ItemSyncData<TListClient, TListServer> itemSyncData, Item object) {
+    protected boolean clientObjectExistsOnServer(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel object) {
         return object.getServerId() > 0 && !clientObjectDeletedOnServer(itemSyncData, object);
     }
 
     @Override
-    protected boolean serverObjectExistsOnClient(ItemSyncData<TListClient, TListServer> itemSyncData, Item object) {
+    protected boolean serverObjectExistsOnClient(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel object) {
         return itemSyncData.getClientItemsByServerId(clientListId).containsKey(object.getServerId());
     }
 
     @Override
-    protected boolean clientObjectDeletedOnServer(ItemSyncData<TListClient, TListServer> itemSyncData, Item object) {
+    protected boolean clientObjectDeletedOnServer(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel object) {
 
         //item deleted on server if either the containing list or the Item itself has been deleted
         return itemSyncData.getDeletedListsServerByServerId().containsKey(serverListId) ||
@@ -129,28 +127,28 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
     }
 
     @Override
-    protected boolean serverObjectDeletedOnClient(ItemSyncData<TListClient, TListServer> itemSyncData, Item object) {
+    protected boolean serverObjectDeletedOnClient(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel object) {
         return itemSyncData.getDeletedItemsClientByServerId(serverListId) != null &&
                itemSyncData.getDeletedItemsClientByServerId(serverListId).containsKey(object.getServerId());
     }
 
     @Override
-    protected Item getClientObjectForServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item serverObject) {
+    protected ItemViewModel getClientObjectForServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel serverObject) {
         return itemSyncData.getClientItemsByServerId(clientListId).get(serverObject.getServerId());
     }
 
     @Override
-    protected Item getServerObjectForClientObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item clientObject) {
+    protected ItemViewModel getServerObjectForClientObject(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel clientObject) {
         return itemSyncData.getServerItems(serverListId).get(clientObject.getServerId());
     }
 
     @Override
-    protected boolean serverObjectModified(ItemSyncData<TListClient, TListServer> itemSyncData, Item serverItem) {
+    protected boolean serverObjectModified(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel serverItem) {
 
         int serverItemId = serverItem.getServerId();
         int lastSeenVersion;
 
-        Item clientItem = getClientObjectForServerObject(itemSyncData, serverItem);
+        ItemViewModel clientItem = getClientObjectForServerObject(itemSyncData, serverItem);
 
         if(syncData.getDeletedItemsClientByServerId(serverListId) != null &&
            syncData.getDeletedItemsClientByServerId(serverListId).containsKey(serverItemId)) {
@@ -167,12 +165,12 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
     }
 
     @Override
-    protected boolean clientObjectModified(ItemSyncData<TListClient, TListServer> itemSyncData, Item clientItem) {
+    protected boolean clientObjectModified(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel clientItem) {
         return clientItem.getModifiedSinceLastSync();
     }
 
     @Override
-    protected void deleteServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item serverItem) {
+    protected void deleteServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel serverItem) {
 
         try {
             getApiClient().deleteListItem(serverListId, serverItem.getServerId());
@@ -182,19 +180,19 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
     }
 
     @Override
-    protected void deleteClientObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item clientItem) {
+    protected void deleteClientObject(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel clientItem) {
 
         listManager.deleteItem(clientListId, clientItem.getId());
     }
 
     @Override
-    protected void createServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item clientItem) {
+    protected void createServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel clientItem) {
 
         unitStorage.refresh(clientItem.getUnit());
         groupStorage.refresh(clientItem.getGroup());
         locationStorage.refresh(clientItem.getLocation());
 
-        Item serverItem;
+        ItemViewModel serverItem;
 
         try {
             serverItem = getApiClient().createItem(serverListId, clientItem);
@@ -223,7 +221,7 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
     }
 
     @Override
-    protected void createClientObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item serverItem) {
+    protected void createClientObject(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel serverItem) {
 
         serverItem.setGroup(getClientGroup(itemSyncData, serverItem.getGroup()));
         serverItem.setUnit(getClientUnit(itemSyncData, serverItem.getUnit()));
@@ -233,7 +231,7 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
     }
 
     @Override
-    protected void updateServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item clientItem, Item serverItem) {
+    protected void updateServerObject(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel clientItem, ItemViewModel serverItem) {
 
         applyPropertiesToServerData(itemSyncData, clientItem, serverItem);
 
@@ -262,7 +260,7 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
     }
 
     @Override
-    protected void updateClientObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item clientItem, Item serverItem) {
+    protected void updateClientObject(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel clientItem, ItemViewModel serverItem) {
 
         applyPropertiesToClientData(itemSyncData, serverItem, clientItem);
         listManager.saveListItem(clientListId, clientItem);
@@ -270,7 +268,7 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
 
 
 
-    protected void applyPropertiesToClientData(ItemSyncData<TListClient, TListServer> itemSyncData, Item serverItem, Item clientItem) {
+    protected void applyPropertiesToClientData(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel serverItem, ItemViewModel clientItem) {
 
         applyPropertiesCommon(serverItem, clientItem);
 
@@ -283,7 +281,7 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
         clientItem.setLocation(getClientLocation(itemSyncData, serverItem.getLocation()));
     }
 
-    protected void applyPropertiesToServerData(ItemSyncData<TListClient, TListServer> itemSyncData, Item source, Item target){
+    protected void applyPropertiesToServerData(ItemSyncData<TListClient, TListServer> itemSyncData, ItemViewModel source, ItemViewModel target){
 
         applyPropertiesCommon(source, target);
 
@@ -298,7 +296,7 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
         target.setLocation(source.getLocation());
     }
 
-    private void applyPropertiesCommon(Item source, Item target) {
+    private void applyPropertiesCommon(ItemViewModel source, ItemViewModel target) {
 
         target.setOrder(source.getOrder());
         target.setBought(source.isBought());

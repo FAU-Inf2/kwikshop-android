@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
@@ -15,9 +14,7 @@ import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
-import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
 import de.fau.cs.mad.kwikshop.android.model.EANrestClient;
-import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.EANparser;
@@ -28,10 +25,8 @@ import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
-import de.fau.cs.mad.kwikshop.common.Group;
-import de.fau.cs.mad.kwikshop.common.Item;
-import de.fau.cs.mad.kwikshop.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.common.Unit;
+import de.fau.cs.mad.kwikshop.common.*;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> implements ZXingScannerView.ResultHandler,
@@ -151,7 +146,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
 
     // parser result
     @Override
-    public void handleParserResult(Item item) {
+    public void handleParserResult(ItemViewModel item) {
         if(!item.getName().isEmpty()){
             Toast.makeText(context,  "Debug: " + item.getName() + " Found on: opengtindb.org", Toast.LENGTH_LONG).show();
             addItemToShoppingList(item);
@@ -165,7 +160,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
 
     // rest client result
     @Override
-    public void handleRESTresponse(Item item) {
+    public void handleRESTresponse(ItemViewModel item) {
         if(!item.getName().equals("null")){
             Toast.makeText(context, "Debug: " + item.getName() + " Found on: outpan.com", Toast.LENGTH_LONG).show();
             addItemToShoppingList(item);
@@ -176,12 +171,12 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     }
 
 
-    public void addItemToShoppingList(final Item EANitem){
+    public void addItemToShoppingList(final ItemViewModel EANitem){
 
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                Item item = EANitem;
+                de.fau.cs.mad.kwikshop.common.ItemViewModel item = EANitem;
                 item.setUnit(unitStorage.getDefaultValue());
                 item.setGroup(groupStorage.getDefaultValue());
                 if(!itemMerger.mergeItem(listID, item))

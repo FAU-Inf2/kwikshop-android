@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.TimePeriodsEnum;
@@ -43,7 +43,7 @@ public class ReminderFragment extends Fragment {
     private View rootView;
 
     private int itemId;
-    private Item item;
+    private ItemViewModel item;
 
     private int listId;
     List<ShoppingList> shoppingLists;
@@ -214,7 +214,7 @@ public class ReminderFragment extends Fragment {
     }
 
     private void addToShoppingList() {
-        Item newItem = new Item(item);
+        ItemViewModel newItem = new ItemViewModel(item);
         ShoppingList selectedList = shoppingLists.get(shoppingList_spinner.getSelectedItemPosition());
 
         shoppingListManager.addListItem(selectedList.getId(), newItem);

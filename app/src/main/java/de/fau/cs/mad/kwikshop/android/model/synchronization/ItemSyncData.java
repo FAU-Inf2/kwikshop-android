@@ -10,7 +10,7 @@ import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.android.util.CollectionUtilities;
 import de.fau.cs.mad.kwikshop.common.DeletionInfo;
 import de.fau.cs.mad.kwikshop.common.Group;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
@@ -21,7 +21,7 @@ public class ItemSyncData<TListClient extends DomainListObject,
         extends
             ListSyncData<TListClient, TListServer> {
 
-    private final Map<Integer, Map<Integer, Item>> serverListItems;
+    private final Map<Integer, Map<Integer, ItemViewModel>> serverListItems;
     private final Map<Integer, Collection<DeletionInfo>> allDeletedItemsServer;
     private final Map<Integer, Map<Integer, DeletedItem>> allDeletedItemsClientByServerId;
 
@@ -30,7 +30,7 @@ public class ItemSyncData<TListClient extends DomainListObject,
     private final Map<Integer, LastLocation> locationsByServerId;
 
     //caches
-    Map<Integer, Map<Integer, Item>> clientItemsByServerIdCache = new HashMap<>();
+    Map<Integer, Map<Integer, ItemViewModel>> clientItemsByServerIdCache = new HashMap<>();
     Map<Integer, Map<Integer, DeletionInfo>> deletedItemsServerCache = new HashMap<>();
 
 
@@ -38,7 +38,7 @@ public class ItemSyncData<TListClient extends DomainListObject,
                         Collection<DeletedList> deletedListsClient,
                         Collection<DeletedItem> allDeletedItemsClient,
                         Collection<TListServer> serverLists,
-                        Map<Integer, Map<Integer, Item>> serverListItems,
+                        Map<Integer, Map<Integer, ItemViewModel>> serverListItems,
                         Collection<DeletionInfo> deletedListsServer,
                         Map<Integer, Collection<DeletionInfo>> deletedItemsServer,
                         Collection<Group> groups,
@@ -71,18 +71,18 @@ public class ItemSyncData<TListClient extends DomainListObject,
 
 
 
-    public Collection<Item> getClientItems(int clientListId) {
+    public Collection<ItemViewModel> getClientItems(int clientListId) {
 
         return getClientLists().get(clientListId).getItems();
     }
 
-    public Map<Integer, Item> getServerItems(int serverListId) {
+    public Map<Integer, ItemViewModel> getServerItems(int serverListId) {
 
         return serverListItems.get(serverListId);
     }
 
 
-    public Map<Integer, Item> getClientItemsByServerId(int clientListId){
+    public Map<Integer, ItemViewModel> getClientItemsByServerId(int clientListId){
 
 //        if(!clientItemsByServerIdCache.containsKey(clientListId)) {
 //

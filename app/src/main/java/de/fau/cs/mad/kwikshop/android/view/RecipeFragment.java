@@ -17,8 +17,6 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
@@ -32,7 +30,7 @@ import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ItemViewModel;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
@@ -44,7 +42,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.greenrobot.event.EventBus;
 
-public class RecipeFragment  extends Fragment implements RecipeViewModel.Listener, ObservableArrayList.Listener<Item> {
+public class RecipeFragment  extends Fragment implements RecipeViewModel.Listener, ObservableArrayList.Listener<ItemViewModel> {
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
@@ -343,7 +341,7 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
 
 
     @Override
-    public void onItemAdded(Item newItem) {
+    public void onItemAdded(ItemViewModel newItem) {
 
         //TODO: It might make sense to move autocompletion handling to the view model
         //IMPORTANT
@@ -355,12 +353,12 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
     }
 
     @Override
-    public void onItemRemoved(Item removedItem) {
+    public void onItemRemoved(ItemViewModel removedItem) {
         justifyListViewHeightBasedOnChildren(recipeListView);
     }
 
     @Override
-    public void onItemModified(Item modifiedItem) {
+    public void onItemModified(ItemViewModel modifiedItem) {
         justifyListViewHeightBasedOnChildren(recipeListView);
     }
 

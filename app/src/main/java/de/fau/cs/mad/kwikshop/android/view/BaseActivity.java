@@ -67,8 +67,6 @@ public class BaseActivity extends AppCompatActivity {
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-
-
         viewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
 
         /*
@@ -79,32 +77,6 @@ public class BaseActivity extends AppCompatActivity {
         }
 
         */
-
-
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, R.drawable.ic_drawer,
-                R.string.place_status_opened, R.string.place_status_closed
-        ) {
-            @Override
-
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                Log.d("ffawf", "onDrawerClosed: " + getTitle());
-
-                invalidateOptionsMenu();
-            }
-        };
-
-
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         mNavigationView.addHeaderView(mNavigationViewHeader);
 
@@ -154,13 +126,10 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
 
-        setSavedLocale();
-
+        refreshed = viewModel.setSavedLocale(refreshed);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        mDrawerToggle.syncState();
-
     }
 
 
@@ -221,38 +190,6 @@ public class BaseActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
 
-    private void restartActivity(){
-        Intent intent = getIntent();
-        finish();
-        startActivity(intent);
-    }
-
-
-    public void setSavedLocale() {
-
-        if (refreshed) {
-            return;
-        }
-        refreshed = true;
-
-        // get current locale index
-       // int currentLocaleIdIndex = getSharedPreferences(SettingFragment.SETTINGS, Context.MODE_PRIVATE).getInt(SharedPreferencesHelper.LOCALE, 0);
-        int currentLocaleIdIndex =  SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE,0,getApplicationContext());
-        Locale setLocale= new Locale(SettingFragment.localeIds[currentLocaleIdIndex].toString());
-
-        if(currentLocaleIdIndex == 0) // default
-            setLocale = Locale.getDefault();
-
-        // change locale configuration
-        Resources res = getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-        Configuration conf = res.getConfiguration();
-        conf.locale = setLocale;
-        res.updateConfiguration(conf, dm);
-
-        // Activity must be restarted to set saved locale
-        restartActivity();
-    }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(SynchronizationEvent event) {

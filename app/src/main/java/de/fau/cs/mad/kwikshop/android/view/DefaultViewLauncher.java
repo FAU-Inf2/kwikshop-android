@@ -602,6 +602,13 @@ public class DefaultViewLauncher implements ViewLauncher {
         progress.show();
     }
 
+    @Override
+    public void restartActivity() {
+        Intent intent = activity.getIntent();
+        activity.finish();
+        startActivity(intent);
+    }
+
 
     @Override
     public void showMessageDialogWithRadioButtons(String title, CharSequence[] items,
@@ -760,5 +767,7 @@ public class DefaultViewLauncher implements ViewLauncher {
         builder.show();
 
     }
+
+
 
 }

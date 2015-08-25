@@ -106,7 +106,7 @@ public interface ViewLauncher {
 
     void showProgressDialogWithListID(String message, String negativeMessage, final int listId, boolean cancelable, final Command<Integer> negativeCommand);
 
-
+    void restartActivity();
 
 
 }

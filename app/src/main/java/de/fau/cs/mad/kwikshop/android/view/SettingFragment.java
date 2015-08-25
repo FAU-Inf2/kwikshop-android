@@ -460,6 +460,12 @@ public class SettingFragment extends Fragment {
                 new Command<String>() {
                     @Override
                     public void execute(String word) {
+                        for(int i = 0; i < word.length(); i++){
+                            if(word.charAt(i) == ' '){
+                                Toast.makeText(context,getString(R.string.settings_option_parser_separator_no_space_allowed), Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                        }
                         saveString(ITEM_SEPARATOR_WORD, word, context);
                     }
                 },

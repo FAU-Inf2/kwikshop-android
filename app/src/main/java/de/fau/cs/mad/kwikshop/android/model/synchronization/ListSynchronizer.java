@@ -15,12 +15,13 @@ import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
 import de.fau.cs.mad.kwikshop.android.util.CollectionUtilities;
 import de.fau.cs.mad.kwikshop.common.DeletionInfo;
 import de.fau.cs.mad.kwikshop.common.Group;
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObjectServer;
+import de.fau.cs.mad.kwikshop.common.interfaces.DomainObject;
 import retrofit.RetrofitError;
 
 public abstract class ListSynchronizer<TListClient extends DomainListObject,
@@ -105,7 +106,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         Collection<TListServer> serverLists;
         Collection<DeletionInfo> serverDeletedLists;
         Map<Integer, Collection<DeletionInfo>> serverDeletedItems = new HashMap<>();
-        Map<Integer, Map<Integer, ItemViewModel>> allServerListItems = new HashMap<>();
+        Map<Integer, Map<Integer, Item>> allServerListItems = new HashMap<>();
         try {
 
             serverLists = getApiClient().getLists();
@@ -251,8 +252,8 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
 
         //also upload items
-        for(ItemViewModel clientItem : clientList.getItems()) {
-            ItemViewModel serverItem = getApiClient().createItem(serverList.getId(), clientItem);
+        for(Item clientItem : clientList.getItems()) {
+            Item serverItem = getApiClient().createItem(serverList.getId(), clientItem);
 
             clientItem.setServerId(serverItem.getServerId());
             clientItem.setVersion(serverItem.getVersion());
@@ -281,7 +282,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         clientList.setServerId(serverList.getId());
         listManager.saveList(clientList.getId());
 
-        List<ItemViewModel> serverItems;
+        List<Item> serverItems;
         try {
 
             serverItems = getApiClient().getListItems(serverList.getId());
@@ -291,7 +292,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             throw new SynchronizationException(ex, "Could not get items for list %s", serverList.getId());
         }
 
-        for(ItemViewModel serverItem : serverItems) {
+        for(Item serverItem : serverItems) {
             listManager.addListItem(clientListId, serverItem);
         }
 
@@ -347,7 +348,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     private void linkPredefinedLists(Collection<TListClient> clientLists,
                                      Collection<TListServer> serverLists,
                                      Collection<DeletionInfo> serverDeletedLists,
-                                     Map<Integer, Map<Integer, ItemViewModel>> allServerListItems,
+                                     Map<Integer, Map<Integer, Item>> allServerListItems,
                                      Map<Integer, Collection<DeletionInfo>> serverDeletedItems) {
 
         Map<Integer, Integer> predefinedIdServerIdMap = new HashMap<>();
@@ -387,11 +388,11 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     }
 
     private void linkPredefinedItems(TListClient clientList,
-                                     Collection<ItemViewModel> serverListItems,
+                                     Collection<Item> serverListItems,
                                      Collection<DeletionInfo> serverDeletedItems) {
 
         Map<Integer, Integer> predefinedIdMap = new HashMap<>();
-        for(ItemViewModel item : serverListItems) {
+        for(Item item : serverListItems) {
             if(item.getPredefinedId() > 0) {
                 predefinedIdMap.put(item.getPredefinedId(), item.getServerId());
             }
@@ -399,7 +400,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
         addDeletionInfosToPredefinedIdMap(serverDeletedItems, predefinedIdMap);
 
-        for(ItemViewModel item : clientList.getItems()) {
+        for(Item item : clientList.getItems()) {
 
             int predefinedId = item.getPredefinedId();
             int serverItemId = item.getServerId();

@@ -12,23 +12,23 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 
-public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<ItemViewModel> implements ObservableArrayList.Listener<ItemViewModel> {
+public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Item> implements ObservableArrayList.Listener<Item> {
 
     private final Context context;
     private final RecipeViewModel recipeViewModel;
-    private final ObservableArrayList<ItemViewModel, Integer> items;
+    private final ObservableArrayList<Item, Integer> items;
     private final DisplayHelper displayHelper;
 
     /**
      * Initializes a new instance of RecipeAdapter
      *
      */
-    public RecipeAdapter(Context context, RecipeViewModel recipeViewModel, ObservableArrayList<ItemViewModel, Integer> items,
+    public RecipeAdapter(Context context, RecipeViewModel recipeViewModel, ObservableArrayList<Item, Integer> items,
                                DisplayHelper displayHelper) {
 
         super(items);
@@ -78,7 +78,7 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
 
         viewHolder.divider_table.setVisibility(View.GONE);
 
-        ItemViewModel item = items.get(position);
+        Item item = items.get(position);
 
         if (!item.isBought()) {
             viewHolder.textView_RecipeName.setPaintFlags(viewHolder.textView_RecipeName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
@@ -169,17 +169,17 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
 //    }
 
     @Override
-    public void onItemAdded(ItemViewModel newItem) {
+    public void onItemAdded(Item newItem) {
         notifyDataSetChanged();
     }
 
     @Override
-    public void onItemRemoved(ItemViewModel removedItem) {
+    public void onItemRemoved(Item removedItem) {
         notifyDataSetChanged();
     }
 
     @Override
-    public void onItemModified(ItemViewModel modifiedItem) {
+    public void onItemModified(Item modifiedItem) {
         notifyDataSetChanged();
     }
 

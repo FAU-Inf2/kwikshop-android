@@ -34,7 +34,11 @@ import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
-import de.fau.cs.mad.kwikshop.common.*;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import se.walkercrou.places.Place;
 import se.walkercrou.places.Status;
 
@@ -434,7 +438,7 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
         return viewLauncher.checkInternetConnection();
     }
 
-    public void setLocationOnItemBought(de.fau.cs.mad.kwikshop.common.ItemViewModel item){
+    public void setLocationOnItemBought(Item item){
 
         if(!cancelSelectionOfSupermarket){
             if(checkPlaces(places)){

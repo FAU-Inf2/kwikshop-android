@@ -1,14 +1,14 @@
 package de.fau.cs.mad.kwikshop.android.model.messages;
 
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import de.fau.cs.mad.kwikshop.common.Item;
 
 public class RecipeItemLoadedEvent {
 
     private final int recipeId;
-    private final ItemViewModel item;
+    private final Item item;
 
 
-    public RecipeItemLoadedEvent(int recipeId, ItemViewModel item) {
+    public RecipeItemLoadedEvent(int recipeId, Item item) {
 
         if (item == null) {
             throw new IllegalArgumentException("'item' must not be null");
@@ -24,7 +24,7 @@ public class RecipeItemLoadedEvent {
         return recipeId;
     }
 
-    public ItemViewModel getItem() {
+    public Item getItem() {
         return this.item;
     }
 

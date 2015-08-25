@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 
@@ -76,7 +76,7 @@ public class LocalListStorage implements ListStorage<ShoppingList> {
     public boolean saveList(ShoppingList list) {
         try {
             // Update all Items first
-            for (ItemViewModel item : list.getItems()) {
+            for (Item item : list.getItems()) {
                 updateItem(item);
             }
             ListStorageFragment.getDatabaseHelper().getShoppingListDao().update(list);
@@ -87,7 +87,7 @@ public class LocalListStorage implements ListStorage<ShoppingList> {
         return true;
     }
 
-    private void updateItem(ItemViewModel item) throws SQLException {
+    private void updateItem(Item item) throws SQLException {
 
         if(item.getLocation() != null) {
             ListStorageFragment.getDatabaseHelper().getLocationDao().createIfNotExists(item.getLocation());
@@ -111,7 +111,7 @@ public class LocalListStorage implements ListStorage<ShoppingList> {
         DeleteBuilder db;
         try {
             db = ListStorageFragment.getDatabaseHelper().getItemDao().deleteBuilder();
-            db.where().eq(ItemViewModel.FOREIGN_SHOPPINGLIST_FIELD_NAME, listId); // Delete all items that belong to this list
+            db.where().eq(Item.FOREIGN_SHOPPINGLIST_FIELD_NAME, listId); // Delete all items that belong to this list
             ListStorageFragment.getDatabaseHelper().getItemDao().delete(db.prepare());
         } catch (SQLException e) {
             e.printStackTrace();

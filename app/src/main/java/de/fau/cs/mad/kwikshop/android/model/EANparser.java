@@ -18,7 +18,7 @@ import org.jsoup.select.Elements;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import de.fau.cs.mad.kwikshop.common.Item;
 
 public class EANparser {
 
@@ -35,7 +35,7 @@ public class EANparser {
 
 
     public interface onEANParserResponseListener{
-        void handleParserResult(ItemViewModel item);
+        void handleParserResult(Item item);
     }
 
     public void parseWebsite(String EAN, final onEANParserResponseListener listener){
@@ -54,7 +54,7 @@ public class EANparser {
                         Elements link = doc.select("a[href*=/gp/]");
                         String linkText = link.text();
 
-                        ItemViewModel parsedItem = new ItemViewModel();
+                        Item parsedItem = new Item();
                         parsedItem.setName(linkText);
 
                         mListener.handleParserResult(parsedItem);

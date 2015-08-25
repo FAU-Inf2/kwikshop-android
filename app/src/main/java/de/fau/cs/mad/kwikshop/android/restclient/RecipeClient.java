@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.common.DeletionInfo;
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.RecipeServer;
 import de.fau.cs.mad.kwikshop.common.rest.responses.SharingCode;
 import de.fau.cs.mad.kwikshop.common.rest.responses.SharingResponse;
@@ -61,7 +61,7 @@ public class RecipeClient implements ListClient<RecipeServer> {
     }
 
     @Override
-    public ItemViewModel getListItem(int listId, int itemId) {
+    public Item getListItem(int listId, int itemId) {
         return RecipeResource.getListItemSynchronously(listId, itemId);
     }
 
@@ -76,12 +76,12 @@ public class RecipeClient implements ListClient<RecipeServer> {
     }
 
     @Override
-    public ItemViewModel createItem(int listId, ItemViewModel newItem) {
+    public Item createItem(int listId, Item newItem) {
         return RecipeResource.createItemSynchronously(listId, newItem);
     }
 
     @Override
-    public ItemViewModel updateItem(int listId, int itemId, ItemViewModel item) {
+    public Item updateItem(int listId, int itemId, Item item) {
         return RecipeResource.updateItemSynchronously(listId, itemId, item);
     }
 
@@ -91,7 +91,7 @@ public class RecipeClient implements ListClient<RecipeServer> {
     }
 
     @Override
-    public List<ItemViewModel> getListItems(int listId) {
+    public List<Item> getListItems(int listId) {
         return RecipeResource.getListItemsSynchronously(listId);
     }
 

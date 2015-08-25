@@ -1,8 +1,11 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,36 +13,40 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 
+import org.w3c.dom.Text;
+
 import java.util.Iterator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 
 
-public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<ItemViewModel> implements UndoAdapter , ObservableArrayList.Listener<ItemViewModel> {
+
+public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Item> implements UndoAdapter , ObservableArrayList.Listener<Item> {
 
     private final Context context;
     private final ShoppingListViewModel shoppingListViewModel;
-    private final ObservableArrayList<ItemViewModel, Integer> items;
+    private final ObservableArrayList<Item, Integer> items;
     private final DisplayHelper displayHelper;
 
     /**
      * Initializes a new instance of ShoppingListAdapter
      *
      */
-    public ShoppingListAdapter(Context context, ShoppingListViewModel shoppingListViewModel, ObservableArrayList<ItemViewModel, Integer> items,
+    public ShoppingListAdapter(Context context, ShoppingListViewModel shoppingListViewModel, ObservableArrayList<Item, Integer> items,
                                DisplayHelper displayHelper) {
         super(items);
 
@@ -86,29 +93,29 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         }
 
 
-        final ItemViewModel itemViewModel = items.get(position);
+        final Item item = items.get(position);
 
         boolean showDivider = false;
-        ItemViewModel before = null;
+        Item before = null;
         if(position > 0)
             before = items.get(position-1);
 
         // Determine if we need to show the divider. We also need 'before2' if the user drags
         // an Item into the cart to make sure that only one divider is displayed.
         if(before != null) {
-            ItemViewModel before2 = null;
+            Item before2 = null;
             if(position > 1)
                 before2 = items.get(position-2);
 
             if(before2 != null) {
-                if (!before2.isBought() && !before.isBought() && itemViewModel.isBought())
+                if (!before2.isBought() && !before.isBought() && item.isBought())
                     showDivider = true;
             } else
-                if (!before.isBought() && itemViewModel.isBought())
+                if (!before.isBought() && item.isBought())
                     showDivider = true;
                 else
                     showDivider = false;
-        } else if(itemViewModel.isBought())
+        } else if(item.isBought())
             showDivider = true;
 
         if(showDivider) {
@@ -125,17 +132,17 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         }
 
         // If item is highlighted, set color to red
-        if (itemViewModel.isHighlight()) {
+        if (item.isHighlight()) {
             viewHolder.textView_Name.setTextColor(Color.RED);
         } else {
             viewHolder.textView_Name.setTextColor(context.getResources().getColor(R.color.primary_text));
         }
 
         // Item name
-        viewHolder.textView_Name.setText(itemViewModel.getName());
+        viewHolder.textView_Name.setText(item.getName());
 
         // Comment
-        String comment = itemViewModel.getComment();
+        String comment = item.getComment();
         if (StringHelper.isNullOrWhiteSpace(comment)) {
             viewHolder.textView_Comment.setVisibility(View.GONE);
         } else {
@@ -144,7 +151,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         }
 
         // Brand
-        String brand = itemViewModel.getBrand();
+        String brand = item.getBrand();
         if (StringHelper.isNullOrWhiteSpace(brand)) {
             viewHolder.textView_Brand.setVisibility(View.GONE);
         } else {
@@ -153,11 +160,11 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         }
 
         // Amount
-        double amount = itemViewModel.getAmount();
+        double amount = item.getAmount();
         boolean unitIsPieces = false;
-        if (itemViewModel.getUnit() != null) {
-            if(itemViewModel.getUnit().getName() != null) {
-                if (itemViewModel.getUnit().getName().equals(context.getString(R.string.unit_piece_name))) {
+        if (item.getUnit() != null) {
+            if(item.getUnit().getName() != null) {
+                if (item.getUnit().getName().equals(context.getString(R.string.unit_piece_name))) {
                     unitIsPieces = true;
                 }
             }
@@ -168,7 +175,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         if (amount == 1 && unitIsPieces) {
             viewHolder.textView_Amount.setVisibility(View.GONE);
         } else {
-            String unitStr = displayHelper.getShortDisplayName(itemViewModel.getUnit());
+            String unitStr = displayHelper.getShortDisplayName(item.getUnit());
 
             viewHolder.textView_Amount.setVisibility(View.VISIBLE);
             //This is not the best way to format fractions, but there are only few of them
@@ -188,33 +195,33 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         // determine if we have to show the group header (above the item)
         // TODO: that's super ugly
         boolean showHeader = false;
-        if (shoppingListViewModel.getItemSortType() == ItemSortType.GROUP && !itemViewModel.isBought()) {
+        if (shoppingListViewModel.getItemSortType() == ItemSortType.GROUP && !item.isBought()) {
             if (position == 0) {
                 showHeader = true;
             } else if (position > 0) {
-                ItemViewModel previousItem = items.get(position - 1);
-                if (itemViewModel.getGroup() == null && previousItem == null) {
+                Item previousItem = items.get(position - 1);
+                if (item.getGroup() == null && previousItem == null) {
                     showHeader = false;
-                } else if (itemViewModel.getGroup() != null) {
-                    showHeader = !itemViewModel.getGroup().equals(previousItem.getGroup());
+                } else if (item.getGroup() != null) {
+                    showHeader = !item.getGroup().equals(previousItem.getGroup());
                 } else if (previousItem.getGroup() != null) {
-                    showHeader = !previousItem.getGroup().equals(itemViewModel.getGroup());
+                    showHeader = !previousItem.getGroup().equals(item.getGroup());
                 }
             }
         }
 
         viewHolder.view_GroupHeader.setVisibility(showHeader ? View.VISIBLE : View.GONE);
         if (showHeader) {
-            String text = displayHelper.getDisplayName(itemViewModel.getGroup());
+            String text = displayHelper.getDisplayName(item.getGroup());
             viewHolder.textView_GroupHeaderName.setText(text);
         }
-        /*if (itemViewModel.isVisible())
+        if (item.isVisible())
             viewHolder.checkBox_move.setVisibility(View.VISIBLE);
         else
             viewHolder.checkBox_move.setVisibility(View.GONE);
-*/
+
         // Specific changes for bought Items
-        if (itemViewModel.isBought()) {
+        if (item.isBought()) {
             viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
             viewHolder.checkBox_move.setChecked(false);
@@ -259,18 +266,18 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked)
-                    shoppingListViewModel.getCheckedItems().add(itemViewModel);
+                    shoppingListViewModel.getCheckedItems().add(item);
                 else
-                    shoppingListViewModel.getCheckedItems().remove(itemViewModel);
+                    shoppingListViewModel.getCheckedItems().remove(item);
             }
         });
 
         viewHolder.button_moveDown.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
-                    Iterator<ItemViewModel> itr = items.iterator();
+                    Iterator<Item> itr = items.iterator();
                     while (itr.hasNext()){
-                        ItemViewModel itemLocal = itr.next();
+                        Item itemLocal = itr.next();
                         if (shoppingListViewModel.getCheckedItems().contains(itemLocal)) {
                             //Do something
                             itemLocal.setBought(true);
@@ -282,9 +289,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         viewHolder.button_moveUp.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Iterator<ItemViewModel> itr = items.iterator();
+                Iterator<Item> itr = items.iterator();
                 while (itr.hasNext()){
-                    ItemViewModel itemLocal2 = itr.next();
+                    Item itemLocal2 = itr.next();
                     if (shoppingListViewModel.getCheckedItems().contains(itemLocal2)) {
                         itemLocal2.setBought(false);
 
@@ -293,21 +300,21 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                 shoppingListViewModel.moveBoughtItemsToEnd();
             }
         });
-        /*viewHolder.checkBox_multipleSelection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        viewHolder.checkBox_multipleSelection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                    Iterator <ItemViewModel> itr = shoppingListViewModel.getItems().iterator();
+                    Iterator <Item> itr = shoppingListViewModel.getItems().iterator();
                     while(itr.hasNext()){
-                        ItemViewModel itemViewModel = itr.next();
+                        Item item = itr.next();
                         if (isChecked)
-                            itemViewModel.setVisible(true);
+                            item.setVisible(true);
                         else
-                            itemViewModel.setVisible(false);
+                            item.setVisible(false);
                     }
                     shoppingListViewModel.changeCheckBoxesVisibility();
             }
-        });*/
+        });
 
         return view;
     }
@@ -336,17 +343,17 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     }
 
     @Override
-    public void onItemAdded(ItemViewModel newItem) {
+    public void onItemAdded(Item newItem) {
         notifyDataSetChanged();
     }
 
     @Override
-    public void onItemRemoved(ItemViewModel removedItem) {
+    public void onItemRemoved(Item removedItem) {
         notifyDataSetChanged();
     }
 
     @Override
-    public void onItemModified(ItemViewModel modifiedItem) {
+    public void onItemModified(Item modifiedItem) {
         notifyDataSetChanged();
     }
 

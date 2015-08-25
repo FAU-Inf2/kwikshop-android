@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,13 +21,15 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.DeleteItemEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
-import de.fau.cs.mad.kwikshop.common.*;
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import de.greenrobot.event.EventBus;
 
 public class ItemDetailsViewModel{
@@ -37,7 +40,7 @@ public class ItemDetailsViewModel{
     private boolean isNewItem = false;
     private int listId;
     private int itemId;
-    private ItemViewModel item;
+    private Item item;
 
     private List<Unit> units;
     private List<Group> groups;
@@ -101,7 +104,7 @@ public class ItemDetailsViewModel{
         return this.isNewItem;
     }
 
-    public ItemViewModel getItem(){ return item; }
+    public Item getItem(){ return item; }
 
     public String getItemName(){ return item.getName(); }
 
@@ -119,7 +122,7 @@ public class ItemDetailsViewModel{
 
     public String getImageId(){ return imageId; }
 
-    public void setItem(ItemViewModel item){
+    public void setItem(Item item){
         this.item = item;
     }
 
@@ -240,7 +243,7 @@ public class ItemDetailsViewModel{
             EventBus.getDefault().post(new DeleteItemEvent(listId, itemId));
     }
 
-    public void mergeAndSaveItem(final ListManager listManager, final ItemMerger itemMerger, final de.fau.cs.mad.kwikshop.common.ItemViewModel item){
+    public void mergeAndSaveItem(final ListManager listManager, final ItemMerger itemMerger, final Item item){
         synchronized (loadLock) {
 
             if (loadTask == null) {

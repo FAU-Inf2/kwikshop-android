@@ -6,7 +6,8 @@ import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
-import de.fau.cs.mad.kwikshop.common.*;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
@@ -97,7 +98,7 @@ public class RecipesDetailsViewModel extends ListDetailsViewModel<Recipe> {
         recipe.setScaleFactor(scaleFactor);
         recipe.setScaleName(scaleName);
 
-        for(de.fau.cs.mad.kwikshop.common.ItemViewModel item : recipe.getItems()){
+        for(Item item : recipe.getItems()){
             item.setAmount(item.getAmount() * getScaleFactor()/oldScaleFactor);
         }
 

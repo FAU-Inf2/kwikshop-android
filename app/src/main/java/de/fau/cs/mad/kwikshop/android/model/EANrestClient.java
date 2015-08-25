@@ -2,6 +2,7 @@ package de.fau.cs.mad.kwikshop.android.model;
 
 import android.content.Context;
 import android.util.Base64;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -11,13 +12,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import de.fau.cs.mad.kwikshop.common.Item;
 
 public class EANrestClient {
 
@@ -34,7 +36,7 @@ public class EANrestClient {
     }
 
     public interface onEANrestResponse{
-        void handleRESTresponse(ItemViewModel restItem);
+        void handleRESTresponse(Item restItem);
     }
 
     public void getRestResponse(String EAN, final onEANrestResponse listener){
@@ -50,7 +52,7 @@ public class EANrestClient {
                     @Override
                     public void onResponse(String data) {
                         JSONObject json;
-                        ItemViewModel restItem = new ItemViewModel();
+                        Item restItem = new Item();
                         try {
                             json = new JSONObject(data);
                             restItem.setName(json.getString("name"));

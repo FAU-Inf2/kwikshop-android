@@ -5,10 +5,14 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.android.model.RecipeManager;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
-import de.fau.cs.mad.kwikshop.common.*;
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.Recipe;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
@@ -103,13 +107,13 @@ public class RecipeViewModel extends ListViewModel<Recipe> {
 
         this.setName(recipe.getName());
 
-        for(ItemViewModel item : recipe.getItems()) {
+        for(Item item : recipe.getItems()) {
             updateItem(item);
         }
     }
 
 
-    private void updateItem(de.fau.cs.mad.kwikshop.common.ItemViewModel item) {
+    private void updateItem(Item item) {
         items.setOrAddById(item);
     }
 

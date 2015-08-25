@@ -1,16 +1,22 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import de.fau.cs.mad.kwikshop.common.*;
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import javax.inject.Inject;
+
+import de.fau.cs.mad.kwikshop.common.Group;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.ItemParser;
@@ -23,6 +29,7 @@ import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ItemIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
@@ -89,7 +96,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     protected int listId;
     private int quickRemoveUnitIndex = -1;
     private int quickRemoveGroupIndex = -1;
-    protected final ObservableArrayList<ItemViewModel, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
+    protected final ObservableArrayList<Item, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
     private String quickAddText = "";
     private final Command<Void> addItemCommand = new Command<Void>() {
         @Override
@@ -210,7 +217,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     /**
      * Gets the shopping list items
      */
-    public ObservableArrayList<ItemViewModel, Integer> getItems() {
+    public ObservableArrayList<Item, Integer> getItems() {
         return items;
     }
 
@@ -291,8 +298,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
       //  setLocationOnItemSwapped(position1);
 
-        ItemViewModel item1 = items.get(position1);
-        ItemViewModel item2 = items.get(position2);
+        Item item1 = items.get(position1);
+        Item item2 = items.get(position2);
 
         item1.setOrder(position2);
         item2.setOrder(position1);
@@ -305,7 +312,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
     public void setLocationOnItemSwapped(int pos){
 
-        ItemViewModel item = items.get(pos);
+        Item item = items.get(pos);
 
         item.setLocation(locationFinderHelper.getLastLocation());
         listManager.saveListItem(listId, item);
@@ -318,7 +325,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
      */
     public void updateOrderOfItems() {
         int i = 0;
-        for(ItemViewModel item: getItems()) {
+        for(Item item: getItems()) {
             item.setOrder(i);
 
             // Break on first bought Item - we don't care about their order.
@@ -366,7 +373,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
                     ArrayList<String> listOfItems = itemParser.parseSeveralItems(text);
                     for(int i = 0; i < listOfItems.size(); i++){
-                        ItemViewModel newItem = new de.fau.cs.mad.kwikshop.common.ItemViewModel();
+                        Item newItem = new Item();
                         newItem.setName(listOfItems.get(i));
                         newItem.setUnit(unitStorage.getDefaultValue());
                         newItem = itemParser.parseAmountAndUnit(newItem);

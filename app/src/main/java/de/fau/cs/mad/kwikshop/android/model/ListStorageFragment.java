@@ -8,7 +8,7 @@ import java.util.Date;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.Group;
-import de.fau.cs.mad.kwikshop.common.ItemViewModel;
+import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.PredefinedId;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -146,7 +146,7 @@ public class ListStorageFragment  {
             recipe1.setPredefinedId(PredefinedId.Recipe_ChiliConCarne.toInt());
 
             {
-                ItemViewModel item1 = new ItemViewModel();
+                Item item1 = new Item();
                 item1.setName(context.getString(R.string.recipe_mince));
                 item1.setAmount(600);
                 item1.setUnit(gram);
@@ -156,7 +156,7 @@ public class ListStorageFragment  {
             }
 
             {
-                ItemViewModel item4 = new ItemViewModel();
+                Item item4 = new Item();
                 item4.setName(context.getString(R.string.recipe_tomatoes));
                 item4.setAmount(500);
                 item4.setUnit(gram);
@@ -166,7 +166,7 @@ public class ListStorageFragment  {
             }
 
             {
-                ItemViewModel item2 = new ItemViewModel();
+                Item item2 = new Item();
                 item2.setName(context.getString(R.string.recipe_kidney_beans));
                 item2.setAmount(200);
                 item2.setUnit(gram);
@@ -176,7 +176,7 @@ public class ListStorageFragment  {
             }
 
             {
-                ItemViewModel item5 = new ItemViewModel();
+                Item item5 = new Item();
                 item5.setName(context.getString(R.string.recipe_corn));
                 item5.setAmount(120);
                 item5.setUnit(gram);
@@ -186,7 +186,7 @@ public class ListStorageFragment  {
             }
 
             {
-                ItemViewModel item3 = new ItemViewModel();
+                Item item3 = new Item();
                 item3.setName(context.getString(R.string.recipe_potatoes));
                 item3.setAmount(4);
                 item3.setUnit(piece);
@@ -196,7 +196,7 @@ public class ListStorageFragment  {
             }
 
             {
-                ItemViewModel item6 = new ItemViewModel();
+                Item item6 = new Item();
                 item6.setName(context.getString(R.string.recipe_onion));
                 item6.setAmount(2);
                 item6.setUnit(piece);
@@ -218,7 +218,7 @@ public class ListStorageFragment  {
             recipe.setPredefinedId(PredefinedId.Recipe_CarrotCake.toInt());
 
             {
-                ItemViewModel item1 = new ItemViewModel();
+                Item item1 = new Item();
                 item1.setName(context.getString(R.string.recipe_oil));
                 item1.setAmount(0.5);
                 item1.setUnit(cups);
@@ -227,7 +227,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item1);
             }
             {
-                ItemViewModel item2 = new ItemViewModel();
+                Item item2 = new Item();
                 item2.setName(context.getString(R.string.recipe_carrot));
                 item2.setAmount(3);
                 item2.setUnit(piece);
@@ -237,7 +237,7 @@ public class ListStorageFragment  {
             }
 
             {
-                ItemViewModel item3 = new ItemViewModel();
+                Item item3 = new Item();
                 item3.setName(context.getString(R.string.recipe_eggs));
                 item3.setAmount(4);
                 item3.setUnit(piece);
@@ -246,7 +246,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item3);
             }
             {
-                ItemViewModel item4 = new ItemViewModel();
+                Item item4 = new Item();
                 item4.setName(context.getString(R.string.recipe_sugar));
                 item4.setAmount(2);
                 item4.setUnit(cups);
@@ -255,7 +255,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item4);
             }
             {
-                ItemViewModel item5 = new ItemViewModel();
+                Item item5 = new Item();
                 item5.setName(context.getString(R.string.recipe_bakingPowder));
                 item5.setAmount(1);
                 item5.setUnit(tbsp);
@@ -264,7 +264,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item5);
             }
             {
-                ItemViewModel item6 = new ItemViewModel();
+                Item item6 = new Item();
                 item6.setName(context.getString(R.string.recipe_sweetenedCondensedMilk));
                 item6.setAmount(1);
                 item6.setUnit(cans);
@@ -273,7 +273,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item6);
             }
             {
-                ItemViewModel item7 = new ItemViewModel();
+                Item item7 = new Item();
                 item7.setName(context.getString(R.string.recipe_coconutFlakes));
                 item7.setAmount(50);
                 item7.setUnit(gram);
@@ -295,7 +295,7 @@ public class ListStorageFragment  {
             recipe.setPredefinedId(PredefinedId.Recipe_RhubarbTart.toInt());
 
             {
-                ItemViewModel item1 = new ItemViewModel();
+                Item item1 = new Item();
                 item1.setName(context.getString(R.string.recipe_rhubarb));
                 item1.setAmount(1500);
                 item1.setUnit(gram);
@@ -305,7 +305,7 @@ public class ListStorageFragment  {
             }
 
             {
-                ItemViewModel item2 = new ItemViewModel();
+                Item item2 = new Item();
                 item2.setName(context.getString(R.string.recipe_lowfat_quark));
                 item2.setAmount(750);
                 item2.setUnit(gram);
@@ -316,7 +316,7 @@ public class ListStorageFragment  {
 
             {
                 //TODO: group
-                ItemViewModel item3 = new ItemViewModel();
+                Item item3 = new Item();
                 item3.setName(context.getString(R.string.recipe_eggs));
                 item3.setAmount(4);
                 item3.setUnit(piece);
@@ -326,7 +326,7 @@ public class ListStorageFragment  {
             }
             {
                 //Todo: group
-                ItemViewModel item4 = new ItemViewModel();
+                Item item4 = new Item();
                 item4.setName(context.getString(R.string.recipe_vanilla_sugar));
                 item4.setAmount(2);
                 item4.setUnit(pack);
@@ -335,7 +335,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item4);
             }
             {
-                ItemViewModel item5 = new ItemViewModel();
+                Item item5 = new Item();
                 item5.setName(context.getString(R.string.recipe_butter));
                 item5.setAmount(275);
                 item5.setUnit(gram);
@@ -346,7 +346,7 @@ public class ListStorageFragment  {
 
             {
                 //Todo: group
-                ItemViewModel item6 = new ItemViewModel();
+                Item item6 = new Item();
                 item6.setName(context.getString(R.string.recipe_sugar));
                 item6.setAmount(275);
                 item6.setUnit(gram);
@@ -354,7 +354,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item6);
             }
             {
-                ItemViewModel item7 = new ItemViewModel();
+                Item item7 = new Item();
                 item7.setName(context.getString(R.string.recipe_plainFlour));
                 item7.setAmount(175);
                 item7.setUnit(gram);
@@ -363,7 +363,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item7);
             }
             {
-                ItemViewModel item8 = new ItemViewModel();
+                Item item8 = new Item();
                 item8.setName(context.getString(R.string.recipe_starch));
                 item8.setAmount(170);
                 item8.setGroup(other);
@@ -372,7 +372,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item8);
             }
             {
-                ItemViewModel item9 = new ItemViewModel();
+                Item item9 = new Item();
                 item9.setName(context.getString(R.string.recipe_bakingPowder));
                 item9.setAmount(3);
                 item9.setUnit(tbsp);
@@ -393,7 +393,7 @@ public class ListStorageFragment  {
             recipe.setPredefinedId(PredefinedId.Recipe_MadeiraCake.toInt());
 
             {
-                ItemViewModel item1 = new ItemViewModel();
+                Item item1 = new Item();
                 item1.setName(context.getString(R.string.recipe_butter));
                 item1.setAmount(250);
                 item1.setUnit(gram);
@@ -402,7 +402,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item1);
             }
             {
-                ItemViewModel item2 = new ItemViewModel();
+                Item item2 = new Item();
                 item2.setName(context.getString(R.string.recipe_sugar));
                 item2.setAmount(200);
                 item2.setUnit(gram);
@@ -411,7 +411,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item2);
             }
             {
-                ItemViewModel item3 = new ItemViewModel();
+                Item item3 = new Item();
                 item3.setName(context.getString(R.string.recipe_plainFlour));
                 item3.setAmount(125);
                 item3.setUnit(gram);
@@ -420,7 +420,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item3);
             }
             {
-                ItemViewModel item4 = new ItemViewModel();
+                Item item4 = new Item();
                 item4.setName(context.getString(R.string.recipe_starch));
                 item4.setAmount(125);
                 item4.setUnit(gram);
@@ -429,7 +429,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item4);
             }
             {
-                ItemViewModel item5 = new ItemViewModel();
+                Item item5 = new Item();
                 item5.setName(context.getString(R.string.recipe_vanilla_sugar));
                 item5.setAmount(1);
                 item5.setUnit(pack);
@@ -438,7 +438,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item5);
             }
             {
-                ItemViewModel item6 = new ItemViewModel();
+                Item item6 = new Item();
                 item6.setName(context.getString(R.string.recipe_bakingPowder));
                 item6.setAmount(0.5);
                 item6.setUnit(tbsp);
@@ -447,7 +447,7 @@ public class ListStorageFragment  {
                 recipe.addItem(item6);
             }
             {
-                ItemViewModel item7 = new ItemViewModel();
+                Item item7 = new Item();
                 item7.setName(context.getString(R.string.recipe_salt));
                 item7.setAmount(0.5);
                 item7.setUnit(tbsp);
@@ -470,7 +470,7 @@ public class ListStorageFragment  {
         Group defaultGroup = m_GroupStorage.getDefaultValue();
 
         {
-            ItemViewModel i1 = new ItemViewModel();
+            Item i1 = new Item();
             i1.setName(context.getString(R.string.descr_apple));
             i1.setComment(context.getString(R.string.descr_quickadd));
             i1.setGroup(defaultGroup);
@@ -478,7 +478,7 @@ public class ListStorageFragment  {
             list.addItem(i1);
         }
         {
-            ItemViewModel i5 = new ItemViewModel();
+            Item i5 = new Item();
             i5.setName(context.getString(R.string.descr_sweets));
             i5.setComment(context.getString(R.string.descr_drag_and_drop));
             i5.setGroup(defaultGroup);
@@ -486,7 +486,7 @@ public class ListStorageFragment  {
             list.addItem(i5);
         }
         {
-            ItemViewModel i6 = new ItemViewModel();
+            Item i6 = new Item();
             i6.setName(context.getString(R.string.descr_coke));
             i6.setComment(context.getString(R.string.descr_swipe));
             i6.setAmount(5);
@@ -495,7 +495,7 @@ public class ListStorageFragment  {
             list.addItem(i6);
         }
         {
-            ItemViewModel i3 = new ItemViewModel();
+            Item i3 = new Item();
             i3.setName(context.getString(R.string.descr_spaghettis));
             i3.setComment(context.getString(R.string.descr_fab));
             i3.setAmount(3);
@@ -504,7 +504,7 @@ public class ListStorageFragment  {
             list.addItem(i3);
         }
         {
-            ItemViewModel i4 = new ItemViewModel();
+            Item i4 = new Item();
             i4.setName(context.getString(R.string.descr_toilet_paper));
             i4.setComment(context.getString(R.string.descr_details));
             i4.setHighlight(true);
@@ -513,7 +513,7 @@ public class ListStorageFragment  {
             list.addItem(i4);
         }
         {
-            ItemViewModel i2 = new ItemViewModel();
+            Item i2 = new Item();
             i2.setName(context.getString(R.string.descr_already_bought));
             i2.setBought(true);
             i2.setGroup(defaultGroup);

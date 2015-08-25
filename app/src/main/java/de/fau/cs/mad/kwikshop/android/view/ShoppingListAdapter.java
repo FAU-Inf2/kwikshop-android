@@ -215,10 +215,11 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             String text = displayHelper.getDisplayName(item.getGroup());
             viewHolder.textView_GroupHeaderName.setText(text);
         }
-        if (item.isVisible())
-            viewHolder.checkBox_move.setVisibility(View.VISIBLE);
-        else
-            viewHolder.checkBox_move.setVisibility(View.GONE);
+        //TODO
+//        if (item.isVisible())
+//            viewHolder.checkBox_move.setVisibility(View.VISIBLE);
+//        else
+//            viewHolder.checkBox_move.setVisibility(View.GONE);
 
         // Specific changes for bought Items
         if (item.isBought()) {
@@ -304,15 +305,17 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                    Iterator <Item> itr = shoppingListViewModel.getItems().iterator();
-                    while(itr.hasNext()){
-                        Item item = itr.next();
-                        if (isChecked)
-                            item.setVisible(true);
-                        else
-                            item.setVisible(false);
-                    }
-                    shoppingListViewModel.changeCheckBoxesVisibility();
+
+                //TODO
+//                    Iterator <Item> itr = shoppingListViewModel.getItems().iterator();
+//                    while(itr.hasNext()){
+//                        Item item = itr.next();
+//                        if (isChecked)
+//                            item.setVisible(true);
+//                        else
+//                            item.setVisible(false);
+//                    }
+//                    shoppingListViewModel.changeCheckBoxesVisibility();
             }
         });
 

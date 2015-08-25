@@ -272,7 +272,31 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
         //also upload items
         for(Item clientItem : clientList.getItems()) {
+
+            if(clientItem.getUnit() != null) {
+                unitStorage.refresh(clientItem.getUnit());
+            }
+            if(clientItem.getGroup() != null) {
+                groupStorage.refresh(clientItem.getGroup());
+            }
+            if(clientItem.getLocation() != null) {
+                locationStorage.refresh(clientItem.getLocation());
+            }
+
             Item serverItem = getApiClient().createItem(serverList.getId(), clientItem);
+
+            if(clientItem.getUnit() != null) {
+                clientItem.getUnit().setServerId(serverItem.getUnit().getServerId());
+                unitStorage.updateItem(clientItem.getUnit());
+            }
+            if(clientItem.getGroup() != null) {
+                clientItem.getGroup().setServerId(serverItem.getGroup().getServerId());
+                groupStorage.updateItem(clientItem.getGroup());
+            }
+            if(clientItem.getLocation() != null) {
+                clientItem.getLocation().setServerId(serverItem.getServerId());
+                locationStorage.updateItem(clientItem.getLocation());
+            }
 
             clientItem.setServerId(serverItem.getServerId());
             clientItem.setVersion(serverItem.getVersion());
@@ -337,7 +361,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             throw new SynchronizationException(ex, "Could not get list %s from server", serverList.getId());
         }
         clientList.setServerVersion(serverList.getVersion());
-        listManager.saveList(clientList.getId());
+            listManager.saveList(clientList.getId());
     }
 
     @Override

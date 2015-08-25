@@ -10,13 +10,14 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.ikimuhendis.ldrawer.ActionBarDrawerToggle;
 import java.util.Locale;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -44,10 +45,7 @@ public class BaseActivity extends ActionBarActivity {
 
     BaseViewModel viewModel;
 
-    @InjectView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-
-    @InjectView(R.id.navigation_view)
     NavigationView mNavigationView;
 
     public static FrameLayout frameLayout;
@@ -66,7 +64,10 @@ public class BaseActivity extends ActionBarActivity {
 
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
 
-        ButterKnife.inject(this);
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+
 
         viewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
 
@@ -78,6 +79,16 @@ public class BaseActivity extends ActionBarActivity {
         }
 
         */
+
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
+                this,  mDrawerLayout, mToolbar,
+                R.string.place_status_opened, R.string.place_status_closed
+        );
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
 
         mNavigationView.addHeaderView(mNavigationViewHeader);
 
@@ -130,6 +141,7 @@ public class BaseActivity extends ActionBarActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        mDrawerToggle.syncState();
 
     }
 

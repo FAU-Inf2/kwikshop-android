@@ -48,7 +48,7 @@ public class ErrorReportingActivity extends SyncingActivity {
 
 
         setContentView(R.layout.activity_error_reporting);
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
 
         initializeErrorReporting();
 

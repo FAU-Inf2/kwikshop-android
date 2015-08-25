@@ -7,6 +7,10 @@
         <item name="actionBarStyle">@style/MyActionBar</item>
         <item name="android:colorPrimaryDark">@color/dark_primary_color</item>
 
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+
     </style>
 
 </resources>

@@ -318,6 +318,8 @@ public class ShoppingListFragment
             }
         });
 
+
+
         return rootView;
     }
 

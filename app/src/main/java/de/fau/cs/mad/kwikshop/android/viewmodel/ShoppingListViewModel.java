@@ -378,6 +378,13 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         Collections.sort(getItems(), new ItemComparator(displayHelper, ItemSortType.BOUGHTITEMS));
     }
 
+    public void changeCheckBoxesVisibility(){
+        ShoppingList shoppingList = listManager.getList(this.listId);
+
+        for(Item item : shoppingList.getItems()) {
+            updateItem(item);
+        }
+    }
     private void updateItem(Item item) {
         if(item.isBought()) { // Add bought items at the end of the list
             if (items.size() - 1 >= 0) {

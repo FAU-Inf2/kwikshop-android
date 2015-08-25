@@ -3,8 +3,11 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.RecipeManager;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.Recipe;
@@ -28,19 +31,26 @@ public class RecipeViewModel extends ListViewModel<Recipe> {
 
     private final ListManager<Recipe> recipeManager;
 
+    private final ResourceProvider resourceProvider;
+
     @Inject
     public RecipeViewModel(ViewLauncher viewLauncher, ListManager<Recipe> recipeManager, ListManager<ShoppingList> shoppingListManager,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
-                                 AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper) {
+                                 AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper,
+                                 ResourceProvider resourceProvider) {
 
         super(viewLauncher, recipeManager, unitStorage, groupStorage, itemParser, displayHelper, autoCompletionHelper, locationFinderHelper);
 
         if(shoppingListManager == null) throw new ArgumentNullException("shoppingListManager");
 
+        if(resourceProvider == null) throw new ArgumentNullException("resourceProvider");
+
         this.recipeManager = recipeManager;
 
         this.shoppingListManager = shoppingListManager;
+
+        this.resourceProvider = resourceProvider;
     }
 
 
@@ -107,9 +117,21 @@ public class RecipeViewModel extends ListViewModel<Recipe> {
         items.setOrAddById(item);
     }
 
-    public void showAddRecipeDialog(int listId){
-        viewLauncher.showAddRecipeDialog(shoppingListManager, recipeManager, listId, false);
+    public void showAddRecipeDialog(int listId) {
+        if (shoppingListManager.getLists().size() == 0) {
+            viewLauncher.showMessageDialog(resourceProvider.getString(R.string.recipe_add_to_shoppinglist),
+                    resourceProvider.getString(R.string.recipe_no_shoppinglist),
+                    resourceProvider.getString(R.string.yes),
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            viewLauncher.showAddShoppingListView();
+                        }
+                    },
+                    resourceProvider.getString(R.string.no), null);
+        } else {
+            viewLauncher.showAddRecipeDialog(shoppingListManager, recipeManager, listId, false);
+        }
     }
-
 }
 

@@ -101,10 +101,11 @@ public class ItemParser {
             if (output != "") {
                 //if both output and thisCanBeUnitOrName are not empty there was a number between them which has to be restored
                 if(possibleUnitWasSpecifiedBeforeName)
-                    output = amount + " " + thisCanBeUnitOrName + " " + output;
-                else
+                    output = thisCanBeUnitOrName + " " + output;
+                else {
                     output = output + amount + " " + thisCanBeUnitOrName;
-                amountWasSpecified = false;
+                    amountWasSpecified = false;
+                }
             }
             else {
                 output = thisCanBeUnitOrName;

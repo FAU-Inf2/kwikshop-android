@@ -35,6 +35,7 @@ public class ListOfShoppingListsActivity extends BaseActivity {
         }
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();

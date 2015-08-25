@@ -60,10 +60,10 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // header image for navigation drawer
         View mNavigationViewHeader = getLayoutInflater().inflate(R.layout.navigation_drawer_header, null);
 
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
-
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -78,12 +78,20 @@ public class BaseActivity extends AppCompatActivity {
 
         */
 
+        // restart to set locale
+        refreshed = viewModel.setSavedLocale(refreshed);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+
+        // add header to navigation drawer
         mNavigationView.addHeaderView(mNavigationViewHeader);
 
+        // handle click events in navigation drawer
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                mDrawerLayout.closeDrawers();
                 menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
 
@@ -126,38 +134,20 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
 
-        refreshed = viewModel.setSavedLocale(refreshed);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.overflow_action_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingActivity.class));
-                return true;
-
             case android.R.id.home:
                 if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
                     mDrawerLayout.closeDrawers();
                 else
                     mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
-
-
-
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -44,8 +44,10 @@ public class ShoppingListActivity extends BaseActivity {
         return intent;
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.overflow_action_menu, menu);
         getMenuInflater().inflate(R.menu.shoppinglist_replacement_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }

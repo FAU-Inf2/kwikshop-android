@@ -96,7 +96,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     protected int listId;
     private int quickRemoveUnitIndex = -1;
     private int quickRemoveGroupIndex = -1;
-    protected final ObservableArrayList<Item, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
+    protected final ObservableArrayList<ItemViewModel, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
     private String quickAddText = "";
     private final Command<Void> addItemCommand = new Command<Void>() {
         @Override
@@ -217,7 +217,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     /**
      * Gets the shopping list items
      */
-    public ObservableArrayList<Item, Integer> getItems() {
+    public ObservableArrayList<ItemViewModel, Integer> getItems() {
         return items;
     }
 
@@ -298,8 +298,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
       //  setLocationOnItemSwapped(position1);
 
-        Item item1 = items.get(position1);
-        Item item2 = items.get(position2);
+        Item item1 = items.get(position1).getItem();
+        Item item2 = items.get(position2).getItem();
 
         item1.setOrder(position2);
         item2.setOrder(position1);
@@ -312,7 +312,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
     public void setLocationOnItemSwapped(int pos){
 
-        Item item = items.get(pos);
+        Item item = items.get(pos).getItem();
 
         item.setLocation(locationFinderHelper.getLastLocation());
         listManager.saveListItem(listId, item);
@@ -325,11 +325,11 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
      */
     public void updateOrderOfItems() {
         int i = 0;
-        for(Item item: getItems()) {
-            item.setOrder(i);
+        for(ItemViewModel item: getItems()) {
+            item.getItem().setOrder(i);
 
             // Break on first bought Item - we don't care about their order.
-            if(item.isBought())
+            if(item.getItem().isBought())
                 break;
 
             i++;

@@ -1,11 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,40 +10,38 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 
-import org.w3c.dom.Text;
-
 import java.util.Iterator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ItemViewModel;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
+import de.fau.cs.mad.kwikshop.common.Item;
 
 
-
-public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<Item> implements UndoAdapter , ObservableArrayList.Listener<Item> {
+public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<ItemViewModel> implements UndoAdapter , ObservableArrayList.Listener<ItemViewModel> {
 
     private final Context context;
     private final ShoppingListViewModel shoppingListViewModel;
-    private final ObservableArrayList<Item, Integer> items;
+    private final ObservableArrayList<ItemViewModel, Integer> items;
     private final DisplayHelper displayHelper;
+    private boolean multipleSelectionIsChecked = false;
 
     /**
      * Initializes a new instance of ShoppingListAdapter
      *
      */
-    public ShoppingListAdapter(Context context, ShoppingListViewModel shoppingListViewModel, ObservableArrayList<Item, Integer> items,
+    public ShoppingListAdapter(Context context, ShoppingListViewModel shoppingListViewModel, ObservableArrayList<ItemViewModel, Integer> items,
                                DisplayHelper displayHelper) {
         super(items);
 
@@ -77,7 +72,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
     @Override
     public long getItemId(int position) {
-        return items.get(position).getId();
+        return items.get(position).getItem().getId();
     }
 
 
@@ -93,19 +88,20 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         }
 
 
-        final Item item = items.get(position);
+        final Item item = items.get(position).getItem();
+        final ItemViewModel itemViewModel = items.get(position);
 
         boolean showDivider = false;
         Item before = null;
         if(position > 0)
-            before = items.get(position-1);
+            before = items.get(position - 1).getItem();
 
         // Determine if we need to show the divider. We also need 'before2' if the user drags
         // an Item into the cart to make sure that only one divider is displayed.
         if(before != null) {
             Item before2 = null;
             if(position > 1)
-                before2 = items.get(position-2);
+                before2 = items.get(position - 2).getItem();
 
             if(before2 != null) {
                 if (!before2.isBought() && !before.isBought() && item.isBought())
@@ -199,7 +195,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             if (position == 0) {
                 showHeader = true;
             } else if (position > 0) {
-                Item previousItem = items.get(position - 1);
+                Item previousItem = items.get(position - 1).getItem();
                 if (item.getGroup() == null && previousItem == null) {
                     showHeader = false;
                 } else if (item.getGroup() != null) {
@@ -216,10 +212,10 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_GroupHeaderName.setText(text);
         }
         //TODO
-//        if (item.isVisible())
-//            viewHolder.checkBox_move.setVisibility(View.VISIBLE);
-//        else
-//            viewHolder.checkBox_move.setVisibility(View.GONE);
+        if (multipleSelectionIsChecked)
+            viewHolder.checkBox_move.setVisibility(View.VISIBLE);
+        else
+            viewHolder.checkBox_move.setVisibility(View.GONE);
 
         // Specific changes for bought Items
         if (item.isBought()) {
@@ -238,7 +234,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                 public void onClick(View v) {
                     Integer itemId;
                     try {
-                        itemId = items.get(position).getId();
+                        itemId = items.get(position).getItem().getId();
                     } catch (IndexOutOfBoundsException e) {
                         return;
                     }
@@ -267,21 +263,21 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked)
-                    shoppingListViewModel.getCheckedItems().add(item);
+                    shoppingListViewModel.getCheckedItems().add(itemViewModel);
                 else
-                    shoppingListViewModel.getCheckedItems().remove(item);
+                    shoppingListViewModel.getCheckedItems().remove(itemViewModel);
             }
         });
 
         viewHolder.button_moveDown.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
-                    Iterator<Item> itr = items.iterator();
+                    Iterator<ItemViewModel> itr = items.iterator();
                     while (itr.hasNext()){
-                        Item itemLocal = itr.next();
+                        ItemViewModel itemLocal = itr.next();
                         if (shoppingListViewModel.getCheckedItems().contains(itemLocal)) {
                             //Do something
-                            itemLocal.setBought(true);
+                            itemLocal.getItem().setBought(true);
                         }
                     }
                     shoppingListViewModel.moveBoughtItemsToEnd();
@@ -290,11 +286,11 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         viewHolder.button_moveUp.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Iterator<Item> itr = items.iterator();
+                Iterator<ItemViewModel> itr = items.iterator();
                 while (itr.hasNext()){
-                    Item itemLocal2 = itr.next();
+                    ItemViewModel itemLocal2 = itr.next();
                     if (shoppingListViewModel.getCheckedItems().contains(itemLocal2)) {
-                        itemLocal2.setBought(false);
+                        itemLocal2.getItem().setBought(false);
 
                     }
                 }
@@ -304,18 +300,21 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         viewHolder.checkBox_multipleSelection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-
                 //TODO
-//                    Iterator <Item> itr = shoppingListViewModel.getItems().iterator();
-//                    while(itr.hasNext()){
-//                        Item item = itr.next();
-//                        if (isChecked)
-//                            item.setVisible(true);
-//                        else
-//                            item.setVisible(false);
-//                    }
-//                    shoppingListViewModel.changeCheckBoxesVisibility();
+                    Iterator <ItemViewModel> itr = shoppingListViewModel.getItems().iterator();
+                    while(itr.hasNext()){
+                        ItemViewModel itemvm = itr.next();
+                        if (isChecked) {
+                            itemvm.setVisible(true);
+                            multipleSelectionIsChecked = true;
+                        }
+                        else {
+                            itemvm.setVisible(false);
+                            multipleSelectionIsChecked = false;
+                        }
+                    }
+
+                    shoppingListViewModel.changeCheckBoxesVisibility();
             }
         });
 
@@ -346,17 +345,17 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     }
 
     @Override
-    public void onItemAdded(Item newItem) {
+    public void onItemAdded(ItemViewModel newItem) {
         notifyDataSetChanged();
     }
 
     @Override
-    public void onItemRemoved(Item removedItem) {
+    public void onItemRemoved(ItemViewModel removedItem) {
         notifyDataSetChanged();
     }
 
     @Override
-    public void onItemModified(Item modifiedItem) {
+    public void onItemModified(ItemViewModel modifiedItem) {
         notifyDataSetChanged();
     }
 

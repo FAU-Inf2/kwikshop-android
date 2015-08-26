@@ -47,7 +47,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     private final ListManager<Recipe> recipeManager;
 
 
-    private final ObservableArrayList<Item, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
+    private final ObservableArrayList<ItemViewModel, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
     private ItemSortType itemSortType = ItemSortType.MANUAL;
 
     private final Command<Integer> toggleIsBoughtCommand = new Command<Integer>() {
@@ -59,11 +59,11 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         public void execute(Integer parameter) { deleteItemCommandExecute(parameter);}
     };
 
-    public ObservableArrayList<Item, Integer> getCheckedItems() {
+    public ObservableArrayList<ItemViewModel, Integer> getCheckedItems() {
         return checkedItems;
     }
 
-    private final ObservableArrayList<Item, Integer> checkedItems = new ObservableArrayList<Item, Integer>(new ItemIdExtractor());
+    private final ObservableArrayList<ItemViewModel, Integer> checkedItems = new ObservableArrayList<ItemViewModel, Integer>(new ItemIdExtractor());
 
     final Command<Void> deleteCheckBoxCheckedCommand = new Command<Void>() {
         @Override
@@ -173,8 +173,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     @Override
     public void itemsSwapped(int position1, int position2) {
-        Item item1 = items.get(position1);
-        Item item2 = items.get(position2);
+        Item item1 = items.get(position1).getItem();
+        Item item2 = items.get(position2).getItem();
 
         item1.setOrder(position1);
         item2.setOrder(position2);
@@ -318,7 +318,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
     private void toggleIsBoughtCommandExecute(final int id) {
-        Item item = items.getById(id);
+        Item item = items.getById(id).getItem();
 
         if(item != null) {
 
@@ -365,8 +365,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         int i = 0;
 
         while(li.hasPrevious()) {
-            Item item = (Item)li.previous();
-            if(item.isBought())
+            ItemViewModel item = (ItemViewModel)li.previous();
+            if(item.getItem().isBought())
                 i++;
             else
                 break;
@@ -379,25 +379,28 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
     public void changeCheckBoxesVisibility(){
-        ShoppingList shoppingList = listManager.getList(this.listId);
-
-        for(Item item : shoppingList.getItems()) {
-            updateItem(item);
+        Iterator <ItemViewModel> itr = items.iterator();
+        while(itr.hasNext()){
+            updateItemViewModel(itr.next());
         }
     }
     private void updateItem(Item item) {
         if(item.isBought()) { // Add bought items at the end of the list
             if (items.size() - 1 >= 0) {
-                items.setOrAddById(items.size() - 1, item);
+                items.setOrAddById(items.size() - 1, new ItemViewModel(item));
             } else {
-                items.setOrAddById(item);
+                items.setOrAddById(new ItemViewModel(item));
             }
         } else {
-            items.setOrAddById(item);
+            items.setOrAddById(new ItemViewModel(item));
         }
 
-        items.notifyItemModified(item);
+        items.notifyItemModified(new ItemViewModel(item));
     }
 
+    private void updateItemViewModel(ItemViewModel item) {
 
+            items.setOrAddById(item);
+
+    }
 }

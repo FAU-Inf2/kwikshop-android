@@ -114,7 +114,7 @@ public class RecipeViewModel extends ListViewModel<Recipe> {
 
 
     private void updateItem(Item item) {
-        items.setOrAddById(item);
+        items.setOrAddById(new ItemViewModel(item));
     }
 
     public void showAddRecipeDialog(int listId) {

@@ -41,6 +41,7 @@ import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.BarcodeScannerViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ItemViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
@@ -53,7 +54,7 @@ import se.walkercrou.places.Place;
 
 public class ShoppingListFragment
         extends Fragment
-        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<Item>, SupermarketPlace.AsyncPlaceRequestListener {
+        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<ItemViewModel>, SupermarketPlace.AsyncPlaceRequestListener {
 
 
     private static final String ARG_LISTID = "list_id";
@@ -194,7 +195,7 @@ public class ShoppingListFragment
                         for (int position : reverseSortedPositions) {
                             if (command.getCanExecute()) {
                                 try {
-                                    Item item = shoppingListAdapter.getItem(position);
+                                    Item item = shoppingListAdapter.getItem(position).getItem();
                                     command.execute(item.getId());
                                     if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,false,getActivity())){
                                         locationViewModel.setLocationOnItemBought(item);
@@ -216,7 +217,7 @@ public class ShoppingListFragment
                     public boolean onItemLongClick(final AdapterView<?> parent, final View view,
                                                    final int position, final long id) {
                         // Bought Items are not draggable
-                        if(shoppingListAdapter.getItem(position).isBought())
+                        if(shoppingListAdapter.getItem(position).getItem().isBought())
                             return true;
 
                         //disable events on observable list during drag&drop to prevent lag
@@ -480,7 +481,7 @@ public class ShoppingListFragment
 
 
     @Override
-    public void onItemAdded(Item newItem) {
+    public void onItemAdded(ItemViewModel newItem) {
         //TODO: It might make sense to move autocompletion handling to the view model
         //IMPORTANT
         if(autoCompletion != null) {
@@ -489,12 +490,12 @@ public class ShoppingListFragment
     }
 
     @Override
-    public void onItemRemoved(Item removedItem) {
+    public void onItemRemoved(ItemViewModel removedItem) {
 
     }
 
     @Override
-    public void onItemModified(Item modifiedItem) {
+    public void onItemModified(ItemViewModel modifiedItem) {
 
     }
 

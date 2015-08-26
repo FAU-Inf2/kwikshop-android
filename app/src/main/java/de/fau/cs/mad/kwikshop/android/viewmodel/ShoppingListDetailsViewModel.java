@@ -229,6 +229,14 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
                             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SL_DELETION_SHOW_AGAIN_MSG, false, context);
                         }
                     }, null);
+            //TODO ask when the list owns repeating items
+          /*  if (getCalendarEventDate() != null){
+                viewLauncher.showMessageDialogWithCheckbox(resourceProvider.getString("This list is scheduled for repeating"),
+                        resourceProvider.getString(R.string.deleteShoppingList_DialogText), resourceProvider.getString(R.string.yes),
+                        new Command<Void>() {
+                            @Override
+                            public void execute(Void parameter) {
+            }*/
         }else{
             if (getCalendarEventDate() != null) {
                 deleteCalendarEventCommandExecute();

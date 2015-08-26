@@ -147,6 +147,11 @@ public class ShoppingListFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(viewModel.getInShoppingMode()) {
+            if(viewModel.getSwipedItemOrder().size() != 0 && viewModel.getSendBoughtItemsToServerCommand().getCanExecute()) {
+                viewModel.getSendBoughtItemsToServerCommand().execute(null);
+            }
+        }
         locationViewModel.dismissProgressDialog();
         locationViewModel.dismissDialog();
     }
@@ -301,6 +306,7 @@ public class ShoppingListFragment
              // remove quick add view
             ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
             ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
+            viewModel.setInShoppingMode(true);
 
         }
 
@@ -332,6 +338,7 @@ public class ShoppingListFragment
         if(!shoppingPlaceRequestIsCanceled){
             locationViewModel.dismissProgressDialog();
             locationViewModel.setPlaces(places);
+            viewModel.setPlaces(places);
 
             if(!locationViewModel.checkPlaces(places)){
                 // no place info dialog

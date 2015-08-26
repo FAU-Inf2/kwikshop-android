@@ -18,6 +18,7 @@ import de.fau.cs.mad.kwikshop.android.model.*;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.*;
+import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.BarcodeScannerFragment;
@@ -32,6 +33,8 @@ import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
+import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
+import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
 import de.greenrobot.event.EventBus;
 import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Param;
@@ -42,9 +45,14 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     private Context context;
     private int tmp_item_id;
 
+    private boolean inShoppingMode = false;
+    private ArrayList<Item> swipedItemOrder = new ArrayList<>();
+    private List<Place> places;
+
     private final ResourceProvider resourceProvider;
     private final RegularlyRepeatHelper repeatHelper;
     private final ListManager<Recipe> recipeManager;
+    private final RestClientFactory clientFactory;
 
 
     private final ObservableArrayList<ItemViewModel, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
@@ -52,11 +60,21 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     private final Command<Integer> toggleIsBoughtCommand = new Command<Integer>() {
         @Override
-        public void execute(Integer parameter) { toggleIsBoughtCommandExecute(parameter); }
+        public void execute(Integer parameter) {
+            toggleIsBoughtCommandExecute(parameter);
+        }
     };
     private final Command<Integer> deleteItemCommand = new Command<Integer>() {
         @Override
-        public void execute(Integer parameter) { deleteItemCommandExecute(parameter);}
+        public void execute(Integer parameter) {
+            deleteItemCommandExecute(parameter);
+        }
+    };
+    private final Command<Void> sendBoughtItemsToServerCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            sendBoughtItemsToServerCommandExecute();
+        }
     };
 
     public ObservableArrayList<ItemViewModel, Integer> getCheckedItems() {
@@ -100,24 +118,29 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                                  AutoCompletionHelper autoCompletionHelper,
                                  LocationFinderHelper locationFinderHelper,
                                  ResourceProvider resourceProvider,
-                                 RegularlyRepeatHelper repeatHelper) {
+                                 RegularlyRepeatHelper repeatHelper,
+                                 RestClientFactory clientFactory) {
 
 
         super(viewLauncher, shoppingListManager, unitStorage, groupStorage, itemParser, displayHelper,
                 autoCompletionHelper, locationFinderHelper);
 
-        if(context == null) throw new ArgumentNullException("context");
+        if (context == null) throw new ArgumentNullException("context");
 
         if (resourceProvider == null) {
             throw new ArgumentNullException("resourceProvider");
         }
 
-        if(repeatHelper == null) {
+        if (repeatHelper == null) {
             throw new ArgumentNullException("repeatHelper");
         }
 
-        if(recipeManager == null){
+        if (recipeManager == null) {
             throw new ArgumentNullException("recipeManager");
+        }
+
+        if (clientFactory == null) {
+            throw new ArgumentNullException("clientFactory");
         }
 
 
@@ -125,6 +148,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         this.resourceProvider = resourceProvider;
         this.repeatHelper = repeatHelper;
         this.recipeManager = recipeManager;
+        this.clientFactory = clientFactory;
     }
 
 
@@ -170,6 +194,10 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         return deleteItemCommand;
     }
 
+    public Command<Void> getSendBoughtItemsToServerCommand() {
+        return sendBoughtItemsToServerCommand;
+    }
+
 
     @Override
     public void itemsSwapped(int position1, int position2) {
@@ -184,10 +212,9 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
 
-
-    public void deleteItem(int itemId, String title, String message, String positiveString, String negativeString, String checkBoxMessage){
+    public void deleteItem(int itemId, String title, String message, String positiveString, String negativeString, String checkBoxMessage) {
         this.tmp_item_id = itemId;
-        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, true, context))
+        if (SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, true, context))
             viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, deleteNegativeCommand, checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);
         else
             deletePositiveCommand.execute(null);
@@ -212,10 +239,10 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     @SuppressWarnings("unused")
     public void onEventMainThread(ShoppingListChangedEvent event) {
 
-        if(event.getListId() == this.listId) {
-            if(event.getChangeType() == ListChangeType.Deleted) {
+        if (event.getListId() == this.listId) {
+            if (event.getChangeType() == ListChangeType.Deleted) {
                 finish();
-            } else if(event.getChangeType() == ListChangeType.PropertiesModified) {
+            } else if (event.getChangeType() == ListChangeType.PropertiesModified) {
                 loadList();
             }
         }
@@ -224,7 +251,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     @SuppressWarnings("unused")
     public void onEventMainThread(ItemChangedEvent event) {
 
-        if(event.getListType() == ListType.ShoppingList && event.getListId() == this.listId) {
+        if (event.getListType() == ListType.ShoppingList && event.getListId() == this.listId) {
 
             switch (event.getChangeType()) {
 
@@ -255,14 +282,14 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
         List<Item> changedItems = new LinkedList<>();
 
-        for(Item item : list.getItems()) {
-            if(item.isBought() != isBoughtNew) {
+        for (Item item : list.getItems()) {
+            if (item.isBought() != isBoughtNew) {
                 item.setBought(isBoughtNew);
                 changedItems.add(item);
             }
         }
 
-        for(Item item : changedItems) {
+        for (Item item : changedItems) {
             listManager.saveListItem(listId, item);
         }
 
@@ -295,11 +322,11 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     protected void loadList() {
         ShoppingList shoppingList = listManager.getList(this.listId);
 
-        for(Item item : shoppingList.getItems()) {
+        for (Item item : shoppingList.getItems()) {
             updateItem(item);
         }
 
-        int  sortTypeInt = shoppingList.getSortTypeInt();
+        int sortTypeInt = shoppingList.getSortTypeInt();
         switch (sortTypeInt) {
             case 1:
                 setItemSortType(ItemSortType.GROUP);
@@ -317,14 +344,30 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         this.setName(shoppingList.getName());
     }
 
+    public void setInShoppingMode(boolean bool) {
+        this.inShoppingMode = bool;
+    }
+
+    public boolean getInShoppingMode() {
+        return this.inShoppingMode;
+    }
+
+    public void setPlaces(List<Place> places){
+        this.places = places;
+    }
+
+    public List<Item> getSwipedItemOrder(){ return this.swipedItemOrder; }
+
     private void toggleIsBoughtCommandExecute(final int id) {
         Item item = items.getById(id).getItem();
 
-        if(item != null) {
+        if (item != null) {
 
             item.setBought(!item.isBought());
 
             if (item.isBought()) {
+                swipedItemOrder.add(item);
+
                 if (item.getRepeatType() == RepeatType.Schedule && item.isRemindFromNextPurchaseOn() && item.getLastBought() == null) {
                     Calendar now = Calendar.getInstance();
                     item.setLastBought(now.getTime());
@@ -350,10 +393,41 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     String message = resourceProvider.getString(R.string.reminder_set_msg) + " " + dateFormat.format(remindDate.getTime());
                     viewLauncher.showToast(message, Toast.LENGTH_LONG);
                 }
+            } else {
+                swipedItemOrder.remove(item);
             }
 
             listManager.saveListItem(listId, item);
         }
+    }
+
+    private void sendBoughtItemsToServerCommandExecute() {
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                EventBus privateBus = EventBus.builder().build();
+
+                try {
+                    privateBus.post("Posting BoughtItems...");
+
+                    List<BoughtItem> boughtItemOrder = new ArrayList<>();
+                    for (Item item : swipedItemOrder) {
+                        boughtItemOrder.add(new BoughtItem(item.getName()));
+                    }
+
+                    //TODO send places (name might be item.getLastLocation.getName()?)
+                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder, null, null);
+                    clientFactory.getShoppingListClient().postItemOrder(itemOrderWrapper);
+
+                } catch (Exception e) {
+                    privateBus.post(e.getStackTrace());
+                }
+                return null;
+
+            }
+        }.execute();
     }
 
     private void deleteItemCommandExecute(final int id) {

@@ -229,13 +229,14 @@ public class ItemDetailsViewModel{
     }
 
     public void setImageItem(){
-        if (imageItem != null) {
-            item.setImageItem(imageId);
+        try {
+            if (imageItem != null)
+                item.setImageItem(imageId);
         }
-        else
-            item.setImageItem(null);
+        catch(Exception e){
+            item.removeImageItem();
+        }
     }
-
     public void showDeleteItemDialog(String title, String message, String positiveString, String negativeString, String checkBoxMessage){
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, true, context))
             viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, deleteNegativeCommand, checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);

@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.di;
 
 import android.content.Context;
+import android.content.Intent;
 
 import dagger.Module;
 import dagger.Provides;
@@ -21,6 +22,7 @@ import de.fau.cs.mad.kwikshop.android.model.synchronization.ItemSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeItemSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.ServerDataMappingHelper;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListItemSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
@@ -64,7 +66,7 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         RecipeSynchronizer.class,
         ShoppingListItemSynchronizer.class,
         RecipeItemSynchronizer.class,
-        CompositeSynchronizer.class
+        CompositeSynchronizer.class,
 })
 public class KwikShopBaseModule {
 
@@ -250,6 +252,19 @@ public class KwikShopBaseModule {
         return synchronizer;
     }
 
+    @Provides
+    public ServerDataMappingHelper<ShoppingList, ShoppingListServer> provideShoppingListMappingHelper(SimpleStorage<Group> groupStorage,
+                                                                                                      SimpleStorage<Unit> unitStorage,
+                                                                                                      SimpleStorage<LastLocation> locationStorage) {
+        return new ServerDataMappingHelper<>(groupStorage, unitStorage, locationStorage);
+    }
+
+    @Provides
+    public ServerDataMappingHelper<Recipe, RecipeServer> provideRecipeMappingHelper(SimpleStorage<Group> groupStorage,
+                                                                                    SimpleStorage<Unit> unitStorage,
+                                                                                    SimpleStorage<LastLocation> locationStorage) {
+        return new ServerDataMappingHelper<>(groupStorage, unitStorage, locationStorage);
+    }
     //endregion
 
 

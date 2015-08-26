@@ -30,10 +30,12 @@ public class RecipeSynchronizer extends ListSynchronizer<Recipe, RecipeServer> {
                               SimpleStorage<Group> groupStorage,
                               SimpleStorage<Unit> unitStorage,
                               SimpleStorage<LastLocation> locationStorage,
-                              ItemSynchronizer<Recipe, RecipeServer> itemSynchronizer) {
+                              ItemSynchronizer<Recipe, RecipeServer> itemSynchronizer,
+                              ServerDataMappingHelper<Recipe, RecipeServer> mappingHelper) {
 
         super(clientToServerObjectConverter, listManager, deletedListStorage,
-              deletedItemStorage, groupStorage, unitStorage, locationStorage, itemSynchronizer);
+              deletedItemStorage, groupStorage, unitStorage, locationStorage,
+              itemSynchronizer, mappingHelper);
 
         if(clientFactory == null) {
             throw new ArgumentNullException("clientFactory");

@@ -40,6 +40,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<LastLocation> locationStorage;
     private final ItemSynchronizer<TListClient, TListServer> itemSynchronizer;
+    private final ServerDataMappingHelper<TListClient, TListServer> mappingHelper;
 
 
     public ListSynchronizer(ObjectConverter<TListClient, TListServer> clientToServerObjectConverter,
@@ -49,7 +50,8 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
                             SimpleStorage<Group> groupStorage,
                             SimpleStorage<Unit> unitStorage,
                             SimpleStorage<LastLocation> locationStorage,
-                            ItemSynchronizer<TListClient, TListServer> itemSynchronizer) {
+                            ItemSynchronizer<TListClient, TListServer> itemSynchronizer,
+                            ServerDataMappingHelper<TListClient, TListServer> mappingHelper) {
 
         if(clientToServerObjectConverter == null) {
             throw new ArgumentNullException("clientToServerObjectConverter");
@@ -83,6 +85,10 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             throw new ArgumentNullException("itemSynchronizer");
         }
 
+        if(mappingHelper == null) {
+            throw new ArgumentNullException("mappingHelper");
+        }
+
         this.clientToServerObjectConverter = clientToServerObjectConverter;
         this.listManager = listManager;
         this.deletedListStorage = deletedListStorage;
@@ -91,6 +97,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         this.unitStorage = unitStorage;
         this.locationStorage = locationStorage;
         this.itemSynchronizer = itemSynchronizer;
+        this.mappingHelper = mappingHelper;
     }
 
 
@@ -102,10 +109,8 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         Collection<TListClient> clientLists = listManager.getLists();
         Collection<DeletedList> clientDeletedLists = deletedListStorage.getItems();
         Collection<DeletedItem> clientDeletedItems = deletedItemStorage.getItems();
-
-        Collection<Group> clientGroups = groupStorage.getItems();
-        Collection<Unit> clientUnits = unitStorage.getItems();
         Collection<LastLocation> clientLocations = locationStorage.getItems();
+
 
 
         //load all the data we need for syncing from the server
@@ -146,9 +151,11 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
         linkPredefinedLists(clientLists, serverLists, serverDeletedLists, allServerListItems, serverDeletedItems);
 
-        linkPredefinedUnits(serverUnits);
+        Collection<Unit> clientUnits = linkPredefinedUnits(serverUnits);
 
-        linkPredefinedGroups(serverGroups);
+
+        Collection<Group> clientGroups = linkPredefinedGroups(serverGroups);
+
 
         return new ItemSyncData<>(clientLists, clientDeletedLists, clientDeletedItems,
                                   serverLists, allServerListItems, serverDeletedLists, serverDeletedItems,
@@ -269,33 +276,37 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
 
         clientList.setServerId(serverList.getId());
 
-
         //also upload items
         for(Item clientItem : clientList.getItems()) {
 
-            if(clientItem.getUnit() != null) {
-                unitStorage.refresh(clientItem.getUnit());
-            }
-            if(clientItem.getGroup() != null) {
-                groupStorage.refresh(clientItem.getGroup());
-            }
-            if(clientItem.getLocation() != null) {
-                locationStorage.refresh(clientItem.getLocation());
-            }
+            unitStorage.refresh(clientItem.getUnit());
+            groupStorage.refresh(clientItem.getGroup());
+            locationStorage.refresh(clientItem.getLocation());
 
             Item serverItem = getApiClient().createItem(serverList.getId(), clientItem);
 
-            if(clientItem.getUnit() != null) {
-                clientItem.getUnit().setServerId(serverItem.getUnit().getServerId());
-                unitStorage.updateItem(clientItem.getUnit());
+            Unit clientUnit = clientItem.getUnit();
+            if(clientUnit != null) {
+                int serverId = serverItem.getUnit().getServerId();
+                clientUnit.setServerId(serverId);
+                unitStorage.updateItem(clientUnit);
+                syncData.getUnitsByServerId().put(serverId, clientUnit);
             }
-            if(clientItem.getGroup() != null) {
-                clientItem.getGroup().setServerId(serverItem.getGroup().getServerId());
-                groupStorage.updateItem(clientItem.getGroup());
+
+            Group clientGroup = clientItem.getGroup();
+            if(clientGroup != null) {
+                int serverId = serverItem.getGroup().getServerId();
+                clientGroup.setServerId(serverId);
+                groupStorage.updateItem(clientGroup);
+                syncData.getGroupsByServerId().put(serverId, clientGroup);
             }
-            if(clientItem.getLocation() != null) {
-                clientItem.getLocation().setServerId(serverItem.getServerId());
+
+            LastLocation clientLocation = clientItem.getLocation();
+            if(clientLocation != null) {
+                int serverId = serverItem.getServerId();
+                clientLocation.setServerId(serverId);
                 locationStorage.updateItem(clientItem.getLocation());
+                syncData.getLocationsByServerId().put(serverId, clientLocation);
             }
 
             clientItem.setServerId(serverItem.getServerId());
@@ -335,8 +346,13 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             throw new SynchronizationException(ex, "Could not get items for list %s", serverList.getId());
         }
 
-        for(Item serverItem : serverItems) {
-            listManager.addListItem(clientListId, serverItem);
+        for(Item item : serverItems) {
+
+            item.setGroup(mappingHelper.getClientGroup(syncData, item.getGroup()));
+            item.setUnit(mappingHelper.getClientUnit(syncData, item.getUnit()));
+            item.setLocation(mappingHelper.getClientLocation(syncData, item.getLocation()));
+
+            listManager.addListItem(clientListId, item);
         }
 
 
@@ -458,11 +474,13 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         }
     }
 
-    private void linkPredefinedUnits(Collection<Unit> serverUnits) {
+    private Collection<Unit> linkPredefinedUnits(Collection<Unit> serverUnits) {
 
         Map<Integer, Unit> serverUnitsByPredefinedId = CollectionUtilities.toMapByPredefinedId(serverUnits);
+        List<Unit> clientUnits = unitStorage.getItems();
 
-        for(Unit clientUnit : unitStorage.getItems()) {
+
+        for(Unit clientUnit : clientUnits) {
 
             int predefinedId = clientUnit.getPredefinedId();
 
@@ -474,13 +492,16 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
                 unitStorage.updateItem(clientUnit);
             }
         }
+
+        return clientUnits;
     }
 
-    private void linkPredefinedGroups(Collection<Group> serverGroups) {
+    private Collection<Group> linkPredefinedGroups(Collection<Group> serverGroups) {
 
         Map<Integer, Group> serverGroupsByPredefinedId = CollectionUtilities.toMapByPredefinedId(serverGroups);
 
-        for(Group clientGroup : groupStorage.getItems()) {
+        List<Group> clientGroups = groupStorage.getItems();
+        for(Group clientGroup : clientGroups) {
 
             int predefinedId = clientGroup.getPredefinedId();
 
@@ -493,6 +514,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
             }
         }
 
+        return clientGroups;
     }
 
 

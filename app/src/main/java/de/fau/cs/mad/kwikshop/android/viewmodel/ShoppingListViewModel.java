@@ -230,13 +230,13 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
                 case Added:
                     Item item = listManager.getListItem(listId, event.getItemId());
-                    updateItem(item);
+                    updateItem(new ItemViewModel(item));
                     sortItems();
                     updateOrderOfItems();
                     break;
                 case PropertiesModified:
                     Item item1 = listManager.getListItem(listId, event.getItemId());
-                    updateItem(item1);
+                    updateItem(new ItemViewModel(item1));
                     updateOrderOfItems();
                     break;
                 case Deleted:
@@ -296,7 +296,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         ShoppingList shoppingList = listManager.getList(this.listId);
 
         for(Item item : shoppingList.getItems()) {
-            updateItem(item);
+            updateItem(new ItemViewModel(item));
         }
 
         int  sortTypeInt = shoppingList.getSortTypeInt();
@@ -384,18 +384,18 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             updateItemViewModel(itr.next());
         }
     }
-    private void updateItem(Item item) {
-        if(item.isBought()) { // Add bought items at the end of the list
+    private void updateItem(ItemViewModel item) {
+        if(item.getItem().isBought()) { // Add bought items at the end of the list
             if (items.size() - 1 >= 0) {
-                items.setOrAddById(items.size() - 1, new ItemViewModel(item));
+                items.setOrAddById(items.size() - 1, item);
             } else {
-                items.setOrAddById(new ItemViewModel(item));
+                items.setOrAddById(item);
             }
         } else {
-            items.setOrAddById(new ItemViewModel(item));
+            items.setOrAddById(item);
         }
 
-        items.notifyItemModified(new ItemViewModel(item));
+        items.notifyItemModified(item);
     }
 
     private void updateItemViewModel(ItemViewModel item) {

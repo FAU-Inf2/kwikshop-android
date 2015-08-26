@@ -212,11 +212,16 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_GroupHeaderName.setText(text);
         }
         //TODO
-        if (multipleSelectionIsChecked)
+        if (multipleSelectionIsChecked) {
             viewHolder.checkBox_move.setVisibility(View.VISIBLE);
-        else
+            viewHolder.button_moveDown.setVisibility(View.VISIBLE);
+            viewHolder.button_moveUp.setVisibility(View.VISIBLE);
+        }
+        else {
             viewHolder.checkBox_move.setVisibility(View.GONE);
-
+            viewHolder.button_moveDown.setVisibility(View.GONE);
+            viewHolder.button_moveUp.setVisibility(View.GONE);
+        }
         // Specific changes for bought Items
         if (item.isBought()) {
             viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);

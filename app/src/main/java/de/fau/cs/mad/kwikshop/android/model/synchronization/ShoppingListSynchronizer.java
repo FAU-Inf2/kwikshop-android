@@ -30,10 +30,12 @@ public class ShoppingListSynchronizer extends ListSynchronizer<ShoppingList, Sho
                                     SimpleStorage<Group> groupStorage,
                                     SimpleStorage<Unit> unitStorage,
                                     SimpleStorage<LastLocation> locationStorage,
-                                    ItemSynchronizer<ShoppingList, ShoppingListServer> itemSynchronizer) {
+                                    ItemSynchronizer<ShoppingList, ShoppingListServer> itemSynchronizer,
+                                    ServerDataMappingHelper<ShoppingList, ShoppingListServer> mappingHelper) {
 
         super(clientToServerObjectConverter, listManager, deletedListStorage,
-              deletedItemStorage, groupStorage, unitStorage, locationStorage, itemSynchronizer);
+              deletedItemStorage, groupStorage, unitStorage, locationStorage,
+              itemSynchronizer, mappingHelper);
 
         if(clientFactory == null) {
             throw new ArgumentNullException("clientFactory");

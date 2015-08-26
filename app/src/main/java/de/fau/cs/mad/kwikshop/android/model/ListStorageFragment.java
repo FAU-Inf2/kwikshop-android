@@ -33,7 +33,6 @@ public class ListStorageFragment  {
 
 
 
-    //region Public Methods
 
     public static SimpleStorage<Group> getGroupStorage() {
         return m_GroupStorage;
@@ -524,7 +523,6 @@ public class ListStorageFragment  {
         getLocalListStorage().saveList(list);
     }
 
-    //endregion
 
 
     private static void createUnitsInDatabase(Context context, SimpleStorage<Unit> unitStorage) throws SQLException {

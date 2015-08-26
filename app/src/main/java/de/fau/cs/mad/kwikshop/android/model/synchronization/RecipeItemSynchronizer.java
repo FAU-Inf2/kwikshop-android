@@ -19,8 +19,11 @@ public class RecipeItemSynchronizer extends ItemSynchronizer<Recipe, RecipeServe
     private ListClient<RecipeServer> client;
 
     @Inject
-    public RecipeItemSynchronizer(RestClientFactory clientFactory, ListManager<Recipe> listManager, SimpleStorage<Group> groupStorage, SimpleStorage<Unit> unitStorage, SimpleStorage<LastLocation> locationStorage) {
-        super(listManager, groupStorage, unitStorage, locationStorage);
+    public RecipeItemSynchronizer(RestClientFactory clientFactory, ListManager<Recipe> listManager,
+                                  SimpleStorage<Group> groupStorage, SimpleStorage<Unit> unitStorage,
+                                  SimpleStorage<LastLocation> locationStorage,
+                                  ServerDataMappingHelper<Recipe, RecipeServer> mappingHelper) {
+        super(listManager, groupStorage, unitStorage, locationStorage, mappingHelper);
 
         if(clientFactory == null) {
             throw new ArgumentNullException("clientFactory");

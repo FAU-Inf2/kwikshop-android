@@ -20,8 +20,12 @@ public class ShoppingListItemSynchronizer extends ItemSynchronizer<ShoppingList,
     private ListClient<ShoppingListServer> client;
 
     @Inject
-    public ShoppingListItemSynchronizer(RestClientFactory clientFactory, ListManager<ShoppingList> listManager, SimpleStorage<Group> groupStorage, SimpleStorage<Unit> unitStorage, SimpleStorage<LastLocation> locationStorage) {
-        super(listManager, groupStorage, unitStorage, locationStorage);
+    public ShoppingListItemSynchronizer(RestClientFactory clientFactory, ListManager<ShoppingList> listManager,
+                                        SimpleStorage<Group> groupStorage, SimpleStorage<Unit> unitStorage,
+                                        SimpleStorage<LastLocation> locationStorage,
+                                        ServerDataMappingHelper<ShoppingList, ShoppingListServer> mappingHelper) {
+
+        super(listManager, groupStorage, unitStorage, locationStorage, mappingHelper);
 
         if(clientFactory == null) {
             throw new ArgumentNullException("clientFactory");

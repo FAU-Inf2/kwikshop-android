@@ -125,4 +125,15 @@ public class CollectionUtilities {
         }
         return result;
     }
+
+    public static<T extends DomainObject> Map<Integer, T> toMapByPredefinedId(Collection<T> items) {
+
+        Map<Integer, T> result = new HashMap<>();
+        for(T item : items) {
+            if(item.getPredefinedId() > 0) {
+                result.put(item.getPredefinedId(), item);
+            }
+        }
+        return result;
+    }
 }

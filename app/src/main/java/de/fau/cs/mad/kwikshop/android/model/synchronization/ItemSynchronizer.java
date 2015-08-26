@@ -27,6 +27,7 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
     private final SimpleStorage<Group> groupStorage;
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<LastLocation> locationStorage;
+    private final ServerDataMappingHelper<TListClient, TListServer> mappingHelper;
 
     private ItemSyncData<TListClient, TListServer> syncData;
     private int serverListId = -1;
@@ -36,7 +37,8 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
     public ItemSynchronizer(ListManager<TListClient> listManager,
                             SimpleStorage<Group> groupStorage,
                             SimpleStorage<Unit> unitStorage,
-                            SimpleStorage<LastLocation> locationStorage) {
+                            SimpleStorage<LastLocation> locationStorage,
+                            ServerDataMappingHelper<TListClient, TListServer> mappingHelper) {
 
 
         if(listManager == null) {
@@ -51,10 +53,19 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
             throw new ArgumentNullException("unitStorage");
         }
 
+        if(locationStorage == null) {
+            throw new ArgumentNullException("locationStorage");
+        }
+
+        if(mappingHelper == null) {
+            throw new ArgumentNullException("mappingHelper");
+        }
+
         this.listManager = listManager;
         this.groupStorage = groupStorage;
         this.unitStorage = unitStorage;
         this.locationStorage = locationStorage;
+        this.mappingHelper = mappingHelper;
     }
 
 
@@ -205,17 +216,28 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
         clientItem.setServerId(serverItem.getServerId());
         clientItem.setVersion(serverItem.getVersion());
 
-        if(clientItem.getUnit() != null && serverItem.getUnit() != null) {
-            clientItem.getUnit().setServerId(serverItem.getUnit().getServerId());
+        Unit clientUnit = clientItem.getUnit();
+        if(clientUnit != null) {
+            int serverId = serverItem.getUnit().getServerId();
+            clientUnit.setServerId(serverId);
             unitStorage.updateItem(clientItem.getUnit());
+            syncData.getUnitsByServerId().put(serverId, clientUnit);
         }
-        if(clientItem.getGroup() != null && serverItem.getGroup() != null) {
-            clientItem.getGroup().setServerId(serverItem.getGroup().getServerId());
+
+        Group clientGroup = clientItem.getGroup();
+        if(clientGroup != null) {
+            int serverId = serverItem.getGroup().getServerId();
+            clientGroup.setServerId(serverId);
             groupStorage.updateItem(clientItem.getGroup());
+            syncData.getGroupsByServerId().put(serverId, clientGroup);
         }
-        if(clientItem.getLocation() != null && serverItem.getLocation() != null) {
-            clientItem.getLocation().setServerId(serverItem.getLocation().getServerId());
-            locationStorage.updateItem(clientItem.getLocation());
+
+        LastLocation clientLocation = clientItem.getLocation();
+        if(clientLocation != null) {
+            int serverId = serverItem.getLocation().getServerId();
+            clientLocation.setServerId(serverId);
+            locationStorage.updateItem(clientLocation);
+            syncData.getLocationsByServerId().put(serverId, clientLocation);
         }
 
         listManager.saveListItem(clientListId, clientItem);
@@ -225,9 +247,9 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
     @Override
     protected void createClientObject(ItemSyncData<TListClient, TListServer> itemSyncData, Item serverItem) {
 
-        serverItem.setGroup(getClientGroup(itemSyncData, serverItem.getGroup()));
-        serverItem.setUnit(getClientUnit(itemSyncData, serverItem.getUnit()));
-        serverItem.setLocation(getClientLocation(itemSyncData, serverItem.getLocation()));
+        serverItem.setGroup(mappingHelper.getClientGroup(itemSyncData, serverItem.getGroup()));
+        serverItem.setUnit(mappingHelper.getClientUnit(itemSyncData, serverItem.getUnit()));
+        serverItem.setLocation(mappingHelper.getClientLocation(itemSyncData, serverItem.getLocation()));
 
         listManager.addListItem(clientListId, serverItem);
     }
@@ -245,17 +267,28 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
 
         clientItem.setVersion(serverItem.getVersion());
 
-        if(clientItem.getUnit() != null && serverItem.getUnit() != null) {
-            clientItem.getUnit().setServerId(serverItem.getUnit().getServerId());
-            unitStorage.updateItem(clientItem.getUnit());
+        Unit clientUnit = clientItem.getUnit();
+        if(clientUnit != null) {
+            int serverId = serverItem.getUnit().getServerId();
+            clientUnit.setServerId(serverId);
+            unitStorage.updateItem(clientUnit);
+            syncData.getUnitsByServerId().put(serverId, clientUnit);
         }
-        if(clientItem.getGroup() != null && serverItem.getGroup() != null) {
-            clientItem.getGroup().setServerId(serverItem.getGroup().getServerId());
-            groupStorage.updateItem(clientItem.getGroup());
+
+        Group clientGroup = clientItem.getGroup();
+        if(clientGroup != null) {
+            int serverId = serverItem.getGroup().getServerId();
+            clientGroup.setServerId(serverId);
+            groupStorage.updateItem(clientGroup);
+            syncData.getGroupsByServerId().put(serverId, clientGroup);
         }
-        if(clientItem.getLocation() != null && serverItem.getLocation() != null) {
-            clientItem.getLocation().setServerId(serverItem.getLocation().getServerId());
-            locationStorage.updateItem(clientItem.getLocation());
+
+        LastLocation clientLocation = clientItem.getLocation();
+        if(clientLocation != null) {
+            int serverId = serverItem.getLocation().getServerId();
+            clientLocation.setServerId(serverId);
+            locationStorage.updateItem(clientLocation);
+            syncData.getLocationsByServerId().put(serverId, clientLocation);
         }
 
         listManager.saveListItem(clientListId, clientItem);
@@ -278,9 +311,9 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
         clientItem.setVersion(serverItem.getVersion());
 
         //Group, Unit, Location
-        clientItem.setGroup(getClientGroup(itemSyncData, serverItem.getGroup()));
-        clientItem.setUnit(getClientUnit(itemSyncData, serverItem.getUnit()));
-        clientItem.setLocation(getClientLocation(itemSyncData, serverItem.getLocation()));
+        clientItem.setGroup(mappingHelper.getClientGroup(itemSyncData, serverItem.getGroup()));
+        clientItem.setUnit(mappingHelper.getClientUnit(itemSyncData, serverItem.getUnit()));
+        clientItem.setLocation(mappingHelper.getClientLocation(itemSyncData, serverItem.getLocation()));
     }
 
     protected void applyPropertiesToServerData(ItemSyncData<TListClient, TListServer> itemSyncData, Item source, Item target){
@@ -317,58 +350,9 @@ public abstract class ItemSynchronizer<TListClient extends DomainListObject,
 
     }
 
-    private Group getClientGroup(ItemSyncData<TListClient, TListServer> itemSyncData, Group serverGroup) {
 
-        if(serverGroup == null) {
-            return null;
-        }
 
-        int serverGroupId = serverGroup.getServerId();
 
-        //check if a group on the client exists that corresponds to the specified server group
-        // (lookup by server id)
-        if(itemSyncData.getGroupsByServerId().containsKey(serverGroupId)) {
-            return itemSyncData.getGroupsByServerId().get(serverGroupId);
-        } else {
-            //group not found => create new client-side group
-            groupStorage.addItem(serverGroup);
-            itemSyncData.getGroupsByServerId().put(serverGroupId, serverGroup);
-            return serverGroup;
-        }
-    }
 
-    private Unit getClientUnit(ItemSyncData<TListClient, TListServer> itemSyncData, Unit serverUnit) {
-
-        if(serverUnit == null) {
-            return null;
-        }
-
-        int serverUnitId = serverUnit.getServerId();
-
-        if(itemSyncData.getUnitsByServerId().containsKey(serverUnitId)) {
-            return itemSyncData.getUnitsByServerId().get(serverUnitId);
-        } else {
-            unitStorage.addItem(serverUnit);
-            itemSyncData.getUnitsByServerId().put(serverUnitId, serverUnit);
-            return serverUnit;
-        }
-    }
-
-    private LastLocation getClientLocation(ItemSyncData<TListClient, TListServer> itemSyncData, LastLocation serverLocation) {
-
-        if(serverLocation == null) {
-            return null;
-        }
-
-        int serverLocationId = serverLocation.getServerId();
-
-        if(itemSyncData.getLocationsByServerId().containsKey(serverLocationId)) {
-            return itemSyncData.getLocationsByServerId().get(serverLocationId);
-        } else {
-            locationStorage.addItem(serverLocation);
-            itemSyncData.getLocationsByServerId().put(serverLocationId, serverLocation);
-            return serverLocation;
-        }
-    }
 }
 

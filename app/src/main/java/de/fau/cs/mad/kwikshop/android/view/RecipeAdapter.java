@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -146,6 +147,7 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
         }
 
         viewHolder.view_GroupHeader.setVisibility(View.GONE);
+        viewHolder.checkBox_move.setVisibility(View.GONE);
        return view;
     }
 
@@ -208,6 +210,9 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
 
         @InjectView(R.id.group_header)
         View view_GroupHeader;
+
+        @InjectView(R.id.checkBox_move)
+        CheckBox checkBox_move;
 
     }
 

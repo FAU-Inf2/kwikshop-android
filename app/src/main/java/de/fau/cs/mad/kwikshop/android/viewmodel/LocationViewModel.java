@@ -98,6 +98,8 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
 
     public void setPlaceChoiceIndex(int choice){ this.placeChoiceIndex = choice; }
 
+    public int getPlaceChoiceIndex() { return this.placeChoiceIndex; }
+
     @Override
     protected void loadList() {
 

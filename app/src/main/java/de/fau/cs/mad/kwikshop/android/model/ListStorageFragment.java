@@ -130,6 +130,7 @@ public class ListStorageFragment  {
         Unit cans = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.CAN);
         Unit piece = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.PIECE);
         Unit pack = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.PACK);
+        Unit teaspoon = m_UnitStorage.getByName(DefaultDataProvider.UnitNames.TEASPOON);
 
         Group meat = m_GroupStorage.getByName(DefaultDataProvider.GroupNames.MEAT_AND_FISH);
         Group vegetable = m_GroupStorage.getByName(DefaultDataProvider.GroupNames.FRUITS_AND_VEGETABLES);
@@ -374,7 +375,7 @@ public class ListStorageFragment  {
                 Item item9 = new Item();
                 item9.setName(context.getString(R.string.recipe_bakingPowder));
                 item9.setAmount(3);
-                item9.setUnit(tbsp);
+                item9.setUnit(teaspoon);
                 item9.setGroup(other);
                 item9.setPredefinedId(PredefinedId.Recipe_RhubarbTart_Item9.toInt());
                 recipe.addItem(item9);
@@ -440,7 +441,7 @@ public class ListStorageFragment  {
                 Item item6 = new Item();
                 item6.setName(context.getString(R.string.recipe_bakingPowder));
                 item6.setAmount(0.5);
-                item6.setUnit(tbsp);
+                item6.setUnit(teaspoon);
                 item6.setGroup(other);
                 item6.setPredefinedId(PredefinedId.Recipe_MadeiraCake_Item6.toInt());
                 recipe.addItem(item6);
@@ -449,7 +450,7 @@ public class ListStorageFragment  {
                 Item item7 = new Item();
                 item7.setName(context.getString(R.string.recipe_salt));
                 item7.setAmount(0.5);
-                item7.setUnit(tbsp);
+                item7.setUnit(teaspoon);
                 item7.setGroup(other);
                 item7.setPredefinedId(PredefinedId.Recipe_MadeiraCake_Item7.toInt());
                 recipe.addItem(item7);

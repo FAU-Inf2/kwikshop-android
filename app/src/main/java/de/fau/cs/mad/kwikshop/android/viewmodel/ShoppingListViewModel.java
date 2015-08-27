@@ -412,10 +412,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
             @Override
             protected Void doInBackground(Void... params) {
-                EventBus privateBus = EventBus.builder().build();
 
                 try {
-                    privateBus.post("Posting BoughtItems...");
 
                     List<BoughtItem> boughtItemOrder = new ArrayList<>();
                     for (Item item : swipedItemOrder) {
@@ -427,7 +425,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     clientFactory.getShoppingListClient().postItemOrder(itemOrderWrapper);
 
                 } catch (Exception e) {
-                    privateBus.post(e.getStackTrace());
+                    e.printStackTrace();
                 }
                 return null;
 

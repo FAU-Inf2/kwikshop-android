@@ -149,7 +149,7 @@ public class ShoppingListFragment
         super.onDestroy();
         if(viewModel.getInShoppingMode()) {
             if(viewModel.getSwipedItemOrder().size() != 0 && viewModel.getSendBoughtItemsToServerCommand().getCanExecute()) {
-                viewModel.setPlacesId(locationViewModel.getPlaceChoiceIndex());
+                viewModel.setPlacesChoiceIndex(locationViewModel.getPlaceChoiceIndex());
                 viewModel.getSendBoughtItemsToServerCommand().execute(null);
             }
         }

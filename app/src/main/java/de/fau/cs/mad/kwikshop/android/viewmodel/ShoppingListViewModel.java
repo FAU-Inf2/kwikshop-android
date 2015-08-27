@@ -48,6 +48,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     private boolean inShoppingMode = false;
     private ArrayList<Item> swipedItemOrder = new ArrayList<>();
     private List<Place> places;
+    private int placesChoiceIndex;
 
     private final ResourceProvider resourceProvider;
     private final RegularlyRepeatHelper repeatHelper;
@@ -356,6 +357,10 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         this.places = places;
     }
 
+    public void setPlacesChoiceIndex(int placesChoiceIndex) {
+        this.placesChoiceIndex = placesChoiceIndex;
+    }
+
     public List<Item> getSwipedItemOrder(){ return this.swipedItemOrder; }
 
     private void toggleIsBoughtCommandExecute(final int id) {
@@ -417,8 +422,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                         boughtItemOrder.add(new BoughtItem(item.getName()));
                     }
 
-                    //TODO send places (name might be item.getLastLocation.getName()?)
-                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder, null, null);
+                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder, places.get(placesChoiceIndex).getPlaceId(),
+                            places.get(placesChoiceIndex).getName());
                     clientFactory.getShoppingListClient().postItemOrder(itemOrderWrapper);
 
                 } catch (Exception e) {

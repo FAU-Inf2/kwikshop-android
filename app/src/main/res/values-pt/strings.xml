@@ -188,5 +188,5 @@
     <string name="item">Iten</string>
     <string name="unit_teaspoon">colheres de chá</string>
     <string name="deleteShoppingList_repeatingItemsTitle">Essa lista possui itens que repetem</string>
-    <string name="deleteShoppingList_repeatingItemsText">Deletar items agendados?</string>
+    <string name="deleteShoppingList_repeatingItemsText">Deletar items agendados para próximas listas?</string>
 </resources>

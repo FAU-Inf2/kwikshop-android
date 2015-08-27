@@ -114,6 +114,7 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
                 item.setRemindAtDate(null);
                 item.setLastBought(null);
                 item.setRemindFromNextPurchaseOn(false);
+                listManager.saveListItem(shoppingList.getId(), item);
             }
         }
         listManager.saveList(shoppingList.getId());

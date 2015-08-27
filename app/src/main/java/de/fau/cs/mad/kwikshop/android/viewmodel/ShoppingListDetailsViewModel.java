@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.tasks.RedeemSharingCodeTask;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.view.ReminderFragment;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.RepeatType;
@@ -105,7 +106,17 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
     }
 
     private void deleteRepeatOnNewListItemsCommandExecute() {
-        //TODO
+        Iterator<Item> itr = shoppingList.getItems().iterator();
+        while(itr.hasNext()){
+            Item item = itr.next();
+            if(item.getRepeatType() == RepeatType.ListCreation) {
+                item.setRepeatType(RepeatType.None);
+                item.setRemindAtDate(null);
+                item.setLastBought(null);
+                item.setRemindFromNextPurchaseOn(false);
+            }
+        }
+        listManager.saveList(shoppingList.getId());
     }
 
     @SuppressWarnings("unused")
@@ -244,18 +255,23 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
                             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SL_DELETION_SHOW_AGAIN_MSG, false, context);
                         }
                     }, null);
-            //TODO ask when the list owns repeating items
            if (ownsRepeatOnNewListItems()){
                     viewLauncher.showMessageDialogWithCheckbox(resourceProvider.getString(R.string.deleteShoppingList_repeatingItemsTitle),
                             resourceProvider.getString(R.string.deleteShoppingList_repeatingItemsText), resourceProvider.getString(R.string.yes),
                             new Command<Void>() {
                                 @Override
                                 public void execute(Void parameter) {
+                                    deleteRepeatOnNewListItemsCommandExecute();
                                 }
                             },
                             null, null, resourceProvider.getString(R.string.no),
                             NullCommand.VoidInstance, resourceProvider.getString(R.string.dont_show_this_message_again), false,
-                            null, null);
+                            new Command<Void>() {
+                                @Override
+                                public void execute(Void parameter) {
+                                    SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.REPEAT_DELETION_SHOW_AGAIN_MSG, false, context);
+                                }
+                            }, null);
             }
         }else{
             if (getCalendarEventDate() != null) {

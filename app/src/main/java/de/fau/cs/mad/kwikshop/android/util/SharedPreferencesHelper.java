@@ -21,6 +21,7 @@ public class SharedPreferencesHelper {
     public static final String ITEM_SEPARATOR_WORD = "ITEM_SEPARATOR_WORD";
     public static final String ENABLE_SYNCHRONIZATION = "ENABLE_SYNCHRONIZATION";
     public static final String SYNCHRONIZATION_INTERVAL = "SYNCHRONIZATION_INTERVAL";
+    public static final String REPEAT_DELETION_SHOW_AGAIN_MSG = "REPEAT_DELETION_SHOW_AGAIN_MSG";
 
     private static final String sharedPreferencesName = "settings";
 

@@ -374,5 +374,7 @@
     <string name="settings_options_delete_recipe_descr">Always ask before deleting a recipe</string>
     <string name="settings_option_parser_separator_no_space_allowed">The item separator word may not contaion spaces</string>
     <string name="str_default">default</string>
+    <string name="deleteShoppingList_repeatingItemsTitle">This list owns repeating items</string>
+    <string name="deleteShoppingList_repeatingItemsText">Delete next scheduled items?</string>
 
 </resources>

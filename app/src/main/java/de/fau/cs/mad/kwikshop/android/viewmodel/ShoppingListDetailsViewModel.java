@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
@@ -17,6 +18,8 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.tasks.RedeemSharingCodeTask;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.common.CalendarEventDate;
+import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
@@ -92,6 +95,18 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
         this.calendarEventDate = value;
     }
 
+    private boolean ownsRepeatOnNewListItems() {
+        Iterator<Item> itr = shoppingList.getItems().iterator();
+        while(itr.hasNext()){
+            if(itr.next().getRepeatType() == RepeatType.ListCreation)
+                return true;
+        }
+        return false;
+    }
+
+    private void deleteRepeatOnNewListItemsCommandExecute() {
+        //TODO
+    }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(CalendarEventDate eventDate) {
@@ -230,13 +245,18 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
                         }
                     }, null);
             //TODO ask when the list owns repeating items
-          /*  if (getCalendarEventDate() != null){
-                viewLauncher.showMessageDialogWithCheckbox(resourceProvider.getString("This list is scheduled for repeating"),
-                        resourceProvider.getString(R.string.deleteShoppingList_DialogText), resourceProvider.getString(R.string.yes),
-                        new Command<Void>() {
-                            @Override
-                            public void execute(Void parameter) {
-            }*/
+           if (ownsRepeatOnNewListItems()){
+                    viewLauncher.showMessageDialogWithCheckbox(resourceProvider.getString(R.string.deleteShoppingList_repeatingItemsTitle),
+                            resourceProvider.getString(R.string.deleteShoppingList_repeatingItemsText), resourceProvider.getString(R.string.yes),
+                            new Command<Void>() {
+                                @Override
+                                public void execute(Void parameter) {
+                                }
+                            },
+                            null, null, resourceProvider.getString(R.string.no),
+                            NullCommand.VoidInstance, resourceProvider.getString(R.string.dont_show_this_message_again), false,
+                            null, null);
+            }
         }else{
             if (getCalendarEventDate() != null) {
                 deleteCalendarEventCommandExecute();

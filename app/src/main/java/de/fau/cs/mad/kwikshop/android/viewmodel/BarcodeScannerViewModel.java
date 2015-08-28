@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -113,7 +114,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     }
 
     public void hideActionBar(){
-        ((ActionBarActivity)context).getSupportActionBar().hide();
+        ((AppCompatActivity)activity).getSupportActionBar().hide();
     }
 
     public void onPause(){

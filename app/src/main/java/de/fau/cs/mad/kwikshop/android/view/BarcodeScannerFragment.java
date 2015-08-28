@@ -36,6 +36,7 @@ public class BarcodeScannerFragment extends Fragment{
         objectGraph.inject(this);
 
         viewModel.setContext(getActivity());
+        viewModel.setActivity(getActivity());
         viewModel.hideActionBar();
         viewModel.setListId(getArguments().getInt(ARG_LISTID));
         scannerView = viewModel.getScannerView();

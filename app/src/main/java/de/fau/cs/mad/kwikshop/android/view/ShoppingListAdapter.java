@@ -127,13 +127,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.tableRow_divider_table.setVisibility(View.GONE);
         }
 
-        // If item is highlighted, set color to red
-        if (item.isHighlight()) {
-            viewHolder.textView_Name.setTextColor(Color.RED);
-        } else {
-            viewHolder.textView_Name.setTextColor(context.getResources().getColor(R.color.primary_text));
-        }
-
         // Item name
         viewHolder.textView_Name.setText(item.getName());
 
@@ -322,6 +315,14 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                     shoppingListViewModel.changeCheckBoxesVisibility();
             }
         });
+
+        // If item is highlighted, set color to red
+        if (item.isHighlight()) {
+            viewHolder.textView_Name.setTextColor(Color.RED);
+        } else {
+            viewHolder.textView_Name.setTextColor(context.getResources().getColor(R.color.primary_text));
+        }
+
 
         return view;
     }

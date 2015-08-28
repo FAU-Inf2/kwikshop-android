@@ -147,12 +147,10 @@ public class ShoppingListFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(viewModel.getInShoppingMode()) {
             if(viewModel.getSwipedItemOrder().size() != 0 && viewModel.getSendBoughtItemsToServerCommand().getCanExecute()) {
                 viewModel.setPlacesChoiceIndex(locationViewModel.getPlaceChoiceIndex());
                 viewModel.getSendBoughtItemsToServerCommand().execute(null);
             }
-        }
         locationViewModel.dismissProgressDialog();
         locationViewModel.dismissDialog();
     }

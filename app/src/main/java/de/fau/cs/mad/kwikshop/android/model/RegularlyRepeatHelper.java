@@ -132,6 +132,14 @@ public class RegularlyRepeatHelper {
         return null;
     }
 
+    private Item getItemListCreation(int id){
+        for(Item item : listCreationRepeatList) {
+            if (item.getId() == id)
+                return item;
+        }
+        return null;
+    }
+
     public void delete(Item data) {
         if(!scheduleRepeatList.contains(data)){
             return;
@@ -178,6 +186,11 @@ public class RegularlyRepeatHelper {
             Item item = getItem(event.getItemId());
             if (item != null)
                 scheduleRepeatList.remove(item);
+            else{
+                Item item2 = getItemListCreation(event.getItemId());
+                if (item2 != null)
+                    listCreationRepeatList.remove(item2);
+            }
         }
     }
 

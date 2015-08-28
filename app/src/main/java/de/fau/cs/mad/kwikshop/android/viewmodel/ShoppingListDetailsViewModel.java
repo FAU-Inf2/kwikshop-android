@@ -6,6 +6,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.CalendarContract;
 
 import java.util.Calendar;
@@ -15,6 +16,9 @@ import java.util.TimeZone;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.tasks.RedeemSharingCodeTask;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.ReminderFragment;
@@ -106,18 +110,28 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
     }
 
     private void deleteRepeatOnNewListItemsCommandExecute() {
-        Iterator<Item> itr = shoppingList.getItems().iterator();
-        while(itr.hasNext()){
-            Item item = itr.next();
-            if(item.getRepeatType() == RepeatType.ListCreation) {
-                item.setRepeatType(RepeatType.None);
-                item.setRemindAtDate(null);
-                item.setLastBought(null);
-                item.setRemindFromNextPurchaseOn(false);
-                listManager.saveListItem(shoppingList.getId(), item);
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                Iterator<Item> itr = shoppingList.getItems().iterator();
+                while(itr.hasNext()){
+                    Item item = itr.next();
+                    if(item.getRepeatType() == RepeatType.ListCreation) {
+                        EventBus.getDefault().post(new ItemChangedEvent(ListType.ShoppingList,
+                                ItemChangeType.Deleted,
+                                listId, item.getId()));
+                        item.setRepeatType(RepeatType.None);
+                        item.setRemindAtDate(null);
+                        item.setLastBought(null);
+                        item.setRemindFromNextPurchaseOn(false);
+                        listManager.saveListItem(shoppingList.getId(), item);
+                    }
+                }
+                listManager.saveList(shoppingList.getId());
             }
-        }
-        listManager.saveList(shoppingList.getId());
+        });
+
     }
 
     @SuppressWarnings("unused")

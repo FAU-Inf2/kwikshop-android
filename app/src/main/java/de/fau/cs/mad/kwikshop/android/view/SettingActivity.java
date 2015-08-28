@@ -39,14 +39,6 @@ public class SettingActivity extends BaseActivity {
         transaction.commit();
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-
-        MenuItem settings = menu.findItem(R.id.action_settings);
-        settings.setVisible(false);
-
-        return true;
-    }
 
 
 }

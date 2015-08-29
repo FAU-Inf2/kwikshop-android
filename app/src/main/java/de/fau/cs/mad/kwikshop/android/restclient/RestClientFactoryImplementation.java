@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.net.ssl.HostnameVerifier;
@@ -23,9 +23,6 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.BasicAuthenticationRequestInterceptor;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
-import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
-import de.fau.cs.mad.kwikshop.android.restclient.RecipeResource;
-import de.fau.cs.mad.kwikshop.android.restclient.ShoppingListResource;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.RecipeServer;
@@ -112,7 +109,9 @@ public class RestClientFactoryImplementation implements RestClientFactory {
             return null;
         }
 
-
+        client.setReadTimeout(30, TimeUnit.SECONDS);
+        client.setWriteTimeout(30, TimeUnit.SECONDS);
+        client.setConnectTimeout(30, TimeUnit.SECONDS);
 
         return new RestAdapter.Builder()
                 .setClient(new OkClient(client))

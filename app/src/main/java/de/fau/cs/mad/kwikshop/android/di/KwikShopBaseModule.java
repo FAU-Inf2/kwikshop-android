@@ -11,6 +11,7 @@ import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
+import de.fau.cs.mad.kwikshop.android.model.LocationManager;
 import de.fau.cs.mad.kwikshop.android.model.RecipeManager;
 import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
 import de.fau.cs.mad.kwikshop.android.model.ShoppingListManager;
@@ -67,6 +68,8 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         ShoppingListItemSynchronizer.class,
         RecipeItemSynchronizer.class,
         CompositeSynchronizer.class,
+
+        LocationManager.class
 })
 public class KwikShopBaseModule {
 

@@ -57,6 +57,7 @@ import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.android.model.UnitStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.DeleteItemEvent;
+import de.fau.cs.mad.kwikshop.android.util.DateFormatter;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
@@ -83,7 +84,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
-//
     protected boolean isNewItem;
 
 
@@ -159,6 +159,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @Inject
     SimpleStorage<Group> groupStorage;
 
+    @Inject
+    DateFormatter dateFormatter;
 
 
     private ItemDetailsViewModel viewModel;
@@ -315,7 +317,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         setAdditionalItemProperties();
 
         viewModel.offerAutoCompletion(item.getName(), item.getGroup(), item.getBrand());
-        viewModel.mergeAndSaveItem(getListManager(), new ItemMerger(getListManager()), item);
+        viewModel.mergeAndSaveItem(getListManager(), new ItemMerger<>(getListManager()), item);
 
         hideKeyboard();
 
@@ -336,16 +338,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         if(location != null){
             if(location.getName() != null){
-                long days = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - location.getTimestamp());
-                String duration;
-                if(days < 1){
-                    duration =  getString(R.string.today);
-                } else {
-                    if(days == 1)
-                        duration = days + " " + getString(R.string.day);
-                    else
-                        duration = days + " " + getString(R.string.days);
-                }
+                String duration = dateFormatter.formatDate(item.getLastBought());
+
                 lastbought_location.setText(location.getName() + " (" + duration + ") ");
             } else {
                 // hide information about last bought item
@@ -481,13 +475,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 Method method = numberPicker.getClass().getDeclaredMethod("changeValueByOne", boolean.class);
                 method.setAccessible(true);
                 method.invoke(numberPicker, true);
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
+            } catch (NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
                 e.printStackTrace();
             }
             numberPicker.invalidate();

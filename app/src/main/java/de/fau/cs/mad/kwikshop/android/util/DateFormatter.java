@@ -12,6 +12,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.inject.Inject;
+
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 
@@ -27,6 +29,7 @@ public class DateFormatter {
     private final ResourceProvider resourceProvider;
 
 
+    @Inject
     public DateFormatter(ResourceProvider resourceProvider) {
 
         if(resourceProvider == null) {
@@ -38,6 +41,10 @@ public class DateFormatter {
 
 
     public String formatDate(Date date) {
+
+        if(date == null) {
+            return "";
+        }
 
         DateTime now = DateTime.now();
         DateTime toFormat = new DateTime(date);

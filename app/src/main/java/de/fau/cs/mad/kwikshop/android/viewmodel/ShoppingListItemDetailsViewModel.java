@@ -38,7 +38,6 @@ public class ShoppingListItemDetailsViewModel extends ItemDetailsViewModel{
     public RegularlyRepeatHelper getRepeatHelper(){ return repeatHelper; }
 
     public void repeatFromNextPurchaseOn(Item item){
-        item.setLastBought(null);
         item.setRemindAtDate(null);
     }
 

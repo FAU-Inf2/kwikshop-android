@@ -123,7 +123,6 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
                                 listId, item.getId()));
                         item.setRepeatType(RepeatType.None);
                         item.setRemindAtDate(null);
-                        item.setLastBought(null);
                         item.setRemindFromNextPurchaseOn(false);
                         listManager.saveListItem(shoppingList.getId(), item);
                     }

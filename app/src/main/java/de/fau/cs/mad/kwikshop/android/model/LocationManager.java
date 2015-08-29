@@ -63,7 +63,6 @@ public class LocationManager {
             location.setLongitude(place.getLongitude());
             location.setAddress(place.getAddress());
             location.setPlaceId(placeId);
-            location.setTimestamp(System.currentTimeMillis());
 
             locationsByPlacesId.put(placeId, location);
             locationStorage.addItem(location);
@@ -84,7 +83,9 @@ public class LocationManager {
                 List<LastLocation> locations = locationStorage.getItems();
                 for(LastLocation location : locations) {
                     String id = location.getPlaceId();
-                    locationsByPlacesId.put(id, location);
+                    if(id != null) {
+                        locationsByPlacesId.put(id, location);
+                    }
                 }
 
                 loadLatch.countDown();

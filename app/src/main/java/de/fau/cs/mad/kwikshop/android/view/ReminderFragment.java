@@ -191,7 +191,6 @@ public class ReminderFragment extends Fragment {
 
     private void skipThisReminder() {
         if (item.isRemindFromNextPurchaseOn()) {
-            item.setLastBought(null);
             item.setRemindAtDate(null);
             repeatHelper.offerRepeatData(item);
 
@@ -205,7 +204,6 @@ public class ReminderFragment extends Fragment {
 
     private void deleteReminder() {
         item.setRemindAtDate(null);
-        item.setLastBought(null);
         item.setRepeatType(RepeatType.None);
 
         saveInDatabase();

@@ -372,13 +372,12 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
             if (item.isBought()) {
                 swipedItemOrder.add(item);
+                Calendar now = Calendar.getInstance();
+                item.setLastBought(now.getTime());
 
-                if (item.getRepeatType() == RepeatType.Schedule && item.isRemindFromNextPurchaseOn() && item.getLastBought() == null) {
-                    Calendar now = Calendar.getInstance();
-                    item.setLastBought(now.getTime());
+                if (item.getRepeatType() == RepeatType.Schedule && item.isRemindFromNextPurchaseOn()) {
 
                     //save location
-
                     Calendar remindDate = Calendar.getInstance();
                     switch (item.getPeriodType()) {
                         case DAYS:

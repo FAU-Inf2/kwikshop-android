@@ -29,6 +29,7 @@ import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchron
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactoryImplementation;
 import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
+import de.fau.cs.mad.kwikshop.android.util.DateFormatter;
 import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.view.DefaultResourceProvider;
 import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
@@ -51,6 +52,7 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
 @SuppressWarnings("unused")
 @Module(library = true, injects = {
         DefaultResourceProvider.class,
+        DateFormatter.class,
         DefaultClipboardHelper.class,
         IoServiceImplementation.class,
         DefaultDataProvider.class,

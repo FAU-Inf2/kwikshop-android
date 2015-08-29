@@ -19,30 +19,24 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
-import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
-import de.fau.cs.mad.kwikshop.android.model.ItemParser;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
-import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
+import de.fau.cs.mad.kwikshop.android.model.LocationManager;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
-import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.ClusterMapItem;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.util.ClusterItemRendered;
-import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
-import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.common.Unit;
 import se.walkercrou.places.Place;
 import se.walkercrou.places.Status;
 
-public class LocationViewModel extends ListViewModel<ShoppingList> {
+public class LocationViewModel {
 
     private Activity activity;
     private Context context;
@@ -51,36 +45,45 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
     private List<Place> places;
     private boolean cancelSelectionOfSupermarket = false;
 
+
     private Boolean canceled = false;
 
+    private final ListManager<ShoppingList> listManager;
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
+    private final LocationManager locationManager;
 
     public static String SHOPPINGMODEPLACEREQUEST_CANCEL = "ShoppingModePlaceRequest_cancel";
-    private GoogleMap map;
     private ClusterManager<ClusterMapItem> mClusterManager;
 
 
     @Inject
-    public LocationViewModel(ViewLauncher viewLauncher,
-                             ListManager<ShoppingList> shoppingListManager,
-                             SimpleStorage<Unit> unitStorage,
-                             SimpleStorage<Group> groupStorage,
-                             ItemParser itemParser,
-                             DisplayHelper displayHelper,
-                             AutoCompletionHelper autoCompletionHelper,
-                             LocationFinderHelper locationFinderHelper,
-                             ResourceProvider resourceProvider,
-                             RegularlyRepeatHelper repeatHelper) {
+    public LocationViewModel(ListManager<ShoppingList> shoppingListManager,
+                             ResourceProvider resourceProvider, LocationManager locationManager,
+                             ViewLauncher viewLauncher) {
 
-        super(viewLauncher, shoppingListManager, unitStorage, groupStorage, itemParser, displayHelper,
-                autoCompletionHelper, locationFinderHelper);
+        if(shoppingListManager ==null) {
+            throw new ArgumentNullException("shoppingListManager");
+        }
 
-        if(resourceProvider == null) {throw new ArgumentNullException("resourceProvider");}
+        if(resourceProvider == null) {
+            throw new ArgumentNullException("resourceProvider");
+        }
 
+        if(locationManager == null) {
+            throw new ArgumentNullException("locationManager");
+        }
+
+        if(viewLauncher == null) {
+            throw new ArgumentNullException("viewLauncher");
+        }
+
+        this.listManager = shoppingListManager;
         this.resourceProvider = resourceProvider;
+        this.locationManager = locationManager;
         this.viewLauncher = viewLauncher;
     }
+
 
     public void setCancelSelectionOfSupermarket(boolean status){ this.cancelSelectionOfSupermarket = status; }
 
@@ -100,20 +103,6 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
 
     public int getPlaceChoiceIndex() { return this.placeChoiceIndex; }
 
-    @Override
-    protected void loadList() {
-
-    }
-
-    @Override
-    protected void addItemCommandExecute() {
-
-    }
-
-    @Override
-    protected void selectItemCommandExecute(int parameter) {
-
-    }
 
     public Command<Void> getFinishActivityCommand(){ return finishCommand; }
 
@@ -128,7 +117,7 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
     public Command<Integer> getStartShoppingListFragmemtWithoutPlaceRequestCommand(){ return startShoppingListFragmemtWithoutPlaceRequestCommand; }
 
 
-    final Command cancelProgressDialogCommand =  new Command<Void>() {
+    final Command<Void> cancelProgressDialogCommand =  new Command<Void>() {
         @Override
         public void execute(Void parameter) {
             canceled = true;
@@ -136,14 +125,14 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
         }
     };
 
-    final Command finishCommand = new Command<Void>(){
+    final Command<Void> finishCommand = new Command<Void>(){
         @Override
         public void execute(Void parameter) {
             viewLauncher.finishActivity();
         }
     };
 
-    final Command routeIntentCommand = new Command<String>(){
+    final Command<String> routeIntentCommand = new Command<String>(){
         @Override
         public void execute(String targetAddress) {
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + targetAddress));
@@ -151,31 +140,31 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
         }
     };
 
-    final Command restartActivityCommand = new Command<Void>(){
+    final Command<Void> restartActivityCommand = new Command<Void>(){
         @Override
         public void execute(Void parameter) {
             viewLauncher.startActivity(activity.getIntent());
         }
     };
 
-    final Command savePlaceToShoppingListCommand = new Command<Void>(){
+    final Command<Void> savePlaceToShoppingListCommand = new Command<Void>(){
         @Override
         public void execute(Void parameter) {
             // save place to shopping list
         }
     };
 
-    final Command acceptDialogCommand = new Command<Void>(){
+    final Command<Void> acceptDialogCommand = new Command<Void>(){
         @Override
         public void execute(Void parameter) {
 
         }
     };
 
-    final Command startShoppingListFragmemtWithoutPlaceRequestCommand = new Command<Integer>(){
+    final Command<Integer> startShoppingListFragmemtWithoutPlaceRequestCommand = new Command<Integer>(){
         @Override
         public void execute(Integer listId) {
-            startShoppingListFragmentWithoutPlaceRequest(listId.intValue());
+            startShoppingListFragmentWithoutPlaceRequest(listId);
         }
     };
 
@@ -274,7 +263,7 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
         settings.setAllGesturesEnabled(true);
         settings.setMapToolbarEnabled(false);
 
-        mClusterManager = new ClusterManager<ClusterMapItem>(context, map);
+        mClusterManager = new ClusterManager<>(context, map);
         mClusterManager.setRenderer(new ClusterItemRendered(context, map, mClusterManager));
         map.setOnCameraChangeListener(mClusterManager);
         map.setOnMarkerClickListener(mClusterManager);
@@ -445,16 +434,12 @@ public class LocationViewModel extends ListViewModel<ShoppingList> {
         if(!cancelSelectionOfSupermarket){
             if(checkPlaces(places)){
                 // not listed supermarket selection has index 0
-                    Place selectedPlace = places.get(placeChoiceIndex);
-                    // set new lastLocation object
-                    LastLocation lastLocation = new LastLocation();
-                    lastLocation.setName(selectedPlace.getName());
-                    lastLocation.setLatitude(selectedPlace.getLatitude());
-                    lastLocation.setLongitude(selectedPlace.getLongitude());
-                    lastLocation.setAddress(selectedPlace.getAddress());
-                    lastLocation.setTimestamp(System.currentTimeMillis());
-                    item.setLocation(lastLocation);
-                    listManager.saveListItem(listId, item);
+                Place selectedPlace = places.get(placeChoiceIndex);
+
+                // get location object for the place
+                LastLocation location = locationManager.getLocationForPlace(selectedPlace);
+                item.setLocation(location);
+                listManager.saveListItem(listId, item);
 
             }
         }

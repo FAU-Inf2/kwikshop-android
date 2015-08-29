@@ -134,6 +134,8 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
 
+
+        EventBus.getDefault().register(this);
     }
 
 

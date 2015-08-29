@@ -12,7 +12,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,15 +33,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -52,10 +47,7 @@ import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
-import de.fau.cs.mad.kwikshop.android.model.GroupStorage;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
-import de.fau.cs.mad.kwikshop.android.model.UnitStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.DeleteItemEvent;
 import de.fau.cs.mad.kwikshop.android.util.DateFormatter;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
@@ -80,8 +72,6 @@ import de.greenrobot.event.EventBus;
 public abstract class ItemDetailsFragment<TList extends DomainListObject> extends Fragment {
 
     private static final int GALLERY = 1;
-    private static final int GALLERY_INTENT_CALLED = 1;
-    private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     protected boolean isNewItem;
@@ -201,7 +191,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
+        ListStorageFragment.SetupLocalListStorageFragment(getActivity());
 
         EventBus.getDefault().register(this);
 
@@ -258,8 +248,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         }
     }
 
+    @SuppressWarnings("unused")
     public void onEvent(DeleteItemEvent event){
-        //TODO: this is only a temporal solution untill ListManager works in ItemDetailsViewModel
+        //TODO: this is only a temporary solution until ListManager works in ItemDetailsViewModel
         if(event.getListId() == listId && event.getItemId() == itemId){
             deleteItem();
             Toast.makeText(getActivity(), getString(R.string.item_deleted), Toast.LENGTH_SHORT).show();
@@ -637,14 +628,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     }
 
     public boolean amountIsNatural(int selectedUnit){
-        if (selectedUnit == 9 ||
-        selectedUnit == 7 ||
-        selectedUnit == 6 ||
-        selectedUnit == 0){
-            return true;
-        }
-        else
-            return false;
+        return selectedUnit == 9 ||
+                selectedUnit == 7 ||
+                selectedUnit == 6 ||
+                selectedUnit == 0;
     }
 
 
@@ -658,7 +645,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 String pathsegment[] = viewModel.getmImageUri().getLastPathSegment().split(":");
                 viewModel.setImageId(pathsegment[1]);
                 final String[] imageColumns = { MediaStore.Images.Media.DATA };
-                final String imageOrderBy = null;
 
                 Uri uri = getUri();
                 Cursor imageCursor = getActivity().getContentResolver().query(uri, imageColumns,
@@ -667,6 +653,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 if (imageCursor.moveToFirst()) {
                     viewModel.setPathImage(imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
                 }
+                imageCursor.close();
+
                 if (getOrientation(getActivity().getApplicationContext(), viewModel.getmImageUri()) != 0) {
                     Matrix matrix = new Matrix();
                     matrix.postRotate(getOrientation(getActivity().getApplicationContext(), viewModel.getmImageUri()));
@@ -711,7 +699,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             return -1;
         }
         cursor.moveToFirst();
-        return cursor.getInt(0);
+        int orientation = cursor.getInt(0);
+        cursor.close();
+        return orientation;
     }
 
     @OnTextChanged(R.id.productname_text)
@@ -786,21 +776,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     }
 
     private void hideKeyboard() {
+
         InputMethodManager inputManager = (InputMethodManager)
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                InputMethodManager.HIDE_NOT_ALWAYS);
+        View currentFocus = getActivity().getCurrentFocus();
+        if(currentFocus != null) {
+            inputManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
-
-
-    public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-            return outputStream.toByteArray();
-
-    }
-
 
 }

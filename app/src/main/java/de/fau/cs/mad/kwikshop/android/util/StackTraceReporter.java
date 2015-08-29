@@ -63,7 +63,10 @@ public class StackTraceReporter {
     }
 
 
-    public void reportStackTraceIfAvailable(final Callback onCompletedCallback) {
+    public void reportStackTraceIfAvailable(final Callback noStackTraceCallback,
+                                            final Callback sentEmailCallback,
+                                            final Callback copiedToClipboardCallback,
+                                            final Callback canceledCallBack) {
 
         // see if stacktrace file is available
         String line;
@@ -98,8 +101,8 @@ public class StackTraceReporter {
                                     resourceProvider.getString(R.string.errorReporting_messaging_subject),
                                     traceFinal + "\n\n");
 
-                            if(onCompletedCallback != null) {
-                                onCompletedCallback.onCompleted();
+                            if(sentEmailCallback != null) {
+                                sentEmailCallback.onCallback();
                             }
                         }
                     },
@@ -114,8 +117,8 @@ public class StackTraceReporter {
 
                             viewLauncher.showToast(R.string.errorReporting_copyToClipboard_toast, Toast.LENGTH_LONG);
 
-                            if(onCompletedCallback != null) {
-                                onCompletedCallback.onCompleted();
+                            if(copiedToClipboardCallback != null) {
+                                copiedToClipboardCallback.onCallback();
                             }
                         }
                     },
@@ -124,8 +127,8 @@ public class StackTraceReporter {
                     new Command<Void>() {
                         @Override
                         public void execute(Void parameter) {
-                            if(onCompletedCallback != null) {
-                                onCompletedCallback.onCompleted();
+                            if(canceledCallBack != null) {
+                                canceledCallBack.onCallback();
                             }
                         }
                     });
@@ -133,8 +136,8 @@ public class StackTraceReporter {
             ioService.deleteFile(TopExceptionHandler.STACKTRACE_FILENAME);
         } else {
 
-            if(onCompletedCallback != null) {
-                onCompletedCallback.onCompleted();
+            if(noStackTraceCallback != null) {
+                noStackTraceCallback.onCallback();
             }
 
         }
@@ -142,7 +145,7 @@ public class StackTraceReporter {
 
 
     public interface Callback {
-        void onCompleted();
+        void onCallback();
     }
 
 }

@@ -18,7 +18,7 @@ import de.fau.cs.mad.kwikshop.android.util.TopExceptionHandler;
 
 /**
  * Entry activity that checks for crash-dumps and offers to send using email or copy it to clipboard
- *
+ * <p/>
  * By inheritng from SyncingActivity, this also is the activity that sets up syncing with the server
  * using andoird's sync framework
  */
@@ -29,6 +29,8 @@ public class ErrorReportingActivity extends SyncingActivity {
     public static final Object errorReportingLock = new Object();
     public static boolean isErrorReportingInitialized = false;
     public static boolean refreshed = false;
+
+    private StackTraceReporter stackTraceReporter;
 
 
     public static Intent getIntent(Context context, boolean finishInstantly) {
@@ -42,7 +44,7 @@ public class ErrorReportingActivity extends SyncingActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getIntent().getBooleanExtra(EXTRA_FINISH_INSTANTLY, false)) {
+        if (getIntent().getBooleanExtra(EXTRA_FINISH_INSTANTLY, false)) {
             finish();
         }
 
@@ -57,15 +59,21 @@ public class ErrorReportingActivity extends SyncingActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        reportStackTraceIfAvailable();
+    }
+
     public void initializeErrorReporting() {
 
-        if(!refreshed) {
+        if (!refreshed) {
             return;
         }
 
         synchronized (errorReportingLock) {
 
-            if(isErrorReportingInitialized) {
+            if (isErrorReportingInitialized) {
                 exitActivity();
                 return;
             }
@@ -74,18 +82,33 @@ public class ErrorReportingActivity extends SyncingActivity {
         }
         // register the TopExceptionHandler
         Thread.setDefaultUncaughtExceptionHandler(new TopExceptionHandler(this));
-        StackTraceReporter stackTraceReporter = ObjectGraph.create(new KwikShopModule(this)).get(StackTraceReporter.class);
-        stackTraceReporter.reportStackTraceIfAvailable(new StackTraceReporter.Callback() {
-            @Override
-            public void onCompleted() {
-
-                exitActivity();
-            }
-        });
-
+        stackTraceReporter = ObjectGraph.create(new KwikShopModule(this)).get(StackTraceReporter.class);
 
     }
 
+
+    private void reportStackTraceIfAvailable() {
+
+        if (stackTraceReporter != null) {
+
+            StackTraceReporter.Callback exitAcitvityCallBack = new StackTraceReporter.Callback() {
+                @Override
+                public void onCallback() {
+                        exitActivity();
+                }
+            };
+
+            // do not exit the activity, if the user choose to send an email
+            // otherwise the activity we launch next will start in foreground and the user will not
+            // see his email client.
+            // as we call reportStackTraceIfAvailable() every time the unit is resumed
+            // we will exit the current activity when the user returns from the mail client
+            stackTraceReporter.reportStackTraceIfAvailable(exitAcitvityCallBack,
+                                                           null,
+                                                           exitAcitvityCallBack,
+                                                           exitAcitvityCallBack);
+        }
+    }
 
 
     private void exitActivity() {
@@ -102,7 +125,7 @@ public class ErrorReportingActivity extends SyncingActivity {
 
             nextActivity = LoginActivity.getIntent(this);
         }
-
+        nextActivity.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
         startActivity(nextActivity);
         finish();
@@ -123,10 +146,10 @@ public class ErrorReportingActivity extends SyncingActivity {
         Locale setLocale;
 
         // get current locale index
-        int currentLocaleIdIndex =  SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, getApplicationContext());
+        int currentLocaleIdIndex = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, getApplicationContext());
         setLocale = new Locale(SettingFragment.localeIds[currentLocaleIdIndex].toString());
 
-        if(currentLocaleIdIndex == 0) // default
+        if (currentLocaleIdIndex == 0) // default
             setLocale = Locale.getDefault();
 
         Resources res = getResources();
@@ -141,10 +164,6 @@ public class ErrorReportingActivity extends SyncingActivity {
         finish();
         startActivity(refresh);
     }
-
-
-
-
 
 
 }

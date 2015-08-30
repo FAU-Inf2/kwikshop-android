@@ -26,12 +26,14 @@ import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
 import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
+import de.greenrobot.event.EventBus;
 import se.walkercrou.places.Place;
 
 public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
@@ -44,15 +46,20 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     private boolean inShoppingMode = false;
     private ArrayList<Item> swipedItemOrder = new ArrayList<>();
     private List<Place> places;
-    private int placesChoiceIndex;
     private ItemSortType itemSortType = ItemSortType.MANUAL;
-    private final ObservableArrayList<ItemViewModel, Integer> checkedItems = new ObservableArrayList<ItemViewModel, Integer>(new ItemIdExtractor());
+    private final ObservableArrayList<ItemViewModel, Integer> checkedItems = new ObservableArrayList<>(new ItemIdExtractor());
+
+    private boolean findNearbySupermarketCanceled = false;
 
     private Context context;
     private final ResourceProvider resourceProvider;
     private final RegularlyRepeatHelper repeatHelper;
     private final ListManager<Recipe> recipeManager;
     private final RestClientFactory clientFactory;
+    private final LocationManager locationManager;
+
+    private Place currentPlace;
+
 
     //region Commands
 
@@ -92,17 +99,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         @Override
         public void execute(Void parameter) {
             listManager.deleteItem(listId, tmp_item_id);
-        }
-    };
-
-    final Command retryConnectionCheckWithLocationPermissionCommand = new Command<Void>(){
-        @Override
-        public void execute(Void parameter) {
-            if(viewLauncher.checkInternetConnection())
-                viewLauncher.showLocationActivity();
-            else {
-                notificationOfNoConnectionWithLocationPermission();
-            }
         }
     };
 
@@ -165,7 +161,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                                  LocationFinderHelper locationFinderHelper,
                                  ResourceProvider resourceProvider,
                                  RegularlyRepeatHelper repeatHelper,
-                                 RestClientFactory clientFactory) {
+                                 RestClientFactory clientFactory,
+                                 LocationManager locationManager) {
 
 
         super(viewLauncher, shoppingListManager, unitStorage, groupStorage, itemParser, displayHelper,
@@ -189,12 +186,16 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             throw new ArgumentNullException("clientFactory");
         }
 
+        if(locationManager == null) {
+            throw new ArgumentNullException("locationManager");
+        }
 
         this.context = context;
         this.resourceProvider = resourceProvider;
         this.repeatHelper = repeatHelper;
         this.recipeManager = recipeManager;
         this.clientFactory = clientFactory;
+        this.locationManager = locationManager;
     }
 
 
@@ -403,6 +404,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     @SuppressWarnings("unused")
     public void onEventMainThread(FindSupermarketsResult result) {
 
+        if(!findNearbySupermarketCanceled) {
+
             viewLauncher.dismissProgressDialog();
             setPlaces(result.getPlaces());
 
@@ -414,13 +417,17 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                         resourceProvider.getString(R.string.dialog_OK),
                         NullCommand.VoidInstance,
                         resourceProvider.getString(R.string.dialog_retry),
-                        NullCommand.VoidInstance //TODO
+                        getFindNearbySupermarketCommand()
                 );
 
                 return;
             }
 
             showSelectCurrentSupermarket(places);
+        }
+
+
+
     }
 
     //endregion
@@ -455,8 +462,9 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                         boughtItemOrder.add(new BoughtItem(item.getName()));
                     }
 
-                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder, places.get(placesChoiceIndex).getPlaceId(),
-                            places.get(placesChoiceIndex).getName());
+                    //TODO: use the location stored in each item instance
+                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder, currentPlace.getPlaceId(),
+                                                                             currentPlace.getName());
                     clientFactory.getShoppingListClient().postItemOrder(itemOrderWrapper);
 
                 } catch (Exception e) {
@@ -474,9 +482,13 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     private void findNearbySupermarketCommandExecute() {
 
-        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context)){
+        boolean isLocalizationEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context);
 
-            if(viewLauncher.checkInternetConnection()){
+        findNearbySupermarketCanceled = false;
+
+        if(isLocalizationEnabled){
+
+            if(InternetHelper.checkInternetConnection(context)){
 
                 // progress dialog with listID to cancel progress
                 viewLauncher.showProgressDialogWithListID(
@@ -484,7 +496,14 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                         null,
                         listId,
                         true,
-                        null
+                        new Command<Integer>() {
+                            @Override
+                            public void execute(Integer parameter) {
+                                if(parameter == listId) {
+                                    findNearbySupermarketCanceled = true;
+                                }
+                            }
+                        }
                 );
 
                 // place request: radius 1500 result count 5
@@ -513,13 +532,22 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             item.setBought(!item.isBought());
 
             if (item.isBought()) {
+
+                //save location
+                if(currentPlace != null) {
+
+                    // get location object for the place
+                    LastLocation location = locationManager.getLocationForPlace(currentPlace);
+                    item.setLocation(location);
+                }
+
                 swipedItemOrder.add(item);
                 Calendar now = Calendar.getInstance();
                 item.setLastBought(now.getTime());
 
                 if (item.getRepeatType() == RepeatType.Schedule && item.isRemindFromNextPurchaseOn()) {
 
-                    //save location
+
                     Calendar remindDate = Calendar.getInstance();
                     switch (item.getPeriodType()) {
                         case DAYS:
@@ -613,7 +641,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 resourceProvider.getString(R.string.localization_dialog_title),
                 resourceProvider.getString(R.string.localization_no_connection_message),
                 resourceProvider.getString(R.string.alert_dialog_connection_try),
-                retryConnectionCheckWithLocationPermissionCommand,
+                findNearbySupermarketCommand,
                 resourceProvider.getString(R.string.localization_disable_localization),
                 disableLocalizationCommand
         );
@@ -640,7 +668,11 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
     @SuppressWarnings("unchecked")
-    private void showSelectCurrentSupermarket(List<Place> places){
+    private void showSelectCurrentSupermarket(final List<Place> places){
+
+        if(places == null) {
+            return;
+        }
 
         CharSequence[] placeNames = LocationFinderHelper.getNamesFromPlaces(places, context);
 
@@ -648,11 +680,17 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 resourceProvider.getString(R.string.localization_supermarket_select_dialog_title),
                 placeNames,
                 resourceProvider.getString(R.string.dialog_OK),
-                NullCommand.VoidInstance, //TODO
+                new Command<Integer>() {
+                    @Override
+                    public void execute(Integer selectedIndex) {
+                        if(selectedIndex >= 0 && selectedIndex < places.size()) {
+                            currentPlace = places.get(selectedIndex);
+                        }
+                    }
+                },
                 resourceProvider.getString(R.string.dialog_retry),
-                NullCommand.VoidInstance, //TODO
+                new ParameterLessCommandWrapper<Integer>(getFindNearbySupermarketCommand()),
                 resourceProvider.getString(R.string.cancel),
-                NullCommand.VoidInstance, //TODO
                 NullCommand.IntegerInstance
         );
     }

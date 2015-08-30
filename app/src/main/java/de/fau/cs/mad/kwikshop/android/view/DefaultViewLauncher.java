@@ -2,34 +2,21 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Message;
-import android.speech.RecognizerIntent;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v4.app.FragmentActivity;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,11 +28,8 @@ import javax.inject.Inject;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
-import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
-import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
 import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
-import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Group;
@@ -54,12 +38,8 @@ import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
-import de.fau.cs.mad.kwikshop.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.model.messages.DialogFinishedEvent;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
-import de.greenrobot.event.EventBus;
-import se.walkercrou.places.Place;
 
 public class DefaultViewLauncher implements ViewLauncher {
 
@@ -610,6 +590,7 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
 
+    @Deprecated
     @Override
     public void showMessageDialogWithRadioButtons(String title, CharSequence[] items,
                                                   String positiveMessage, final Command<Void> positiveCommand,
@@ -660,6 +641,75 @@ public class DefaultViewLauncher implements ViewLauncher {
         }
 
     }
+
+
+    private class IntClosure {
+
+        public int value = -1;
+
+    }
+
+    @Override
+    public void showMessageDialogWithRadioButtons(String title, CharSequence[] items,
+                                                  String positiveMessage, final Command<Integer> positiveCommand,
+                                                  String neutralMessage, final Command<Integer> neutralCommand,
+                                                  String negativeMessage, final Command<Integer> negativeCommand) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+
+
+        final IntClosure closure = new IntClosure();
+        closure.value = 0;
+
+        builder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                closure.value = which;
+            }
+        });
+
+        builder.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+
+                dialog.dismiss();
+
+                if (positiveCommand.getCanExecute()) {
+                    positiveCommand.execute(closure.value);
+                }
+            }
+        });
+
+        builder.setNeutralButton(neutralMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+
+                dialog.dismiss();
+
+                if (neutralCommand.getCanExecute()) {
+                    neutralCommand.execute(closure.value);
+                }
+            }
+        });
+
+        builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+
+                dialog.dismiss();
+
+                if (negativeCommand.getCanExecute()) {
+                    negativeCommand.execute(closure.value);
+                }
+            }
+        });
+
+        alert = builder.create();
+
+        if(!activity.isFinishing()) {
+            alert.show();
+        }
+
+    }
+
 
     @Override
     public void dismissProgressDialog() {

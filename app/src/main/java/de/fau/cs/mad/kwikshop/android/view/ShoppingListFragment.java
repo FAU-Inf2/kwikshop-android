@@ -202,11 +202,6 @@ public class ShoppingListFragment
                                 try {
                                     Item item = shoppingListAdapter.getItem(position).getItem();
                                     command.execute(item.getId());
-                                    if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,false,getActivity())){
-
-                                        //TODO
-                                        //locationViewModel.setLocationOnItemBought(item);
-                                    }
                                 } catch (IndexOutOfBoundsException ex) {
                                     //nothing to do
                                 }
@@ -224,7 +219,7 @@ public class ShoppingListFragment
                     public boolean onItemLongClick(final AdapterView<?> parent, final View view,
                                                    final int position, final long id) {
                         // Bought Items are not draggable
-                        if(shoppingListAdapter.getItem(position).getItem().isBought())
+                        if (shoppingListAdapter.getItem(position).getItem().isBought())
                             return true;
 
                         //disable events on observable list during drag&drop to prevent lag
@@ -298,7 +293,10 @@ public class ShoppingListFragment
 
         // find supermarket places
 
-        //shoppingPlaceRequestIsCanceled = getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL);
+        Command<Void> findSuperMarketsCommand = viewModel.getFindNearbySupermarketCommand();
+        if(findSuperMarketsCommand.getCanExecute()) {
+            findSuperMarketsCommand.execute(null);
+        }
 
 
         // shopping mode

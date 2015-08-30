@@ -116,16 +116,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         }
     };
 
-    final Command<Void> grantLocalizationPermissionCommand = new Command<Void>(){
-        @Override
-        public void execute(Void parameter) {
-            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, true, context);
-            //TODO: why restart the activity????
-            Intent intent = ShoppingListActivity.getIntent(context, listId);
-            viewLauncher.startActivity(intent);
-        }
-    };
-
     final Command<Void> doNotShowLocalizationPermissionAgainCommand = new Command<Void>() {
         @Override
         public void execute(Void parameter) {
@@ -654,7 +644,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 resourceProvider.getString(R.string.localization_dialog_title),
                 resourceProvider.getString(R.string.localization_dialog_message),
                 resourceProvider.getString(R.string.yes),
-                grantLocalizationPermissionCommand,
+                getFindNearbySupermarketCommand(),
                 null,
                 null,
                 resourceProvider.getString(R.string.no),

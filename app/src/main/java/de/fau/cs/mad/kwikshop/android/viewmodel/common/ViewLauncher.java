@@ -102,10 +102,6 @@ public interface ViewLauncher {
 
     void showLocationActivity();
 
-    //TODO: Why is this in Viewlauncher? There is no view lauched here....
-    @Deprecated
-    boolean checkInternetConnection();
-
     void finishActivity();
 
     void dismissDialog();

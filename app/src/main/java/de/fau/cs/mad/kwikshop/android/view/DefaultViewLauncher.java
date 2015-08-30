@@ -734,11 +734,6 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
-    public boolean checkInternetConnection() {
-        return InternetHelper.checkInternetConnection(activity);
-    }
-
-    @Override
     public void finishActivity() {
         activity.finish();
     }

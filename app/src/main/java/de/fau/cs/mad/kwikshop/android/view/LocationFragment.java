@@ -25,6 +25,7 @@ import butterknife.InjectView;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
 import de.fau.cs.mad.kwikshop.android.util.ClusterMapItem;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
@@ -85,13 +86,12 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
         viewModel = objectGraph.get(LocationViewModel.class);
         objectGraph.inject(this);
 
-        viewModel.setActivity(getActivity());
         viewModel.setContext(context);
 
         showProgressDialog();
 
         // async places request
-        if(viewLauncher.checkInternetConnection()){
+        if(InternetHelper.checkInternetConnection(context)){
             viewModel.getNearbySupermarketPlaces(this, 5000, 30);
             latLng = viewModel.getLastLatLng();
         } else {

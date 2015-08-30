@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.messages.FindSupermarketsResult;
+import de.greenrobot.event.EventBus;
 import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
@@ -56,6 +58,8 @@ public class SupermarketPlace {
                 if(listener != null){
                     listener.postResult(places);
                 }
+
+                EventBus.getDefault().post(new FindSupermarketsResult(places));
             }
         }.execute();
     }

@@ -1,10 +1,9 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 
-import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -21,43 +20,41 @@ import de.fau.cs.mad.kwikshop.android.model.messages.*;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
-import de.fau.cs.mad.kwikshop.android.view.BarcodeScannerFragment;
-import de.fau.cs.mad.kwikshop.android.view.BaseActivity;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
+import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
-import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
 import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
-import de.greenrobot.event.EventBus;
-import se.walkercrou.places.GooglePlaces;
-import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
 
 public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
-    private Context context;
+
+    //region Fields
+
     private int tmp_item_id;
 
     private boolean inShoppingMode = false;
     private ArrayList<Item> swipedItemOrder = new ArrayList<>();
     private List<Place> places;
     private int placesChoiceIndex;
+    private ItemSortType itemSortType = ItemSortType.MANUAL;
+    private final ObservableArrayList<ItemViewModel, Integer> checkedItems = new ObservableArrayList<ItemViewModel, Integer>(new ItemIdExtractor());
 
+    private Context context;
     private final ResourceProvider resourceProvider;
     private final RegularlyRepeatHelper repeatHelper;
     private final ListManager<Recipe> recipeManager;
     private final RestClientFactory clientFactory;
 
-
-    private final ObservableArrayList<ItemViewModel, Integer> boughtItems = new ObservableArrayList<>(new ItemIdExtractor());
-    private ItemSortType itemSortType = ItemSortType.MANUAL;
+    //region Commands
 
     private final Command<Integer> toggleIsBoughtCommand = new Command<Integer>() {
         @Override
@@ -78,24 +75,16 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         }
     };
 
-    public ObservableArrayList<ItemViewModel, Integer> getCheckedItems() {
-        return checkedItems;
-    }
-
-    private final ObservableArrayList<ItemViewModel, Integer> checkedItems = new ObservableArrayList<ItemViewModel, Integer>(new ItemIdExtractor());
-
+    private final Command<Void> findNearbySupermarketCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            findNearbySupermarketCommandExecute();
+        }
+    };
     final Command<Void> deleteCheckBoxCheckedCommand = new Command<Void>() {
         @Override
         public void execute(Void parameter) {
             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false, context);
-        }
-    };
-
-    final Command<Void> deleteNegativeCommand = new Command<Void>() {
-        @Override
-        public void execute(Void parameter) {
-            //do nothing
-            //this is just so the command is executable
         }
     };
 
@@ -106,6 +95,62 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         }
     };
 
+    final Command retryConnectionCheckWithLocationPermissionCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            if(viewLauncher.checkInternetConnection())
+                viewLauncher.showLocationActivity();
+            else {
+                notificationOfNoConnectionWithLocationPermission();
+            }
+        }
+    };
+
+    final Command<Void> disableLocalizationCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context);
+        }
+    };
+
+    final Command<Void> withdrawLocalizationPermissionCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context);
+        }
+    };
+
+    final Command<Void> grantLocalizationPermissionCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, true, context);
+            //TODO: why restart the activity????
+            Intent intent = ShoppingListActivity.getIntent(context, listId);
+            viewLauncher.startActivity(intent);
+        }
+    };
+
+    final Command<Void> doNotShowLocalizationPermissionAgainCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, false, context);
+        }
+    };
+
+    final Command<Void> showLocalizationPermissionAgainCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, context );
+        }
+    };
+
+
+    //endregion
+
+    //endregion
+
+
+    //region Constructor
 
     @Inject
     public ShoppingListViewModel(Context context,
@@ -153,12 +198,10 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
 
-    /**
-     * Gets the shopping list items that have already been bought
-     */
-    /*public ObservableArrayList<Item, Integer> getBoughtItems() {
-        return boughtItems;
-    }*/
+    //endregion
+
+
+    //region Properties
 
     /**
      * Gets how items are supposed to be sorted for the current shopping list
@@ -172,13 +215,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
      */
     public void setItemSortType(ItemSortType value) {
         this.itemSortType = value;
-    }
-
-    public void sortItems() {
-        Collections.sort(getItems(), new ItemComparator(displayHelper, getItemSortType()));
-        moveBoughtItemsToEnd();
-        updateOrderOfItems();
-        listener.onItemSortTypeChanged();
     }
 
     /**
@@ -199,6 +235,44 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         return sendBoughtItemsToServerCommand;
     }
 
+    public Command<Void> getFindNearbySupermarketCommand() {
+        return this.findNearbySupermarketCommand;
+    }
+
+    public ObservableArrayList<ItemViewModel, Integer> getCheckedItems() {
+        return checkedItems;
+    }
+
+    public void setInShoppingMode(boolean bool) {
+        this.inShoppingMode = bool;
+    }
+
+    public boolean getInShoppingMode() {
+        return this.inShoppingMode;
+    }
+
+    public int getBoughtItemsCount() {
+        ListIterator li = items.listIterator(items.size());
+        int i = 0;
+
+        while(li.hasPrevious()) {
+            ItemViewModel item = (ItemViewModel)li.previous();
+            if(item.getItem().isBought())
+                i++;
+            else
+                break;
+        }
+        return i;
+    }
+
+
+    public List<Item> getSwipedItemOrder(){ return this.swipedItemOrder; }
+
+
+    //endregion
+
+
+    //region Public Methods
 
     @Override
     public void itemsSwapped(int position1, int position2) {
@@ -212,15 +286,17 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         listManager.saveListItem(listId, item2);
     }
 
-
     public void deleteItem(int itemId, String title, String message, String positiveString, String negativeString, String checkBoxMessage) {
         this.tmp_item_id = itemId;
         if (SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, true, context))
-            viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, deleteNegativeCommand, checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);
+            viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null,
+                    negativeString, NullCommand.VoidInstance,
+                    checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);
         else
             deletePositiveCommand.execute(null);
     }
 
+    //TODO: this should be a command
     public void showAddRecipeDialog(int listId) {
         if (recipeManager.getLists().size() == 0) {
             viewLauncher.showMessageDialog(resourceProvider.getString(R.string.recipe_add_recipe), resourceProvider.getString(R.string.recipe_no_recipe),
@@ -236,6 +312,24 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             viewLauncher.showAddRecipeDialog(listManager, recipeManager, listId, true);
         }
     }
+
+
+    public void moveBoughtItemsToEnd() {
+        Collections.sort(getItems(), new ItemComparator(displayHelper, ItemSortType.BOUGHTITEMS));
+    }
+
+    public void changeCheckBoxesVisibility(){
+        Iterator <ItemViewModel> itr = items.iterator();
+        while(itr.hasNext()){
+            updateItemViewModel(itr.next());
+        }
+    }
+
+
+    //endregion
+
+
+    //region Event Handlers
 
     @SuppressWarnings("unused")
     public void onEventMainThread(ShoppingListChangedEvent event) {
@@ -305,6 +399,34 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         sortItems();
     }
 
+    // results of place request
+    @SuppressWarnings("unused")
+    public void onEventMainThread(FindSupermarketsResult result) {
+
+            viewLauncher.dismissProgressDialog();
+            setPlaces(result.getPlaces());
+
+            if(!LocationFinderHelper.checkPlaces(places)){
+                // no place info dialog
+                viewLauncher.showMessageDialog(
+                        resourceProvider.getString(R.string.localization_no_place_dialog_title),
+                        resourceProvider.getString(R.string.no_place_dialog_message),
+                        resourceProvider.getString(R.string.dialog_OK),
+                        NullCommand.VoidInstance,
+                        resourceProvider.getString(R.string.dialog_retry),
+                        NullCommand.VoidInstance //TODO
+                );
+
+                return;
+            }
+
+            showSelectCurrentSupermarket(places);
+    }
+
+    //endregion
+
+
+    //region Command Implementations
 
     @Override
     protected void addItemCommandExecute() {
@@ -319,49 +441,69 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         viewLauncher.showItemDetailsView(this.listId, itemId);
     }
 
-    @Override
-    protected void loadList() {
-        ShoppingList shoppingList = listManager.getList(this.listId);
+    private void sendBoughtItemsToServerCommandExecute() {
 
-        for(Item item : shoppingList.getItems()) {
-            updateItem(new ItemViewModel(item));
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+
+                try {
+
+                    List<BoughtItem> boughtItemOrder = new ArrayList<>();
+                    for (Item item : swipedItemOrder) {
+                        boughtItemOrder.add(new BoughtItem(item.getName()));
+                    }
+
+                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder, places.get(placesChoiceIndex).getPlaceId(),
+                            places.get(placesChoiceIndex).getName());
+                    clientFactory.getShoppingListClient().postItemOrder(itemOrderWrapper);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+
+            }
+        }.execute();
+    }
+
+    private void deleteItemCommandExecute(final int id) {
+        listManager.deleteItem(listId, id);
+    }
+
+    private void findNearbySupermarketCommandExecute() {
+
+        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context)){
+
+            if(viewLauncher.checkInternetConnection()){
+
+                // progress dialog with listID to cancel progress
+                viewLauncher.showProgressDialogWithListID(
+                        resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
+                        null,
+                        listId,
+                        true,
+                        null
+                );
+
+                // place request: radius 1500 result count 5
+                getNearbySupermarketPlaces(500, 10);
+
+            } else {
+
+                // no connection dialog
+                notificationOfNoConnectionWithLocationPermission();
+            }
+        } else {
+
+            // No permission for location tracking - ask for permission dialog
+            if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, context)){
+                showAskForLocalizationPermission();
+            }
         }
 
-        int  sortTypeInt = shoppingList.getSortTypeInt();
-        switch (sortTypeInt) {
-            case 1:
-                setItemSortType(ItemSortType.GROUP);
-                break;
-            case 2:
-                setItemSortType(ItemSortType.ALPHABETICALLY);
-                break;
-            default:
-                setItemSortType(ItemSortType.MANUAL);
-                break;
-        }
-        sortItems();
-        //moveBoughtItemsToEnd();
-
-        this.setName(shoppingList.getName());
     }
-
-    public void setInShoppingMode(boolean bool) {
-        this.inShoppingMode = bool;
-    }
-
-    public boolean getInShoppingMode() {
-        return this.inShoppingMode;
-    }
-
-    public void setPlaces(List<Place> places){
-        this.places = places;
-    }
-
-    public void setPlacesChoiceIndex(int placesChoiceIndex) {
-        this.placesChoiceIndex = placesChoiceIndex;
-    }
-
-    public List<Item> getSwipedItemOrder(){ return this.swipedItemOrder; }
 
     private void toggleIsBoughtCommandExecute(final int id) {
         Item item = items.getById(id).getItem();
@@ -405,61 +547,42 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         }
     }
 
-    private void sendBoughtItemsToServerCommandExecute() {
 
-        new AsyncTask<Void, Void, Void>() {
+    //endregion
 
-            @Override
-            protected Void doInBackground(Void... params) {
 
-                try {
+    //region Private / Protected Implementation
 
-                    List<BoughtItem> boughtItemOrder = new ArrayList<>();
-                    for (Item item : swipedItemOrder) {
-                        boughtItemOrder.add(new BoughtItem(item.getName()));
-                    }
+    @Override
+    protected void loadList() {
+        ShoppingList shoppingList = listManager.getList(this.listId);
 
-                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder, places.get(placesChoiceIndex).getPlaceId(),
-                            places.get(placesChoiceIndex).getName());
-                    clientFactory.getShoppingListClient().postItemOrder(itemOrderWrapper);
+        for(Item item : shoppingList.getItems()) {
+            updateItem(new ItemViewModel(item));
+        }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-
-            }
-        }.execute();
-    }
-
-    private void deleteItemCommandExecute(final int id) {
-        listManager.deleteItem(listId, id);
-    }
-
-    public int getBoughtItemsCount() {
-        ListIterator li = items.listIterator(items.size());
-        int i = 0;
-
-        while(li.hasPrevious()) {
-            ItemViewModel item = (ItemViewModel)li.previous();
-            if(item.getItem().isBought())
-                i++;
-            else
+        int  sortTypeInt = shoppingList.getSortTypeInt();
+        switch (sortTypeInt) {
+            case 1:
+                setItemSortType(ItemSortType.GROUP);
+                break;
+            case 2:
+                setItemSortType(ItemSortType.ALPHABETICALLY);
+                break;
+            default:
+                setItemSortType(ItemSortType.MANUAL);
                 break;
         }
-        return i;
+        sortItems();
+        //moveBoughtItemsToEnd();
+
+        this.setName(shoppingList.getName());
     }
 
-    public void moveBoughtItemsToEnd() {
-        Collections.sort(getItems(), new ItemComparator(displayHelper, ItemSortType.BOUGHTITEMS));
+    private void setPlaces(List<Place> places){
+        this.places = places;
     }
 
-    public void changeCheckBoxesVisibility(){
-        Iterator <ItemViewModel> itr = items.iterator();
-        while(itr.hasNext()){
-            updateItemViewModel(itr.next());
-        }
-    }
     private void updateItem(ItemViewModel item) {
         if(item.getItem().isBought()) { // Add bought items at the end of the list
             if (items.size() - 1 >= 0) {
@@ -479,4 +602,67 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             items.setOrAddById(item);
 
     }
+
+    private void getNearbySupermarketPlaces(int radius, int resultCount){
+        SupermarketPlace.initiateSupermarketPlaceRequest(context, null, radius, resultCount);
+    }
+
+    private void notificationOfNoConnectionWithLocationPermission(){
+
+        viewLauncher.showMessageDialog(
+                resourceProvider.getString(R.string.localization_dialog_title),
+                resourceProvider.getString(R.string.localization_no_connection_message),
+                resourceProvider.getString(R.string.alert_dialog_connection_try),
+                retryConnectionCheckWithLocationPermissionCommand,
+                resourceProvider.getString(R.string.localization_disable_localization),
+                disableLocalizationCommand
+        );
+
+    }
+
+    private void showAskForLocalizationPermission(){
+
+        viewLauncher.showMessageDialogWithCheckbox(
+                resourceProvider.getString(R.string.localization_dialog_title),
+                resourceProvider.getString(R.string.localization_dialog_message),
+                resourceProvider.getString(R.string.yes),
+                grantLocalizationPermissionCommand,
+                null,
+                null,
+                resourceProvider.getString(R.string.no),
+                withdrawLocalizationPermissionCommand,
+                resourceProvider.getString(R.string.dont_show_this_message_again),
+                false,
+                doNotShowLocalizationPermissionAgainCommand,
+                showLocalizationPermissionAgainCommand
+        );
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private void showSelectCurrentSupermarket(List<Place> places){
+
+        CharSequence[] placeNames = LocationFinderHelper.getNamesFromPlaces(places, context);
+
+        viewLauncher.showMessageDialogWithRadioButtons(
+                resourceProvider.getString(R.string.localization_supermarket_select_dialog_title),
+                placeNames,
+                resourceProvider.getString(R.string.dialog_OK),
+                NullCommand.VoidInstance, //TODO
+                resourceProvider.getString(R.string.dialog_retry),
+                NullCommand.VoidInstance, //TODO
+                resourceProvider.getString(R.string.cancel),
+                NullCommand.VoidInstance, //TODO
+                NullCommand.IntegerInstance
+        );
+    }
+
+    private void sortItems() {
+        Collections.sort(getItems(), new ItemComparator(displayHelper, getItemSortType()));
+        moveBoughtItemsToEnd();
+        updateOrderOfItems();
+        listener.onItemSortTypeChanged();
+    }
+
+    //endregion
 }

@@ -54,7 +54,7 @@ import se.walkercrou.places.Place;
 
 public class ShoppingListFragment
         extends Fragment
-        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<ItemViewModel>, SupermarketPlace.AsyncPlaceRequestListener {
+        implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<ItemViewModel> {
 
 
     private static final String ARG_LISTID = "list_id";
@@ -66,14 +66,11 @@ public class ShoppingListFragment
 
     private AutoCompletionHelper autoCompletion;
 
-    private LocationViewModel locationViewModel;
-
     private ShoppingListViewModel viewModel;
 
     private BarcodeScannerViewModel barcodeViewModel;
 
     private boolean updatingViewModel;
-    private boolean shoppingPlaceRequestIsCanceled;
 
 
     @InjectView(R.id.list_shoppingList)
@@ -127,8 +124,10 @@ public class ShoppingListFragment
 
         switch(item.getItemId()){
             case R.id.refresh_current_supermarket:
-                shoppingPlaceRequestIsCanceled = false;
-                findNearbySupermarket();
+                Command<Void> command = viewModel.getFindNearbySupermarketCommand();
+                if(command.getCanExecute()) {
+                    command.execute(null);
+                }
                 return true;
             case R.id.action_add_recipe:
                 viewModel.showAddRecipeDialog(listID);
@@ -140,19 +139,22 @@ public class ShoppingListFragment
     @Override
     public void onPause() {
         super.onPause();
-        locationViewModel.dismissProgressDialog();
-        locationViewModel.dismissDialog();
+        //TODO
+//        locationViewModel.dismissProgressDialog();
+//        locationViewModel.dismissDialog();
     }
 
     @Override
     public void onDestroy() {
+
+        //TODO
         super.onDestroy();
-            if(viewModel.getSwipedItemOrder().size() != 0 && viewModel.getSendBoughtItemsToServerCommand().getCanExecute()) {
-                viewModel.setPlacesChoiceIndex(locationViewModel.getPlaceChoiceIndex());
-                viewModel.getSendBoughtItemsToServerCommand().execute(null);
-            }
-        locationViewModel.dismissProgressDialog();
-        locationViewModel.dismissDialog();
+        if(viewModel.getSwipedItemOrder().size() != 0 && viewModel.getSendBoughtItemsToServerCommand().getCanExecute()) {
+            //viewModel.setPlacesChoiceIndex(locationViewModel.getPlaceChoiceIndex());
+            //viewModel.getSendBoughtItemsToServerCommand().execute(null);
+        }
+//        locationViewModel.dismissProgressDialog();
+//        locationViewModel.dismissDialog();
     }
 
 
@@ -161,7 +163,7 @@ public class ShoppingListFragment
 
         EventBus.getDefault().register(this);
 
-        new ListStorageFragment().SetupLocalListStorageFragment(getActivity());
+        ListStorageFragment.SetupLocalListStorageFragment(getActivity());
 
         View rootView = inflater.inflate(R.layout.fragment_shoppinglist, container, false);
         ButterKnife.inject(this, rootView);
@@ -170,7 +172,6 @@ public class ShoppingListFragment
         DisplayHelper displayHelper = objectGraph.get(DisplayHelper.class);
         viewModel = objectGraph.get(ShoppingListViewModel.class);
         autoCompletion = objectGraph.get(AutoCompletionHelper.class);
-        locationViewModel = objectGraph.get(LocationViewModel.class);
         barcodeViewModel = objectGraph.get(BarcodeScannerViewModel.class);
         objectGraph.inject(this);
         viewModel.initialize(this.listID);
@@ -202,7 +203,9 @@ public class ShoppingListFragment
                                     Item item = shoppingListAdapter.getItem(position).getItem();
                                     command.execute(item.getId());
                                     if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION,false,getActivity())){
-                                        locationViewModel.setLocationOnItemBought(item);
+
+                                        //TODO
+                                        //locationViewModel.setLocationOnItemBought(item);
                                     }
                                 } catch (IndexOutOfBoundsException ex) {
                                     //nothing to do
@@ -295,9 +298,8 @@ public class ShoppingListFragment
 
         // find supermarket places
 
-        shoppingPlaceRequestIsCanceled = getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL);
+        //shoppingPlaceRequestIsCanceled = getActivity().getIntent().getExtras().getBoolean(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL);
 
-        findNearbySupermarket();
 
         // shopping mode
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getActivity())){
@@ -330,60 +332,8 @@ public class ShoppingListFragment
     }
 
 
-    // results of place request
-    @Override
-    public void postResult(List<Place> places) {
-
-        if(!shoppingPlaceRequestIsCanceled){
-            locationViewModel.dismissProgressDialog();
-            locationViewModel.setPlaces(places);
-            viewModel.setPlaces(places);
-
-            if(!locationViewModel.checkPlaces(places)){
-                // no place info dialog
-                locationViewModel.showNoPlaceWasFoundDialog();
-                return;
-            }
-            // Select the current Supermarket
-            locationViewModel.dismissProgressDialog();
-            locationViewModel.dismissDialog();
-            locationViewModel.showSelectCurrentSupermarket(places);
-        }
-    }
 
 
-    private void findNearbySupermarket(){
-        // get current supermarket
-        locationViewModel.setContext(getActivity().getApplicationContext());
-        locationViewModel.setActivity(getActivity());
-        locationViewModel.setListId(listID);
-
-        if(!shoppingPlaceRequestIsCanceled){
-
-            if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, getActivity())){
-
-                if(locationViewModel.checkInternetConnection()){
-
-                    // progress dialog with listID to cancel progress
-                    locationViewModel.showProgressDialogWithListID(listID);
-
-                    // place request: radius 1500 result count 5
-                    locationViewModel.getNearbySupermarketPlaces(this, 500, 10);
-
-                } else {
-
-                    // no connection dialog
-                    locationViewModel.notificationOfNoConnectionWithLocationPermission();
-                }
-            } else {
-
-                // No permission for location tracking - ask for permission dialog
-                if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, getActivity())){
-                    locationViewModel.showAskForLocalizationPermission();
-                }
-            }
-        }
-    }
 
     @Override
     public void onResume() {

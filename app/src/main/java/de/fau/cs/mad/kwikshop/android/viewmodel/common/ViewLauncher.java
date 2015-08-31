@@ -84,19 +84,23 @@ public interface ViewLauncher {
                             String negativeMessage, boolean cancelable,
                             final Command<Void> negativeCommand);
 
+    @Deprecated
     void showMessageDialogWithRadioButtons(String title, CharSequence[] items,
                            String positiveMessage, Command<Void> positiveCommand,
                            String neutralMessage, final Command<Void> neutralCommand,
                            String negativeMessage, Command<Void> negativeCommand,
                                            final Command<Integer> selectCommand);
 
+    void showMessageDialogWithRadioButtons(String title, CharSequence[] items,
+                                           String positiveMessage, final Command<Integer> positiveCommand,
+                                           String neutralMessage, final Command<Integer> neutralCommand,
+                                           String negativeMessage, final Command<Integer> negativeCommand);
+
     void dismissProgressDialog();
 
     void showListOfShoppingListsActivity();
 
     void showLocationActivity();
-
-    boolean checkInternetConnection();
 
     void finishActivity();
 

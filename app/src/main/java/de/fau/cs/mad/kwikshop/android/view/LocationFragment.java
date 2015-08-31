@@ -4,19 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
+
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.List;
 import javax.inject.Inject;
@@ -26,20 +27,22 @@ import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
-import de.fau.cs.mad.kwikshop.android.util.ClusterMapItem;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import se.walkercrou.places.Place;
 
-public class LocationFragment extends Fragment implements  OnMapReadyCallback, SupermarketPlace.AsyncPlaceRequestListener {
+public class LocationFragment extends Fragment implements  SupermarketPlace.AsyncPlaceRequestListener {
 
     private Context context;
     private List<Place> places;
     private LatLng latLng;
     private LocationViewModel viewModel;
-    private ClusterManager<ClusterMapItem> mClusterManager;
+    private View rootView;
+    private MapView mapView;
+    private GoogleMap map;
+    private Bundle mSavedInstanceState;
+
 
     @Inject
     ViewLauncher viewLauncher;
@@ -63,6 +66,7 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
     View mapDirectionButton;
 
 
+
     public static LocationFragment newInstance() {
         LocationFragment fragment = new LocationFragment();
         return fragment;
@@ -74,11 +78,34 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
         context = getActivity().getApplicationContext();
     }
 
+    @Override
+    public void onResume() {
+        if(mapView != null){
+            mapView.onResume();
+        }
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if(mapView != null){
+            mapView.onDestroy();
+        }
+        super.onDestroyView();
+    }
+
+    @Override
+    public final void onLowMemory() {
+        if(mapView != null){
+            mapView.onLowMemory();
+        }
+        super.onLowMemory();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View rootView = inflater.inflate(R.layout.fragment_location, container, false);
+        rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
@@ -87,6 +114,19 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
 
         viewModel.setActivity(getActivity());
         viewModel.setContext(context);
+
+        try {
+            MapsInitializer.initialize(getActivity());
+        } catch (Exception e) {
+            Log.e("map:", "Mao initializer failed");
+        }
+
+        mapView = (MapView) rootView.findViewById(R.id.map);
+        mapView.onCreate(mSavedInstanceState);
+        map = mapView.getMap();
+
+
+        mSavedInstanceState = savedInstanceState;
 
         showProgressDialog();
 
@@ -110,13 +150,13 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
                 false,
                 viewModel.getCancelProgressDialogCommand()
         );
-
     }
 
     // called when place request is ready
     @Override
     public void postResult(List<Place> pPlaces) {
         places = pPlaces;
+        Log.e("MAP: ", "initiate Map");
         initiateMap();
         dismissProgressDialog();
     }
@@ -132,9 +172,13 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
     }
 
     private void initiateMap(){
-        if(!viewModel.isCanceld()){
-            MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
-            mapFragment.getMapAsync(this);
+        if (!viewModel.isCanceld()) {
+
+            onMapReady(map);
+
+            //FragmentManager fm = getChildFragmentManager();
+           // SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
+           // mapFragment.getMapAsync(this);
         }
     }
 
@@ -160,12 +204,11 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
         viewLauncher.dismissDialog();
     }
 
-    @Override
+
     public void onMapReady(GoogleMap map) {
 
         map = viewModel.setupGoogleMap(map);
         viewModel.showPlacesInGoogleMap(places);
-
 
         // display info box
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -195,10 +238,5 @@ public class LocationFragment extends Fragment implements  OnMapReadyCallback, S
             }
         });
     }
-
-
-
-
-
 }
 

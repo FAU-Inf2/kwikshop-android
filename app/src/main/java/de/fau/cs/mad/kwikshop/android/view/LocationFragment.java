@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,11 @@ import android.widget.TextView;
 
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -32,7 +35,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import se.walkercrou.places.Place;
 
-public class LocationFragment extends Fragment implements  SupermarketPlace.AsyncPlaceRequestListener {
+public class LocationFragment extends Fragment implements OnMapReadyCallback,  SupermarketPlace.AsyncPlaceRequestListener {
 
     private Context context;
     private List<Place> places;
@@ -87,11 +90,12 @@ public class LocationFragment extends Fragment implements  SupermarketPlace.Asyn
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroy() {
+        super.onDestroy();
         if(mapView != null){
             mapView.onDestroy();
         }
-        super.onDestroyView();
+        dismissProgressDialog();
     }
 
     @Override
@@ -101,6 +105,13 @@ public class LocationFragment extends Fragment implements  SupermarketPlace.Asyn
         }
         super.onLowMemory();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        viewLauncher.dismissDialog();
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -115,18 +126,16 @@ public class LocationFragment extends Fragment implements  SupermarketPlace.Asyn
         viewModel.setActivity(getActivity());
         viewModel.setContext(context);
 
+        /*
         try {
             MapsInitializer.initialize(getActivity());
         } catch (Exception e) {
             Log.e("map:", "Mao initializer failed");
         }
 
-        mapView = (MapView) rootView.findViewById(R.id.map);
-        mapView.onCreate(mSavedInstanceState);
-        map = mapView.getMap();
-
-
         mSavedInstanceState = savedInstanceState;
+
+        */
 
         showProgressDialog();
 
@@ -143,72 +152,43 @@ public class LocationFragment extends Fragment implements  SupermarketPlace.Asyn
 
     }
 
-    public void showProgressDialog(){
-        viewLauncher.showProgressDialog(
-                resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
-                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
-                false,
-                viewModel.getCancelProgressDialogCommand()
-        );
-    }
 
     // called when place request is ready
     @Override
-    public void postResult(List<Place> pPlaces) {
-        places = pPlaces;
-        Log.e("MAP: ", "initiate Map");
+    public void postResult(List<Place> mPlaces) {
+        places = mPlaces;
         initiateMap();
         dismissProgressDialog();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        dismissProgressDialog();
-    }
-
-    void dismissProgressDialog(){
-       viewLauncher.dismissProgressDialog();
     }
 
     private void initiateMap(){
         if (!viewModel.isCanceld()) {
 
-            onMapReady(map);
+            /*
+            mapView = (MapView) rootView.findViewById(R.id.map);
+            mapView.onCreate(mSavedInstanceState);
+            onMapReady(mapView.getMap());
+            */
 
-            //FragmentManager fm = getChildFragmentManager();
-           // SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
-           // mapFragment.getMapAsync(this);
+            /*
+            FragmentManager fm = getChildFragmentManager();
+            SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+            */
+
+
+            MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
         }
     }
 
-    private void showInfoBox(){
-
-        mapInfoBox.setVisibility(View.VISIBLE);
-        mapDirectionButton.bringToFront();
-        mapDirectionButton.setVisibility(View.VISIBLE);
-    }
-
-    private void hideInfoBox(){
-        mapInfoBox.setVisibility(View.INVISIBLE);
-        mapDirectionButton.setVisibility(View.INVISIBLE);
-    }
-
-    private void notificationOfNoConnection(){
-        viewModel.notificationOfNoConnectionForMap();
-    }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        viewLauncher.dismissDialog();
-    }
-
-
     public void onMapReady(GoogleMap map) {
 
         map = viewModel.setupGoogleMap(map);
         viewModel.showPlacesInGoogleMap(places);
+
 
         // display info box
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -238,5 +218,36 @@ public class LocationFragment extends Fragment implements  SupermarketPlace.Asyn
             }
         });
     }
+
+    private void showInfoBox(){
+
+        mapInfoBox.setVisibility(View.VISIBLE);
+        mapDirectionButton.bringToFront();
+        mapDirectionButton.setVisibility(View.VISIBLE);
+    }
+
+    private void hideInfoBox(){
+        mapInfoBox.setVisibility(View.INVISIBLE);
+        mapDirectionButton.setVisibility(View.INVISIBLE);
+    }
+
+    private void notificationOfNoConnection(){
+        viewModel.notificationOfNoConnectionForMap();
+    }
+
+
+    void dismissProgressDialog(){
+        viewLauncher.dismissProgressDialog();
+    }
+
+    public void showProgressDialog(){
+        viewLauncher.showProgressDialog(
+                resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
+                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
+                false,
+                viewModel.getCancelProgressDialogCommand()
+        );
+    }
+
 }
 

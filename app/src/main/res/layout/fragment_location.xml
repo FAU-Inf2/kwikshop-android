@@ -4,23 +4,24 @@
                 android:layout_height="match_parent"
                 android:background="@color/text_icons">
 
-    <!--
+
     <fragment
         android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:name="com.google.android.gms.maps.MapFragment"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/textView"/>
-        -->
 
 
 
+    <!--
     <com.google.android.gms.maps.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/textView"/>
+        -->
 
 
 

@@ -78,9 +78,12 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     final Command retryConnectionCheck = new Command<Void>(){
         @Override
         public void execute(Void parameter) {
-            if(InternetHelper.checkInternetConnection(context))
-                viewLauncher.showLocationActivity();
+            if (InternetHelper.checkInternetConnection(context)){
+
+            viewLauncher.showLocationActivity();
+             }
             else {
+
                 notificationOfNoConnection();
             }
         }
@@ -196,7 +199,6 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
 
     private void startShoppingListActivityWithoutSupermarketRequest() {
 
-       // Log.e("BarcodeScannerViewModel","Lisid" + listID);
         Intent intent = new Intent(context, ShoppingListActivity.class);
         intent.putExtra(ShoppingListActivity.SHOPPING_LIST_ID, listID);
         intent.putExtra(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL, true);

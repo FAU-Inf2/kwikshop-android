@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -315,6 +316,7 @@ public class ShoppingListFragment
         btBarcodeScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                barcodeViewModel.setContext(getActivity());
                 if(barcodeViewModel.checkInternetConnection()){
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentManager.beginTransaction().add(BaseActivity.frameLayout.getId(),BarcodeScannerFragment.newInstance(listID)).commit();

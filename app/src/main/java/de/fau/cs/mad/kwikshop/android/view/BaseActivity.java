@@ -12,30 +12,26 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 
-import android.support.v7.app.ActionBarActivity;
+
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import java.util.Locale;
+
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShareSuccessEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEventType;
-import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.BaseViewModel;
 import de.greenrobot.event.EventBus;
 
 /**
  * BaseActivity: all activities have to inherit
  */
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends AppCompatActivity {
 
 
     /* Used by sharing. If this is true, ListOfShoppingLists will be opened after sync. */

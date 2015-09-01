@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -34,7 +35,7 @@ import de.greenrobot.event.EventBus;
 /**
  * BaseActivity: all activities have to inherit
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends ActionBarActivity {
 
     public static boolean refreshed = false;
 
@@ -97,35 +98,42 @@ public class BaseActivity extends AppCompatActivity {
 
                     case R.id.nav_login:
                         mDrawerLayout.closeDrawers();
+                        finish();
                         viewModel.startLoginActivity();
                         return true;
 
                     case R.id.nav_shopping_lists:
                         mDrawerLayout.closeDrawers();
+                        finish();
                         startActivity(new Intent(getApplicationContext(), ListOfShoppingListsActivity.class));
 
                         return true;
                     case R.id.nav_recipe:
                         mDrawerLayout.closeDrawers();
+                        finish();
                         startActivity(new Intent(getApplicationContext(), ListOfRecipesActivity.class));
 
                         return true;
                     case R.id.nav_supermarket_finder:
                         mDrawerLayout.closeDrawers();
-                        startActivity(new Intent(getApplicationContext(), LocationActivity.class));
+                        finish();
+                        startActivity(new Intent(getApplicationContext(), LocationActivity.class).putExtra("LocationStarted", true));
 
                         return true;
                     case R.id.nav_settings:
                         mDrawerLayout.closeDrawers();
+                        finish();
                         startActivity(new Intent(getApplicationContext(), SettingActivity.class));
 
                         return true;
                     case R.id.nav_about:
                         mDrawerLayout.closeDrawers();
+                        finish();
                         startActivity(new Intent(getApplicationContext(), AboutActivity.class));
                         return true;
                     case R.id.nav_server:
                         mDrawerLayout.closeDrawers();
+                        finish();
                         startActivity(ServerIntegrationDebugActivity.getIntent(getApplicationContext()));
                         return true;
 
@@ -154,7 +162,6 @@ public class BaseActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 
     @Override

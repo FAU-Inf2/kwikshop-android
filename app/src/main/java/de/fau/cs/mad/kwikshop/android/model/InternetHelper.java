@@ -13,10 +13,10 @@ public class InternetHelper extends BroadcastReceiver {
     NetworkStateChangeListener listener;
 
 
-    public static boolean checkInternetConnection(Activity activity) {
-        if(activity == null)
+    public static boolean checkInternetConnection(Context context) {
+        if(context == null)
             return false;
-        ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }

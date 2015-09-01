@@ -245,7 +245,9 @@ public class DefaultViewLauncher implements ViewLauncher {
         });
 
         alert = builder.create();
-        alert.show();
+        if(!activity.isFinishing()) {
+            alert.show();
+        }
     }
 
 

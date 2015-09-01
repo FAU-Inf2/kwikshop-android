@@ -336,7 +336,7 @@
     <string name="unit_can">cans</string>
     <string name="every_time_i_create_a_list">Every time I create a list</string>
     <string name="on_a_schedule">On a schedule</string>
-    <string name="unit_teaspoon">teaspoon</string>
+    <string name="unit_teaspoon">teaspoons</string>
     <string name="unit_teaspoon_short">tsp</string>
     <string name="no_place_dialog_message">Kwik Shop finds no Supermarket in your area.</string>
 	<string name="login_back">Back</string>
@@ -377,5 +377,17 @@
     <string name="str_default">default</string>
     <string name="deleteShoppingList_repeatingItemsTitle">This list owns repeating items</string>
     <string name="deleteShoppingList_repeatingItemsText">Delete regularly created items?</string>
+    <string name="unit_bag_singular">bag</string>
+    <string name="unit_bottle_singular">bottle</string>
+    <string name="unit_can_singular">can</string>
+    <string name="unit_cup_singular">cup</string>
+    <string name="unit_dozen_singular">dozen</string>
+    <string name="unit_gram_singular">gram</string>
+    <string name="unit_kilogram_singular">kilogram</string>
+    <string name="unit_litre_singular">litre</string>
+    <string name="unit_mililitre_singular">mililitre</string>
+    <string name="unit_pack_singular">pack</string>
+    <string name="unit_tablespoon_singular">tablespoon</string>
+    <string name="unit_teaspoon_singular">teaspoon</string>
 
 </resources>

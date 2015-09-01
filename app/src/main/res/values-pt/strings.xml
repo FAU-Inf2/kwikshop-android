@@ -260,4 +260,11 @@
     <string name="synchronizing_shoppingLists">Sincronização de lista de compras</string>
     <string name="throw_Exception"></string>
     <string name="unit_piece_name">pedaço</string>
+    <string name="unit_bag_singular">sacola</string>
+    <string name="unit_bottle_singular">garrafa</string>
+    <string name="unit_can_singular">lata</string>
+    <string name="unit_gram_singular">grama</string>
+    <string name="unit_litre_singular">litro</string>
+    <string name="unit_mililitre_singular">mililitro</string>
+    <string name="unit_pack_singular">pacote</string>
 </resources>

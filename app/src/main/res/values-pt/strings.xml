@@ -63,21 +63,8 @@
     <string name="title_activity_shopping_list_detail">Detalhes</string>
     <string name="title_default_list">Lista de Compras 1</string>
     <string name="title_fragment_item_details">Novo item</string>
-    <string name="unit_bag">sacolas</string>
-    <string name="unit_bottle">garrafas</string>
-    <string name="unit_box">caixas</string>
-    <string name="unit_dozen">dúzias</string>
-    <string name="unit_gram">gramas</string>
-    <string name="unit_gram_short">g</string>
-    <string name="unit_kilogram">Kilogramas</string>
-    <string name="unit_kilogram_short">kg</string>
-    <string name="unit_litre">litros</string>
-    <string name="unit_litre_short">l</string>
-    <string name="unit_millilitre">mililitros</string>
-    <string name="unit_millilitre_short">ml</string>
-    <string name="unit_pack">pacotes</string>
-    <string name="unit_piece">pedaços</string>
-    <string name="unit_piece_short">pc</string>
+
+
     <string name="deleteShoppingList_DialogText">Tem certeza que deseja deletar a lista de compras?</string>
     <string name="deleteShoppingList_DialogTitle">Deletar a lista de compras?</string>
     <string name="descr_already_bought">O item já foi comprado</string>
@@ -182,11 +169,9 @@
     <string name="recipe_sugar">Açúcar</string>
     <string name="recipe_sweetenedCondensedMilk">Leite condensado</string>
     <string name="recipe_coconutFlakes">Coco ralado</string>
-    <string name="unit_cup">xícaras</string>
-    <string name="unit_tablespoon">colheres de sopa</string>
-    <string name="unit_can">latas</string>
+
+
     <string name="item">Iten</string>
-    <string name="unit_teaspoon">colheres de chá</string>
     <string name="deleteShoppingList_repeatingItemsTitle">Essa lista possui itens que repetem</string>
     <string name="deleteShoppingList_repeatingItemsText">Deletar items agendados para próximas listas?</string>
     <string name="barcode_scanner_no_product">Nenhum produto foi encontrado</string>
@@ -224,7 +209,7 @@
     <string name="settings_option_5_location_permission_desc">Ativar rastreamento enquanto faz as compras</string>
     <string name="settings_option_5_location_permission_title">Rastreamento de localização</string>
     <string name="settings_option_8_login_descr">Faça login para sincronizar e compartilhar listas compras</string>
-    <string name="settings_option_8_login_name"></string>
+    <string name="settings_option_8_login_name">Account / Login</string>
     <string name="share_helpmessage">Você pode agora compartilhar essa lista de compras (ex. via SMS, Email).</string>
     <string name="share_intentstring">Eu quero compartilhar minha lista de compras com você! Simplesmente copie essa mensagem, crie a lista de compras no KwikShop e cole na mensagem, incluindo esse código: #%s#</string>
     <string name="share_notloggedin">Você precisa estar logado para compartilhar essa lista de compras.</string>
@@ -236,7 +221,7 @@
     <string name="recipe_butter">Manteiga</string>
     <string name="settings_option_4_APIEndPoint_Desc">Mudar o endereço do servidor do KwikShop para usar</string>
     <string name="settings_option_6_item_deletion_descr">Sempre perguntar antes de deletar um item</string>
-    <string name="settings_option_6_item_deletion_name"></string>
+    <string name="settings_option_6_item_deletion_name">Deletar item</string>
     <string name="settings_option_7_parser_separate_word_descr">Escolher palavra para separar múltiplos itens</string>
     <string name="settings_option_7_parser_separate_word_name">Palavra de separação de item</string>
     <string name="settings_option_enableSync_descr">Ativar sincronização de lista de compras e receitas</string>
@@ -251,7 +236,7 @@
     <string name="settings_options_syncInterval_descr">Escolher frequência de sincronizações</string>
     <string name="settings_options_syncInterval_inputBox_message">Porfavor especifique o intervalo das sincronizações em minutos</string>
     <string name="settings_options_syncInterval_name">Intervalo de sincronizações</string>
-    <string name="share_failure"></string>
+    <string name="share_failure">Falha no resgate, por favor tente novamente.</string>
     <string name="share_loading">Carregando...</string>
     <string name="sharingCode_textView">Código de compartilhamento:</string>
     <string name="start_synchronization">Começar Sincronização</string>
@@ -259,12 +244,63 @@
     <string name="synchronizing_recipes">SIncronização de Receitas</string>
     <string name="synchronizing_shoppingLists">Sincronização de lista de compras</string>
     <string name="throw_Exception"></string>
-    <string name="unit_piece_name">pedaço</string>
-    <string name="unit_bag_singular">sacola</string>
-    <string name="unit_bottle_singular">garrafa</string>
-    <string name="unit_can_singular">lata</string>
-    <string name="unit_gram_singular">grama</string>
-    <string name="unit_litre_singular">litro</string>
-    <string name="unit_mililitre_singular">mililitro</string>
-    <string name="unit_pack_singular">pacote</string>
+
+    <plurals name="unit_cup">
+        <item quantity="one"></item>
+        <item quantity="other">xícaras</item>
+    </plurals>
+    <plurals name="unit_tablespoon">
+        <item quantity="one">colher de sopa</item>
+        <item quantity="other">colheres de sopa</item></plurals>
+
+    <plurals name="unit_teaspoon">
+        <item quantity="one">colher de chá</item>
+        <item quantity="other">colheres de chá</item>
+    </plurals>
+    <plurals name="unit_piece">
+        <item quantity="one">pedaço</item>
+        <item quantity="other">pedaços</item>
+    </plurals>
+    <plurals name="unit_bag">
+        <item quantity="one">sacola</item>
+        <item quantity="other">sacolas</item>
+    </plurals>
+    <plurals name="unit_bottle">
+        <item quantity="one">garrafa</item>
+        <item quantity="other">garrafas</item>
+    </plurals>
+    <plurals name="unit_can">
+        <item quantity="one">lata</item>
+        <item quantity="other">latas</item>
+    </plurals>
+
+    <plurals name="unit_box">
+        <item quantity="one">caixa</item>
+        <item quantity="other">caixas</item>
+    </plurals>
+    <plurals name="unit_dozen">
+        <item quantity="one">dúzia</item>
+        <item quantity="other">dúzias</item></plurals>
+    <plurals name="unit_gram">
+        <item quantity="one">grama</item>
+        <item quantity="other">gramas</item></plurals>
+    <string name="unit_gram_short">g</string>
+    <plurals name="unit_kilogram">
+        <item quantity="one">kilograma</item>
+        <item quantity="other">kilogramas</item></plurals>
+    <string name="unit_kilogram_short">kg</string>
+    <plurals name="unit_litre">
+        <item quantity="one">litro</item>
+        <item quantity="other">litros</item></plurals>
+    <string name="unit_litre_short">l</string>
+    <plurals name="unit_millilitre">
+        <item quantity="one">mililitro</item>
+        <item quantity="other">mililitros</item></plurals>
+    <string name="unit_millilitre_short">ml</string>
+    <plurals name="unit_pack">
+        <item quantity="one">pacote</item>
+        <item quantity="other">pacotes</item></plurals>
+    <string name="unit_piece_short">pc</string>
+
+    <string name="settings_option_4_APIEndPoint_Title">API Endpoint</string>
 </resources>

@@ -449,12 +449,10 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
                     List<BoughtItem> boughtItemOrder = new ArrayList<>();
                     for (Item item : swipedItemOrder) {
-                        boughtItemOrder.add(new BoughtItem(item.getName()));
+                        boughtItemOrder.add(new BoughtItem(item.getName(), item.getLocation().getPlaceId(), item.getLocation().getName()));
                     }
 
-                    //TODO: use the location stored in each item instance
-                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder, currentPlace.getPlaceId(),
-                                                                             currentPlace.getName());
+                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder);
                     clientFactory.getShoppingListClient().postItemOrder(itemOrderWrapper);
 
                 } catch (Exception e) {

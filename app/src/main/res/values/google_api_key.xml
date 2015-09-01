@@ -4,6 +4,6 @@
 
     <!-- google map key -->
     <string name="google_android_api_key" translatable="false" templateMergeStrategy="preserve">AIzaSyDxKIruwhUGg-NIgC4kc0cUw4yL6_BwMVI </string>
-    <!-- goofle browser key -->
+    <!-- google browser key -->
     <string name="google_browser_api_key" translatable="false" templateMergeStrategy="preserve">AIzaSyB_7YslEdAP7V_NJ2uNsitwUWy_3sOutYg</string>
 </resources>

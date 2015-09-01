@@ -368,7 +368,7 @@ public class ShoppingListFragment
                     locationViewModel.showProgressDialogWithListID(listID);
 
                     // place request: radius 1500 result count 5
-                    locationViewModel.getNearbySupermarketPlaces(this, 500, 10);
+                    locationViewModel.getNearbySupermarketPlaces(this, 5000, 10);
 
                 } else {
 

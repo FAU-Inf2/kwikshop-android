@@ -1,10 +1,17 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+
 import android.support.v4.app.Fragment;
+
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +29,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import javax.inject.Inject;
 import butterknife.ButterKnife;
@@ -38,13 +46,14 @@ import se.walkercrou.places.Place;
 public class LocationFragment extends Fragment implements OnMapReadyCallback,  SupermarketPlace.AsyncPlaceRequestListener {
 
     private Context context;
+    private FragmentActivity activity;
     private List<Place> places;
     private LatLng latLng;
     private LocationViewModel viewModel;
     private View rootView;
-    private MapView mapView;
-    private GoogleMap map;
-    private Bundle mSavedInstanceState;
+    private SupportMapFragment mapFragment;
+    private String TAG = "LocationFragment";
+
 
 
     @Inject
@@ -82,28 +91,9 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
     }
 
     @Override
-    public void onResume() {
-        if(mapView != null){
-            mapView.onResume();
-        }
-        super.onResume();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mapView != null){
-            mapView.onDestroy();
-        }
         dismissProgressDialog();
-    }
-
-    @Override
-    public final void onLowMemory() {
-        if(mapView != null){
-            mapView.onLowMemory();
-        }
-        super.onLowMemory();
     }
 
     @Override
@@ -112,10 +102,18 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         viewLauncher.dismissDialog();
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = (FragmentActivity) activity;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
 
@@ -125,17 +123,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
 
         viewModel.setActivity(getActivity());
         viewModel.setContext(context);
-
-        /*
-        try {
-            MapsInitializer.initialize(getActivity());
-        } catch (Exception e) {
-            Log.e("map:", "Mao initializer failed");
-        }
-
-        mSavedInstanceState = savedInstanceState;
-
-        */
 
         showProgressDialog();
 
@@ -164,21 +151,55 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
     private void initiateMap(){
         if (!viewModel.isCanceld()) {
 
+            //mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapView);
+
+            mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+
+            /*
+            if (mapFragment == null) {
+                mapFragment = SupportMapFragment.newInstance();
+                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                ft =  ft.replace(R.id.mapView, mapFragment);
+                ft.commit();
+            }
+            */
+
+            mapFragment.getMapAsync(this);
+
+
+            //getMapFragment().getMapAsync(this);
+
             /*
             mapView = (MapView) rootView.findViewById(R.id.map);
             mapView.onCreate(mSavedInstanceState);
             onMapReady(mapView.getMap());
             */
 
+
             /*
+
             FragmentManager fm = getChildFragmentManager();
-            SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
+            SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentById(R.id.mapView);
             mapFragment.getMapAsync(this);
             */
 
 
-            MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
-            mapFragment.getMapAsync(this);
+
+
+            /*
+
+            /*
+            if(mapFragment == null){
+                mapFragment = SupportMapFragment.newInstance();
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.replace(R.id.map, mapFragment);
+                fragmentTransaction.commit();
+                mapFragment.getMapAsync(this);
+            }
+            */
+
+
+
         }
     }
 
@@ -247,6 +268,17 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
                 false,
                 viewModel.getCancelProgressDialogCommand()
         );
+    }
+
+    private SupportMapFragment getMapFragment() {
+        FragmentManager fm = null;
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            fm = getFragmentManager();
+        } else {
+            fm = getChildFragmentManager();
+        }
+        return (SupportMapFragment) fm.findFragmentById(R.id.mapView);
     }
 
 }

@@ -34,6 +34,7 @@ import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.SimpleStorageBase;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.viewmodel.BaseViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
@@ -279,7 +280,7 @@ public class SettingFragment extends Fragment {
         Configuration conf = res.getConfiguration();
         conf.locale = setLocale;
         res.updateConfiguration(conf, dm);
-        Intent refresh = new Intent(getActivity(), SettingActivity.class);
+        Intent refresh = new Intent(getActivity(), SettingActivity.class).putExtra(BaseViewModel.RESTARTEDACTIVITY, false);
         refresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(refresh);
         getActivity().finish();

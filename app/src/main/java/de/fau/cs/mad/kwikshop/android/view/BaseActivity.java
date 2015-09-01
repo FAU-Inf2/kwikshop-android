@@ -37,7 +37,6 @@ import de.greenrobot.event.EventBus;
  */
 public class BaseActivity extends ActionBarActivity {
 
-    public static boolean refreshed = false;
 
     /* Used by sharing. If this is true, ListOfShoppingLists will be opened after sync. */
     private boolean returnToListOfShoppingLists = false;
@@ -80,7 +79,7 @@ public class BaseActivity extends ActionBarActivity {
         */
 
         // restart to set locale
-        refreshed = viewModel.setSavedLocale(refreshed);
+        viewModel.setSavedLocale();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);

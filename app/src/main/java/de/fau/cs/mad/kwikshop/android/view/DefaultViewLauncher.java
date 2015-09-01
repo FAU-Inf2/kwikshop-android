@@ -581,9 +581,7 @@ public class DefaultViewLauncher implements ViewLauncher {
             }
         });
 
-        if(!activity.isFinishing()) {
-            progress.show();
-        }
+        progress.show();
     }
 
     @Override

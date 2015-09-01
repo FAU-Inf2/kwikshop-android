@@ -1,5 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -21,12 +22,16 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 public class BaseViewModel {
 
     private Context context;
+    private Activity activity;
     private ResourceProvider resourceProvider;
     private ViewLauncher viewLauncher;
 
+    public static String RESTARTEDACTIVITY = "RestartedActivity";
+
     @Inject
-    public BaseViewModel(Context context, ResourceProvider resourceProvider, ViewLauncher viewLauncher){
+    public BaseViewModel(Context context, Activity activity, ResourceProvider resourceProvider, ViewLauncher viewLauncher){
         this.context = context;
+        this.activity = activity;
         this.resourceProvider = resourceProvider;
         this.viewLauncher = viewLauncher;
 
@@ -47,15 +52,13 @@ public class BaseViewModel {
         viewLauncher.startActivity(intent);
     }
 
-    public Boolean setSavedLocale(Boolean refreshed) {
+    public void setSavedLocale() {
 
-        if (refreshed) {
-            return false;
+        if (activity.getIntent().getBooleanExtra(RESTARTEDACTIVITY, true)) {
+            return;
         }
-        refreshed = true;
 
         // get current locale index
-        // int currentLocaleIdIndex = getSharedPreferences(SettingFragment.SETTINGS, Context.MODE_PRIVATE).getInt(SharedPreferencesHelper.LOCALE, 0);
         int currentLocaleIdIndex =  SharedPreferencesHelper.loadInt(SharedPreferencesHelper.LOCALE, 0, context);
         Locale setLocale= new Locale(SettingFragment.localeIds[currentLocaleIdIndex].toString());
 
@@ -69,9 +72,7 @@ public class BaseViewModel {
         conf.locale = setLocale;
         res.updateConfiguration(conf, dm);
 
-        // Activity must be restarted to set saved locale
-        viewLauncher.restartActivity();
-
-        return refreshed;
+        // Activity must be restarted to set saved
+        viewLauncher.startActivity(activity.getIntent().putExtra(RESTARTEDACTIVITY, true));
     }
 }

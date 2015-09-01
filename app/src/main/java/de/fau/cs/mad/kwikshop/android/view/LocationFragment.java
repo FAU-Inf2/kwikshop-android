@@ -151,54 +151,8 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
     private void initiateMap(){
         if (!viewModel.isCanceld()) {
 
-            //mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapView);
-
             mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-
-            /*
-            if (mapFragment == null) {
-                mapFragment = SupportMapFragment.newInstance();
-                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-                ft =  ft.replace(R.id.mapView, mapFragment);
-                ft.commit();
-            }
-            */
-
             mapFragment.getMapAsync(this);
-
-
-            //getMapFragment().getMapAsync(this);
-
-            /*
-            mapView = (MapView) rootView.findViewById(R.id.map);
-            mapView.onCreate(mSavedInstanceState);
-            onMapReady(mapView.getMap());
-            */
-
-
-            /*
-
-            FragmentManager fm = getChildFragmentManager();
-            SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentById(R.id.mapView);
-            mapFragment.getMapAsync(this);
-            */
-
-
-
-
-            /*
-
-            /*
-            if(mapFragment == null){
-                mapFragment = SupportMapFragment.newInstance();
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.replace(R.id.map, mapFragment);
-                fragmentTransaction.commit();
-                mapFragment.getMapAsync(this);
-            }
-            */
-
-
 
         }
     }

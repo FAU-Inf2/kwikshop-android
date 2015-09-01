@@ -416,11 +416,10 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
                     List<BoughtItem> boughtItemOrder = new ArrayList<>();
                     for (Item item : swipedItemOrder) {
-                        boughtItemOrder.add(new BoughtItem(item.getName()));
+                        boughtItemOrder.add(new BoughtItem(item.getName(), item.getLocation().getPlaceId(), item.getLocation().getName()));
                     }
 
-                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder, places.get(placesChoiceIndex).getPlaceId(),
-                            places.get(placesChoiceIndex).getName());
+                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder);
                     clientFactory.getShoppingListClient().postItemOrder(itemOrderWrapper);
 
                 } catch (Exception e) {

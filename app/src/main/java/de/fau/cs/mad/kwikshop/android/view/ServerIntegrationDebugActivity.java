@@ -582,7 +582,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -597,7 +597,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
                                         final int itemId;
-                                        try{
+                                        try {
                                             itemId = Integer.parseInt(parameter);
                                         } catch (Exception e) {
                                             privateBus.post(getStackTrace(e));
@@ -627,7 +627,6 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                                 return null;
                                             }
                                         }.execute();
-
 
 
                                     }
@@ -1196,7 +1195,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -1211,7 +1210,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
 
                                         final int itemId;
-                                        try{
+                                        try {
                                             itemId = Integer.parseInt(parameter);
                                         } catch (Exception e) {
                                             privateBus.post(getStackTrace(e));
@@ -1241,7 +1240,6 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                                 return null;
                                             }
                                         }.execute();
-
 
 
                                     }
@@ -1325,6 +1323,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
     }
 
     @OnClick(R.id.button_postBoughtItems)
+    @SuppressWarnings("unused")
     void postBoughtItems() {
 
         new AsyncTask<Void, Void, Void>() {
@@ -1337,23 +1336,19 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                     ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
 
-                    {
-                        List<BoughtItem> boughtItems = new ArrayList<>();
-                        boughtItems.add(new BoughtItem("Test1"));
-                        boughtItems.add(new BoughtItem("Test2"));
-                        boughtItems.add(new BoughtItem("Test3"));
-                        ItemOrderWrapper itemOrder = new ItemOrderWrapper(boughtItems, "Springfield", "Kwik-E-Mart");
-                        client.postItemOrder(itemOrder);
-                    }
+                    List<BoughtItem> boughtItems = new ArrayList<>();
 
-                    {
-                        List<BoughtItem> boughtItems = new ArrayList<>();
-                        boughtItems.add(new BoughtItem("Test1"));
-                        boughtItems.add(new BoughtItem("Test4"));
-                        boughtItems.add(new BoughtItem("Test3"));
-                        ItemOrderWrapper itemOrder = new ItemOrderWrapper(boughtItems, "foo", "Kwik-E-Mart");
-                        client.postItemOrder(itemOrder);
-                    }
+                    boughtItems.add(new BoughtItem("Test1", "place1", "Kwik-E-Mart Springfield"));
+                    boughtItems.add(new BoughtItem("Test2", "place1", "Kwik-E-Mart Springfield"));
+                    boughtItems.add(new BoughtItem("Test3", "place1", "Kwik-E-Mart Springfield"));
+                    boughtItems.add(new BoughtItem("Test4", "place1", "Kwik-E-Mart Springfield"));
+
+                    boughtItems.add(new BoughtItem("Test5", "place2", "Foobar Supermarket"));
+                    boughtItems.add(new BoughtItem("Test6", "place2", "Foobar Supermarket"));
+                    boughtItems.add(new BoughtItem("Test7", "place2", "Foobar Supermarket"));
+
+                    ItemOrderWrapper itemOrder = new ItemOrderWrapper(boughtItems);
+                    client.postItemOrder(itemOrder);
 
                 } catch (Exception e) {
 

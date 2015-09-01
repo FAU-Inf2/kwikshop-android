@@ -22,6 +22,8 @@ public class SharedPreferencesHelper {
     public static final String ENABLE_SYNCHRONIZATION = "ENABLE_SYNCHRONIZATION";
     public static final String SYNCHRONIZATION_INTERVAL = "SYNCHRONIZATION_INTERVAL";
     public static final String REPEAT_DELETION_SHOW_AGAIN_MSG = "REPEAT_DELETION_SHOW_AGAIN_MSG";
+    public static final String ASK_TO_ADD_DEFAULT_RECIPES = "ASK_TO_ADD_DEFAULT_RECIPES";
+
 
     private static final String sharedPreferencesName = "settings";
 

@@ -2,6 +2,8 @@ package de.fau.cs.mad.kwikshop.android.model;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
 import de.fau.cs.mad.kwikshop.android.R;
@@ -41,11 +43,12 @@ public class SupermarketPlace {
                 GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
                 List<Place> places = null;
                 try {
-                    /* radius: 5000m (default)
-                    *  #results: 30 (default)
+                    /* radius: 1000m (default)
+                    *  #results: 10 (default)
                     *  types: grocery or supermarket
                     */
                     places = client.getNearbyPlaces(latlng.latitude, latlng.longitude, radius, resultCount, Param.name("types").value("grocery_or_supermarket"));
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

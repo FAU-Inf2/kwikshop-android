@@ -2,16 +2,12 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import android.support.v4.app.Fragment;
 
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTabHost;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,15 +17,11 @@ import android.widget.TextView;
 
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import javax.inject.Inject;
 import butterknife.ButterKnife;
@@ -40,6 +32,7 @@ import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import se.walkercrou.places.Place;
@@ -54,8 +47,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
     private View rootView;
     private SupportMapFragment mapFragment;
     private String TAG = "LocationFragment";
-
-
 
     @Inject
     ViewLauncher viewLauncher;
@@ -144,26 +135,26 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
     @Override
     public void postResult(List<Place> mPlaces) {
         places = mPlaces;
+        viewModel.checkPlaceResult(places);
         initiateMap();
         dismissProgressDialog();
     }
 
     private void initiateMap(){
         if (!viewModel.isCanceld()) {
-
             mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-            mapFragment.getMapAsync(this);
-
+            if(mapFragment != null){
+                mapFragment.getMapAsync(this);
+            }
         }
     }
-
 
     @Override
     public void onMapReady(GoogleMap map) {
 
         map = viewModel.setupGoogleMap(map);
+        map.setMyLocationEnabled(true);
         viewModel.showPlacesInGoogleMap(places);
-
 
         // display info box
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -173,7 +164,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
                 final String clickedAddress = viewModel.findClickedAddress(clickedPlace);
                 showInfoBox();
                 mapPlaceName.setText(clickedPlace.getName());
-                mapPlaceOpenStatus.setText(viewModel.converStatus(clickedPlace.getStatus()));
+                mapPlaceOpenStatus.setText(viewModel.convertStatus(clickedPlace.getStatus()));
                 mapPlaceDistance.setText(viewModel.getDistanceBetweenLastLocationAndPlace(clickedPlace, latLng));
                 mapDirectionButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -195,7 +186,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
     }
 
     private void showInfoBox(){
-
         mapInfoBox.setVisibility(View.VISIBLE);
         mapDirectionButton.bringToFront();
         mapDirectionButton.setVisibility(View.VISIBLE);
@@ -215,25 +205,10 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         viewLauncher.dismissProgressDialog();
     }
 
-    public void showProgressDialog(){
-        viewLauncher.showProgressDialog(
-                resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
-                resourceProvider.getString(R.string.alert_dialog_connection_cancel),
-                false,
-                viewModel.getCancelProgressDialogCommand()
-        );
+    public void showProgressDialog(){ viewModel.showProgressDialogWithoutButton();
+
     }
 
-    private SupportMapFragment getMapFragment() {
-        FragmentManager fm = null;
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            fm = getFragmentManager();
-        } else {
-            fm = getChildFragmentManager();
-        }
-        return (SupportMapFragment) fm.findFragmentById(R.id.mapView);
-    }
 
 }
 

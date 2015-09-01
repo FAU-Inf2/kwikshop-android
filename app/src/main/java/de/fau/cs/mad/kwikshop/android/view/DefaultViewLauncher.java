@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -558,6 +560,25 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
+    public void showProgressDialogWithoutButton(String message, final Command<Void> command) {
+
+        progress = new ProgressDialog(activity);
+        progress.setCanceledOnTouchOutside(true);
+        progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Log.e("VL", "Progress dialog was canceld");
+                if (command != null && command.getCanExecute()) {
+                    command.execute(null);
+                }
+            }}
+        );
+        progress.setMessage(message);
+        progress.show();
+
+    }
+
+    @Override
     public void showProgressDialogWithListID(String message, String negativeMessage, final int listId, boolean cancelable, final Command<Integer> negativeCommand) {
 
         progress = new ProgressDialog(activity);
@@ -592,63 +613,8 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
 
-    @Deprecated
-    @Override
-    public void showMessageDialogWithRadioButtons(String title, CharSequence[] items,
-                                                  String positiveMessage, final Command<Void> positiveCommand,
-                                                  String neutralMessage, final Command<Void> neutralCommand,
-                                                  String negativeMessage, final Command<Void> negativeCommand, final Command<Integer> selectCommand) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(title);
-
-        builder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (selectCommand.getCanExecute()) {
-                    selectCommand.execute(which);
-                }
-
-            }
-        });
-
-        builder.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int position) {
-                if (positiveCommand.getCanExecute()) {
-                    positiveCommand.execute(null);
-                }
-            }
-        });
-
-        builder.setNeutralButton(neutralMessage, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int position) {
-                if (neutralCommand.getCanExecute()) {
-                    neutralCommand.execute(null);
-                }
-            }
-        });
-
-        builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int position) {
-                if (negativeCommand.getCanExecute()) {
-                    negativeCommand.execute(null);
-                }
-            }
-        });
-
-        alert = builder.create();
-
-        if(!activity.isFinishing()) {
-            alert.show();
-        }
-
-    }
-
-
     private class IntClosure {
-
         public int value = -1;
-
     }
 
     @Override

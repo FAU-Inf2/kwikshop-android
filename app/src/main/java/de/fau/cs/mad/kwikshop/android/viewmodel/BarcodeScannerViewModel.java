@@ -78,14 +78,11 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
     final Command retryConnectionCheck = new Command<Void>(){
         @Override
         public void execute(Void parameter) {
-            if (InternetHelper.checkInternetConnection(context)){
-
-            viewLauncher.showLocationActivity();
-             }
-            else {
-
+            if (InternetHelper.checkInternetConnection(context))
+                viewLauncher.showLocationActivity();
+            else
                 notificationOfNoConnection();
-            }
+
         }
     };
 

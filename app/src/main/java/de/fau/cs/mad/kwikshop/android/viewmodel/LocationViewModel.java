@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,10 +22,12 @@ import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
+import de.fau.cs.mad.kwikshop.android.model.messages.FindSupermarketsResult;
 import de.fau.cs.mad.kwikshop.android.util.ClusterMapItem;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.util.ClusterItemRendered;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
@@ -82,6 +85,7 @@ public class LocationViewModel {
         @Override
         public void execute(Void parameter) {
             canceled = true;
+            Log.e("LocationFragment", "show list of shopping lists");
             viewLauncher.showListOfShoppingListsActivity();
         }
     };
@@ -100,9 +104,6 @@ public class LocationViewModel {
             viewLauncher.startActivity(intent);
         }
     };
-
-
-
 
 
     final Command retryConnectionCheckWithLocationPermissionCommand = new Command<Void>(){
@@ -147,7 +148,6 @@ public class LocationViewModel {
 
     public GoogleMap setupGoogleMap(GoogleMap map){
 
-
         map.setMyLocationEnabled(true);
         map.moveCamera( CameraUpdateFactory.newLatLngZoom(getLastLatLng(), 15.0f) );
         UiSettings settings = map.getUiSettings();
@@ -183,7 +183,7 @@ public class LocationViewModel {
             return null;
     }
 
-    public String converStatus(Status status){
+    public String convertStatus(Status status){
        return LocationFinderHelper.convertStatus(status, context);
     }
 
@@ -205,7 +205,6 @@ public class LocationViewModel {
 
     }
 
-
     @SuppressWarnings("unchecked")
     public void notificationOfNoConnectionWithLocationPermission(){
 
@@ -220,11 +219,39 @@ public class LocationViewModel {
 
     }
 
+    public void checkPlaceResult(List<Place> places){
+
+        viewLauncher.dismissProgressDialog();
+
+        if(!LocationFinderHelper.checkPlaces(places)){
+            // no place info dialog
+            viewLauncher.showMessageDialog(
+                    resourceProvider.getString(R.string.localization_no_place_dialog_title),
+                    resourceProvider.getString(R.string.no_place_dialog_message),
+                    resourceProvider.getString(R.string.dialog_OK),
+                    cancelProgressDialogCommand,
+                    resourceProvider.getString(R.string.dialog_retry),
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            viewLauncher.restartActivity();
+                        }
+                    }
+            );
+        }
+    }
 
 
+    public void showProgressDialogWithoutButton() {
 
-
-
-
-
+        viewLauncher.showProgressDialogWithoutButton(
+                resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
+                new Command<Void>() {
+                    @Override
+                    public void execute(Void parameter) {
+                        viewLauncher.showListOfShoppingListsActivity();
+                    }
+                }
+        );
+    }
 }

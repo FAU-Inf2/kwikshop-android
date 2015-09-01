@@ -121,6 +121,7 @@ public class LocationFinderHelper implements LocationListener {
             latitude = networkLat;
             longitude = networkLong;
             location = networkLocation;
+
         } else if(networkAcc > gpsAcc){
             accuracy = gpsAcc;
             latitude = gpsLat;

@@ -84,12 +84,8 @@ public interface ViewLauncher {
                             String negativeMessage, boolean cancelable,
                             final Command<Void> negativeCommand);
 
-    @Deprecated
-    void showMessageDialogWithRadioButtons(String title, CharSequence[] items,
-                           String positiveMessage, Command<Void> positiveCommand,
-                           String neutralMessage, final Command<Void> neutralCommand,
-                           String negativeMessage, Command<Void> negativeCommand,
-                                           final Command<Integer> selectCommand);
+    void showProgressDialogWithoutButton(String message, final Command<Void> command);
+
 
     void showMessageDialogWithRadioButtons(String title, CharSequence[] items,
                                            String positiveMessage, final Command<Integer> positiveCommand,

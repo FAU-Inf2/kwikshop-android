@@ -201,13 +201,6 @@ public class ItemDetailsViewModel{
         return unitNames;
     }
 
-    public ArrayList<String> getSingularUnitNames(){
-        ArrayList<String> unitNames = new ArrayList<>();
-        for (Unit u : units){
-            u.getId();
-
-        }
-    }
 
     public Unit getSelectedUnit(){
         Unit selectedUnit = isNewItem() || item.getUnit() == null

@@ -2,6 +2,8 @@ package de.fau.cs.mad.kwikshop.android.util;
 
 import android.content.Context;
 
+import javax.inject.Inject;
+
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
@@ -13,12 +15,13 @@ import de.fau.cs.mad.kwikshop.common.PredefinedId;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.common.Unit;
 
-public class DefaultRecipes {
+public class DefaultRecipesHelper {
 
     ListManager<Recipe> recipeManager;
     Context context;
 
-    public DefaultRecipes(ListManager<Recipe> recipeManager, Context context){
+    @Inject
+    public DefaultRecipesHelper(ListManager<Recipe> recipeManager, Context context){
 
         if(recipeManager == null) throw new ArgumentNullException("recipeManager");
 

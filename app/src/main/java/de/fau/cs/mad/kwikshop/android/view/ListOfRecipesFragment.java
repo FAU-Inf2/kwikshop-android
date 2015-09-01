@@ -67,6 +67,8 @@ public class ListOfRecipesFragment extends FragmentWithViewModel implements List
         //click on floating action button (add)
         bindButton(floatingActionButton, viewModel.getAddRecipeCommand());
 
+        viewModel.showAddDefaultRecipesDialog();
+
         return rootView;
     }
 

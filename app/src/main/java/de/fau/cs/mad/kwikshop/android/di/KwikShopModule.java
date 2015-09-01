@@ -10,6 +10,7 @@ import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.tasks.RedeemSharingCodeTask;
 
+import de.fau.cs.mad.kwikshop.android.util.DefaultRecipesHelper;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.view.BarcodeScannerFragment;
 import de.fau.cs.mad.kwikshop.android.view.LocationFragment;
@@ -69,6 +70,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
             AutoCompletionHelper.class,
             StackTraceReporter.class,
             RegularlyRepeatHelper.class,
+            DefaultRecipesHelper.class,
 
             //activities & fragments
             ShoppingListActivity.class,

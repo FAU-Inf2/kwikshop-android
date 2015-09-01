@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -322,6 +323,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     protected void setupUI() {
 
+        item = getListManager().getListItem(listId, itemId);
 
         // display the supermarket where this item was bought
 
@@ -330,7 +332,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if(location != null){
             if(location.getName() != null){
                 String duration = dateFormatter.formatDate(item.getLastBought());
-
                 lastbought_location.setText(location.getName() + " (" + duration + ") ");
             } else {
                 // hide information about last bought item

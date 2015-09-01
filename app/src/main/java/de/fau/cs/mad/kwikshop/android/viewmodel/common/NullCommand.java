@@ -5,6 +5,7 @@ public class NullCommand<T> extends Command<T> {
     public static final Command<Object> ObjectInstance = new NullCommand<>();
     public static final Command<String> StringInstance = new NullCommand<>();
     public static final Command<Void> VoidInstance = new NullCommand<>();
+    public static final Command<Integer> IntegerInstance = new NullCommand<>();
 
     @Override
     public void execute(T parameter) {

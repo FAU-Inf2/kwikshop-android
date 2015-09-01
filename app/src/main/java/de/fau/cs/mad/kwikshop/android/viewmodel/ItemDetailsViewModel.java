@@ -201,6 +201,7 @@ public class ItemDetailsViewModel{
         return unitNames;
     }
 
+
     public Unit getSelectedUnit(){
         Unit selectedUnit = isNewItem() || item.getUnit() == null
                 ? unitStorage.getDefaultValue()

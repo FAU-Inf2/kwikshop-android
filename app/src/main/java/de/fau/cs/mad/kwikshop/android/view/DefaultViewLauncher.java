@@ -679,13 +679,6 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
 
-    @Override
-    public void dismissProgressDialog() {
-        if (progress != null) {
-            progress.dismiss();
-            progress = null;
-        }
-    }
 
     @Override
     public void showListOfShoppingListsActivity() {
@@ -708,7 +701,17 @@ public class DefaultViewLauncher implements ViewLauncher {
 
     @Override
     public void dismissDialog() {
-        if (alert != null) { alert.dismiss(); }
+        if (alert != null) {
+            alert.dismiss();
+            alert = null;  }
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        if (progress != null) {
+            progress.dismiss();
+            progress = null;
+        }
     }
 
     @Override

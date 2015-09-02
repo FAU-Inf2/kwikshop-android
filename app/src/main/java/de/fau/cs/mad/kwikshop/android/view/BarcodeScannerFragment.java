@@ -3,15 +3,12 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.viewmodel.BarcodeScannerViewModel;
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
 
 public class BarcodeScannerFragment extends Fragment{
 
@@ -30,7 +27,6 @@ public class BarcodeScannerFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ZXingScannerView scannerView;
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         viewModel = objectGraph.get(BarcodeScannerViewModel.class);
         objectGraph.inject(this);
@@ -39,8 +35,8 @@ public class BarcodeScannerFragment extends Fragment{
         viewModel.setActivity(getActivity());
         viewModel.hideActionBar();
         viewModel.setListId(getArguments().getInt(ARG_LISTID));
-        scannerView = viewModel.getScannerView();
-        return scannerView;
+
+        return viewModel.getScannerView();
     }
 
     @Override
@@ -49,12 +45,12 @@ public class BarcodeScannerFragment extends Fragment{
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         viewModel.onResume();
     }
+
     @Override
     public void onPause() {
         super.onPause();
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         viewModel.onPause();
-
     }
 
 

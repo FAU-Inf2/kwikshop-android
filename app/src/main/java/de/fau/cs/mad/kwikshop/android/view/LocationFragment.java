@@ -104,7 +104,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         viewModel.checkPlaceResult(places);
 
         initiateMap();
-        dismissDialog();
     }
 
     // get map fragment and initiate map
@@ -122,8 +121,8 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
     public void onMapReady(GoogleMap map) {
 
         map = viewModel.setupGoogleMap(map);
-        map.setMyLocationEnabled(true);
         viewModel.showPlacesInGoogleMap(places);
+        dismissDialog();
 
         // display info box
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -152,6 +151,8 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
                 hideInfoBox();
             }
         });
+
+
     }
 
     private void showInfoBox(){

@@ -141,6 +141,24 @@ public class LocationViewModel {
 
     public LatLng getLastLatLng(){
         LastLocation lastLocation = LocationFinderHelper.initiateLocationFinderHelper(context).getLastLocation();
+
+        if(lastLocation.getLatitude() == 0d){
+            // no last location info dialog
+            viewLauncher.showMessageDialog(
+                    resourceProvider.getString(R.string.localization_no_place_dialog_title),
+                    resourceProvider.getString(R.string.no_last_location_dialog_message),
+                    resourceProvider.getString(R.string.dialog_OK),
+                    cancelProgressDialogCommand,
+                    resourceProvider.getString(R.string.dialog_retry),
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            viewLauncher.restartActivity();
+                        }
+                    }
+            );
+        }
+
         return new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
     }
 

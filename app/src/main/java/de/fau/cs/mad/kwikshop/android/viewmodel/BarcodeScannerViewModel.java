@@ -82,7 +82,6 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
                 viewLauncher.showLocationActivity();
             else
                 notificationOfNoConnection();
-
         }
     };
 
@@ -148,8 +147,6 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
         }
     }
 
-
-
     // parser result
     @Override
     public void handleParserResult(Item item) {
@@ -162,7 +159,6 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
         }
 
     }
-
 
     // rest client result
     @Override

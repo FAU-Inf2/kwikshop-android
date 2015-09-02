@@ -340,7 +340,8 @@
     <string name="on_a_schedule">On a schedule</string>
     <string name="unit_teaspoon">teaspoons</string>
     <string name="unit_teaspoon_short">tsp</string>
-    <string name="no_place_dialog_message">Kwik Shop finds no Supermarket in your area.</string>
+    <string name="no_place_dialog_message">Kwik Shop does not find any store in your area.</string>
+    <string name="no_last_location_dialog_message">Kwik Shop can not find your current location.</string>
 	<string name="login_back">Back</string>
 	
     <string name="start_synchronization">Start Synchronization</string>

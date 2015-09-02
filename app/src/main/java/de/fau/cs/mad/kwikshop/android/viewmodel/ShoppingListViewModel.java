@@ -638,11 +638,11 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         viewLauncher.showMessageDialogWithCheckbox(
                 resourceProvider.getString(R.string.localization_dialog_title),
                 resourceProvider.getString(R.string.localization_dialog_message),
-                resourceProvider.getString(R.string.yes),
+                resourceProvider.getString(R.string.localize),
                 getFindNearbySupermarketCommand(),
                 null,
                 null,
-                resourceProvider.getString(R.string.no),
+                resourceProvider.getString(R.string.cancel),
                 withdrawLocalizationPermissionCommand,
                 resourceProvider.getString(R.string.dont_show_this_message_again),
                 false,

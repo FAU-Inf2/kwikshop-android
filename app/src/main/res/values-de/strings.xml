@@ -226,7 +226,7 @@
     <string name="yes">Ja</string>
     <string name="dont_show_this_message_again">Meldung nicht mehr anzeigen</string>
     <string name="login_back">Zurück</string>
-    <string name="localization_dialog_message">Kwik Shop möchte deinen Standort bestimmen. Bist du einverstanden?</string>
+    <string name="localization_dialog_message">Kwik Shop möchte deinen Standort bestimmen.\n Bist du einverstanden?</string>
     <string name="localization_dialog_title">Standortbestimmung</string>
     <string name="localization_disable_localization">Deaktiviere Standortbestimmung</string>
     <string name="localization_no_connection_message">Kwik Shop benötigt eine Internetverbindung um alle Supermärkte in der Nähe zu finden.</string>
@@ -246,5 +246,6 @@
     <string name="unit_bag_singular">Sack</string>
     <string name="unit_can_singular"></string>
     <string name="unit_kilogram_singular">Kilogramm</string>
+    <string name="localize">lokalisieren</string>
 
 </resources>

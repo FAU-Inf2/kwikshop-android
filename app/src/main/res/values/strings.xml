@@ -46,9 +46,12 @@
     <string name="localization_supermarket_select_dialog_title">Select your current Supermarket</string>
     <string name="localization_supermarket_select_dialog_not_found">Not listed</string>
     <string name="localization_dialog_title">Localization</string>
-    <string name="localization_dialog_message">Kwik Shop wants to locate your position. Do you agree?</string>
+    <string name="localization_dialog_message">Kwik Shop wants to locate your position.\n Do you agree?</string>
     <string name="localization_disable_localization">disable localization</string>
     <string name="localization_no_connection_message">Kwik Shop needs a connection to the internet to find all nearby supermarkets.</string>
+    <string name="no_place_dialog_message">Kwik Shop does not find any store in your area.</string>
+    <string name="no_last_location_dialog_message">Kwik Shop can not find your current location.</string>
+    <string name="localize">localize</string>
 
 
     <!-- Item Details Fragment -->
@@ -88,7 +91,7 @@
     <string name="settings_option_4_APIEndPoint_Desc">Change the address of KwikShop server to use</string>
     <string name="settings_option_5_location_permission_title">Location tracking</string>
     <string name="settings_option_5_location_permission_desc">Enable location tracking while shopping</string>
-    <string name="dont_show_this_message_again">Do not show me this message again</string>
+    <string name="dont_show_this_message_again">Do not show me again</string>
     <string name="settings_option_6_item_deletion_name">Item Deletion</string>
     <string name="settings_option_6_item_deletion_descr">Always ask before deleting an item</string>
     <string name="settings_option_7_parser_separate_word_name">Item separator word</string>
@@ -340,8 +343,6 @@
     <string name="on_a_schedule">On a schedule</string>
     <string name="unit_teaspoon">teaspoons</string>
     <string name="unit_teaspoon_short">tsp</string>
-    <string name="no_place_dialog_message">Kwik Shop does not find any store in your area.</string>
-    <string name="no_last_location_dialog_message">Kwik Shop can not find your current location.</string>
 	<string name="login_back">Back</string>
 	
     <string name="start_synchronization">Start Synchronization</string>

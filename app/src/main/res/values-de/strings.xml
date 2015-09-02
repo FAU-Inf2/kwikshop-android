@@ -246,6 +246,6 @@
     <string name="unit_bag_singular">Sack</string>
     <string name="unit_can_singular"></string>
     <string name="unit_kilogram_singular">Kilogramm</string>
-    <string name="localize">lokalisieren</string>
+    <string name="localize">Lokalisieren</string>
 
 </resources>

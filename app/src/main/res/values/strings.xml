@@ -51,7 +51,7 @@
     <string name="localization_no_connection_message">Kwik Shop needs a connection to the internet to find all nearby supermarkets.</string>
     <string name="no_place_dialog_message">Kwik Shop does not find any store in your area.</string>
     <string name="no_last_location_dialog_message">Kwik Shop can not find your current location.</string>
-    <string name="localize">localize</string>
+    <string name="localize">Localize</string>
 
 
     <!-- Item Details Fragment -->

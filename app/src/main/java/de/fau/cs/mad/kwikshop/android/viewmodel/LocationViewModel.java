@@ -26,6 +26,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.FindSupermarketsResult;
 import de.fau.cs.mad.kwikshop.android.util.ClusterMapItem;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.util.ClusterItemRendered;
+import de.fau.cs.mad.kwikshop.android.view.LocationFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
@@ -73,8 +74,6 @@ public class LocationViewModel {
 
     public Command<Void> getCancelProgressDialogCommand(){ return cancelProgressDialogCommand; }
 
-
-
     public Command<Void> getFinishActivityCommand(){ return finishCommand; }
 
     public Command<String> getRouteIntentCommand(){ return routeIntentCommand; }
@@ -85,7 +84,6 @@ public class LocationViewModel {
         @Override
         public void execute(Void parameter) {
             canceled = true;
-            Log.e("LocationFragment", "show list of shopping lists");
             viewLauncher.showListOfShoppingListsActivity();
         }
     };
@@ -253,5 +251,15 @@ public class LocationViewModel {
                     }
                 }
         );
+    }
+
+    public void startAsyncPlaceRequest(LocationFragment locationFragment, int radius, int resultcount) {
+
+        if(InternetHelper.checkInternetConnection(context)){
+            getNearbySupermarketPlaces(locationFragment, radius, resultcount);
+
+        } else {
+            notificationOfNoConnectionForMap();
+        }
     }
 }

@@ -40,19 +40,12 @@ import se.walkercrou.places.Place;
 public class LocationFragment extends Fragment implements OnMapReadyCallback,  SupermarketPlace.AsyncPlaceRequestListener {
 
     private Context context;
-    private FragmentActivity activity;
     private List<Place> places;
     private LatLng latLng;
     private LocationViewModel viewModel;
-    private View rootView;
-    private SupportMapFragment mapFragment;
-    private String TAG = "LocationFragment";
 
     @Inject
     ViewLauncher viewLauncher;
-
-    @Inject
-    ResourceProvider resourceProvider;
 
     @InjectView(R.id.map_infobox)
     RelativeLayout mapInfoBox;
@@ -94,19 +87,12 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         viewLauncher.dismissDialog();
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.activity = (FragmentActivity) activity;
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        rootView = inflater.inflate(R.layout.fragment_location, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
@@ -117,19 +103,13 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
 
         showProgressDialog();
 
-        // async places request
-        if(InternetHelper.checkInternetConnection(context)){
-            viewModel.getNearbySupermarketPlaces(this, 5000, 30);
-            latLng = viewModel.getLastLatLng();
-        } else {
-            notificationOfNoConnection();
-        }
+        viewModel.startAsyncPlaceRequest(this, 5000, 30);
 
         hideInfoBox();
+
         return rootView;
 
     }
-
 
     // called when place request is ready
     @Override
@@ -140,21 +120,24 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         dismissProgressDialog();
     }
 
+    // get map fragment and initiate map
     private void initiateMap(){
         if (!viewModel.isCanceld()) {
-            mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
             if(mapFragment != null){
                 mapFragment.getMapAsync(this);
             }
         }
     }
 
+    // map is ready
     @Override
     public void onMapReady(GoogleMap map) {
 
         map = viewModel.setupGoogleMap(map);
         map.setMyLocationEnabled(true);
         viewModel.showPlacesInGoogleMap(places);
+        latLng = viewModel.getLastLatLng();
 
         // display info box
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -195,11 +178,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         mapInfoBox.setVisibility(View.INVISIBLE);
         mapDirectionButton.setVisibility(View.INVISIBLE);
     }
-
-    private void notificationOfNoConnection(){
-        viewModel.notificationOfNoConnectionForMap();
-    }
-
 
     void dismissProgressDialog(){
         viewLauncher.dismissProgressDialog();

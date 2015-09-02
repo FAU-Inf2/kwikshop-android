@@ -47,7 +47,18 @@ public class SupermarketPlace {
                     *  #results: 10 (default)
                     *  types: grocery or supermarket
                     */
-                    places = client.getNearbyPlaces(latlng.latitude, latlng.longitude, radius, resultCount, Param.name("types").value("grocery_or_supermarket"));
+                    places = client.getNearbyPlaces(
+                            latlng.latitude,
+                            latlng.longitude,
+                            radius, resultCount,
+                            Param.name("types").value("grocery_or_supermarket")
+                            /*
+                            Param.name("types").value("gas_station"),
+                            Param.name("types").value("food"),
+                            Param.name("types").value("store"),
+                            Param.name("types").value("bakery")
+                            */
+                    );
 
                 } catch (Exception e) {
                     e.printStackTrace();

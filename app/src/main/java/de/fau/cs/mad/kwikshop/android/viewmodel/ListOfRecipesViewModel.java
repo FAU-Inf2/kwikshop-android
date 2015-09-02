@@ -8,6 +8,7 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.util.DefaultRecipesHelper;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
@@ -111,7 +112,7 @@ public class ListOfRecipesViewModel extends ListOfListsViewModel<Recipe> {
                             defaultRecipesHelper.addDefaultRecipes();
                         }
                     },
-                    null, null, context.getString(R.string.no), null, context.getString(R.string.dont_show_this_message_again), false,
+                    null, null, context.getString(R.string.no), NullCommand.VoidInstance, context.getString(R.string.dont_show_this_message_again), false,
                     new Command<Void>() {
                         @Override
                         public void execute(Void parameter) {

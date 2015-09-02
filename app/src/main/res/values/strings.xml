@@ -212,6 +212,8 @@
     <string name="recipe_no_shoppinglist">You do not have any shopping lists yet. Would you like to create one?</string>
     <string name="recipe_default_no_recipes">You do not have any recipes yet. Would you like to add some of our favourite ones?</string>
 
+
+
     <!--Example Recipes -->
     <string name="recipe_name_chili_con_carne">Chili con carne</string>
     <string name="recipe_onion">Onion</string>
@@ -373,6 +375,8 @@
     <string name="settings_options_delete_recipe_name">Recipe Deletion</string>
     <string name="settings_options_delete_shoppinglist_descr">Always ask before deleting a shopping list</string>
     <string name="settings_options_delete_recipe_descr">Always ask before deleting a recipe</string>
+    <string name="settings_options_add_default_recipes_name">Default recipes</string>
+    <string name="settings_options_add_default_recipes_descr">Ask to add our default recipes when you do not have any own recipes</string>
     <string name="settings_option_parser_separator_no_space_allowed">The item separator word may not contaion spaces</string>
     <string name="str_default">default</string>
     <string name="deleteShoppingList_repeatingItemsTitle">This list owns repeating items</string>

@@ -62,6 +62,7 @@ public class SettingFragment extends Fragment {
     private Setting itemDeletionSetting;
     private Setting slDeletionSetting;
     private Setting recipeDeletionSetting;
+    private Setting recipeAddDefaultSetting;
     private Setting parserSeparatorWordSetting;
     private Setting loginSetting;
     private Setting enableSyncSetting;
@@ -127,11 +128,15 @@ public class SettingFragment extends Fragment {
                     setShoppingListDeletionSetting(position);
                 }
 
-                // Item deletion
+                // Recipe deletion
                 if (settingsList.get(position).equals(recipeDeletionSetting)) {
                     setRecipeDeletionSetting(position);
                 }
 
+                // Default recipes
+                if( settingsList.get(position).equals(recipeAddDefaultSetting)){
+                    setRecipeAddDefaultSetting(position);
+                }
 
                 // Parser separator word
                 if (settingsList.get(position).equals(parserSeparatorWordSetting)) {
@@ -211,6 +216,13 @@ public class SettingFragment extends Fragment {
         recipeDeletionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.RECIPE_DELETION_SHOW_AGAIN_MSG, false, getActivity()));
         recipeDeletionSetting.setViewVisibility(View.VISIBLE);
 
+        //Ask to add default recipes when the user has no recipes
+        recipeAddDefaultSetting = new Setting(context);
+        recipeAddDefaultSetting.setName(R.string.settings_options_add_default_recipes_name);
+        recipeAddDefaultSetting.setCaption(R.string.settings_options_add_default_recipes_descr);
+        recipeAddDefaultSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ASK_TO_ADD_DEFAULT_RECIPES, false, getActivity()));
+        recipeAddDefaultSetting.setViewVisibility(View.VISIBLE);
+
         //Choose separator word for the parser
         parserSeparatorWordSetting = new Setting(context);
         parserSeparatorWordSetting.setName(R.string.settings_option_7_parser_separate_word_name);
@@ -245,6 +257,7 @@ public class SettingFragment extends Fragment {
                     itemDeletionSetting,
                     slDeletionSetting,
                     recipeDeletionSetting,
+                    recipeAddDefaultSetting,
                     parserSeparatorWordSetting,
                     manageUnitsSetting,
                     locationPermissionSetting,
@@ -449,6 +462,17 @@ public class SettingFragment extends Fragment {
         } else {
             objAdapter.getItem(position).setChecked(true);
             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.RECIPE_DELETION_SHOW_AGAIN_MSG,true,getActivity());
+        }
+        objAdapter.notifyDataSetChanged();
+    }
+
+    private void setRecipeAddDefaultSetting(int position){
+        if(objAdapter.getItem(position).isChecked()){
+            objAdapter.getItem(position).setChecked(false);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ASK_TO_ADD_DEFAULT_RECIPES, false, getActivity());
+        } else {
+            objAdapter.getItem(position).setChecked(true);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ASK_TO_ADD_DEFAULT_RECIPES, true, getActivity());
         }
         objAdapter.notifyDataSetChanged();
     }

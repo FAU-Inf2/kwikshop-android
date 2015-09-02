@@ -60,7 +60,7 @@ public class ShoppingListFragment
 
     public static final String ARG_LISTID = "list_id";
     private static final String ARG_SHARINGCODE = "list_sharingcode";
-    public static final String ASK_FOR_SUPERMARKET = "ask_for_supermarket";
+    public static final String DO_NOT_ASK_FOR_SUPERMARKET = "ask_for_supermarket";
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
 
@@ -294,7 +294,7 @@ public class ShoppingListFragment
 
         // find supermarket places
 
-        if(!getActivity().getIntent().getExtras().getBoolean(ASK_FOR_SUPERMARKET)){
+        if(!getActivity().getIntent().getExtras().getBoolean(DO_NOT_ASK_FOR_SUPERMARKET)){
             Command<Void> findSuperMarketsCommand = viewModel.getFindNearbySupermarketCommand();
             if(findSuperMarketsCommand.getCanExecute()) {
                 findSuperMarketsCommand.execute(null);

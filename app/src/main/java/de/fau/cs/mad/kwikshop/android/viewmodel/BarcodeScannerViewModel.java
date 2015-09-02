@@ -26,6 +26,7 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
+import de.fau.cs.mad.kwikshop.android.view.ShoppingListFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
@@ -194,7 +195,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
 
         Intent intent = new Intent(context, ShoppingListActivity.class);
         intent.putExtra(ShoppingListActivity.SHOPPING_LIST_ID, listID);
-        intent.putExtra(LocationViewModel.SHOPPINGMODEPLACEREQUEST_CANCEL, true);
+        intent.putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true);
         viewLauncher.startActivity(intent);
     }
 

@@ -225,7 +225,7 @@ public class ShoppingListActivity extends BaseActivity {
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment BarcodeScannerFragment = fragmentManager.findFragmentByTag("BARCODE_SCANNER_FRAGMENT");
         if (BarcodeScannerFragment != null && BarcodeScannerFragment.isVisible()) {
-            startActivity(getIntent().putExtra(ShoppingListFragment.ASK_FOR_SUPERMARKET, true));
+            startActivity(getIntent().putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true));
             return;
         }
         super.onBackPressed();

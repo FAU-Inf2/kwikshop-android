@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -215,17 +217,17 @@ public class ShoppingListActivity extends BaseActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        /*
-       if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-       SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
-        }
-
-        */
     }
 
 
     @Override
     public void onBackPressed() {
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment BarcodeScannerFragment = fragmentManager.findFragmentByTag("BARCODE_SCANNER_FRAGMENT");
+        if (BarcodeScannerFragment != null && BarcodeScannerFragment.isVisible()) {
+            startActivity(getIntent().putExtra(ShoppingListFragment.ASK_FOR_SUPERMARKET, true));
+            return;
+        }
         super.onBackPressed();
     }
 

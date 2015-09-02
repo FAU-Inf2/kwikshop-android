@@ -58,8 +58,9 @@ public class ShoppingListFragment
         implements ShoppingListViewModel.Listener, ObservableArrayList.Listener<ItemViewModel> {
 
 
-    private static final String ARG_LISTID = "list_id";
+    public static final String ARG_LISTID = "list_id";
     private static final String ARG_SHARINGCODE = "list_sharingcode";
+    public static final String ASK_FOR_SUPERMARKET = "ask_for_supermarket";
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
 
@@ -118,7 +119,6 @@ public class ShoppingListFragment
         }
 
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -294,11 +294,12 @@ public class ShoppingListFragment
 
         // find supermarket places
 
-        Command<Void> findSuperMarketsCommand = viewModel.getFindNearbySupermarketCommand();
-        if(findSuperMarketsCommand.getCanExecute()) {
-            findSuperMarketsCommand.execute(null);
+        if(!getActivity().getIntent().getExtras().getBoolean(ASK_FOR_SUPERMARKET)){
+            Command<Void> findSuperMarketsCommand = viewModel.getFindNearbySupermarketCommand();
+            if(findSuperMarketsCommand.getCanExecute()) {
+                findSuperMarketsCommand.execute(null);
+            }
         }
-
 
         // shopping mode
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getActivity())){
@@ -319,7 +320,7 @@ public class ShoppingListFragment
                 barcodeViewModel.setContext(getActivity());
                 if(barcodeViewModel.checkInternetConnection()){
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(BaseActivity.frameLayout.getId(),BarcodeScannerFragment.newInstance(listID)).commit();
+                    fragmentManager.beginTransaction().replace(BaseActivity.frameLayout.getId(), BarcodeScannerFragment.newInstance(listID), "BARCODE_SCANNER_FRAGMENT").commit();
                 } else {
                     barcodeViewModel.notificationOfNoConnection();
                 }

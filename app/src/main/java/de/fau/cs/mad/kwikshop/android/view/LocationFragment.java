@@ -1,14 +1,9 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import android.support.v4.app.Fragment;
-
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,19 +24,14 @@ import butterknife.InjectView;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
-import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import se.walkercrou.places.Place;
 
 public class LocationFragment extends Fragment implements OnMapReadyCallback,  SupermarketPlace.AsyncPlaceRequestListener {
 
-    private Context context;
     private List<Place> places;
-    private LatLng latLng;
     private LocationViewModel viewModel;
 
     @Inject
@@ -63,28 +53,30 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
     View mapDirectionButton;
 
 
-
     public static LocationFragment newInstance() {
-        LocationFragment fragment = new LocationFragment();
-        return fragment;
+        return new LocationFragment();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = getActivity().getApplicationContext();
+
+        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
+        viewModel = objectGraph.get(LocationViewModel.class);
+        objectGraph.inject(this);
+        viewModel.setContext(getActivity().getApplicationContext());
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        dismissProgressDialog();
+        dismissDialog();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        viewLauncher.dismissDialog();
+        dismissDialog();
     }
 
 
@@ -95,29 +87,24 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         View rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.inject(this, rootView);
 
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
-        viewModel = objectGraph.get(LocationViewModel.class);
-        objectGraph.inject(this);
-
-        viewModel.setContext(context);
-
         showProgressDialog();
+        hideInfoBox();
 
         viewModel.startAsyncPlaceRequest(this, 5000, 30);
 
-        hideInfoBox();
-
         return rootView;
-
     }
+
 
     // called when place request is ready
     @Override
     public void postResult(List<Place> mPlaces) {
+
         places = mPlaces;
         viewModel.checkPlaceResult(places);
+
         initiateMap();
-        dismissProgressDialog();
+        dismissDialog();
     }
 
     // get map fragment and initiate map
@@ -137,7 +124,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         map = viewModel.setupGoogleMap(map);
         map.setMyLocationEnabled(true);
         viewModel.showPlacesInGoogleMap(places);
-        latLng = viewModel.getLastLatLng();
 
         // display info box
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -148,7 +134,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
                 showInfoBox();
                 mapPlaceName.setText(clickedPlace.getName());
                 mapPlaceOpenStatus.setText(viewModel.convertStatus(clickedPlace.getStatus()));
-                mapPlaceDistance.setText(viewModel.getDistanceBetweenLastLocationAndPlace(clickedPlace, latLng));
+                mapPlaceDistance.setText(viewModel.getDistanceBetweenLastLocationAndPlace(clickedPlace, viewModel.getLastLatLng()));
                 mapDirectionButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -179,13 +165,12 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         mapDirectionButton.setVisibility(View.INVISIBLE);
     }
 
-    void dismissProgressDialog(){
+    void dismissDialog(){
         viewLauncher.dismissProgressDialog();
+        viewLauncher.dismissDialog();
     }
 
-    public void showProgressDialog(){ viewModel.showProgressDialogWithoutButton();
-
-    }
+    public void showProgressDialog(){ viewModel.showProgressDialogWithoutButton();}
 
 
 }

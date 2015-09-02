@@ -92,7 +92,6 @@ public interface ViewLauncher {
                                            String neutralMessage, final Command<Integer> neutralCommand,
                                            String negativeMessage, final Command<Integer> negativeCommand);
 
-    void dismissProgressDialog();
 
     void showListOfShoppingListsActivity();
 

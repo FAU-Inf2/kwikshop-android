@@ -142,6 +142,8 @@ public class LocationViewModel {
     public LatLng getLastLatLng(){
         LastLocation lastLocation = LocationFinderHelper.initiateLocationFinderHelper(context).getLastLocation();
 
+        viewLauncher.dismissDialog();
+
         if(lastLocation.getLatitude() == 0d){
             // no last location info dialog
             viewLauncher.showMessageDialog(
@@ -237,7 +239,7 @@ public class LocationViewModel {
 
     public void checkPlaceResult(List<Place> places){
 
-        viewLauncher.dismissProgressDialog();
+        viewLauncher.dismissDialog();
 
         if(!LocationFinderHelper.checkPlaces(places)){
             // no place info dialog

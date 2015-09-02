@@ -167,7 +167,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
     }
 
     void dismissDialog(){
-        viewLauncher.dismissProgressDialog();
         viewLauncher.dismissDialog();
     }
 

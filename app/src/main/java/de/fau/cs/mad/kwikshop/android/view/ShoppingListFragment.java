@@ -319,7 +319,7 @@ public class ShoppingListFragment
                 barcodeViewModel.setContext(getActivity());
                 if(barcodeViewModel.checkInternetConnection()){
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentManager.beginTransaction().add(BaseActivity.frameLayout.getId(),BarcodeScannerFragment.newInstance(listID)).commit();
+                    fragmentManager.beginTransaction().replace(BaseActivity.frameLayout.getId(),BarcodeScannerFragment.newInstance(listID)).commit();
                 } else {
                     barcodeViewModel.notificationOfNoConnection();
                 }

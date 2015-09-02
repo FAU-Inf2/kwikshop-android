@@ -153,7 +153,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
         if(!item.getName().isEmpty()){
             Toast.makeText(context,  "Debug: " + item.getName() + " Found on: opengtindb.org", Toast.LENGTH_LONG).show();
             addItemToShoppingList(item);
-            viewLauncher.dismissProgressDialog();
+            viewLauncher.dismissDialog();
         } else {
             getRestResponse(EAN);
         }
@@ -169,7 +169,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
         } else {
             Toast.makeText(context, resourceProvider.getString(R.string.barcode_scanner_no_product), Toast.LENGTH_LONG).show();
         }
-        viewLauncher.dismissProgressDialog();
+        viewLauncher.dismissDialog();
     }
 
 

@@ -396,7 +396,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
         if(!findNearbySupermarketCanceled) {
 
-            viewLauncher.dismissProgressDialog();
+            viewLauncher.dismissDialog();
             setPlaces(result.getPlaces());
 
             if(!LocationFinderHelper.checkPlaces(places)){
@@ -415,9 +415,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
             showSelectCurrentSupermarket(places);
         }
-
-
-
     }
 
     //endregion

@@ -38,6 +38,6 @@ public class ClusterItemRendered extends DefaultClusterRenderer<ClusterMapItem> 
 
     @Override
     protected boolean shouldRenderAsCluster(Cluster<ClusterMapItem> cluster) {
-        return cluster.getSize() > 1;
+        return cluster.getSize() > 3;
     }
 }

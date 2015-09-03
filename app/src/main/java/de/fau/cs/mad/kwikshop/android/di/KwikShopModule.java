@@ -13,6 +13,7 @@ import de.fau.cs.mad.kwikshop.android.model.tasks.RedeemSharingCodeTask;
 import de.fau.cs.mad.kwikshop.android.util.DefaultRecipesHelper;
 import de.fau.cs.mad.kwikshop.android.util.StackTraceReporter;
 import de.fau.cs.mad.kwikshop.android.view.BarcodeScannerFragment;
+import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
 import de.fau.cs.mad.kwikshop.android.view.LocationFragment;
 import de.fau.cs.mad.kwikshop.android.view.ServerIntegrationDebugActivity;
 import de.fau.cs.mad.kwikshop.android.view.SettingFragment;
@@ -51,40 +52,41 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
         library = true,
         injects = {
 
-            // view models
-            ListOfShoppingListsViewModel.class,
-            ShoppingListDetailsViewModel.class,
-            ShoppingListViewModel.class,
-            ListOfRecipesViewModel.class,
-            RecipesDetailsViewModel.class,
-            RecipeViewModel.class,
-            ItemDetailsViewModel.class,
-            ShoppingListItemDetailsViewModel.class,
-            RecipeItemDetailsViewModel.class,
-            LocationViewModel.class,
-            BarcodeScannerViewModel.class,
-            BaseViewModel.class,
+                // view models
+                ListOfShoppingListsViewModel.class,
+                ShoppingListDetailsViewModel.class,
+                ShoppingListViewModel.class,
+                ListOfRecipesViewModel.class,
+                RecipesDetailsViewModel.class,
+                RecipeViewModel.class,
+                ItemDetailsViewModel.class,
+                ShoppingListItemDetailsViewModel.class,
+                RecipeItemDetailsViewModel.class,
+                LocationViewModel.class,
+                BarcodeScannerViewModel.class,
+                BaseViewModel.class,
 
-            //helpers
-            DisplayHelper.class,
-            AutoCompletionHelper.class,
-            StackTraceReporter.class,
-            RegularlyRepeatHelper.class,
-            DefaultRecipesHelper.class,
+                //helpers
+                DisplayHelper.class,
+                AutoCompletionHelper.class,
+                StackTraceReporter.class,
+                RegularlyRepeatHelper.class,
+                DefaultRecipesHelper.class,
 
-            //activities & fragments
-            ShoppingListActivity.class,
-            ServerIntegrationDebugActivity.class,
-            ShoppingListItemDetailsFragment.class,
-            RecipeItemDetailsFragment.class,
-            ReminderFragment.class,
-            SettingFragment.class,
-            ShoppingListFragment.class,
-            LocationFragment.class,
-            BarcodeScannerFragment.class,
+                //activities & fragments
+                ShoppingListActivity.class,
+                ServerIntegrationDebugActivity.class,
+                ShoppingListItemDetailsFragment.class,
+                RecipeItemDetailsFragment.class,
+                ReminderFragment.class,
+                SettingFragment.class,
+                ShoppingListFragment.class,
+                LocationActivity.class,
+                LocationFragment.class,
+                BarcodeScannerFragment.class,
 
-            RedeemSharingCodeTask.class,
-            DefaultViewLauncher.class
+                RedeemSharingCodeTask.class,
+                DefaultViewLauncher.class
         })
 @SuppressWarnings("unused")
 
@@ -93,16 +95,14 @@ public class KwikShopModule {
     private final Activity activity;
 
 
-
     public KwikShopModule(Activity activity) {
 
-        if(activity == null) {
+        if (activity == null) {
             throw new ArgumentNullException("activity");
         }
 
         this.activity = activity;
     }
-
 
 
     @Provides
@@ -114,7 +114,6 @@ public class KwikShopModule {
     public Context provideContext() {
         return activity;
     }
-
 
 
     @Provides

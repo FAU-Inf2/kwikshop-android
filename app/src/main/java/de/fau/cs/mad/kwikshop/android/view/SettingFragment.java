@@ -398,8 +398,6 @@ public class SettingFragment extends Fragment {
                     }
                 }
         );
-
-
     }
 
     public void setLocale(String lang) {

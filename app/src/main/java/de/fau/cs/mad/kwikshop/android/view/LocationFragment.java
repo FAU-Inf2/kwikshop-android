@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +33,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
 
     private List<Place> places;
     private LocationViewModel viewModel;
+    private GoogleMap map;
 
     @Inject
     ViewLauncher viewLauncher;
@@ -100,34 +100,34 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
     // called when place request is ready
     @Override
     public void postResult(List<Place> mPlaces) {
-
         places = mPlaces;
         viewModel.checkPlaceResult(places);
-        for(Place place : places){
-            Log.e("LF", "Place: " + place.getName());
-        }
         initiateMap();
     }
 
     // get map fragment and initiate map
     private void initiateMap(){
-        if (!viewModel.isCanceld()) {
-            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-            if(mapFragment != null){
-                mapFragment.getMapAsync(this);
-            }
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
         }
     }
 
-    // map is ready
     @Override
-    public void onMapReady(GoogleMap map) {
+    public void onMapReady(GoogleMap mMap) {
 
+        map = mMap;
         map = viewModel.setupGoogleMap(map);
         viewModel.showPlacesInGoogleMap(places);
-        dismissDialog();
 
-        // display info box
+        onMarkerClickHandler();
+
+        onMapClickHandler();
+
+    }
+
+    private void onMarkerClickHandler(){
+
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -146,16 +146,16 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
                 return false;
             }
         });
+    }
 
-        // hide info box
+
+    private void onMapClickHandler(){
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
                 hideInfoBox();
             }
         });
-
-
     }
 
     private void showInfoBox(){
@@ -169,9 +169,11 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         mapDirectionButton.setVisibility(View.INVISIBLE);
     }
 
-    void dismissDialog(){ viewLauncher.dismissDialog();}
+    void dismissDialog(){
+        viewLauncher.dismissDialog();}
 
-    public void showProgressDialog(){ viewModel.showProgressDialogWithoutButton();}
+    public void showProgressDialog(){
+        viewModel.showProgressDialogWithoutButton();}
 
 
 }

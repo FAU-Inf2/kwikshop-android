@@ -22,13 +22,11 @@ import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
-import de.fau.cs.mad.kwikshop.android.model.messages.FindSupermarketsResult;
 import de.fau.cs.mad.kwikshop.android.util.ClusterMapItem;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.util.ClusterItemRendered;
 import de.fau.cs.mad.kwikshop.android.view.LocationFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
@@ -38,16 +36,9 @@ import se.walkercrou.places.Status;
 public class LocationViewModel {
 
     private Context context;
-
-
-    private Boolean canceled = false;
-
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
-
-    public static String SHOPPINGMODEPLACEREQUEST_CANCEL = "ShoppingModePlaceRequest_cancel";
     private ClusterManager<ClusterMapItem> mClusterManager;
-
 
     @Inject
     public LocationViewModel(ResourceProvider resourceProvider, ViewLauncher viewLauncher) {
@@ -60,17 +51,12 @@ public class LocationViewModel {
             throw new ArgumentNullException("viewLauncher");
         }
 
-
         this.resourceProvider = resourceProvider;
         this.viewLauncher = viewLauncher;
     }
 
 
-
-
     public void setContext(Context context){ this.context = context; }
-
-    public Boolean isCanceld(){ return canceled; }
 
     public Command<Void> getCancelProgressDialogCommand(){ return cancelProgressDialogCommand; }
 
@@ -78,12 +64,13 @@ public class LocationViewModel {
 
     public Command<String> getRouteIntentCommand(){ return routeIntentCommand; }
 
+    public Command getRestartActivityCommand(){ return restartActivityCommand; }
+
 
 
     final Command<Void> cancelProgressDialogCommand =  new Command<Void>() {
         @Override
         public void execute(Void parameter) {
-            canceled = true;
             viewLauncher.showListOfShoppingListsActivity();
         }
     };
@@ -126,6 +113,14 @@ public class LocationViewModel {
         }
     };
 
+
+    final Command restartActivityCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            viewLauncher.restartActivity();
+        }
+    };
+
     final Command disableLocalization = new Command<Void>(){
         @Override
         public void execute(Void parameter) {
@@ -134,23 +129,28 @@ public class LocationViewModel {
     };
 
 
-
     public void getNearbySupermarketPlaces(Object instance, int radius, int resultCount){
         SupermarketPlace.initiateSupermarketPlaceRequest(context, instance, radius, resultCount);
     }
 
+    public void startAsyncPlaceRequest(LocationFragment locationFragment, int radius, int resultCount) {
+        if(InternetHelper.checkInternetConnection(context)){
+            getNearbySupermarketPlaces(locationFragment, radius, resultCount);
+        } else {
+            notificationOfNoConnectionForMap();
+        }
+    }
+
     public LatLng getLastLatLng(){
         LastLocation lastLocation = LocationFinderHelper.initiateLocationFinderHelper(context).getLastLocation();
-
         viewLauncher.dismissDialog();
 
         if(lastLocation.getLatitude() == 0d){
-            // no last location info dialog
             viewLauncher.showMessageDialog(
                     resourceProvider.getString(R.string.localization_no_place_dialog_title),
                     resourceProvider.getString(R.string.no_last_location_dialog_message),
                     resourceProvider.getString(R.string.dialog_OK),
-                    cancelProgressDialogCommand,
+                    getCancelProgressDialogCommand(),
                     resourceProvider.getString(R.string.dialog_retry),
                     new Command<Void>() {
                         @Override
@@ -172,6 +172,7 @@ public class LocationViewModel {
         settings.setAllGesturesEnabled(true);
         settings.setMapToolbarEnabled(false);
 
+        // add cluster to map
         mClusterManager = new ClusterManager<>(context, map);
         mClusterManager.setRenderer(new ClusterItemRendered(context, map, mClusterManager));
         map.setOnCameraChangeListener(mClusterManager);
@@ -212,6 +213,8 @@ public class LocationViewModel {
     @SuppressWarnings("unchecked")
     public void notificationOfNoConnectionForMap(){
 
+        viewLauncher.dismissDialog();
+
         viewLauncher.showMessageDialog(
                 resourceProvider.getString(R.string.alert_dialog_connection_label),
                 resourceProvider.getString(R.string.alert_dialog_connection_message),
@@ -220,11 +223,12 @@ public class LocationViewModel {
                 resourceProvider.getString(R.string.alert_dialog_connection_cancel),
                 getFinishActivityCommand()
         );
-
     }
 
     @SuppressWarnings("unchecked")
     public void notificationOfNoConnectionWithLocationPermission(){
+
+        viewLauncher.dismissDialog();
 
         viewLauncher.showMessageDialog(
                 resourceProvider.getString(R.string.localization_dialog_title),
@@ -237,30 +241,27 @@ public class LocationViewModel {
 
     }
 
+    @SuppressWarnings("unchecked")
     public void checkPlaceResult(List<Place> places){
 
         viewLauncher.dismissDialog();
 
         if(!LocationFinderHelper.checkPlaces(places)){
-            // no place info dialog
             viewLauncher.showMessageDialog(
                     resourceProvider.getString(R.string.localization_no_place_dialog_title),
                     resourceProvider.getString(R.string.no_place_dialog_message),
                     resourceProvider.getString(R.string.dialog_OK),
                     cancelProgressDialogCommand,
                     resourceProvider.getString(R.string.dialog_retry),
-                    new Command<Void>() {
-                        @Override
-                        public void execute(Void parameter) {
-                            viewLauncher.restartActivity();
-                        }
-                    }
+                    getRestartActivityCommand()
             );
         }
     }
 
 
     public void showProgressDialogWithoutButton() {
+
+        viewLauncher.dismissDialog();
 
         viewLauncher.showProgressDialogWithoutButton(
                 resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
@@ -273,13 +274,5 @@ public class LocationViewModel {
         );
     }
 
-    public void startAsyncPlaceRequest(LocationFragment locationFragment, int radius, int resultcount) {
 
-        if(InternetHelper.checkInternetConnection(context)){
-            getNearbySupermarketPlaces(locationFragment, radius, resultcount);
-
-        } else {
-            notificationOfNoConnectionForMap();
-        }
-    }
 }

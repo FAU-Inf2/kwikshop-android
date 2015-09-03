@@ -567,7 +567,6 @@ public class DefaultViewLauncher implements ViewLauncher {
         progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                Log.e("VL", "Progress dialog was canceld");
                 if (command != null && command.getCanExecute()) {
                     command.execute(null);
                 }

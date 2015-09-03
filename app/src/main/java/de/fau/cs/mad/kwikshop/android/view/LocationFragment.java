@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +103,9 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
 
         places = mPlaces;
         viewModel.checkPlaceResult(places);
-
+        for(Place place : places){
+            Log.e("LF", "Place: " + place.getName());
+        }
         initiateMap();
     }
 
@@ -166,9 +169,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         mapDirectionButton.setVisibility(View.INVISIBLE);
     }
 
-    void dismissDialog(){
-        viewLauncher.dismissDialog();
-    }
+    void dismissDialog(){ viewLauncher.dismissDialog();}
 
     public void showProgressDialog(){ viewModel.showProgressDialogWithoutButton();}
 

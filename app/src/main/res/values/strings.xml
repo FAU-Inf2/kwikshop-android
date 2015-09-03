@@ -55,6 +55,11 @@
     <string-array name="store_types_array">
         <item>Supermarket</item>
         <item>Bakery</item>
+        <item>Gas Station</item>
+        <item>Liquor Store</item>
+        <item>Pharmacy</item>
+        <item>Shopping Mall</item>
+        <item>Florist</item>
     </string-array>
 
 

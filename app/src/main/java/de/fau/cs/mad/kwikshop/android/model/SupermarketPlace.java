@@ -46,43 +46,22 @@ public class SupermarketPlace {
             protected List<Place> doInBackground(Void... params) {
                 GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
 
-                String[] storeTypes = new String[]{
-                        "grocery_or_supermarket",
-                        "bakery",
-                        "gas_station",
-                        "liquor_store",
-                        "pharmacy",
-                        "shopping_mall",
-                        "florist"
-                };
-
-                String[] storeTypesSettingName = new String[]{
-                        SharedPreferencesHelper.STORE_TYPE_SUPERMARKET,
-                        SharedPreferencesHelper.STORE_TYPE_BAKERY,
-                        SharedPreferencesHelper.STORE_TYPE_GAS_STATION,
-                        SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE,
-                        SharedPreferencesHelper.STORE_TYPE_PHARMACY,
-                        SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL,
-                        SharedPreferencesHelper.STORE_TYPE_FLORIST
-                };
+                String[] storeTypes = new String[]{"grocery_or_supermarket", "bakery", "gas_station", "liquor_store", "pharmacy", "shopping_mall", "store"};
 
                 try {
-                    Log.e("SupermarketPlace", "Request: all");
                     places = client.getNearbyPlaces(
                             latlng.latitude,
                             latlng.longitude,
-                            radius, 30,
-                            Param.name("types").value("store"),
-                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(storeTypesSettingName[0], false, context) ? storeTypes[0] : ""),
-                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(storeTypesSettingName[1], false, context) ? storeTypes[1] : ""),
-                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(storeTypesSettingName[2], false, context) ? storeTypes[2] : ""),
-                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(storeTypesSettingName[3], false, context) ? storeTypes[3] : ""),
-                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(storeTypesSettingName[4], false, context) ? storeTypes[4] : ""),
-                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(storeTypesSettingName[5], false, context) ? storeTypes[5] : ""),
-                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(storeTypesSettingName[6], false, context) ? storeTypes[5] : "")
+                            radius, resultCount,
+                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, false, context) ? storeTypes[0] : ""),
+                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, context) ? storeTypes[1] : ""),
+                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, false, context) ? storeTypes[2] : ""),
+                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, context) ? storeTypes[3] : ""),
+                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, context) ? storeTypes[4] : ""),
+                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false, context) ? storeTypes[5] : ""),
+                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, context) ? storeTypes[5] : "")
                     );
                 } catch (Exception e) {
-                    Log.e("SupermarketPlace", "Error: " + e.getMessage());
                     e.printStackTrace();
                 }
 
@@ -101,16 +80,6 @@ public class SupermarketPlace {
             }
         }.execute();
     }
-
-    private List<Place> addPlaces(List<Place> placesToAdd) {
-        if (places != null) {
-            if (placesToAdd != null) {
-                places.addAll(placesToAdd);
-            }
-        }
-        return places;
-    }
-
 
     public LatLng getLastPosition() {
         LocationFinderHelper lastLocation = new LocationFinderHelper(context);

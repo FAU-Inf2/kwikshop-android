@@ -29,7 +29,7 @@ public class RecipeManager extends AbstractListManager<Recipe> {
 
     @Override
     protected ItemNotFoundException itemNotFound(int listId, int itemId) {
-        return new ItemNotFoundException(String.format("Could not find item with id %s in Recipe %s", listId, itemId));
+        return new ItemNotFoundException(String.format("Could not find item with id %s in Recipe %s", itemId, listId));
     }
 
     @Override

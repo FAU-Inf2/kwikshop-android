@@ -39,6 +39,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 
 import static de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper.*;
 
@@ -68,6 +69,7 @@ public class SettingFragment extends Fragment {
     private Setting enableSyncSetting;
     private Setting syncNowSetting;
     private Setting syncIntervalSetting;
+    private Setting placeTypeSetting;
 
     @Inject
     ViewLauncher viewLauncher;
@@ -158,6 +160,10 @@ public class SettingFragment extends Fragment {
                 if (settingsList.get(position).equals(syncIntervalSetting)) {
                     selectSyncInterval();
                 }
+
+                if(settingsList.get(position).equals(placeTypeSetting)){
+                    selectPlaceType();
+                }
             }
         });
 
@@ -247,25 +253,29 @@ public class SettingFragment extends Fragment {
         syncIntervalSetting.setName(R.string.settings_options_syncInterval_name);
         syncIntervalSetting.setCaption(R.string.settings_options_syncInterval_descr);
 
-        // add all settings to the list of settins
+        //Change Place Request Type
+        placeTypeSetting = new Setting(context);
+        placeTypeSetting.setName(R.string.localization_store_types_dialog_title);
+        placeTypeSetting.setCaption(R.string.localization_store_types_dialog_caption);
 
         // list of settings
         settingsList = new ArrayList<>(Arrays.asList(new Setting[]
                 {
-                    localeSetting,
-                    autoCompletionDeletionSetting,
-                    itemDeletionSetting,
-                    slDeletionSetting,
-                    recipeDeletionSetting,
-                    recipeAddDefaultSetting,
-                    parserSeparatorWordSetting,
-                    manageUnitsSetting,
-                    locationPermissionSetting,
-                    enableSyncSetting,
-                    syncNowSetting,
-                    loginSetting,
-                    syncIntervalSetting,
-                    apiEndpointSetting
+                        localeSetting,
+                        autoCompletionDeletionSetting,
+                        itemDeletionSetting,
+                        slDeletionSetting,
+                        recipeDeletionSetting,
+                        recipeAddDefaultSetting,
+                        parserSeparatorWordSetting,
+                        manageUnitsSetting,
+                        locationPermissionSetting,
+                        enableSyncSetting,
+                        syncNowSetting,
+                        loginSetting,
+                        syncIntervalSetting,
+                        apiEndpointSetting,
+                        placeTypeSetting
                 }));
 
 
@@ -276,11 +286,76 @@ public class SettingFragment extends Fragment {
         return rootView;
     }
 
+
+
     @Override
     public void onPause() {
         super.onPause();
         if (alert != null)
             alert.dismiss();
+    }
+
+
+    private void selectPlaceType(){
+
+        Boolean supermarketIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, true, getActivity());
+        Boolean bakeryIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, getActivity());
+
+        boolean[] storeTypeStatus = new boolean[]{supermarketIsEnabled,bakeryIsEnabled};
+
+        viewLauncher.showMultiplyChoiceDialog(
+                resourceProvider.getString(R.string.localization_store_types_dialog_title),
+                resourceProvider.getStringArray(R.array.store_types_array),
+                storeTypeStatus,
+                //select command
+                new Command<Integer>() {
+                    @Override
+                    public void execute(Integer selection) {
+                        switch(selection){
+                            case 0:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, true, getActivity());
+                                break;
+                            case 1:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, true, getActivity());
+                                break;
+                        }
+
+                    }
+                },
+                //deselect command
+                new Command<Integer>() {
+                    @Override
+                    public void execute(Integer deSelection) {
+                        switch(deSelection){
+                            case 0:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, false, getActivity());
+                                break;
+                            case 1:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, getActivity());
+                                break;
+                        }
+
+                    }
+                },
+                //positive command
+                resourceProvider.getString(R.string.dialog_OK),
+                new Command<Void>() {
+                    @Override
+                    public void execute(Void parameter) {
+
+                    }
+                },
+                //negative command
+                resourceProvider.getString(R.string.cancel),
+                new Command<Void>() {
+                    @Override
+                    public void execute(Void parameter) {
+
+                    }
+                }
+        );
+
+
     }
 
     public void setLocale(String lang) {
@@ -567,4 +642,5 @@ public class SettingFragment extends Fragment {
         );
 
     }
+
 }

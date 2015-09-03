@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.messages.FindSupermarketsResult;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.greenrobot.event.EventBus;
 import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Param;
@@ -42,11 +43,14 @@ public class SupermarketPlace {
             protected List<Place> doInBackground(Void... params) {
                 GooglePlaces client = new GooglePlaces(googleBrowserApiKey);
                 List<Place> places = null;
+                List<Place> bakeries = null;
                 try {
                     /* radius: 1000m (default)
                     *  #results: 10 (default)
                     *  types: grocery or supermarket
                     */
+
+
                     places = client.getNearbyPlaces(
                             latlng.latitude,
                             latlng.longitude,
@@ -59,6 +63,20 @@ public class SupermarketPlace {
                             Param.name("types").value("bakery")
                             */
                     );
+
+
+                    if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, context)){
+                        bakeries = client.getNearbyPlaces(
+                                latlng.latitude,
+                                latlng.longitude,
+                                radius, resultCount,
+                                Param.name("types").value("bakery")
+
+                        );
+                        places.addAll(bakeries);
+                    }
+
+
 
                 } catch (Exception e) {
                     e.printStackTrace();

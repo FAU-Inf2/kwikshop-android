@@ -95,6 +95,12 @@ public interface ViewLauncher {
 
     void showListOfShoppingListsActivity();
 
+    void showMultiplyChoiceDialog(String title, String[] typeNames, boolean[] checkedTypes,
+                                  final Command<Integer> selectCommand,
+                                  final Command<Integer> unSelectCommand,
+                                  String positiveMessage, final Command<Void> positiveCommand,
+                                  String negativeMessage, final Command<Void> negativeCommand);
+
     void showLocationActivity();
 
     void finishActivity();

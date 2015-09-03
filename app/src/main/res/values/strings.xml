@@ -52,6 +52,11 @@
     <string name="no_place_dialog_message">Kwik Shop does not find any store in your area.</string>
     <string name="no_last_location_dialog_message">Kwik Shop can not find your current location.</string>
     <string name="localize">Localize</string>
+    <string-array name="store_types_array">
+        <item>Supermarket</item>
+        <item>Bakery</item>
+    </string-array>
+
 
 
     <!-- Item Details Fragment -->
@@ -96,6 +101,8 @@
     <string name="settings_option_6_item_deletion_descr">Always ask before deleting an item</string>
     <string name="settings_option_7_parser_separate_word_name">Item separator word</string>
     <string name="settings_option_7_parser_separate_word_descr">Choose word to separate multiple items </string>
+    <string name="localization_store_types_dialog_title">Store types</string>
+    <string name="localization_store_types_dialog_caption">Select your preferred store types</string>
 
     <!-- Overflow Action Menu -->
     <string name="overflow_action_menu_settings">Settings</string>

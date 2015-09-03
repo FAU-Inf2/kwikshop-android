@@ -9,4 +9,6 @@ public interface ResourceProvider {
     int getInteger(int id);
 
     Locale getLocale();
+
+    String[] getStringArray(int id);
 }

@@ -37,4 +37,9 @@ public class DefaultResourceProvider implements ResourceProvider {
     public Locale getLocale() {
         return context.getResources().getConfiguration().locale;
     }
+
+    @Override
+    public String[] getStringArray(int id) {
+        return context.getResources().getStringArray(id);
+    }
 }

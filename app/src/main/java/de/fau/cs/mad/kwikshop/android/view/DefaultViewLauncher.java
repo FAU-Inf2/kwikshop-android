@@ -688,6 +688,61 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
+    public void showMultiplyChoiceDialog(String title, final String[] typeNames, boolean[] checkedTypes,
+                                         final Command<Integer> selectCommand,
+                                         final Command<Integer> deSelectCommand,
+                                         String positiveMessage, final Command<Void> positiveCommand,
+                                         String negativeMessage, final Command<Void> negativeCommand) {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+
+        builder.setMultiChoiceItems(typeNames, checkedTypes, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                       if(isChecked){
+                           if(selectCommand.getCanExecute()){
+                               selectCommand.execute(which);
+                           }
+                       } else {
+                           if(deSelectCommand.getCanExecute()){
+                               deSelectCommand.execute(which);
+                           }
+                       }
+                    }
+                }
+        );
+        builder.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if(positiveCommand.getCanExecute()) {
+                    positiveCommand.execute(null);
+                }
+
+            }
+        });
+
+        builder.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if(negativeCommand.getCanExecute()){
+                    negativeCommand.execute(null);
+                }
+            }
+        });
+
+        alert = builder.create();
+
+        if(!activity.isFinishing()) {
+            alert.show();
+        }
+    }
+
+
+    @Override
     public void showLocationActivity() {
         activity.finish();
         Intent intent =  LocationActivity.getIntent(activity.getApplicationContext());

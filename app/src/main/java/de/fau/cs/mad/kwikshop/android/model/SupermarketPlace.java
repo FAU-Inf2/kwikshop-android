@@ -2,7 +2,6 @@ package de.fau.cs.mad.kwikshop.android.model;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -15,7 +14,6 @@ import de.greenrobot.event.EventBus;
 import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
-import se.walkercrou.places.Status;
 
 public class SupermarketPlace {
 

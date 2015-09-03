@@ -270,12 +270,11 @@ public class SettingFragment extends Fragment {
                         parserSeparatorWordSetting,
                         manageUnitsSetting,
                         locationPermissionSetting,
-                        enableSyncSetting,
+                        placeTypeSetting,
                         syncNowSetting,
                         loginSetting,
                         syncIntervalSetting,
-                        apiEndpointSetting,
-                        placeTypeSetting
+                        apiEndpointSetting
                 }));
 
 
@@ -304,7 +303,7 @@ public class SettingFragment extends Fragment {
         boolean liquorStoreIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, getActivity());
         boolean pharmacyIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, getActivity());
         boolean shoppingMallIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false, getActivity());
-        boolean floristIsEnaled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_FLORIST, false, getActivity());
+        boolean floristIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, getActivity());
 
 
         boolean[] storeTypeStatus = new boolean[]{
@@ -314,7 +313,7 @@ public class SettingFragment extends Fragment {
                 liquorStoreIsEnabled,
                 pharmacyIsEnabled,
                 shoppingMallIsEnabled,
-                floristIsEnaled
+                floristIsEnabled
         };
 
         viewLauncher.showMultiplyChoiceDialog(
@@ -345,7 +344,7 @@ public class SettingFragment extends Fragment {
                                 SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, true,  getActivity());
                                 break;
                             case 6:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_FLORIST, true, getActivity());
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, true, getActivity());
                                 break;
 
                         }
@@ -376,7 +375,7 @@ public class SettingFragment extends Fragment {
                                 SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false,  getActivity());
                                 break;
                             case 6:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_FLORIST, false, getActivity());
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, getActivity());
                                 break;
                         }
 

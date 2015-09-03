@@ -262,10 +262,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     protected void saveItem() {
 
-        if (viewModel.isNewItem()) {
-            item = new Item();
-        }
-
         item.setName(productname_text.getText().toString());
         if(numberPickerCalledWith != numberPicker.getValue()){
             //only set amount if it got changed, so values written by parser which are not listed
@@ -323,7 +319,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     protected void setupUI() {
 
-        item = getListManager().getListItem(listId, itemId);
+        //TODO: Creation of new item actually belongs into the view model
+        if(isNewItem) {
+            item = new Item();
+        } else {
+
+            item = getListManager().getListItem(listId, itemId);
+        }
+
 
         // display the supermarket where this item was bought
 

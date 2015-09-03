@@ -16,6 +16,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 
@@ -26,6 +28,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ShareSuccessEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEventType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.BaseViewModel;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -46,12 +49,16 @@ public class BaseActivity extends AppCompatActivity {
 
     public static FrameLayout frameLayout;
 
-
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -65,14 +72,25 @@ public class BaseActivity extends AppCompatActivity {
 
         viewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
 
-        /*
+
         // Shopping Mode
+
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            if (getIntent().getExtras().getBoolean(ShoppingListActivity.SHOPPING_MODE)) {
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+        }
+
+        /*
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, this)){
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
-
         */
+
+
+
 
         // restart to set locale
         viewModel.setSavedLocale();

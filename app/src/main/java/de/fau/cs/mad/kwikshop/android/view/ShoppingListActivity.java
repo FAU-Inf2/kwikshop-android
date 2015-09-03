@@ -33,6 +33,7 @@ public class ShoppingListActivity extends BaseActivity {
     RestClientFactory clientFactory;
 
     public static final String SHOPPING_LIST_ID = "shopping_list_id";
+    public static final String SHOPPING_MODE = "shopping_mode";
 
     public Menu menu;
 
@@ -69,10 +70,12 @@ public class ShoppingListActivity extends BaseActivity {
         MenuItem shoppingMode = menu.findItem(R.id.action_shopping_mode);
         shoppingMode.setVisible(true);
 
+        /*
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getApplicationContext())){
             moveToShoppingCart.setVisible(true);
             moveFromShoppingCart.setVisible(true);
         }
+        */
 
         MenuItem findLocationItem =  menu.findItem(R.id.refresh_current_supermarket);
 
@@ -99,9 +102,11 @@ public class ShoppingListActivity extends BaseActivity {
                 EventBus.getDefault().post(MoveAllItemsEvent.moveAllFromBoughtEvent);
                 break;
             case R.id.action_shopping_mode:
-                // save enabled shopping mode setting and restart activity to update view
-                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.SHOPPING_MODE, true, getApplicationContext());
-                startActivity(ShoppingListActivity.getIntent(getApplicationContext(), getIntent().getExtras().getInt(SHOPPING_LIST_ID)));
+                /* start shopping mode */
+                Intent shoppingModeIntent = ShoppingListActivity.getIntent(getApplicationContext(), getIntent().getExtras().getInt(SHOPPING_LIST_ID));
+                shoppingModeIntent.putExtra(SHOPPING_MODE, true);
+                shoppingModeIntent.putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true);
+                startActivity(shoppingModeIntent);
                 break;
             case R.id.refresh_current_supermarket:
                 return false;

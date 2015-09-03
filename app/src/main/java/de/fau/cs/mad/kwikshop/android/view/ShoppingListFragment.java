@@ -301,15 +301,25 @@ public class ShoppingListFragment
             }
         }
 
+
         // shopping mode
+        if(getActivity().getIntent().getExtras().getBoolean(ShoppingListActivity.SHOPPING_MODE)){
+            // remove quick add view
+            ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
+            ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
+            viewModel.setInShoppingMode(true);
+        }
+
+        /*
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getActivity())){
 
              // remove quick add view
             ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
             ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
             viewModel.setInShoppingMode(true);
-
         }
+        */
+
 
 
         // barcode scanner

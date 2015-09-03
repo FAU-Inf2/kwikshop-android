@@ -30,7 +30,7 @@ public class SharedPreferencesHelper {
     public static final String STORE_TYPE_LIQUOR_STORE = "store_type_liquor_store";
     public static final String STORE_TYPE_PHARMACY = "store_type_pharmacy";
     public static final String STORE_TYPE_SHOPPING_MALL = "store_type_shopping_mall";
-    public static final String STORE_TYPE_FLORIST = "store_type_florist";
+    public static final String STORE_TYPE_STORE = "store_type_store";
 
     private static final String sharedPreferencesName = "settings";
 

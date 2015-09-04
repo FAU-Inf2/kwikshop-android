@@ -73,23 +73,13 @@ public class BaseActivity extends AppCompatActivity {
         viewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
 
 
-        // Shopping Mode
-
+        // set full screen in shopping mode
         if (getIntent() != null && getIntent().getExtras() != null) {
             if (getIntent().getExtras().getBoolean(ShoppingListActivity.SHOPPING_MODE)) {
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
         }
-
-        /*
-        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, this)){
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
-        */
-
-
 
 
         // restart to set locale

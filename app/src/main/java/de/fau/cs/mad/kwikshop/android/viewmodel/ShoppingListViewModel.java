@@ -43,7 +43,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     private int tmp_item_id;
 
-    private boolean inShoppingMode = false;
     private ArrayList<Item> swipedItemOrder = new ArrayList<>();
     private List<Place> places;
     private ItemSortType itemSortType = ItemSortType.MANUAL;
@@ -102,13 +101,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         }
     };
 
-    final Command<Void> disableLocalizationCommand = new Command<Void>(){
-        @Override
-        public void execute(Void parameter) {
-            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context);
-        }
-    };
-
     final Command<Void> withdrawLocalizationPermissionCommand = new Command<Void>(){
         @Override
         public void execute(Void parameter) {
@@ -129,6 +121,16 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, context );
         }
     };
+
+    public Command<Void> restartShoppingListWithLocalization = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, true, context);
+            viewLauncher.showShoppingList(listId);
+
+        }
+    };
+
 
 
     //endregion
@@ -234,13 +236,9 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         return checkedItems;
     }
 
-    public void setInShoppingMode(boolean bool) {
-        this.inShoppingMode = bool;
-    }
 
-    public boolean getInShoppingMode() {
-        return this.inShoppingMode;
-    }
+
+
 
     public int getBoughtItemsCount() {
         ListIterator li = items.listIterator(items.size());
@@ -628,7 +626,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 resourceProvider.getString(R.string.alert_dialog_connection_try),
                 findNearbySupermarketCommand,
                 resourceProvider.getString(R.string.localization_disable_localization),
-                disableLocalizationCommand
+                withdrawLocalizationPermissionCommand
         );
 
     }
@@ -639,7 +637,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 resourceProvider.getString(R.string.localization_dialog_title),
                 resourceProvider.getString(R.string.localization_dialog_message),
                 resourceProvider.getString(R.string.localize),
-                getFindNearbySupermarketCommand(),
+                restartShoppingListWithLocalization,
                 null,
                 null,
                 resourceProvider.getString(R.string.cancel),

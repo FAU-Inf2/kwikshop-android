@@ -293,7 +293,6 @@ public class ShoppingListFragment
         });
 
         // find supermarket places
-
         if(!getActivity().getIntent().getExtras().getBoolean(DO_NOT_ASK_FOR_SUPERMARKET)){
             Command<Void> findSuperMarketsCommand = viewModel.getFindNearbySupermarketCommand();
             if(findSuperMarketsCommand.getCanExecute()) {
@@ -307,23 +306,11 @@ public class ShoppingListFragment
             // remove quick add view
             ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
             ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
-            viewModel.setInShoppingMode(true);
         }
-
-        /*
-        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getActivity())){
-
-             // remove quick add view
-            ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
-            ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
-            viewModel.setInShoppingMode(true);
-        }
-        */
 
 
 
         // barcode scanner
-
         btBarcodeScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

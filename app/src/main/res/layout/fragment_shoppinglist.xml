@@ -4,99 +4,104 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary_material_light"
-    tools:context=".MainActivity$PlaceholderFragment"
-                android:nestedScrollingEnabled="false">
+    android:nestedScrollingEnabled="false"
+    tools:context=".MainActivity$PlaceholderFragment">
 
 
-    <!--Other content of the view-->
+    <RelativeLayout
+        android:id="@+id/quickAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_icons"
+        android:paddingBottom="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp">
 
-        <!--Quick add bar-->
-        <RelativeLayout
-            android:id="@+id/quickAdd"
-            android:layout_width="match_parent"
+
+        <MultiAutoCompleteTextView
+            android:id="@+id/textView_quickAdd"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="10dp"
-            android:paddingLeft="10dp"
-            android:background="@color/text_icons">
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/button_barcode_scan"
+            android:hint="@string/defaultItem"
+            android:inputType="textCapSentences"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageButton
+            android:id="@+id/button_barcode_scan"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textView_quickAdd"
+            android:layout_gravity="center_vertical"
+            android:layout_toLeftOf="@+id/micButton"
+            android:src="@drawable/ic_action_barcode" />
 
 
-            <MultiAutoCompleteTextView
-                android:id="@+id/textView_quickAdd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/defaultItem"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:inputType="textCapSentences"
-                android:layout_toLeftOf="@+id/button_barcode_scan"
-                android:layout_alignParentLeft="true" />
-
-            <ImageButton
-                android:id="@+id/button_barcode_scan"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_action_barcode"
-                android:layout_alignBottom="@+id/textView_quickAdd"
-                android:layout_toLeftOf="@+id/micButton"  />
+        <ImageButton
+            android:id="@+id/button_quickAdd"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_alignBottom="@+id/textView_quickAdd"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_action_add" />
 
 
-            <!-- disabled add button -->
-            <ImageButton
-                android:id="@+id/button_quickAdd"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_action_add"
-                android:layout_alignBottom="@+id/textView_quickAdd"
-                android:layout_alignParentRight="true" />
+        <ImageButton
+            android:id="@+id/micButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/button_quickAdd"
+            android:background="@android:drawable/ic_btn_speak_now" />
 
+    </RelativeLayout>
 
-            <ImageButton
-                android:id="@+id/micButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/ic_btn_speak_now"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/button_quickAdd"
-                />
-
-        </RelativeLayout>
 
     <View
         android:id="@+id/divider_top"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="@color/divider_color"
-        android:layout_below="@+id/quickAdd"/>
+        android:layout_below="@+id/quickAdd"
+        android:background="@color/divider_color" />
 
-    <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
-        android:id="@+id/list_shoppingList"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/divider_top"
-        android:footerDividersEnabled="false"/>
 
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/divider_top">
+
+
+        <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+            android:id="@+id/list_shoppingList"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/divider_top"
+            android:footerDividersEnabled="false" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
     <view
-            android:id="@+id/fab"
-            class="com.melnykov.fab.FloatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="16dp"
-            android:layout_weight="10"
-            android:src="@drawable/ic_action_add"
-            fab:fab_colorNormal="@color/fab_Normal"
-            fab:fab_colorPressed="@color/fab_Pressed"
-            fab:fab_colorRipple="@color/fab_Ripple" />
+        android:id="@+id/fab"
+        class="com.melnykov.fab.FloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:layout_weight="10"
+        android:src="@drawable/ic_action_add"
+        fab:fab_colorNormal="@color/fab_Normal"
+        fab:fab_colorPressed="@color/fab_Pressed"
+        fab:fab_colorRipple="@color/fab_Ripple" />
 
     <!--Floating Action button-->
 

@@ -4,6 +4,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -126,10 +127,12 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         @Override
         public void execute(Void parameter) {
             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, true, context);
-            viewLauncher.showShoppingList(listId);
+            viewLauncher.showShoppingListWithSupermarketDialog(listId);
 
         }
     };
+
+
 
 
 
@@ -196,6 +199,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     //region Properties
 
+
     /**
      * Gets how items are supposed to be sorted for the current shopping list
      */
@@ -224,6 +228,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         return deleteItemCommand;
     }
 
+
     public Command<Void> getSendBoughtItemsToServerCommand() {
         return sendBoughtItemsToServerCommand;
     }
@@ -232,12 +237,12 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         return this.findNearbySupermarketCommand;
     }
 
+
+
+
     public ObservableArrayList<ItemViewModel, Integer> getCheckedItems() {
         return checkedItems;
     }
-
-
-
 
 
     public int getBoughtItemsCount() {
@@ -684,6 +689,26 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         updateOrderOfItems();
         listener.onItemSortTypeChanged();
     }
+
+
+    public void showDialogLeaveShoppingMode(final int listID) {
+        viewLauncher.showMessageDialog(
+                resourceProvider.getString(R.string.dialog_leave_shopping_mode_title),
+                resourceProvider.getString(R.string.dialog_leave_shopping_mode_message),
+                resourceProvider.getString(R.string.dialog_leave_shopping_mode_quit),
+                new Command<Void>() {
+                    @Override
+                    public void execute(Void parameter) {
+
+                        viewLauncher.showShoppingList(listID);
+                    }
+                },
+                resourceProvider.getString(R.string.cancel),
+                NullCommand.VoidInstance
+        );
+    }
+
+
 
     //endregion
 }

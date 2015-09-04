@@ -98,7 +98,7 @@ public class ShoppingListFragment
     @InjectView(R.id.button_barcode_scan)
     ImageButton btBarcodeScan;
 
-    @InjectView(R.id.swipe_container)
+    @InjectView(R.id.swipe_container_shopping_list)
     SwipeRefreshLayout swipeLayout;
 
 
@@ -317,9 +317,9 @@ public class ShoppingListFragment
             }
         });
 
-        // swipe layout
-        swipeLayout.setColorScheme(R.color.secondary_Color, R.color.primary_Color);
-
+        // swipe refresh view
+        swipeLayout.setColorSchemeResources(R.color.secondary_Color, R.color.primary_Color);
+        swipeLayout.setDistanceToTriggerSync(20);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

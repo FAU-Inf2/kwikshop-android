@@ -75,3 +75,21 @@ end
 Then(/^I press the quick-add button$/) do
   macro 'I press view with id "button_quickAdd"'
 end
+
+
+Given(/^I created a shopping list named "(.*?)"$/) do |name|
+    macro 'I press "Navigate up"'	
+    macro 'I wait for the view with id "drawer_layout" to appear'
+    macro 'I press "Shopping list"'	
+    macro 'I press the floating action button'
+		macro "I enter \"#{name}\" into input field number 1"
+    macro 'I press the save button'
+    macro 'I press "Cancel"'
+		macro 'I go back'    		
+end
+
+Given(/^I opened the list of shopping lists$/) do
+    macro 'I press "Navigate up"'	
+    macro 'I wait for the view with id "drawer_layout" to appear'
+    macro 'I press "Shopping list"'	
+end

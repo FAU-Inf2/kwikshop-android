@@ -78,6 +78,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     protected boolean isNewItem;
+    public boolean numberPickerUpdating = false;
 
 
     protected static final String ARG_LISTID = "list_id";
@@ -96,7 +97,19 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
 
     protected Item item;
+    final String [] numsOnce = new String[]{
+            "1/4","1/2","3/4","1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
+            "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
+            "450", "500", "600", "700", "750", "800", "900", "1000"
+    };
+    final String [] numsInteger = new String[]{
+            "1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
+            "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
+            "450", "500", "600", "700", "750", "800", "900", "1000"
+    };
 
+    Double [] intNumsOnce = new Double[numsOnce.length];
+    final Double [] natNumsOnce = new Double[numsInteger.length];
 
     @InjectView(R.id.productname_text)
     MultiAutoCompleteTextView productname_text;
@@ -268,7 +281,59 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             getActivity().finish();
         }
     }
+    public void setNumberPickerValues(double itemAmount){
+        if (amountIsNatural(selectedUnitIndex)){
+            numberPicker.setMinValue(0);
+            numberPicker.setMaxValue(1000);
+            numberPicker.setWrapSelectorWheel(false);
+            numberPicker.setDisplayedValues(intNumbersForAmountPicker);
+//
+//            double itemAmount = item.getAmount();
+            int index = 1;
+            for (int i = 0; i < natNumsOnce.length; i++) {
+                if (natNumsOnce[i].equals(itemAmount)) {
+                    index = i;
+                    break;
+                }
+            }
+            if (!numberPickerUpdating)
+                numberPicker.setValue(index);
+        }
+        else {
+            numberPicker.setMinValue(0);
+            numberPicker.setMaxValue(1000);
+            numberPicker.setWrapSelectorWheel(false);
+            numberPicker.setDisplayedValues(numbersForAmountPicker);
 
+            numberPicker.setFormatter(new NumberPicker.Formatter() {
+
+                @Override
+                public String format(int value) {
+                    // TODO Auto-generated method stub
+                    return numsOnce[value];
+                }
+            });
+
+
+        }
+    }
+    public double getNumberPickerValue(int position){
+        if (amountIsNatural(selectedUnitIndex)) {
+            return Double.parseDouble(intNumbersForAmountPicker[position]);
+        }
+        else{
+            Double pickerAmountDouble;
+
+            String numberPickerString = numbersForAmountPicker[position];
+            if (numberPickerString.contains("/")) {
+                String[] rat = numberPickerString.split("/");
+                pickerAmountDouble = Double.parseDouble(rat[0]) / Double.parseDouble(rat[1]);
+            } else {
+                pickerAmountDouble = Double.parseDouble(numberPickerString);
+            }
+            return pickerAmountDouble;
+        }
+    }
 
     protected void saveItem() {
 
@@ -276,21 +341,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if(numberPickerCalledWith != numberPicker.getValue()){
             //only set amount if it got changed, so values written by parser which are not listed
             //in the numberPicker don't get overwritten
-            if (amountIsNatural(selectedUnitIndex)) {
-                item.setAmount(Double.parseDouble(intNumbersForAmountPicker[numberPicker.getValue()]));
-            }
-            else{
-                Double pickerAmountDouble;
+            item.setAmount(getNumberPickerValue(numberPicker.getValue()));
 
-                String numberPickerString = numbersForAmountPicker[numberPicker.getValue()];
-                if (numberPickerString.contains("/")) {
-                    String[] rat = numberPickerString.split("/");
-                    pickerAmountDouble = Double.parseDouble(rat[0]) / Double.parseDouble(rat[1]);
-                } else {
-                    pickerAmountDouble = Double.parseDouble(numberPickerString);
-                }
-                item.setAmount(pickerAmountDouble);
-            }
         }
 
         item.setBrand(brand_text.getText().toString());
@@ -369,18 +421,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         //populate number picker
         numbersForAmountPicker = new String[1003];
         intNumbersForAmountPicker = new String[1000];
-        final String [] numsOnce = new String[]{
-                "1/4","1/2","3/4","1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
-                "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
-                "450", "500", "600", "700", "750", "800", "900", "1000"
-        };
-        final String [] numsInteger = new String[]{
-                "1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
-                "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
-                "450", "500", "600", "700", "750", "800", "900", "1000"
-        };
-        Double [] intNumsOnce = new Double[numsOnce.length];
-        final Double [] natNumsOnce = new Double[numsInteger.length];
+
         for(int i = 0; i < intNumsOnce.length; i++){
             if (numsOnce[i].contains("/")) {
                 String[] rat = numsOnce[i].split("/");
@@ -410,46 +451,18 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
 
         final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getUnitNames());
+        final ArrayAdapter<String> spinnerArrayAdapterForSingular = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getSingularUnitNames());
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerArrayAdapterForSingular.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         unit_spinner.setAdapter(spinnerArrayAdapter);
+
         unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedUnitIndex = position;
 
-                if (amountIsNatural(selectedUnitIndex)){
-                    numberPicker.setMinValue(0);
-                    numberPicker.setMaxValue(1000);
-                    numberPicker.setWrapSelectorWheel(false);
-                    numberPicker.setDisplayedValues(intNumbersForAmountPicker);
+                setNumberPickerValues(item.getAmount());
 
-                    double itemAmount = item.getAmount();
-                    int index = 1;
-                    for (int i = 0; i < natNumsOnce.length; i++) {
-                        if (natNumsOnce[i].equals(itemAmount)) {
-                            index = i;
-                            break;
-                        }
-                    }
-                    numberPicker.setValue(index);
-                }
-                else {
-                    numberPicker.setMinValue(0);
-                    numberPicker.setMaxValue(1000);
-                    numberPicker.setWrapSelectorWheel(false);
-                    numberPicker.setDisplayedValues(numbersForAmountPicker);
-
-                    numberPicker.setFormatter(new NumberPicker.Formatter() {
-
-                        @Override
-                        public String format(int value) {
-                            // TODO Auto-generated method stub
-                            return numsOnce[value];
-                        }
-                    });
-
-
-                }
             }
 
             @Override
@@ -463,7 +476,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             viewModel.setItem(item);
         }
         if (viewModel.getSelectedUnit() != null) {
-            unit_spinner.setSelection(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
+            if (!numberPickerUpdating)
+                unit_spinner.setSelection(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
         }
 
 
@@ -626,6 +640,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             @Override
             public void onClick(View v){
                 numberPicker.setValue(numberPicker.getValue() - 1);
+                updateNumberPicker(spinnerArrayAdapter, spinnerArrayAdapterForSingular,
+                        numberPicker.getValue()+1, numberPicker.getValue());
+
             }
         });
 
@@ -633,6 +650,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             @Override
             public void onClick(View v){
                 numberPicker.setValue(numberPicker.getValue()  +1);
+                updateNumberPicker(spinnerArrayAdapter, spinnerArrayAdapterForSingular,
+                        numberPicker.getValue()-1, numberPicker.getValue());
+
             }
         });
         micButton.setOnClickListener(new View.OnClickListener() {
@@ -648,9 +668,40 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             }
 
         });
+        if (!numberPickerUpdating) {
+            if (getNumberPickerValue(numberPicker.getValue()) == 1)
+                unit_spinner.setAdapter(spinnerArrayAdapterForSingular);
+            else
+                unit_spinner.setAdapter(spinnerArrayAdapter);
+        }
+        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int i, int i2) {
+                updateNumberPicker(spinnerArrayAdapter, spinnerArrayAdapterForSingular, i, i2);
+            }
 
+        });
     }
 
+    public void updateNumberPicker(ArrayAdapter spinnerArrayAdapter, ArrayAdapter spinnerArrayAdapterForSingular,
+                                   int i, int i2){
+        if( getNumberPickerValue(i) != 1 && getNumberPickerValue(i2) == 1) {
+            numberPickerUpdating = false;
+            int unitPosition = numberPicker.getValue();
+            unit_spinner.setAdapter(spinnerArrayAdapterForSingular);
+            setNumberPickerValues(getNumberPickerValue(i2));
+            unit_spinner.setSelection(unitPosition);
+            numberPickerUpdating = true;
+        }
+        else if(getNumberPickerValue(i) == 1 && getNumberPickerValue(i2) != 1) {
+            numberPickerUpdating = false;
+            int unitId = unit_spinner.getId();
+            unit_spinner.setAdapter(spinnerArrayAdapter);
+            setNumberPickerValues(getNumberPickerValue(i2));
+            //unit_spinner.setId(unitId);
+            numberPickerUpdating = true;
+        }
+    }
     public boolean amountIsNatural(int selectedUnit){
         return selectedUnit == 9 ||
                 selectedUnit == 7 ||

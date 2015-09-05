@@ -36,4 +36,20 @@ Given /^I opened the navigation drawer$/ do
     macro 'I wait for the view with id "drawer_layout" to appear'	
 end
 
+Then /^I press the floating action button$/ do
+    macro 'I press view with id "fab"'
+end
 
+Then(/^I press the save button$/) do
+  macro 'I press view with id "button_save"'
+end
+
+Then(/^I press the delete button$/) do
+  macro 'I press view with id "button_remove"'
+end
+
+Given(/^I opened the list of recipes$/) do
+    macro 'I press "Navigate up"'	
+    macro 'I wait for the view with id "drawer_layout" to appear'
+    macro 'I press "Recipes"'	
+end

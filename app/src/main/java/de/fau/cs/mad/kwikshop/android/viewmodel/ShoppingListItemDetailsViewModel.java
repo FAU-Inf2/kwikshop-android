@@ -23,10 +23,11 @@ public class ShoppingListItemDetailsViewModel extends ItemDetailsViewModel{
 
     @Inject
     public ShoppingListItemDetailsViewModel(ViewLauncher viewLauncher, ListManager<ShoppingList> listManager, SimpleStorage<Unit> unitStorage,
+                                            SimpleStorage<Unit> singularUnitStorage,
                                             SimpleStorage<Group> groupStorage, DisplayHelper displayHelper, AutoCompletionHelper autoCompletionHelper,
                                             RegularlyRepeatHelper repeatHelper){
 
-        super(viewLauncher, unitStorage, groupStorage, displayHelper, autoCompletionHelper);
+        super(viewLauncher, unitStorage, singularUnitStorage, groupStorage, displayHelper, autoCompletionHelper);
 
         if(repeatHelper == null) throw new ArgumentNullException("repeatHelper");
 

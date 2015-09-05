@@ -106,16 +106,16 @@
                 android:gravity="center">
 
                 <NumberPicker
-                    android:id="@+id/np_amount"
+                    android:id="@+id/np_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <NumberPicker
-                    android:id="@+id/np_unit"
+                    android:id="@+id/np_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:layout_toRightOf="@+id/np_amount"/>
+                    android:layout_toRightOf="@+id/np_unit"/>
 
             </RelativeLayout>
 
@@ -124,9 +124,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="100dp" />
+                android:layout_marginTop="15dp" />
 
-
+            <!--
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -141,6 +141,7 @@
                     android:layout_marginLeft="102dp"
                     android:background="@drawable/ic_keyboard_arrow_up_black_24dp" />
             </RelativeLayout>
+
 
             <TableRow
                 android:layout_width="match_parent"
@@ -173,10 +174,13 @@
 
             </TableRow>
 
+             -->
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <!--
                 <ImageButton
                     android:id="@+id/downButton"
                     android:layout_width="100dp"
@@ -187,6 +191,7 @@
                     android:layout_marginLeft="102dp"
                     android:layout_weight="5.33"
                     android:background="@drawable/ic_keyboard_arrow_down_black_24dp" />
+                    -->
 
                 <CheckBox
                     android:id="@+id/highlight_checkBox"

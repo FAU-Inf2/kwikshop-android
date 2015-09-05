@@ -92,7 +92,7 @@ public class RecipeDetailFragment extends FragmentWithViewModel implements Recip
 
 
 
-        //initialize numberPicker
+        //initialize number Picker
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(50);
         numberPicker.setValue(viewModel.getScaleFactor());

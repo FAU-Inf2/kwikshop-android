@@ -20,8 +20,9 @@ public class RecipeItemDetailsViewModel extends ItemDetailsViewModel {
 
     @Inject
     public RecipeItemDetailsViewModel(ViewLauncher viewLauncher, ListManager<Recipe> listManager, SimpleStorage<Unit> unitStorage,
+                                      SimpleStorage<Unit> singularUnitStorage,
                                       SimpleStorage<Group> groupStorage, DisplayHelper displayHelper, AutoCompletionHelper autoCompletionHelper){
-        super(viewLauncher, unitStorage, groupStorage, displayHelper, autoCompletionHelper);
+        super(viewLauncher, unitStorage, singularUnitStorage, groupStorage, displayHelper, autoCompletionHelper);
 
         if(listManager == null) throw new ArgumentNullException("listManager");
 

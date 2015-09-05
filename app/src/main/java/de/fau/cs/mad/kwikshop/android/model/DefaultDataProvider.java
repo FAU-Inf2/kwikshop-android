@@ -50,7 +50,9 @@ public class DefaultDataProvider {
 
     }
 
+
     static Unit[] defaultUnits;
+    static Unit[] defaultSingleUnits;
     static Group[] defaultGroups;
 
 
@@ -87,6 +89,28 @@ public class DefaultDataProvider {
 
         return defaultUnits;
 
+    }
+
+    public Unit[] getSingularPredefinedUnits() {
+        if (defaultSingleUnits == null){
+            defaultSingleUnits = new Unit[]{
+                    new Unit(UnitNames.PIECE, ResourceId.Unit_Piece_singular, ResourceId.Unit_short_Piece, PredefinedId.Unit_Piece),
+                    new Unit(UnitNames.BAG, ResourceId.Unit_Bag_singular, PredefinedId.Unit_Bag),
+                    new Unit(UnitNames.BOTTLE, ResourceId.Unit_Bottle_singular, PredefinedId.Unit_Bottle),
+                    new Unit(UnitNames.BOX, ResourceId.Unit_Box_singular, PredefinedId.Unit_Box),
+                    new Unit(UnitNames.PACK, ResourceId.Unit_Pack_singular, PredefinedId.Unit_Pack),
+                    new Unit(UnitNames.DOZEN, ResourceId.Unit_Dozen_singular, PredefinedId.Unit_Dozen),
+                    new Unit(UnitNames.GRAM, ResourceId.Unit_Gram_singular, ResourceId.Unit_short_Gram, PredefinedId.Unit_Gram),
+                    new Unit(UnitNames.KILOGRAM, ResourceId.Unit_Kilogram_singular, ResourceId.Unit_short_Kilogram, PredefinedId.Unit_Kilogram),
+                    new Unit(UnitNames.MILLILITRE, ResourceId.Unit_Millilitre_singular, ResourceId.Unit_short_Millilitre, PredefinedId.Unit_Millilitre),
+                    new Unit(UnitNames.LITRE, ResourceId.Unit_Litre_singular, ResourceId.Unit_short_Litre, PredefinedId.Unit_Litre),
+                    new Unit(UnitNames.CUP, ResourceId.Unit_Cup_singular, PredefinedId.Unit_Cup),
+                    new Unit(UnitNames.TABLESPOON, ResourceId.Unit_Tablespoon_singular, ResourceId.Unit_short_Tablespoon, PredefinedId.Unit_Tablespoon),
+                    new Unit(UnitNames.CAN, ResourceId.Unit_Can_singular, PredefinedId.Unit_Can),
+                    new Unit(UnitNames.TEASPOON, ResourceId.Unit_Teaspoon_singular, ResourceId.Unit_short_Teaspoon, PredefinedId.Unit_Teaspoon)
+            };
+        }
+        return defaultSingleUnits;
     }
 
     public static String getDefaultGroupName() {

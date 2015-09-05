@@ -1,5 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
@@ -8,21 +9,21 @@
     <!-- TODO: Update blank fragment layout -->
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/scrollView2"
         android:background="@color/text_icons"
         android:focusable="false"
         android:focusableInTouchMode="false">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="left|top"
             android:background="@color/text_icons"
             android:focusable="false"
             android:focusableInTouchMode="false"
+            android:orientation="vertical"
             android:weightSum="1">
 
             <Space
@@ -33,33 +34,34 @@
                 android:focusableInTouchMode="false" />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:orientation="horizontal"
                 android:weightSum="1">
 
                 <MultiAutoCompleteTextView
+                    android:id="@+id/productname_text"
                     android:layout_width="251dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/productname_text"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="30dp"
                     android:layout_marginRight="2dp"
-                    android:singleLine="true"
-                    android:textStyle="bold"
-                    android:inputType="textCapSentences"
+                    android:layout_weight="0.71"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:layout_weight="0.71" />
+                    android:inputType="textCapSentences"
+                    android:singleLine="true"
+                    android:textStyle="bold" />
 
                 <ImageButton
+                    android:id="@+id/micButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/micButton"
-                    android:background="@android:drawable/ic_btn_speak_now"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="2dp"
                     android:layout_toLeftOf="@+id/button_quickAdd"
-                    android:layout_marginRight="2dp" />
+                    android:background="@android:drawable/ic_btn_speak_now" />
+
             </LinearLayout>
 
             <Space
@@ -73,29 +75,56 @@
                 android:id="@+id/last_bought_relativelayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
                 android:layout_marginBottom="15dp"
+                android:layout_marginLeft="30dp"
                 android:gravity="center_vertical">
 
 
                 <TextView
+                    android:id="@+id/lastbought_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/itemdetails_last_bought"
-                    android:id="@+id/lastbought_textview"
-                    android:textColor="@color/primary_text"/>
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/primary_text" />
 
                 <TextView
+                    android:id="@+id/lastbought_location"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
                     android:layout_toRightOf="@id/lastbought_textview"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:layout_marginLeft="5dp"
-                    android:id="@+id/lastbought_location"
-                    android:textColor="@color/primary_text"/>
+                    android:textColor="@color/primary_text" />
 
             </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <NumberPicker
+                    android:id="@+id/np_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <NumberPicker
+                    android:id="@+id/np_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@+id/np_amount"/>
+
+            </RelativeLayout>
+
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="100dp" />
 
 
             <RelativeLayout
@@ -103,14 +132,14 @@
                 android:layout_height="match_parent">
 
                 <ImageButton
+                    android:id="@+id/upButton"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/upButton"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/ic_keyboard_arrow_up_black_24dp"
-                    android:layout_marginLeft="102dp"
+                    android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="102dp"
+                    android:background="@drawable/ic_keyboard_arrow_up_black_24dp" />
             </RelativeLayout>
 
             <TableRow
@@ -119,27 +148,27 @@
                 android:weightSum="1">
 
                 <TextView
+                    android:id="@+id/amount_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="@string/itemdetails_amount"
-                    android:id="@+id/amount_textview"
                     android:layout_marginLeft="30dp"
-                    android:textColor="@color/primary_text"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    android:text="@string/itemdetails_amount"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/primary_text" />
 
                 <NumberPicker
+                    android:id="@+id/numberPicker"
                     android:layout_width="wrap_content"
                     android:layout_height="76dp"
-                    android:id="@+id/numberPicker"
                     android:layout_marginLeft="40dp" />
 
                 <Spinner
+                    android:id="@+id/unit_spinner"
                     android:layout_width="135dp"
                     android:layout_height="match_parent"
-                    android:id="@+id/unit_spinner"
-                    android:focusable="false"
                     android:layout_marginLeft="10dp"
+                    android:focusable="false"
                     android:gravity="center_vertical" />
 
             </TableRow>
@@ -149,25 +178,25 @@
                 android:layout_height="match_parent">
 
                 <ImageButton
+                    android:id="@+id/downButton"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/downButton"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/ic_keyboard_arrow_down_black_24dp"
-                    android:layout_weight="5.33"
-                    android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="102dp" />
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="102dp"
+                    android:layout_weight="5.33"
+                    android:background="@drawable/ic_keyboard_arrow_down_black_24dp" />
 
                 <CheckBox
+                    android:id="@+id/highlight_checkBox"
                     android:layout_width="132dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/highlight"
-                    android:id="@+id/highlight_checkBox"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
                     android:layout_gravity="right"
                     android:checked="false"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true" />
+                    android:text="@string/highlight" />
             </RelativeLayout>
 
             <Space
@@ -175,22 +204,22 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/brand_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/itemdetails_brand"
-                android:id="@+id/brand_textview"
                 android:layout_marginLeft="30dp"
+                android:text="@string/itemdetails_brand"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/primary_text" />
 
             <AutoCompleteTextView
+                android:id="@+id/brand_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/brand_text"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:singleLine="true"
-                android:inputType="textCapSentences" />
+                android:inputType="textCapSentences"
+                android:singleLine="true" />
 
             <Space
                 android:layout_width="wrap_content"
@@ -198,22 +227,22 @@
                 android:layout_marginTop="15dp" />
 
             <TextView
+                android:id="@+id/comment_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/itemdetails_comment"
-                android:id="@+id/comment_textview"
                 android:layout_marginLeft="30dp"
+                android:text="@string/itemdetails_comment"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/primary_text" />
 
             <EditText
+                android:id="@+id/comment_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/comment_text"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:singleLine="true"
-                android:inputType="textCapSentences" />
+                android:inputType="textCapSentences"
+                android:singleLine="true" />
 
             <Space
                 android:layout_width="wrap_content"
@@ -230,123 +259,128 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/group"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/primary_text" />
 
                 <Spinner
+                    android:id="@+id/group_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/group_spinner"
-                    android:focusable="false"
-                    android:layout_marginStart="15dp"
                     android:layout_marginLeft="15dp"
+                    android:layout_marginStart="15dp"
+                    android:focusable="false"
                     android:padding="10dp" />
 
             </LinearLayout>
 
             <!-- Controls for repeating items -->
-            <LinearLayout android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/repeat_container"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" android:visibility="gone"
-                android:id="@+id/repeat_container">
+                android:orientation="vertical"
+                android:visibility="gone">
 
 
                 <Space
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="25dp"/>
+                    android:layout_marginBottom="25dp" />
 
                 <CheckBox
+                    android:id="@+id/repeat_checkBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/regular_repeat"
-                    android:id="@+id/repeat_checkBox"
                     android:layout_marginLeft="25dp"
-                    android:checked="false" />
+                    android:checked="false"
+                    android:text="@string/regular_repeat" />
 
                 <!-- Selection of repeat type (time based / every time a list is created) -->
                 <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/repeat_radioGroup_repeatType"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/repeat_radioGroup_repeatType"
-                    android:layout_marginLeft="25dp">
+                    android:layout_marginLeft="25dp"
+                    android:orientation="vertical">
+
                     <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/every_time_i_create_a_list"
                         android:id="@+id/repeat_radioButton_repeatType_listCreation"
-                        android:checked="true" />
-                    <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/on_a_schedule"
+                        android:checked="true"
+                        android:text="@string/every_time_i_create_a_list" />
+
+                    <RadioButton
                         android:id="@+id/repeat_radioButton_repeatType_schedule"
-                        android:checked="false" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="@string/on_a_schedule" />
                 </RadioGroup>
 
 
                 <!-- Controls for selecting repeat interval -->
                 <TableRow
+                    android:id="@+id/repeat_row_scheduleSelection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="1"
                     android:layout_marginLeft="30dp"
-                    android:id="@+id/repeat_row_scheduleSelection"
-                    >
+                    android:weightSum="1">
 
                     <TextView
+                        android:id="@+id/every_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="@string/every"
-                        android:id="@+id/every_textview"
                         android:layout_marginLeft="30dp"
-                        android:textColor="@color/primary_text"
-                        android:gravity="center_vertical"/>
+                        android:gravity="center_vertical"
+                        android:text="@string/every"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/primary_text" />
 
                     <NumberPicker
+                        android:id="@+id/repeat_numberPicker"
                         android:layout_width="wrap_content"
                         android:layout_height="76dp"
-                        android:id="@+id/repeat_numberPicker"
                         android:layout_marginLeft="20dp" />
 
                     <Spinner
+                        android:id="@+id/repeat_spinner"
                         android:layout_width="135dp"
                         android:layout_height="match_parent"
-                        android:id="@+id/repeat_spinner"
-                        android:focusable="false"
                         android:layout_marginLeft="10dp"
+                        android:focusable="false"
                         android:gravity="center_vertical" />
 
                 </TableRow>
 
                 <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/repeat_radioGroup_scheduleStart"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/repeat_radioGroup_scheduleStart"
-                    android:layout_marginLeft="25dp">
+                    android:layout_marginLeft="25dp"
+                    android:orientation="vertical">
+
                     <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/from_now_on"
                         android:id="@+id/repeat_fromNow_radioButton"
-                        android:checked="true" />
-                    <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/from_time_of_next_purchase_on"
+                        android:checked="true"
+                        android:text="@string/from_now_on" />
+
+                    <RadioButton
                         android:id="@+id/repeat_fromNextPurchase_radioButton"
-                        android:checked="false" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="@string/from_time_of_next_purchase_on" />
                 </RadioGroup>
 
 
                 <Space
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="50dp"/>
+                    android:layout_marginBottom="50dp" />
 
 
             </LinearLayout>
@@ -356,35 +390,35 @@
                 android:layout_height="fill_parent">
 
                 <ImageView
+                    android:id="@+id/itemImageView"
                     android:layout_width="273dp"
                     android:layout_height="273dp"
-                    android:id="@+id/itemImageView"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:background="@android:drawable/editbox_background"
                     android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true" />
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:background="@android:drawable/editbox_background" />
 
                 <TextView
+                    android:id="@+id/uploadText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/uploadText"
-                    android:gravity="center"
                     android:layout_centerInParent="true"
-                    android:layout_margin="1dp"/>
+                    android:layout_margin="1dp"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <ImageButton
+                    android:id="@+id/button_remove"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button_remove"
-                    android:src="@drawable/ic_clear_black_24dp"
-                    android:background="@android:color/transparent"
-                    android:paddingRight="30dp"
-                    android:paddingBottom="20dp"
-                    android:paddingTop="20dp"
-                    android:layout_alignParentTop="true"
                     android:layout_alignLeft="@+id/itemImageView"
-                    android:layout_marginLeft="37dp" />
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="37dp"
+                    android:background="@android:color/transparent"
+                    android:paddingBottom="20dp"
+                    android:paddingRight="30dp"
+                    android:paddingTop="20dp"
+                    android:src="@drawable/ic_clear_black_24dp" />
             </RelativeLayout>
 
         </LinearLayout>

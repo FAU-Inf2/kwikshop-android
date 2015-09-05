@@ -3,9 +3,11 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -140,6 +142,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     @InjectView(R.id.downButton)
     ImageButton downButton;
+
+
+    @InjectView(R.id.np_amount)
+    NumberPicker npAmount;
+
+    @InjectView(R.id.np_unit)
+    NumberPicker npUnit;
+
 
     @Inject
     AutoCompletionHelper autoCompletionHelper;
@@ -326,6 +336,16 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
             item = getListManager().getListItem(listId, itemId);
         }
+
+        // new number picker
+        npUnit.setMinValue(0);
+        npUnit.setMaxValue(2);
+        npUnit.setDisplayedValues( new String[] { "Belgium", "France", "United Kingdom" } );
+        setDividerColor(npUnit);
+
+        npAmount.setMaxValue(0);
+        npAmount.setMaxValue(50);
+        setDividerColor(npAmount);
 
 
         // display the supermarket where this item was bought
@@ -636,6 +656,28 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 selectedUnit == 7 ||
                 selectedUnit == 6 ||
                 selectedUnit == 0;
+    }
+
+    private void setDividerColor(NumberPicker picker) {
+
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    pf.set(picker, getResources().getDrawable(R.drawable.np_numberpicker_selection_divider_green));
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (Resources.NotFoundException e) {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+        //}
     }
 
 

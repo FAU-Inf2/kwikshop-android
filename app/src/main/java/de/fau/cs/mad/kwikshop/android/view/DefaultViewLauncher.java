@@ -76,13 +76,24 @@ public class DefaultViewLauncher implements ViewLauncher {
 
     @Override
     public void showShoppingListDetailsView(int shoppingListId) {
-
         activity.startActivity(ShoppingListDetailActivity.getIntent(activity, shoppingListId));
-
     }
 
     @Override
     public void showShoppingList(int shoppingListId) {
+        activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId)
+                .putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true));
+    }
+
+    @Override
+    public void showShoppingListInShoppingMode(int shoppingListId) {
+        activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId)
+                .putExtra(ShoppingListActivity.SHOPPING_MODE, true)
+                .putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true));
+    }
+
+    @Override
+    public void showShoppingListWithSupermarketDialog(int shoppingListId) {
         activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId));
     }
 
@@ -378,7 +389,7 @@ public class DefaultViewLauncher implements ViewLauncher {
                 }
 
                 if(!fromShoppingList){
-                    showShoppingList(shoppinglistId);
+                    showShoppingListWithSupermarketDialog(shoppinglistId);
                 }
 
             }

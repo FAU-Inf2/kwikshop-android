@@ -456,7 +456,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     final Command<Void> cancelProgressDialogCommand =  new Command<Void>() {
         @Override
         public void execute(Void parameter) {
-            viewLauncher.showShoppingList(listId);
+            viewLauncher.showShoppingListWithSupermarketDialog(listId);
         }
     };
 

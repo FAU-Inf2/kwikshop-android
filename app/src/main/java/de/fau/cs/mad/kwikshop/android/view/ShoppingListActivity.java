@@ -24,6 +24,8 @@ import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 
@@ -32,12 +34,17 @@ public class ShoppingListActivity extends BaseActivity {
     @Inject
     RestClientFactory clientFactory;
 
+    @Inject
+    ViewLauncher viewLauncher;
+
     public static final String SHOPPING_LIST_ID = "shopping_list_id";
     public static final String SHOPPING_MODE = "shopping_mode";
 
     public Menu menu;
 
     private int listId = -1;
+
+    private ShoppingListViewModel viewModel;
 
 
     public static Intent getIntent(Context context, int shoppingListId) {
@@ -103,10 +110,13 @@ public class ShoppingListActivity extends BaseActivity {
                 break;
             case R.id.action_shopping_mode:
                 /* start shopping mode */
+                viewLauncher.showShoppingListInShoppingMode(listId);
+                /*
                 Intent shoppingModeIntent = ShoppingListActivity.getIntent(getApplicationContext(), getIntent().getExtras().getInt(SHOPPING_LIST_ID));
                 shoppingModeIntent.putExtra(SHOPPING_MODE, true);
                 shoppingModeIntent.putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true);
                 startActivity(shoppingModeIntent);
+                */
                 break;
             case R.id.refresh_current_supermarket:
                 return false;
@@ -184,6 +194,7 @@ public class ShoppingListActivity extends BaseActivity {
 
         ButterKnife.inject(this);
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(this));
+        viewModel = objectGraph.get(ShoppingListViewModel.class);
         objectGraph.inject(this);
 
         //Get Shopping List ID
@@ -227,12 +238,21 @@ public class ShoppingListActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+
+        // check for barcode scanner fragment
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment BarcodeScannerFragment = fragmentManager.findFragmentByTag("BARCODE_SCANNER_FRAGMENT");
         if (BarcodeScannerFragment != null && BarcodeScannerFragment.isVisible()) {
             startActivity(getIntent().putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true));
             return;
         }
+
+        // check for shopping mode
+        if(baseViewModel.isShoppingModeEnabled()){
+            viewModel.showDialogLeaveShoppingMode(listId);
+            return;
+        }
+
         super.onBackPressed();
     }
 

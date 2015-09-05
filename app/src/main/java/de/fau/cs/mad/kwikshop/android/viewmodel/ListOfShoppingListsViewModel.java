@@ -31,7 +31,7 @@ public class ListOfShoppingListsViewModel extends ListOfListsViewModel<ShoppingL
     private final Command<Integer> selectShoppingListCommand = new Command<Integer>() {
         @Override
         public void execute(Integer shoppingListId) {
-            viewLauncher.showShoppingList(shoppingListId);
+            viewLauncher.showShoppingListWithSupermarketDialog(shoppingListId);
         }
     };
     private final Command<Integer> selectShoppingListDetailsCommand = new Command<Integer>() {

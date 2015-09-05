@@ -42,7 +42,7 @@ public class BaseActivity extends AppCompatActivity {
 
     ProgressDialog syncProgressDialog;
 
-    BaseViewModel viewModel;
+    BaseViewModel baseViewModel;
 
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
@@ -70,7 +70,7 @@ public class BaseActivity extends AppCompatActivity {
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        viewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
+        baseViewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
 
 
         // set full screen in shopping mode
@@ -78,12 +78,13 @@ public class BaseActivity extends AppCompatActivity {
             if (getIntent().getExtras().getBoolean(ShoppingListActivity.SHOPPING_MODE)) {
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                baseViewModel.setShoppingModeEnabled(true);
             }
         }
 
 
         // restart to set locale
-        viewModel.setSavedLocale();
+        baseViewModel.setSavedLocale();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -102,7 +103,7 @@ public class BaseActivity extends AppCompatActivity {
                     case R.id.nav_login:
                         mDrawerLayout.closeDrawers();
                         finish();
-                        viewModel.startLoginActivity();
+                        baseViewModel.startLoginActivity();
                         return true;
 
                     case R.id.nav_shopping_lists:

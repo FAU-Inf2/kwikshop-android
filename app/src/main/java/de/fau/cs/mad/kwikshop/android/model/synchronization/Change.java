@@ -1,6 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 
 public class Change<TClient, TServer> {
 

@@ -1,6 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,9 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
 
     @InjectView(R.id.fab)
     View floatingActionButton;
+
+    @InjectView(R.id.swipe_container_list_of_shopping_lists)
+    SwipeRefreshLayout swipeLayout;
 
     private ListOfShoppingListsViewModel viewModel;
     private ListOfShoppingListsListRowAdapter listAdapter;
@@ -74,6 +79,20 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
 
         //click on floating action button (add)
         bindButton(floatingActionButton, viewModel.getAddShoppingListCommand());
+
+        // swipe refresh view
+        swipeLayout.setColorSchemeResources(R.color.secondary_Color, R.color.primary_Color);
+        swipeLayout.setDistanceToTriggerSync(20);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override public void run() {
+                        swipeLayout.setRefreshing(false);
+                    }
+                }, 5000);
+            }
+        });
 
         return rootView;
     }

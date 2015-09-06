@@ -7,6 +7,7 @@ import de.bitdroid.jaxrs2retrofit.converter.ParamConverter;
 import de.bitdroid.jaxrs2retrofit.converter.AnnotatedParam;
 import io.dropwizard.auth.Auth;
 import retrofit.http.Body;
+import javax.ws.rs.HeaderParam;
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
@@ -32,6 +33,7 @@ buildscript {
         classpath 'com.squareup.retrofit:retrofit:1.9.0'
         classpath 'de.bitdroid.jaxrs2retrofit:plugin:0.4.1'
         classpath 'io.dropwizard:dropwizard-auth:0.8.1'
+        classpath 'javax.ws.rs:javax.ws.rs-api:2.0.1'
     }
 }
 
@@ -184,6 +186,8 @@ dependencies {
     //Navigation Drawer
     compile 'com.ikimuhendis:ldrawer:0.1'
     compile 'com.android.support:design:22.2.0'
+
+
 }
 
 allprojects {
@@ -224,8 +228,11 @@ afterEvaluate {
 
         //customize handling for certain annotation
 
-        //ignore all parameters marked with dropwizard's @Auth attribute
+        //ignore all parameters marked with dropwizard's @Auth attribute 
         it.paramConverterManager.registerConverter(ClassName.get(Auth.class), new IgnoreConverter());
+        
+        //ignore all parameters marked with @HeaderParam attribute 
+        it.paramConverterManager.registerConverter(ClassName.get(HeaderParam.class), new IgnoreConverter());
 
         //parameters marked with @ApiParam (swagger): map to @Body, but remove annotation parameters
         it.paramConverterManager.registerConverter(ClassName.get(ApiParam.class),

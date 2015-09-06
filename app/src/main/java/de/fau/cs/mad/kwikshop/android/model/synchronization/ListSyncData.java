@@ -1,10 +1,9 @@
 package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.DeletedList;
 import de.fau.cs.mad.kwikshop.android.util.CollectionUtilities;
 import de.fau.cs.mad.kwikshop.common.DeletionInfo;

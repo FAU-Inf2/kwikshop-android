@@ -10,7 +10,8 @@ import java.util.concurrent.CountDownLatch;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
-import de.fau.cs.mad.kwikshop.android.util.StringHelper;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import se.walkercrou.places.Place;
 

@@ -74,3 +74,6 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 *.hprof
+adb-install.bat
+adb-uninstall.bat
+build.bat

@@ -7,7 +7,7 @@ import dagger.Module;
 import dagger.Provides;
 
 
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.tasks.RedeemSharingCodeTask;
 
 import de.fau.cs.mad.kwikshop.android.util.DefaultRecipesHelper;

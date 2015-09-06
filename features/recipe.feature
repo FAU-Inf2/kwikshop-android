@@ -49,16 +49,16 @@ Feature: Recipe
 		Then I press the save button
 		Then I should see "Item E edited"
 		And I should see "Item C"
-				
-	Scenario: Edit Item, change unit
-		Given I opened the list of recipes
-		Then I press "Test-Recipe"		
-		Then I press "Item E edited"
-		Then I press "pieces"
-		Then I press "packs"
-		Then I press the save button
-		Then I press "Item E edited"
-		Then I should see "packs"
+		
+# 	TODO: Scenario deactivated  						 
+#	Scenario: Edit Item, change unit from piece to pack
+#		Given I opened the list of recipes
+#		Then I press "Test-Recipe"				
+#		Then I press "Item E edited"
+#		Then I select "pack" from picker number 1
+#		Then I press the save button
+#		Then I press "Item E edited"
+#		Then I should see "pack"
 		
 	Scenario: Edit Item, change group
 		Given I opened the list of recipes

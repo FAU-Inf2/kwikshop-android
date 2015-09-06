@@ -93,3 +93,11 @@ Given(/^I opened the list of shopping lists$/) do
     macro 'I wait for the view with id "drawer_layout" to appear'
     macro 'I press "Shopping list"'	
 end
+
+Then /^I select "([^\"]*)" from picker number (\d+)$/ do |item_identifier, picker_number|  
+  query("android.widget.NumberPicker index:'#{picker_number.to_i-1}'", setValue:item_identifier)
+end
+
+Then /^I select (\d+) from number picker number (\d+)$/ do |picker_value, picker_number|  
+  query("android.widget.NumberPicker index:'#{picker_number.to_i-1}'", setValue:picker_value)
+end

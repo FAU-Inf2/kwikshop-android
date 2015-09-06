@@ -14,7 +14,7 @@ import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
-import de.fau.cs.mad.kwikshop.android.util.StringHelper;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 import de.greenrobot.event.EventBus;
 
 public class AutoCompletionHelper{

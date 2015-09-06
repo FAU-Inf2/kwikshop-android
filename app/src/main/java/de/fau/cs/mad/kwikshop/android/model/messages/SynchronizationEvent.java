@@ -1,6 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.model.messages;
 
-import de.fau.cs.mad.kwikshop.android.util.StringHelper;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 
 public class SynchronizationEvent {
 

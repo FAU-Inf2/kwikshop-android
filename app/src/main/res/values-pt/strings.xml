@@ -303,4 +303,7 @@
     <string name="unit_piece_short">pc</string>
 
     <string name="settings_option_4_APIEndPoint_Title">API Endpoint</string>
+    <string name="unit_box_singular">caixa</string>
+    <string name="unit_mililitre_singular">mililitro</string>
+    <string name="unit_millilitre_singular">mililitro</string>
 </resources>

@@ -431,9 +431,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
 
         final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getUnitNames());
-        final ArrayAdapter<String> spinnerArrayAdapterForSingular = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getSingularUnitNames());
+        final ArrayAdapter<String> singularSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getSingularUnitNames());
+        singularSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerArrayAdapterForSingular.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         unit_spinner.setAdapter(spinnerArrayAdapter);
 
         unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -620,7 +620,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             @Override
             public void onClick(View v){
                 numberPicker.setValue(numberPicker.getValue() - 1);
-                updateNumberPicker(spinnerArrayAdapter, spinnerArrayAdapterForSingular,
+                updateNumberPicker(spinnerArrayAdapter, singularSpinnerArrayAdapter,
                         numberPicker.getValue()+1, numberPicker.getValue());
 
             }
@@ -630,7 +630,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             @Override
             public void onClick(View v){
                 numberPicker.setValue(numberPicker.getValue()  +1);
-                updateNumberPicker(spinnerArrayAdapter, spinnerArrayAdapterForSingular,
+                updateNumberPicker(spinnerArrayAdapter, singularSpinnerArrayAdapter,
                         numberPicker.getValue()-1, numberPicker.getValue());
 
             }
@@ -650,14 +650,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         });
         if (!numberPickerUpdating) {
             if (getNumberPickerValue(numberPicker.getValue()) == 1)
-                unit_spinner.setAdapter(spinnerArrayAdapterForSingular);
-            else
-                unit_spinner.setAdapter(spinnerArrayAdapter);
+                updateNumberPicker(spinnerArrayAdapter,
+                        singularSpinnerArrayAdapter, 2, 1);
         }
         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i2) {
-                updateNumberPicker(spinnerArrayAdapter, spinnerArrayAdapterForSingular, i, i2);
+                updateNumberPicker(spinnerArrayAdapter, singularSpinnerArrayAdapter, i, i2);
             }
 
         });
@@ -667,18 +666,18 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                                    int i, int i2){
         if( getNumberPickerValue(i) != 1 && getNumberPickerValue(i2) == 1) {
             numberPickerUpdating = false;
-            int unitPosition = numberPicker.getValue();
+            int unitPosition = unit_spinner.getSelectedItemPosition();
             unit_spinner.setAdapter(spinnerArrayAdapterForSingular);
-            setNumberPickerValues(getNumberPickerValue(i2));
+            //setNumberPickerValues(getNumberPickerValue(i2));
             unit_spinner.setSelection(unitPosition);
             numberPickerUpdating = true;
         }
         else if(getNumberPickerValue(i) == 1 && getNumberPickerValue(i2) != 1) {
             numberPickerUpdating = false;
-            int unitId = unit_spinner.getId();
+            int unitId = unit_spinner.getSelectedItemPosition();
             unit_spinner.setAdapter(spinnerArrayAdapter);
-            setNumberPickerValues(getNumberPickerValue(i2));
-            //unit_spinner.setId(unitId);
+            //setNumberPickerValues(getNumberPickerValue(i2));
+            unit_spinner.setSelection(unitId);
             numberPickerUpdating = true;
         }
     }

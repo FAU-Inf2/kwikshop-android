@@ -5,7 +5,7 @@ import android.content.Context;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.util.DefaultRecipesHelper;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;

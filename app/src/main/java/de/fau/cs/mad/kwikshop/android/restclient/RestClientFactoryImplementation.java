@@ -20,7 +20,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.BasicAuthenticationRequestInterceptor;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;

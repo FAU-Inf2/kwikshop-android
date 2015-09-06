@@ -4,7 +4,7 @@ import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 
 /**
  * Module for background components

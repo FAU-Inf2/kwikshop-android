@@ -1,6 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel.common;
 
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 
 /**
  * Wrappes a Void Command in another command of any parameter type.

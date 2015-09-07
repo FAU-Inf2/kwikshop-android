@@ -407,9 +407,11 @@
     <string name="unit_gram_singular">gram</string>
     <string name="unit_kilogram_singular">kilogram</string>
     <string name="unit_litre_singular">litre</string>
-    <string name="unit_mililitre_singular">mililitre</string>
+    <string name="unit_mililitre_singular">millilitre</string>
     <string name="unit_pack_singular">pack</string>
     <string name="unit_tablespoon_singular">tablespoon</string>
     <string name="unit_teaspoon_singular">teaspoon</string>
+    <string name="unit_box_singular">box</string>
+    <string name="unit_millilitre_singular">millilitre</string>
 
 </resources>

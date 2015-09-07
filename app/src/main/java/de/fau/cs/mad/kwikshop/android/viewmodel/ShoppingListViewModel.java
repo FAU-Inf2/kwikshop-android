@@ -2,9 +2,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -23,8 +21,8 @@ import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
-import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
@@ -34,7 +32,6 @@ import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
 import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
-import de.greenrobot.event.EventBus;
 import se.walkercrou.places.Place;
 
 public class ShoppingListViewModel extends ListViewModel<ShoppingList> {

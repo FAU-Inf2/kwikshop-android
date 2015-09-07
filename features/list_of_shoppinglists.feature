@@ -1,4 +1,4 @@
-Feature: Manage Shopping Lists
+Feature: List of Shopping Lists
 
 	Scenario: Create a shopping list		 		
 		Given I skipped the login

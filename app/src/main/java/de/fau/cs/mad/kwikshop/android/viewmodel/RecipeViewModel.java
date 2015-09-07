@@ -4,8 +4,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
-import de.fau.cs.mad.kwikshop.android.model.RecipeManager;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Group;

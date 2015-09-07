@@ -185,23 +185,27 @@ public class BaseActivity extends AppCompatActivity  implements
     @SuppressWarnings("unused")
     public void onEventMainThread(SynchronizationEvent event) {
 
-        ProgressDialog dialog = getSyncProgressDialog();
-        dialog.setMessage(event.getMessage());
+        if(!event.getHandled()) {
 
-        if(event.getEventType() == SynchronizationEventType.Completed) {
-            dismissSyncProgressDialog();
-        } else if(event.getEventType() == SynchronizationEventType.Failed) {
-            dismissSyncProgressDialog();
+            ProgressDialog dialog = getSyncProgressDialog();
+            dialog.setMessage(event.getMessage());
 
-            AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
-            messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
-            messageBox.setMessage(event.getMessage());
-            messageBox.setCancelable(false);
-            messageBox.create().show();
+            if(event.getEventType() == SynchronizationEventType.Completed) {
+                dismissSyncProgressDialog();
+            } else if(event.getEventType() == SynchronizationEventType.Failed) {
+                dismissSyncProgressDialog();
 
+                AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
+                messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
+                messageBox.setMessage(event.getMessage());
+                messageBox.setCancelable(false);
+                messageBox.create().show();
+
+            }
+
+            event.setHandled(true);
         }
 
-        EventBus.getDefault().cancelEventDelivery(event);
     }
 
     //Only call from main thread (not thread-safe)

@@ -15,7 +15,7 @@ import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.Item;
-import de.fau.cs.mad.kwikshop.android.util.StringHelper;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 

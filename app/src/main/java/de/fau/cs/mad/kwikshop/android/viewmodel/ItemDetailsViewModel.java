@@ -5,10 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,13 +14,12 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.inject.Inject;
 
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.DeleteItemEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
@@ -44,13 +41,11 @@ public class ItemDetailsViewModel{
     private Item item;
 
     private List<Unit> units;
-    private List<Unit> singularUnits;
     private List<Group> groups;
 
 
     private final ViewLauncher viewLauncher;
     private final SimpleStorage<Unit> unitStorage;
-    private final SimpleStorage<Unit> singularUnitStorage;
     private final SimpleStorage<Group> groupStorage;
     private final DisplayHelper displayHelper;
     private final AutoCompletionHelper autoCompletionHelper;
@@ -70,7 +65,7 @@ public class ItemDetailsViewModel{
 
 
     @Inject
-    public ItemDetailsViewModel(ViewLauncher viewLauncher, SimpleStorage<Unit> unitStorage, SimpleStorage<Unit> singularUnitStorage,
+    public ItemDetailsViewModel(ViewLauncher viewLauncher, SimpleStorage<Unit> unitStorage,
                                 SimpleStorage<Group> groupStorage, DisplayHelper displayHelper, AutoCompletionHelper autoCompletionHelper){
 
         if(viewLauncher == null) throw new ArgumentNullException("viewLauncher");
@@ -81,7 +76,6 @@ public class ItemDetailsViewModel{
 
         this.viewLauncher = viewLauncher;
         this.unitStorage = unitStorage;
-        this.singularUnitStorage = singularUnitStorage;
         this.groupStorage = groupStorage;
         this.displayHelper = displayHelper;
         this.autoCompletionHelper = autoCompletionHelper;
@@ -98,7 +92,6 @@ public class ItemDetailsViewModel{
                 //item = shoppingListManager.getListItem(listId, itemId);
             }
             units = unitStorage.getItems();
-            singularUnits = singularUnitStorage.getItems();
             groups = groupStorage.getItems();
 
             initialized = true;
@@ -207,12 +200,11 @@ public class ItemDetailsViewModel{
     }
 
     public ArrayList<String> getSingularUnitNames(){
-        ArrayList<String> singularUnitNames = new ArrayList<>();
-        for (Unit u : singularUnits) {
-            singularUnitNames.add(u.getName());
+        ArrayList<String> unitNames = new ArrayList<>();
+        for (Unit u : units) {
+            unitNames.add(displayHelper.getSingularDisplayName(u));
         }
-        Collections.sort(singularUnitNames);
-        return singularUnitNames;
+        return unitNames;
     }
 
     public Unit getSelectedUnit(){

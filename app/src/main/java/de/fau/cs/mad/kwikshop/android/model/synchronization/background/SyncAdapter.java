@@ -10,7 +10,7 @@ import android.os.Bundle;
 import dagger.ObjectGraph;
 
 import de.fau.cs.mad.kwikshop.android.di.KwikShopBackgroundModule;
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
 
 

@@ -24,7 +24,6 @@ public class ListStorageFragment  {
     private static LocalListStorage m_LocalListStorage;
     private static SimpleStorage<Group> m_GroupStorage;
     private static SimpleStorage<Unit> m_UnitStorage;
-    private static SimpleStorage<Unit> m_SingularUnitStorage;
     private static SimpleStorage<CalendarEventDate> m_CalendarEventStorage;
     private static SimpleStorage<LastLocation> m_LastLocationStorage;
     private static SimpleStorage<DeletedList> m_DeletedListStorage;
@@ -44,8 +43,6 @@ public class ListStorageFragment  {
     public static SimpleStorage<Unit> getUnitStorage() {
         return m_UnitStorage;
     }
-
-    public static SimpleStorage<Unit> getSingularUnitStorage() { return m_SingularUnitStorage;}
 
     public static SimpleStorage<CalendarEventDate> getCalendarEventStorage() {
         return m_CalendarEventStorage;
@@ -101,9 +98,7 @@ public class ListStorageFragment  {
             createGroupsInDatabase(context, m_GroupStorage);
 
             m_UnitStorage = new UnitStorage(m_DatabaseHelper.getUnitDao());
-            m_SingularUnitStorage = new UnitStorage(m_DatabaseHelper.getUnitDao());
             createUnitsInDatabase(context, m_UnitStorage);
-            createSingularUnits(context, m_SingularUnitStorage);
 
             m_CalendarEventStorage = new SimpleStorageBase<>(m_DatabaseHelper.getCalendarDao());
 
@@ -204,17 +199,7 @@ public class ListStorageFragment  {
 
     }
 
-    private static void createSingularUnits(Context context, SimpleStorage<Unit> singularUnitStorage) throws  SQLException{
-        int count = singularUnitStorage.getItems().size();
-        if (count > 0) {
-            return;
-        }
-        Unit[] singularUnits = new DefaultDataProvider().getSingularPredefinedUnits();
-        Arrays.sort(singularUnits);
-        for (Unit u : singularUnits) {
-            singularUnitStorage.addItem(u);
-        }
-    }
+
 
     private static void createGroupsInDatabase(Context context, SimpleStorage<Group> groupStorage) {
 

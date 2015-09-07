@@ -3,7 +3,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Unit;
@@ -84,7 +84,20 @@ public class DisplayHelper {
 
     }
 
+    public String getSingularDisplayName(Unit unit) {
 
+        if (unit == null) {
+            return "";
+        } else {
+            Integer id = getAndroidId(unit.getSingularResourceId());
+            if(id == null) {
+                return getDisplayName(unit);
+            } else {
+                return resourceProvider.getString(id);
+            }
+        }
+
+    }
 
 
     private Integer getAndroidId(ResourceId id) {
@@ -127,6 +140,32 @@ public class DisplayHelper {
                 return R.string.group_tobacco;
             case Group_Other:
                 return R.string.group_Other;
+            case Unit_Piece_name:
+                return R.string.unit_piece_name;
+            case Unit_Bag_singular:
+                return R.string.unit_bag_singular;
+            case Unit_Bottle_singular:
+                return R.string.unit_bottle_singular;
+            case Unit_Box_singular:
+                return R.string.unit_box_singular;
+            case Unit_Pack_singular:
+                return R.string.unit_pack_singular;
+            case Unit_Dozen_singular:
+                return R.string.unit_dozen_singular;
+            case Unit_Gram_singular:
+                return R.string.unit_gram_singular;
+            case Unit_Kilogram_singular:
+                return R.string.unit_kilogram_singular;
+            case Unit_Millilitre_singular:
+                return R.string.unit_mililitre_singular;
+            case Unit_Litre_singular :
+                return R.string.unit_litre_singular;
+            case Unit_Cup_singular:
+                return R.string.unit_cup_singular;
+            case Unit_Tablespoon_singular:
+                return R.string.unit_tablespoon_singular;
+            case Unit_Can_singular:
+                return R.string.unit_can_singular;
             case Unit_Piece:
                 return R.string.unit_piece;
             case Unit_short_Piece:
@@ -165,6 +204,12 @@ public class DisplayHelper {
                 return R.string.unit_tablespoon_short;
             case Unit_Can:
                 return R.string.unit_can;
+            case Unit_Teaspoon:
+                return R.string.unit_teaspoon;
+            case Unit_short_Teaspoon:
+                return R.string.unit_teaspoon_short;
+            case Unit_Teaspoon_singular:
+                return R.string.unit_teaspoon_singular;
             default:
                 return null;
         }

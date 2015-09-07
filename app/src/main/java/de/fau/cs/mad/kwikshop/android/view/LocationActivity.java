@@ -57,6 +57,8 @@ public class LocationActivity extends BaseActivity {
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(this));
         objectGraph.inject(this);
 
+        baseViewModel.setCurrentActivityName(this.getClass().getSimpleName());
+
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().add(frameLayout.getId(), LocationFragment.newInstance()).commit();

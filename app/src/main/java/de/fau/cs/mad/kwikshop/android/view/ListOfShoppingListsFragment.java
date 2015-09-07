@@ -86,11 +86,15 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                SyncingActivity.requestSync();
+
+
+                // wait
                 new Handler().postDelayed(new Runnable() {
                     @Override public void run() {
                         swipeLayout.setRefreshing(false);
                     }
-                }, 5000);
+                }, 3000);
             }
         });
 

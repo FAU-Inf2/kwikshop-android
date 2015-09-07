@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -300,6 +301,27 @@ public class DefaultViewLauncher implements ViewLauncher {
         final Spinner spinner = (Spinner) view.findViewById(R.id.dialog_add_recipe_spinner);
         final TextView amountTextView = (TextView) view.findViewById(R.id.dialog_add_recipe_textview2);
         final NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.dialog_add_recipe_numberpicker);
+
+
+        // style number picker
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    pf.set(numberPicker, resourceProvider.getDrawable(R.drawable.np_numberpicker_selection_divider_green));
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (Resources.NotFoundException e) {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+
 
 
 

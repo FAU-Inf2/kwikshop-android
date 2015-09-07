@@ -13,6 +13,8 @@ public class ListOfRecipesActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
+        baseViewModel.setCurrentActivityName(this.getClass().getSimpleName());
+
         if(savedInstanceState == null){
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().add(R.id.content_frame, ListOfRecipesFragment.newInstance()).commit();

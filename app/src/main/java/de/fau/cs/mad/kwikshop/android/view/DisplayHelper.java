@@ -161,9 +161,9 @@ public class DisplayHelper {
             case Unit_Litre_singular :
                 return R.string.unit_litre_singular;
             case Unit_Cup_singular:
-                return R.string.unit_cup;
+                return R.string.unit_cup_singular;
             case Unit_Tablespoon_singular:
-                return R.string.unit_tablespoon;
+                return R.string.unit_tablespoon_singular;
             case Unit_Can_singular:
                 return R.string.unit_can_singular;
             case Unit_Piece:
@@ -204,6 +204,12 @@ public class DisplayHelper {
                 return R.string.unit_tablespoon_short;
             case Unit_Can:
                 return R.string.unit_can;
+            case Unit_Teaspoon:
+                return R.string.unit_teaspoon;
+            case Unit_short_Teaspoon:
+                return R.string.unit_teaspoon_short;
+            case Unit_Teaspoon_singular:
+                return R.string.unit_teaspoon_singular;
             default:
                 return null;
         }

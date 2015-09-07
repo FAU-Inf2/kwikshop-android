@@ -711,6 +711,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i2) {
                // updateNumberPicker(spinnerArrayAdapter, spinnerArrayAdapterForSingular, i, i2);
+                if( getNumberPickerValue(i) != 1 && getNumberPickerValue(i2) == 1) {
+                    numberPickerUnit.setDisplayedValues(viewModel.getSingularUnitNames().toArray(new String[viewModel.getSingularUnitNames().size()]));
+                } else if(getNumberPickerValue(i) == 1 && getNumberPickerValue(i2) != 1){
+                    numberPickerUnit.setDisplayedValues(viewModel.getUnitNames().toArray(new String[viewModel.getUnitNames().size()]));
+                }
             }
 
         });

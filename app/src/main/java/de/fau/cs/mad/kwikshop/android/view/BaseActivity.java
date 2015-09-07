@@ -9,10 +9,10 @@ import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-
 
 
 import android.support.v7.app.AppCompatActivity;
@@ -38,8 +38,8 @@ import de.greenrobot.event.EventBus;
 /**
  * BaseActivity: all activities have to inherit
  */
-public class BaseActivity extends AppCompatActivity  implements
-        NavigationView.OnNavigationItemSelectedListener{
+public class BaseActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener {
 
 
     /* Used by sharing. If this is true, ListOfShoppingLists will be opened after sync. */
@@ -79,7 +79,7 @@ public class BaseActivity extends AppCompatActivity  implements
         baseViewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
 
         // style actionbar
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
@@ -106,8 +106,6 @@ public class BaseActivity extends AppCompatActivity  implements
     }
 
 
-
-
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         menuItem.setChecked(true);
@@ -115,15 +113,14 @@ public class BaseActivity extends AppCompatActivity  implements
 
             case R.id.nav_login:
                 mDrawerLayout.closeDrawers();
-                finish();
+
                 baseViewModel.startLoginActivity();
                 return true;
 
             case R.id.nav_shopping_lists:
                 mDrawerLayout.closeDrawers();
 
-                if(!baseViewModel.getCurrentActivityName().equals("ListOfShoppingListsActivity")){
-                    finish();
+                if (!baseViewModel.getCurrentActivityName().equals("ListOfShoppingListsActivity")) {
                     startActivity(new Intent(getApplicationContext(), ListOfShoppingListsActivity.class));
                 }
 
@@ -131,9 +128,8 @@ public class BaseActivity extends AppCompatActivity  implements
             case R.id.nav_recipe:
                 mDrawerLayout.closeDrawers();
 
-                if(!baseViewModel.getCurrentActivityName().equals("ListOfRecipesActivity")){
-                finish();
-                startActivity(new Intent(getApplicationContext(), ListOfRecipesActivity.class));
+                if (!baseViewModel.getCurrentActivityName().equals("ListOfRecipesActivity")) {
+                    startActivity(new Intent(getApplicationContext(), ListOfRecipesActivity.class));
                 }
 
 
@@ -141,8 +137,7 @@ public class BaseActivity extends AppCompatActivity  implements
             case R.id.nav_supermarket_finder:
                 mDrawerLayout.closeDrawers();
 
-                if(!baseViewModel.getCurrentActivityName().equals("LocationActivity")){
-                    finish();
+                if (!baseViewModel.getCurrentActivityName().equals("LocationActivity")) {
                     startActivity(new Intent(getApplicationContext(), LocationActivity.class));
                 }
 
@@ -150,8 +145,7 @@ public class BaseActivity extends AppCompatActivity  implements
             case R.id.nav_settings:
                 mDrawerLayout.closeDrawers();
 
-                if(!baseViewModel.getCurrentActivityName().equals("SettingActivity")) {
-                    finish();
+                if (!baseViewModel.getCurrentActivityName().equals("SettingActivity")) {
                     startActivity(new Intent(getApplicationContext(), SettingActivity.class));
                 }
 
@@ -159,15 +153,13 @@ public class BaseActivity extends AppCompatActivity  implements
             case R.id.nav_about:
                 mDrawerLayout.closeDrawers();
 
-                if(!baseViewModel.getCurrentActivityName().equals("AboutActivity")) {
-                    finish();
+                if (!baseViewModel.getCurrentActivityName().equals("AboutActivity")) {
                     startActivity(new Intent(getApplicationContext(), AboutActivity.class));
                 }
 
                 return true;
             case R.id.nav_server:
                 mDrawerLayout.closeDrawers();
-                finish();
                 startActivity(ServerIntegrationDebugActivity.getIntent(getApplicationContext()));
                 return true;
 
@@ -176,13 +168,12 @@ public class BaseActivity extends AppCompatActivity  implements
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START))
                     mDrawerLayout.closeDrawers();
                 else
                     mDrawerLayout.openDrawer(GravityCompat.START);
@@ -203,14 +194,14 @@ public class BaseActivity extends AppCompatActivity  implements
     @SuppressWarnings("unused")
     public void onEventMainThread(SynchronizationEvent event) {
 
-        if(!event.getHandled()) {
+        if (!event.getHandled()) {
 
             ProgressDialog dialog = getSyncProgressDialog();
             dialog.setMessage(event.getMessage());
 
-            if(event.getEventType() == SynchronizationEventType.Completed) {
+            if (event.getEventType() == SynchronizationEventType.Completed) {
                 dismissSyncProgressDialog();
-            } else if(event.getEventType() == SynchronizationEventType.Failed) {
+            } else if (event.getEventType() == SynchronizationEventType.Failed) {
                 dismissSyncProgressDialog();
 
                 AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
@@ -229,9 +220,9 @@ public class BaseActivity extends AppCompatActivity  implements
     //Only call from main thread (not thread-safe)
     private ProgressDialog getSyncProgressDialog() {
 
-        if(syncProgressDialog == null) {
+        if (syncProgressDialog == null) {
 
-            syncProgressDialog =  ProgressDialog.show(
+            syncProgressDialog = ProgressDialog.show(
                     this,
                     getResources().getString(R.string.synchronizing),
                     "",
@@ -243,13 +234,13 @@ public class BaseActivity extends AppCompatActivity  implements
     //Only call from main thread (not thread-safe)
     private void dismissSyncProgressDialog() {
 
-        if(syncProgressDialog != null) {
+        if (syncProgressDialog != null) {
             syncProgressDialog.dismiss();
             syncProgressDialog = null;
         }
 
         /* Return to ListOfShoppingLists after sharing */
-        if(returnToListOfShoppingLists) {
+        if (returnToListOfShoppingLists) {
             returnToListOfShoppingLists = false;
             Intent intent = new Intent(this, ListOfShoppingListsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -265,8 +256,6 @@ public class BaseActivity extends AppCompatActivity  implements
         returnToListOfShoppingLists = true;
         SyncingActivity.requestSync();
     }
-
-
 
 
 }

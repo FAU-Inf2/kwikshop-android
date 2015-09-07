@@ -285,7 +285,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             getActivity().finish();
         }
     }
-    public void setNumberPickerValues(double itemAmount){
+    public void setNumberPickerValues(int itemAmount){
         if (amountIsNatural(selectedUnitIndex)){
             numberPicker.setMinValue(0);
             numberPicker.setMaxValue(1000);
@@ -293,17 +293,22 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             numberPicker.setDisplayedValues(intNumbersForAmountPicker);
 //
 //            double itemAmount = item.getAmount();
-            int index = 1;
+           /* int index = 1;
             for (int i = 0; i < natNumsOnce.length; i++) {
                 if (natNumsOnce[i].equals(itemAmount)) {
                     index = i;
                     break;
                 }
-            }
+            }*/
+            int index = 0;
+            //difference btw natural and numbers with fractions
+            if (itemAmount - 3 >= 0)
+                index = itemAmount - 3;
             if (!numberPickerUpdating)
                 numberPicker.setValue(index);
         }
         else {
+            double value = Double.parseDouble(intNumbersForAmountPicker[itemAmount]);
             numberPicker.setMinValue(0);
             numberPicker.setMaxValue(1000);
             numberPicker.setWrapSelectorWheel(false);
@@ -317,8 +322,16 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     return numsOnce[value];
                 }
             });
-
-
+            if (!numberPickerUpdating) {
+                int index = (amountIsNatural(selectedUnitIndex))? 3 : 1;
+                for (int i = 0; i < intNumsOnce.length; i++) {
+                    if (intNumsOnce[i].equals(value)) {
+                        index = i;
+                        break;
+                    }
+                }
+                numberPicker.setValue(index);
+            }
         }
     }
     public double getNumberPickerValue(int position){
@@ -407,7 +420,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 selectedUnitIndex = newVal;
-                setNumberPickerValues(item.getAmount());
+                if (amountIsNatural(oldVal) && amountIsNatural(selectedUnitIndex)){
+                }
+                else if( !amountIsNatural(oldVal) && !amountIsNatural(selectedUnitIndex)){
+                }
+                else
+                    setNumberPickerValues(numberPicker.getValue());
+
 
                 if(newVal == oldVal){
                     selectedUnitIndex = -1;

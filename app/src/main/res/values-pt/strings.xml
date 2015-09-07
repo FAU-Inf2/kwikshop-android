@@ -194,7 +194,7 @@
     <string name="no">Não</string>
     <string name="no_place_dialog_message">Kwik Shop não encontrou Supermercados na sua área</string>
     <string name="no_place_dialog_title">Nenhum Supermercado</string>
-    <string name="overflow_action_menu_add_to_a_shoppinglist">Adicionar isso para a lista de compras</string>
+    <string name="overflow_action_menu_add_to_a_shopping_list">Adicionar isso para a lista de compras</string>
     <string name="recipe_choose_recipe">Escolha uma receita para adicionar:</string>
     <string name="recipe_choose_shoppinglist">Escolha uma lista de compras:</string>
     <string name="recipe_lowfat_quark">Queijo quark</string>

@@ -65,25 +65,6 @@ public class ShoppingListActivity extends BaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu){
 
-        MenuItem addRecipe = menu.findItem(R.id.action_add_recipe);
-        addRecipe.setVisible(true);
-
-        MenuItem moveToShoppingCart = menu.findItem(R.id.action_move_all_to_shopping_cart);
-        moveToShoppingCart.setVisible(true);
-
-        MenuItem moveFromShoppingCart = menu.findItem(R.id.action_move_all_from_shopping_cart);
-        moveFromShoppingCart.setVisible(true);
-
-        MenuItem shoppingMode = menu.findItem(R.id.action_shopping_mode);
-        shoppingMode.setVisible(true);
-
-        /*
-        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SHOPPING_MODE, false, getApplicationContext())){
-            moveToShoppingCart.setVisible(true);
-            moveFromShoppingCart.setVisible(true);
-        }
-        */
-
         MenuItem findLocationItem =  menu.findItem(R.id.refresh_current_supermarket);
 
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, this))

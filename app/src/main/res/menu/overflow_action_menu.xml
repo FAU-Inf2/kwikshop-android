@@ -16,28 +16,28 @@
 
             <item android:id="@+id/action_add_recipe"
                 app:showAsAction="ifRoom"
-                android:visible="false"
+                android:visible="true"
                 android:title="@string/overflow_action_menu_add_recipes"/>
 
             <item android:id="@+id/action_add_to_a_shoppinglist"
                 app:showAsAction="ifRoom"
-                android:visible="false"
-                android:title="@string/overflow_action_menu_add_to_a_shoppinglist"/>
+                android:visible="true"
+                android:title="@string/overflow_action_menu_add_to_a_shopping_list"/>
 
 
             <item android:id="@+id/action_move_all_to_shopping_cart"
                 app:showAsAction="ifRoom"
-                android:visible="false"
+                android:visible="true"
                 android:title="@string/overflow_action_menu_move_all_to_shopping_cart" />
 
             <item android:id="@+id/action_move_all_from_shopping_cart"
                 app:showAsAction="ifRoom"
-                android:visible="false"
+                android:visible="true"
                 android:title="@string/overflow_action_menu_move_all_from_shopping_cart" />
 
             <item android:id="@+id/action_shopping_mode"
                   app:showAsAction="ifRoom"
-                  android:visible="false"
+                  android:visible="true"
                   android:title="@string/overflow_action_menu_shopping_mode" />
 
 

@@ -271,6 +271,7 @@ public class SettingFragment extends Fragment {
                         manageUnitsSetting,
                         locationPermissionSetting,
                         placeTypeSetting,
+                        enableSyncSetting,
                         syncNowSetting,
                         loginSetting,
                         syncIntervalSetting,

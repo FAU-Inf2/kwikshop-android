@@ -240,7 +240,7 @@
     <string name="barcode_scanner_progress_message">Suche Produkt&#8230;</string>
     <string name="share_helpmessage">Du kannst diese Einkaufsliste nun teilen (z.B. per SMS oder E-Mail).</string>
     <string name="share_success">Du hast jetzt Zugriff auf die Einkaufsliste %s.</string>
-    <string name="settings_option_8_login_name">Account / Login</string>
+    <string name="settings_option_8_login_name">Konto / Login</string>
     <string name="settings_option_8_login_descr">Anmelden, um Einkaufslisten zu synchronisieren und zu teilen</string>
     <string name="title_activity_location">Supermarktfinder</string>
     <string name="unit_bag_singular">Sack</string>

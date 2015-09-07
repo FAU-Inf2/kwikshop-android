@@ -24,6 +24,7 @@ import butterknife.OnClick;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.restclient.LeaseResource;
 import de.fau.cs.mad.kwikshop.android.restclient.ListClient;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -33,6 +34,7 @@ import de.fau.cs.mad.kwikshop.common.DeletionInfo;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.RecipeServer;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
+import de.fau.cs.mad.kwikshop.common.SynchronizationLease;
 import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
 import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
 import de.greenrobot.event.EventBus;
@@ -66,7 +68,6 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
         mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
-
 
 
     @Override
@@ -315,7 +316,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
             @Override
             protected Void doInBackground(Void... voids) {
 
-                try{
+                try {
 
                     privateBus.post("Creating sample shopping list on server...");
 
@@ -397,8 +398,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
     @OnClick(R.id.button_deleteShoppingList)
     @SuppressWarnings("unused")
-    void deleteShoppingList()
-    {
+    void deleteShoppingList() {
         viewLauncher.showTextInputDialog("Shopping List id", "",
                 new Command<String>() {
                     @Override
@@ -408,7 +408,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -457,7 +457,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -476,7 +476,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                     ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
 
                                     ShoppingListServer list = client.getLists(listId);
-                                    list.setName(list.getName()  + "_edited");
+                                    list.setName(list.getName() + "_edited");
                                     list.setLastModifiedDate(new Date());
 
                                     list = client.updateList(listId, list);
@@ -513,7 +513,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -929,7 +929,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
             @Override
             protected Void doInBackground(Void... voids) {
 
-                try{
+                try {
 
                     privateBus.post("Creating sample recipe on server...");
 
@@ -1010,8 +1010,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
     @OnClick(R.id.button_deleteRecipe)
     @SuppressWarnings("unused")
-    void deleteRecipe()
-    {
+    void deleteRecipe() {
         viewLauncher.showTextInputDialog("Recipe Id ", "",
                 new Command<String>() {
                     @Override
@@ -1021,7 +1020,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -1070,7 +1069,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -1089,7 +1088,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                                     ListClient<RecipeServer> client = clientFactory.getRecipeClient();
 
                                     RecipeServer list = client.getLists(listId);
-                                    list.setName(list.getName()  + "_edited");
+                                    list.setName(list.getName() + "_edited");
                                     list.setLastModifiedDate(new Date());
 
                                     list = client.updateList(listId, list);
@@ -1126,7 +1125,7 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                         final int listId;
 
-                        try{
+                        try {
                             listId = Integer.parseInt(parameter);
                         } catch (Exception e) {
                             privateBus.post(getStackTrace(e));
@@ -1359,6 +1358,116 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
             }
         }.execute();
 
+    }
+
+    @OnClick(R.id.button_getLease)
+    @SuppressWarnings("unused")
+    void getLease() {
+
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+
+                    privateBus.post("Aquiring lease...");
+
+                    LeaseResource leaseClient = clientFactory.getLeaseClient();
+
+                    SynchronizationLease lease = leaseClient.getSynchronizationLeaseSynchronously();
+
+                    privateBus.post(mapper.writeValueAsString(lease));
+
+                } catch (Exception e) {
+
+                    privateBus.post(getStackTrace(e));
+                }
+
+                return null;
+            }
+        }.execute();
+
+    }
+
+    @OnClick(R.id.button_extendLease)
+    @SuppressWarnings("unused")
+    void extendLease() {
+
+
+        viewLauncher.showTextInputDialog("Lease id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(final String parameter) {
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... params) {
+                                try {
+
+                                    privateBus.post("Extending lease...");
+
+                                    LeaseResource leaseClient = clientFactory.getLeaseClient();
+
+                                    SynchronizationLease lease = leaseClient.extendSynchronizationLeaseSynchronously(Integer.parseInt(parameter));
+
+                                    privateBus.post(mapper.writeValueAsString(lease));
+
+                                } catch (Exception e) {
+
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
+    }
+
+
+    @OnClick(R.id.button_removeLease)
+    @SuppressWarnings("unused")
+    void removeLease() {
+
+
+        viewLauncher.showTextInputDialog("Lease id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(final String parameter) {
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... params) {
+                                try {
+
+                                    privateBus.post(String.format("Removing lease %s ...", parameter));
+
+                                    LeaseResource leaseClient = clientFactory.getLeaseClient();
+
+
+                                    leaseClient.removeSynchronizationLeaseSynchronously(Integer.parseInt(parameter));
+
+                                    privateBus.post("OK");
+
+                                } catch (Exception e) {
+
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+                            }
+                        }.execute();
+
+
+                    }
+                },
+                NullCommand.StringInstance);
     }
 
     public void onEventMainThread(String value) {

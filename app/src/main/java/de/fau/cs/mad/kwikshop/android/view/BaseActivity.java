@@ -1,19 +1,22 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 
 
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -34,7 +37,8 @@ import de.greenrobot.event.EventBus;
 /**
  * BaseActivity: all activities have to inherit
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity  implements
+        NavigationView.OnNavigationItemSelectedListener{
 
 
     /* Used by sharing. If this is true, ListOfShoppingLists will be opened after sync. */
@@ -48,6 +52,7 @@ public class BaseActivity extends AppCompatActivity {
     NavigationView mNavigationView;
 
     public static FrameLayout frameLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -72,6 +77,11 @@ public class BaseActivity extends AppCompatActivity {
 
         baseViewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
 
+        // style actionbar
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         // set full screen in shopping mode
         if (getIntent() != null && getIntent().getExtras() != null) {
@@ -82,72 +92,69 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
 
-
         // restart to set locale
         baseViewModel.setSavedLocale();
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
 
         // add header to navigation drawer
         mNavigationView.addHeaderView(mNavigationViewHeader);
 
         // handle click events in navigation drawer
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                menuItem.setChecked(true);
-                switch (menuItem.getItemId()) {
-
-                    case R.id.nav_login:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        baseViewModel.startLoginActivity();
-                        return true;
-
-                    case R.id.nav_shopping_lists:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), ListOfShoppingListsActivity.class));
-
-                        return true;
-                    case R.id.nav_recipe:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), ListOfRecipesActivity.class));
-
-                        return true;
-                    case R.id.nav_supermarket_finder:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), LocationActivity.class).putExtra("LocationStarted", true));
-
-                        return true;
-                    case R.id.nav_settings:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), SettingActivity.class));
-
-                        return true;
-                    case R.id.nav_about:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), AboutActivity.class));
-                        return true;
-                    case R.id.nav_server:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(ServerIntegrationDebugActivity.getIntent(getApplicationContext()));
-                        return true;
-
-                }
-                return true;
-            }
-        });
-
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         EventBus.getDefault().register(this);
+    }
+
+
+
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        menuItem.setChecked(true);
+        switch (menuItem.getItemId()) {
+
+            case R.id.nav_login:
+                mDrawerLayout.closeDrawers();
+                finish();
+                baseViewModel.startLoginActivity();
+                return true;
+
+            case R.id.nav_shopping_lists:
+                mDrawerLayout.closeDrawers();
+                finish();
+                startActivity(new Intent(getApplicationContext(), ListOfShoppingListsActivity.class));
+
+                return true;
+            case R.id.nav_recipe:
+                mDrawerLayout.closeDrawers();
+                finish();
+                startActivity(new Intent(getApplicationContext(), ListOfRecipesActivity.class));
+
+                return true;
+            case R.id.nav_supermarket_finder:
+                mDrawerLayout.closeDrawers();
+                finish();
+                startActivity(new Intent(getApplicationContext(), LocationActivity.class).putExtra("LocationStarted", true));
+
+                return true;
+            case R.id.nav_settings:
+                mDrawerLayout.closeDrawers();
+                finish();
+                startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+
+                return true;
+            case R.id.nav_about:
+                mDrawerLayout.closeDrawers();
+                finish();
+                startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+                return true;
+            case R.id.nav_server:
+                mDrawerLayout.closeDrawers();
+                finish();
+                startActivity(ServerIntegrationDebugActivity.getIntent(getApplicationContext()));
+                return true;
+
+        }
+        return true;
     }
 
 
@@ -236,5 +243,6 @@ public class BaseActivity extends AppCompatActivity {
         returnToListOfShoppingLists = true;
         SyncingActivity.requestSync();
     }
+
 
 }

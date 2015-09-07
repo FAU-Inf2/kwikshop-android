@@ -15,8 +15,7 @@ public class SettingActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // set layout in frameLayout from BaseActivity to access the navigation Drawer
-        // do not use setContentView()!
+        baseViewModel.setCurrentActivityName(this.getClass().getSimpleName());
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();

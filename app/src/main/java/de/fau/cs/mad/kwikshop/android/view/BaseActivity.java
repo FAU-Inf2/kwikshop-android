@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -120,32 +121,49 @@ public class BaseActivity extends AppCompatActivity  implements
 
             case R.id.nav_shopping_lists:
                 mDrawerLayout.closeDrawers();
-                finish();
-                startActivity(new Intent(getApplicationContext(), ListOfShoppingListsActivity.class));
+
+                if(!baseViewModel.getCurrentActivityName().equals("ListOfShoppingListsActivity")){
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), ListOfShoppingListsActivity.class));
+                }
 
                 return true;
             case R.id.nav_recipe:
                 mDrawerLayout.closeDrawers();
+
+                if(!baseViewModel.getCurrentActivityName().equals("ListOfRecipesActivity")){
                 finish();
                 startActivity(new Intent(getApplicationContext(), ListOfRecipesActivity.class));
+                }
+
 
                 return true;
             case R.id.nav_supermarket_finder:
                 mDrawerLayout.closeDrawers();
-                finish();
-                startActivity(new Intent(getApplicationContext(), LocationActivity.class).putExtra("LocationStarted", true));
+
+                if(!baseViewModel.getCurrentActivityName().equals("LocationActivity")){
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), LocationActivity.class));
+                }
 
                 return true;
             case R.id.nav_settings:
                 mDrawerLayout.closeDrawers();
-                finish();
-                startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+
+                if(!baseViewModel.getCurrentActivityName().equals("SettingActivity")) {
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                }
 
                 return true;
             case R.id.nav_about:
                 mDrawerLayout.closeDrawers();
-                finish();
-                startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+
+                if(!baseViewModel.getCurrentActivityName().equals("AboutActivity")) {
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+                }
+
                 return true;
             case R.id.nav_server:
                 mDrawerLayout.closeDrawers();

@@ -36,6 +36,8 @@ public class AboutActivity extends BaseActivity {
 
         ButterKnife.inject(this);
 
+        baseViewModel.setCurrentActivityName(this.getClass().getSimpleName());
+
         // link to the app's GitHub page
         String linkText = String.format("<a href=\"%s\">%s</a> ",
                 getResources().getString(R.string.githubLink),

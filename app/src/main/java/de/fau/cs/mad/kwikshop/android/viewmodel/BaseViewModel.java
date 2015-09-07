@@ -25,6 +25,7 @@ public class BaseViewModel {
     private Activity activity;
     private ViewLauncher viewLauncher;
     private boolean shoppingModeEnabled = false;
+    private String currentActivityName = "";
 
     public static String RESTARTEDACTIVITY = "RestartedActivity";
 
@@ -84,5 +85,11 @@ public class BaseViewModel {
     }
 
 
+    public String getCurrentActivityName() {
+        return currentActivityName;
+    }
 
+    public void setCurrentActivityName(String currentActivityName) {
+        this.currentActivityName = currentActivityName;
+    }
 }

@@ -1339,36 +1339,16 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                     List<BoughtItem> boughtItems = new ArrayList<>();
 
                     boughtItems.add(new BoughtItem("Test1", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test3", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test5", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test7", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test9", "place1", "Kwik-E-Mart Springfield"));
-
-                    boughtItems.add(new BoughtItem("Test1", "place2", "Foobar Supermarket"));
-
-                    boughtItems.add(new BoughtItem("Test1", "place1", "Kwik-E-Mart Springfield"));
                     boughtItems.add(new BoughtItem("Test2", "place1", "Kwik-E-Mart Springfield"));
                     boughtItems.add(new BoughtItem("Test4", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test6", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test8", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test9", "place1", "Kwik-E-Mart Springfield"));
+                    boughtItems.add(new BoughtItem("Test5", "place1", "Kwik-E-Mart Springfield"));
 
                     boughtItems.add(new BoughtItem("Test1", "place2", "Foobar Supermarket"));
 
                     boughtItems.add(new BoughtItem("Test1", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test2", "place1", "Kwik-E-Mart Springfield"));
                     boughtItems.add(new BoughtItem("Test3", "place1", "Kwik-E-Mart Springfield"));
+                    boughtItems.add(new BoughtItem("Test4", "place1", "Kwik-E-Mart Springfield"));
                     boughtItems.add(new BoughtItem("Test5", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test6", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test8", "place1", "Kwik-E-Mart Springfield"));
-
-                    boughtItems.add(new BoughtItem("Test1", "place2", "Foobar Supermarket"));
-
-                    boughtItems.add(new BoughtItem("Test2", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test3", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test6", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test7", "place1", "Kwik-E-Mart Springfield"));
-                    boughtItems.add(new BoughtItem("Test9", "place1", "Kwik-E-Mart Springfield"));
 
                     ItemOrderWrapper itemOrder = new ItemOrderWrapper(boughtItems);
                     client.postItemOrder(itemOrder);

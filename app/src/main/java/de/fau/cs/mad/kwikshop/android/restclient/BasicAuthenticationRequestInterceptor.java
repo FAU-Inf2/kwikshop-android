@@ -1,7 +1,8 @@
-package de.fau.cs.mad.kwikshop.android.model;
+package de.fau.cs.mad.kwikshop.android.restclient;
 
 import android.util.Base64;
 
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import retrofit.RequestInterceptor;
 
 public class BasicAuthenticationRequestInterceptor implements RequestInterceptor {

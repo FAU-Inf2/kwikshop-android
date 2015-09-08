@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
+                android:paddingBottom="0dp"
+                android:paddingTop="0dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp" >
 
     <TextView
-        android:id="@+id/tvsetname"
+        android:id="@+id/tv_settings_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -18,18 +18,18 @@
         />
 
     <TextView
-        android:id="@+id/tvsetdesc"
+        android:id="@+id/tv_settings_desc"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Number of items"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@id/tvsetname"
+        android:layout_below="@id/tv_settings_name"
         android:textColor="@color/secondary_text"
-        android:layout_marginTop="-10dp"
+        android:paddingRight="30dp"
+        android:layout_marginTop="-15dp"
         android:layout_marginBottom="5dp" />
 
     <CheckBox
-        android:id="@+id/setcheckbox"
+        android:id="@+id/cb_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

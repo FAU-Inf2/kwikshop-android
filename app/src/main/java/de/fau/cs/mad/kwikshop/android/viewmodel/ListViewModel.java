@@ -1,21 +1,18 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Toast;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.inject.Inject;
-
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
-import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
@@ -24,12 +21,11 @@ import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
-import de.fau.cs.mad.kwikshop.android.util.StringHelper;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ItemIdExtractor;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 
@@ -388,7 +384,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
     protected void quickAddUnitsCommandExecute(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddUnit){
 
-        final String text = getQuickAddText();
+        final String text =  getQuickAddText().length()> 20 ? getQuickAddText().substring(0,20)+"..." : getQuickAddText();
         //reset quick add text
 
                 if (!StringHelper.isNullOrWhiteSpace(text)) {
@@ -400,12 +396,14 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
                     viewLauncher.notifyUnitSpinnerChange(adapter);
                 }
+                else
+                    viewLauncher.showToast(R.string.error_empty_unitname, Toast.LENGTH_LONG);
 
         qAddUnit.setText("");
     }
     protected void quickAddGroupsCommandExecute(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddGroup){
 
-        final String text = getQuickAddText();
+        final String text = getQuickAddText().length()> 20 ? getQuickAddText().substring(0,20)+"..." : getQuickAddText();
         //reset quick add text
         setQuickAddText("");
 
@@ -417,6 +415,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
             autoCompletionHelper.offerName(newGroup.getName());
             viewLauncher.notifyGroupSpinnerChange(adapter);
         }
+        else
+            viewLauncher.showToast(R.string.error_empty_groupname, Toast.LENGTH_LONG);
 
         qAddGroup.setText("");
 
@@ -434,8 +434,14 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
                 }
             });
             Unit u = units.get(quickRemoveUnitIndex);
-            unitStorage.deleteSingleItem(u);
-            viewLauncher.notifyUnitSpinnerChange(adapter);
+            if (u.getResourceId()== null) {
+                unitStorage.deleteSingleItem(u);
+                viewLauncher.notifyUnitSpinnerChange(adapter);
+                viewLauncher.showToast(R.string.message_unitremoved, Toast.LENGTH_LONG);
+            }
+            else
+                viewLauncher.showToast(R.string.error_remove_defaultunit, Toast.LENGTH_LONG);
+
 
         }
     }
@@ -446,8 +452,13 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
             groups = groupStorage.getItems();
 
             Group g = groups.get(quickRemoveGroupIndex);
-            groupStorage.deleteSingleItem(g);
-            viewLauncher.notifyGroupSpinnerChange(adapter);
+            if (g.getResourceId() == null) {
+                groupStorage.deleteSingleItem(g);
+                viewLauncher.notifyGroupSpinnerChange(adapter);
+                viewLauncher.showToast(R.string.message_groupremoved, Toast.LENGTH_LONG);
+            }
+            else
+                viewLauncher.showToast(R.string.error_remove_defaultgroup, Toast.LENGTH_LONG);
 
 
         }
@@ -456,7 +467,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     final Command<Void> cancelProgressDialogCommand =  new Command<Void>() {
         @Override
         public void execute(Void parameter) {
-            viewLauncher.showShoppingList(listId);
+            viewLauncher.showShoppingListWithSupermarketDialog(listId);
         }
     };
 

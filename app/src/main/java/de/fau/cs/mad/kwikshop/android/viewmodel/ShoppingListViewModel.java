@@ -2,7 +2,6 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -22,8 +21,8 @@ import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
-import de.fau.cs.mad.kwikshop.android.view.ShoppingListActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
@@ -33,7 +32,6 @@ import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
 import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
-import de.greenrobot.event.EventBus;
 import se.walkercrou.places.Place;
 
 public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
@@ -126,10 +124,12 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         @Override
         public void execute(Void parameter) {
             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, true, context);
-            viewLauncher.showShoppingList(listId);
+            viewLauncher.showShoppingListWithSupermarketDialog(listId);
 
         }
     };
+
+
 
 
 
@@ -196,6 +196,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     //region Properties
 
+
     /**
      * Gets how items are supposed to be sorted for the current shopping list
      */
@@ -224,6 +225,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         return deleteItemCommand;
     }
 
+
     public Command<Void> getSendBoughtItemsToServerCommand() {
         return sendBoughtItemsToServerCommand;
     }
@@ -232,12 +234,12 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         return this.findNearbySupermarketCommand;
     }
 
+
+
+
     public ObservableArrayList<ItemViewModel, Integer> getCheckedItems() {
         return checkedItems;
     }
-
-
-
 
 
     public int getBoughtItemsCount() {
@@ -490,7 +492,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 );
 
                 // place request: radius 1000 result count 5
-                getNearbySupermarketPlaces(1000, 10);
+                getNearbySupermarketPlaces(500, 10);
 
             } else {
 
@@ -684,6 +686,26 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         updateOrderOfItems();
         listener.onItemSortTypeChanged();
     }
+
+
+    public void showDialogLeaveShoppingMode(final int listID) {
+        viewLauncher.showMessageDialog(
+                resourceProvider.getString(R.string.dialog_leave_shopping_mode_title),
+                resourceProvider.getString(R.string.dialog_leave_shopping_mode_message),
+                resourceProvider.getString(R.string.dialog_leave_shopping_mode_quit),
+                new Command<Void>() {
+                    @Override
+                    public void execute(Void parameter) {
+
+                        viewLauncher.showShoppingList(listID);
+                    }
+                },
+                resourceProvider.getString(R.string.cancel),
+                NullCommand.VoidInstance
+        );
+    }
+
+
 
     //endregion
 }

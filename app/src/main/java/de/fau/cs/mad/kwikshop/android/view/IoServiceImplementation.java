@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 
 import javax.inject.Inject;
 
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.IoService;
 
 public class IoServiceImplementation implements IoService {

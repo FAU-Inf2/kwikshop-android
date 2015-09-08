@@ -3,6 +3,7 @@
     <color name="primary_Color">#00897B</color>
     <color name="secondary_Color">#FFD54F</color>
 
+    <color name="white">#FFFFFF</color>
     <color name="fab_Normal">#FFD54F</color>
     <color name="fab_Pressed">#FFD668</color>
     <color name="fab_Ripple">#FFBF00</color>

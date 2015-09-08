@@ -6,11 +6,10 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,11 +27,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
-import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
-import de.fau.cs.mad.kwikshop.android.util.StringHelper;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
@@ -76,13 +74,24 @@ public class DefaultViewLauncher implements ViewLauncher {
 
     @Override
     public void showShoppingListDetailsView(int shoppingListId) {
-
         activity.startActivity(ShoppingListDetailActivity.getIntent(activity, shoppingListId));
-
     }
 
     @Override
     public void showShoppingList(int shoppingListId) {
+        activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId)
+                .putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true));
+    }
+
+    @Override
+    public void showShoppingListInShoppingMode(int shoppingListId) {
+        activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId)
+                .putExtra(ShoppingListActivity.SHOPPING_MODE, true)
+                .putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true));
+    }
+
+    @Override
+    public void showShoppingListWithSupermarketDialog(int shoppingListId) {
         activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId));
     }
 
@@ -294,6 +303,27 @@ public class DefaultViewLauncher implements ViewLauncher {
         final NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.dialog_add_recipe_numberpicker);
 
 
+        // style number picker
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    pf.set(numberPicker, resourceProvider.getDrawable(R.drawable.np_numberpicker_selection_divider_green));
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (Resources.NotFoundException e) {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+
+
+
 
         if(fromShoppingList)
             listTextView.setText("\n" + activity.getString(R.string.recipe_choose_recipe));
@@ -378,7 +408,7 @@ public class DefaultViewLauncher implements ViewLauncher {
                 }
 
                 if(!fromShoppingList){
-                    showShoppingList(shoppinglistId);
+                    showShoppingListWithSupermarketDialog(shoppinglistId);
                 }
 
             }

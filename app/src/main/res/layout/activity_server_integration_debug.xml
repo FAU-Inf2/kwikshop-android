@@ -24,6 +24,30 @@
                 android:text="@string/hello_world" />
 
             <Button
+                android:id="@+id/button_getLease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Lease" />
+
+            <Button
+                android:id="@+id/button_extendLease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Extend Lease" />
+
+            <Button
+                android:id="@+id/button_removeLease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove Lease" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+
+
+            <Button
                 android:id="@+id/button_getShoppingLists"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

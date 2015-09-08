@@ -1,19 +1,23 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 
-
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -34,7 +38,8 @@ import de.greenrobot.event.EventBus;
 /**
  * BaseActivity: all activities have to inherit
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener {
 
 
     /* Used by sharing. If this is true, ListOfShoppingLists will be opened after sync. */
@@ -42,12 +47,13 @@ public class BaseActivity extends AppCompatActivity {
 
     ProgressDialog syncProgressDialog;
 
-    BaseViewModel viewModel;
+    BaseViewModel baseViewModel;
 
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
 
     public static FrameLayout frameLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -70,85 +76,96 @@ public class BaseActivity extends AppCompatActivity {
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        viewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
+        baseViewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
 
+        // style actionbar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         // set full screen in shopping mode
         if (getIntent() != null && getIntent().getExtras() != null) {
             if (getIntent().getExtras().getBoolean(ShoppingListActivity.SHOPPING_MODE)) {
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                baseViewModel.setShoppingModeEnabled(true);
             }
         }
 
-
         // restart to set locale
-        viewModel.setSavedLocale();
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
+        baseViewModel.setSavedLocale();
 
         // add header to navigation drawer
         mNavigationView.addHeaderView(mNavigationViewHeader);
 
         // handle click events in navigation drawer
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                menuItem.setChecked(true);
-                switch (menuItem.getItemId()) {
-
-                    case R.id.nav_login:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        viewModel.startLoginActivity();
-                        return true;
-
-                    case R.id.nav_shopping_lists:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), ListOfShoppingListsActivity.class));
-
-                        return true;
-                    case R.id.nav_recipe:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), ListOfRecipesActivity.class));
-
-                        return true;
-                    case R.id.nav_supermarket_finder:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), LocationActivity.class).putExtra("LocationStarted", true));
-
-                        return true;
-                    case R.id.nav_settings:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), SettingActivity.class));
-
-                        return true;
-                    case R.id.nav_about:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), AboutActivity.class));
-                        return true;
-                    case R.id.nav_server:
-                        mDrawerLayout.closeDrawers();
-                        finish();
-                        startActivity(ServerIntegrationDebugActivity.getIntent(getApplicationContext()));
-                        return true;
-
-                }
-                return true;
-            }
-        });
-
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         EventBus.getDefault().register(this);
     }
 
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        menuItem.setChecked(true);
+        switch (menuItem.getItemId()) {
+
+            case R.id.nav_login:
+                mDrawerLayout.closeDrawers();
+
+                baseViewModel.startLoginActivity();
+                return true;
+
+            case R.id.nav_shopping_lists:
+                mDrawerLayout.closeDrawers();
+
+                if (!baseViewModel.getCurrentActivityName().equals("ListOfShoppingListsActivity")) {
+                    startActivity(new Intent(getApplicationContext(), ListOfShoppingListsActivity.class));
+                }
+
+                return true;
+            case R.id.nav_recipe:
+                mDrawerLayout.closeDrawers();
+
+                if (!baseViewModel.getCurrentActivityName().equals("ListOfRecipesActivity")) {
+                    startActivity(new Intent(getApplicationContext(), ListOfRecipesActivity.class));
+                }
+
+
+                return true;
+            case R.id.nav_supermarket_finder:
+                mDrawerLayout.closeDrawers();
+
+                if (!baseViewModel.getCurrentActivityName().equals("LocationActivity")) {
+                    startActivity(new Intent(getApplicationContext(), LocationActivity.class));
+                }
+
+                return true;
+            case R.id.nav_settings:
+                mDrawerLayout.closeDrawers();
+
+                if (!baseViewModel.getCurrentActivityName().equals("SettingActivity")) {
+                    startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                }
+
+                return true;
+            case R.id.nav_about:
+                mDrawerLayout.closeDrawers();
+
+                if (!baseViewModel.getCurrentActivityName().equals("AboutActivity")) {
+                    startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+                }
+
+                return true;
+            case R.id.nav_server:
+                mDrawerLayout.closeDrawers();
+                startActivity(ServerIntegrationDebugActivity.getIntent(getApplicationContext()));
+                return true;
+
+        }
+        return true;
+    }
 
 
     @Override
@@ -156,7 +173,7 @@ public class BaseActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START))
                     mDrawerLayout.closeDrawers();
                 else
                     mDrawerLayout.openDrawer(GravityCompat.START);
@@ -177,31 +194,35 @@ public class BaseActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     public void onEventMainThread(SynchronizationEvent event) {
 
-        ProgressDialog dialog = getSyncProgressDialog();
-        dialog.setMessage(event.getMessage());
+        if (!event.getHandled()) {
 
-        if(event.getEventType() == SynchronizationEventType.Completed) {
-            dismissSyncProgressDialog();
-        } else if(event.getEventType() == SynchronizationEventType.Failed) {
-            dismissSyncProgressDialog();
+            ProgressDialog dialog = getSyncProgressDialog();
+            dialog.setMessage(event.getMessage());
 
-            AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
-            messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
-            messageBox.setMessage(event.getMessage());
-            messageBox.setCancelable(false);
-            messageBox.create().show();
+            if (event.getEventType() == SynchronizationEventType.Completed) {
+                dismissSyncProgressDialog();
+            } else if (event.getEventType() == SynchronizationEventType.Failed) {
+                dismissSyncProgressDialog();
 
+                AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
+                messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
+                messageBox.setMessage(event.getMessage());
+                messageBox.setCancelable(false);
+                messageBox.create().show();
+
+            }
+
+            event.setHandled(true);
         }
 
-        EventBus.getDefault().cancelEventDelivery(event);
     }
 
     //Only call from main thread (not thread-safe)
     private ProgressDialog getSyncProgressDialog() {
 
-        if(syncProgressDialog == null) {
+        if (syncProgressDialog == null) {
 
-            syncProgressDialog =  ProgressDialog.show(
+            syncProgressDialog = ProgressDialog.show(
                     this,
                     getResources().getString(R.string.synchronizing),
                     "",
@@ -213,13 +234,13 @@ public class BaseActivity extends AppCompatActivity {
     //Only call from main thread (not thread-safe)
     private void dismissSyncProgressDialog() {
 
-        if(syncProgressDialog != null) {
+        if (syncProgressDialog != null) {
             syncProgressDialog.dismiss();
             syncProgressDialog = null;
         }
 
         /* Return to ListOfShoppingLists after sharing */
-        if(returnToListOfShoppingLists) {
+        if (returnToListOfShoppingLists) {
             returnToListOfShoppingLists = false;
             Intent intent = new Intent(this, ListOfShoppingListsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -235,5 +256,6 @@ public class BaseActivity extends AppCompatActivity {
         returnToListOfShoppingLists = true;
         SyncingActivity.requestSync();
     }
+
 
 }

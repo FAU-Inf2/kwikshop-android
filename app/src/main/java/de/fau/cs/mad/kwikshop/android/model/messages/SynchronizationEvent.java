@@ -1,12 +1,12 @@
 package de.fau.cs.mad.kwikshop.android.model.messages;
 
-import de.fau.cs.mad.kwikshop.android.util.StringHelper;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 
 public class SynchronizationEvent {
 
     private final SynchronizationEventType eventType;
     private final String message;
-
+    private boolean handled = false;
 
 
     public SynchronizationEvent(SynchronizationEventType eventType) {
@@ -28,6 +28,14 @@ public class SynchronizationEvent {
         return StringHelper.isNullOrWhiteSpace(this.message)
                 ? ""
                 : this.message;
+    }
+
+    public boolean getHandled() {
+        return this.handled;
+    }
+
+    public void setHandled(boolean value) {
+        this.handled = value;
     }
 
 

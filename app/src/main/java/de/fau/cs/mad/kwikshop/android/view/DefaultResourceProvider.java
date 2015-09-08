@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 
 import java.util.Locale;
 
@@ -41,5 +42,10 @@ public class DefaultResourceProvider implements ResourceProvider {
     @Override
     public String[] getStringArray(int id) {
         return context.getResources().getStringArray(id);
+    }
+
+    @Override
+    public Drawable getDrawable(int id) {
+        return context.getResources().getDrawable(id);
     }
 }

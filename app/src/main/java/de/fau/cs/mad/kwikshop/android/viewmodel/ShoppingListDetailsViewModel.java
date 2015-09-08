@@ -233,7 +233,7 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
         // when a existing shopping list was edited, just close the current view and go back to
         // whatever the previous screen was
         if (isNewList) {
-            viewLauncher.showShoppingList(listId);
+            viewLauncher.showShoppingListWithSupermarketDialog(listId);
         }
 
         finish();

@@ -20,8 +20,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.model.ArgumentNullException;
-import de.fau.cs.mad.kwikshop.android.model.BasicAuthenticationRequestInterceptor;
+import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
@@ -62,6 +61,12 @@ public class RestClientFactoryImplementation implements RestClientFactory {
     public ListClient<RecipeServer> getRecipeClient() {
         return new RecipeClient(getRestAdapter().create(RecipeResource.class));
     }
+
+    @Override
+    public LeaseResource getLeaseClient() {
+        return getRestAdapter().create(LeaseResource.class);
+    }
+
 
     private RestAdapter getRestAdapter() {
 
@@ -117,7 +122,10 @@ public class RestClientFactoryImplementation implements RestClientFactory {
                 .setClient(new OkClient(client))
                 .setEndpoint(getApiEndPoint())
                 .setConverter(new JacksonConverter())
-                .setRequestInterceptor(new BasicAuthenticationRequestInterceptor(SessionHandler.getSessionUser(context), SessionHandler.getSessionToken(context)))
+                .setRequestInterceptor(new CompositeRequestInterceptor(
+                        new BasicAuthenticationRequestInterceptor(SessionHandler.getSessionUser(context), SessionHandler.getSessionToken(context)),
+                        new ClientIdRequestInterceptor()
+                ))
                 .build();
     }
 

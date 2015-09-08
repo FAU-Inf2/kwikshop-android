@@ -15,6 +15,10 @@ public interface ViewLauncher {
 
     void showShoppingList(int shoppingListId);
 
+    void showShoppingListInShoppingMode(int shoppingListId);
+
+    void showShoppingListWithSupermarketDialog(int shoppingListId);
+
     void showDatePicker(int year, int month, int day, int hour, int minute);
 
     void showYesNoDialog(String title, String message, Command<Void> positiveCommand, Command<Void> negativeCommand);

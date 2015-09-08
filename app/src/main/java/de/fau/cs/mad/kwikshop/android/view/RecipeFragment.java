@@ -5,8 +5,11 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +88,6 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
     }
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +102,7 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch(item.getItemId()){
-            case R.id.action_add_to_a_shoppinglist:
+            case R.id.action_add_to_a_shopping_list:
                 viewModel.showAddRecipeDialog(recipeID);
                 break;
         }

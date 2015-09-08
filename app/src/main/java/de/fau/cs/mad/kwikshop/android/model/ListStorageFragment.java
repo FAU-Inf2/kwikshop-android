@@ -3,6 +3,8 @@ package de.fau.cs.mad.kwikshop.android.model;
 import android.content.Context;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import de.fau.cs.mad.kwikshop.android.R;
@@ -194,7 +196,10 @@ public class ListStorageFragment  {
         for (Unit u : units) {
             unitStorage.addItem(u);
         }
+
     }
+
+
 
     private static void createGroupsInDatabase(Context context, SimpleStorage<Group> groupStorage) {
 

@@ -5,8 +5,10 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -96,7 +98,8 @@ public class ShoppingListFragment
     @InjectView(R.id.button_barcode_scan)
     ImageButton btBarcodeScan;
 
-
+    @InjectView(R.id.swipe_container_shopping_list)
+    SwipeRefreshLayout swipeLayout;
 
 
     public static ShoppingListFragment newInstance(int listID) {
@@ -107,8 +110,6 @@ public class ShoppingListFragment
         return fragment;
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,12 +118,10 @@ public class ShoppingListFragment
         if (getArguments() != null) {
             listID = getArguments().getInt(ARG_LISTID);
         }
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch(item.getItemId()){
             case R.id.refresh_current_supermarket:
                 Command<Void> command = viewModel.getFindNearbySupermarketCommand();
@@ -137,17 +136,9 @@ public class ShoppingListFragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        //TODO
-//        locationViewModel.dismissProgressDialog();
-//        locationViewModel.dismissDialog();
-    }
 
     @Override
     public void onDestroy() {
-
         //TODO
         super.onDestroy();
         if(viewModel.getSwipedItemOrder().size() != 0 && viewModel.getSendBoughtItemsToServerCommand().getCanExecute()) {
@@ -278,6 +269,7 @@ public class ShoppingListFragment
 
         disableFloatingButtonWhileSoftKeyboardIsShown();
 
+        // voice entry
         micButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -291,6 +283,7 @@ public class ShoppingListFragment
             }
 
         });
+
 
         // find supermarket places
         if(!getActivity().getIntent().getExtras().getBoolean(DO_NOT_ASK_FOR_SUPERMARKET)){
@@ -324,11 +317,26 @@ public class ShoppingListFragment
             }
         });
 
+        // swipe refresh view
+        swipeLayout.setColorSchemeResources(R.color.secondary_Color, R.color.primary_Color);
+        swipeLayout.setDistanceToTriggerSync(20);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
 
+                SyncingActivity.requestSync();
+
+                // wait
+                new Handler().postDelayed(new Runnable() {
+                    @Override public void run() {
+                        swipeLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
 
         return rootView;
     }
-
 
 
 

@@ -1,10 +1,12 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.Setting;
 
@@ -25,13 +28,20 @@ public class SettingAdapter extends ArrayAdapter<Setting> {
     private int row;
     private Activity activity;
 
-    @InjectView(R.id.tvsetname)
-    TextView tvSetname;
+    @Optional
+    @InjectView(R.id.tv_settings_name)
+    TextView tvSettingsName;
 
-    @InjectView(R.id.tvsetdesc)
-    TextView tvSetdesc;
+    @Optional
+    @InjectView(R.id.tv_settings_desc)
+    TextView tvSettingsDesc;
 
-    @InjectView(R.id.setcheckbox)
+    @Optional
+    @InjectView(R.id.tv_header)
+    TextView tvSettingsHeader;
+
+    @Optional
+    @InjectView(R.id.cb_settings)
     CheckBox checkbox;
 
     public SettingAdapter(Activity act, int resource, ArrayList<Setting> settingsList) {
@@ -42,32 +52,39 @@ public class SettingAdapter extends ArrayAdapter<Setting> {
 
     }
 
+
     @Override
     public View getView(int position, View view, ViewGroup parent) {
 
-        //if view is null, inflate a new one
-        if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        if (!settingsList.get(position).isHeader()) {
+
             view = inflater.inflate(row, null);
-        }
-        ButterKnife.inject(this, view);
+            ButterKnife.inject(this, view);
+            tvSettingsName.setText(settingsList.get(position).getName());
+            tvSettingsDesc.setText(settingsList.get(position).getCaption());
 
-        tvSetname.setText(settingsList.get(position).getName());
-        tvSetdesc.setText(settingsList.get(position).getCaption());
+            // setup checkbox
+            if (settingsList.get(position).getViewVisibility() == View.INVISIBLE) {
+                checkbox.setVisibility(View.INVISIBLE);
+            } else {
+                checkbox.setVisibility(View.VISIBLE);
+                checkbox.setChecked(settingsList.get(position).isChecked());
+                checkbox.setFocusable(false);
+                checkbox.setFocusableInTouchMode(false);
+            }
 
-        // setup checkbox
-        if(settingsList.get(position).getViewVisibility() == View.INVISIBLE){
-            checkbox.setVisibility(View.INVISIBLE);
         } else {
-            checkbox.setVisibility(View.VISIBLE);
-            checkbox.setChecked(settingsList.get(position).isChecked());
-            checkbox.setFocusable(false);
-            checkbox.setFocusableInTouchMode(false);
+
+            view = inflater.inflate(R.layout.fragment_setting_header, null);
+            ButterKnife.inject(this, view);
+            tvSettingsHeader.setText(settingsList.get(position).getName());
+
         }
 
         return view;
     }
-
 
 
 }

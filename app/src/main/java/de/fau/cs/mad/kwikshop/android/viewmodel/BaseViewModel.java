@@ -23,8 +23,9 @@ public class BaseViewModel {
 
     private Context context;
     private Activity activity;
-    private ResourceProvider resourceProvider;
     private ViewLauncher viewLauncher;
+    private boolean shoppingModeEnabled = false;
+    private String currentActivityName = "";
 
     public static String RESTARTEDACTIVITY = "RestartedActivity";
 
@@ -32,7 +33,6 @@ public class BaseViewModel {
     public BaseViewModel(Context context, Activity activity, ResourceProvider resourceProvider, ViewLauncher viewLauncher){
         this.context = context;
         this.activity = activity;
-        this.resourceProvider = resourceProvider;
         this.viewLauncher = viewLauncher;
 
         if(viewLauncher == null) {
@@ -41,6 +41,14 @@ public class BaseViewModel {
 
         if(resourceProvider == null)
             throw new IllegalArgumentException("'resourceProvider' must not be null");
+    }
+
+    public boolean isShoppingModeEnabled() {
+        return shoppingModeEnabled;
+    }
+
+    public void setShoppingModeEnabled(boolean shoppingModeEnabled) {
+        this.shoppingModeEnabled = shoppingModeEnabled;
     }
 
 
@@ -74,5 +82,14 @@ public class BaseViewModel {
 
         // Activity must be restarted to set saved
         viewLauncher.startActivity(activity.getIntent().putExtra(RESTARTEDACTIVITY, true));
+    }
+
+
+    public String getCurrentActivityName() {
+        return currentActivityName;
+    }
+
+    public void setCurrentActivityName(String currentActivityName) {
+        this.currentActivityName = currentActivityName;
     }
 }

@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -28,6 +29,7 @@ public class ListOfShoppingListsActivity extends BaseActivity {
 
         new ListStorageFragment().SetupLocalListStorageFragment(this);
         repeatHelper = ObjectGraph.create(new KwikShopModule(this)).get(RegularlyRepeatHelper.class);
+        baseViewModel.setCurrentActivityName(this.getClass().getSimpleName());
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();

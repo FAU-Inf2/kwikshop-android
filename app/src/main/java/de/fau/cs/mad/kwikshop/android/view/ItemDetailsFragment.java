@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -12,7 +13,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +66,7 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
-import de.fau.cs.mad.kwikshop.android.util.StringHelper;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.greenrobot.event.EventBus;
 
@@ -76,6 +76,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     protected boolean isNewItem;
+    public boolean numberPickerUpdating = false;
 
 
     protected static final String ARG_LISTID = "list_id";
@@ -92,18 +93,33 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private String[] intNumbersForAmountPicker;
     private int numberPickerCalledWith;
 
+    private String[] unitNames;
+    private String[] unitSingularNames;
+
 
     protected Item item;
+    final String [] numsOnce = new String[]{
+            "1/4","1/2","3/4","1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
+            "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
+            "450", "500", "600", "700", "750", "800", "900", "1000"
+    };
+    final String [] numsInteger = new String[]{
+            "1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
+            "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
+            "450", "500", "600", "700", "750", "800", "900", "1000"
+    };
 
+    Double [] intNumsOnce = new Double[numsOnce.length];
+    final Double [] natNumsOnce = new Double[numsInteger.length];
 
     @InjectView(R.id.productname_text)
-    MultiAutoCompleteTextView productname_text;
+    MultiAutoCompleteTextView productName_text;
 
-    @InjectView(R.id.numberPicker)
-    NumberPicker numberPicker;
+   // @InjectView(R.id.numberPicker)
+   // NumberPicker numberPicker;
 
-    @InjectView(R.id.unit_spinner)
-    Spinner unit_spinner;
+  //  @InjectView(R.id.unit_spinner)
+  //  Spinner unit_spinner;
 
     @InjectView(R.id.brand_text)
     AutoCompleteTextView brand_text;
@@ -118,10 +134,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     CheckBox highlight_checkbox;
 
     @InjectView(R.id.lastbought_location)
-    TextView lastbought_location;
+    TextView lastBought_location;
 
     @InjectView(R.id.last_bought_relativelayout)
-    RelativeLayout last_bought_relativelayout;
+    RelativeLayout lastBought_relativeLayout;
 
     @InjectView(R.id.micButton)
     ImageButton micButton;
@@ -135,11 +151,21 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @InjectView(R.id.button_remove)
     ImageView button_remove;
 
+    /*
     @InjectView(R.id.upButton)
     ImageButton upButton;
 
     @InjectView(R.id.downButton)
     ImageButton downButton;
+    */
+
+
+    @InjectView(R.id.np_amount)
+    NumberPicker numberPicker;
+
+    @InjectView(R.id.np_unit)
+    NumberPicker numberPickerUnit;
+
 
     @Inject
     AutoCompletionHelper autoCompletionHelper;
@@ -152,6 +178,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     @Inject
     DateFormatter dateFormatter;
+
 
 
     private ItemDetailsViewModel viewModel;
@@ -176,11 +203,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         super.onResume();
 
-        productname_text.requestFocus();
+        productName_text.requestFocus();
 
         if (viewModel.isNewItem()) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(productname_text, InputMethodManager.SHOW_IMPLICIT);
+            imm.showSoftInput(productName_text, InputMethodManager.SHOW_IMPLICIT);
         } else {
             Window window = getActivity().getWindow();
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -237,7 +264,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @SuppressWarnings("unused")
     public void onEvent(AutoCompletionHistoryDeletedEvent event){
         if (autoCompletionHelper != null) {
-            productname_text.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
+            productName_text.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
             brand_text.setAdapter(autoCompletionHelper.getBrandAdapter(getActivity()));
         }
     }
@@ -258,29 +285,81 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             getActivity().finish();
         }
     }
+    public void setNumberPickerValues(int itemAmount){
+        if (amountIsNatural(selectedUnitIndex)){
+            numberPicker.setMinValue(0);
+            numberPicker.setMaxValue(1000);
+            numberPicker.setWrapSelectorWheel(false);
+            numberPicker.setDisplayedValues(intNumbersForAmountPicker);
+//
+//            double itemAmount = item.getAmount();
+           /* int index = 1;
+            for (int i = 0; i < natNumsOnce.length; i++) {
+                if (natNumsOnce[i].equals(itemAmount)) {
+                    index = i;
+                    break;
+                }
+            }*/
+            int index = 0;
+            //difference btw natural and numbers with fractions
+            if (itemAmount - 3 >= 0)
+                index = itemAmount - 3;
+            if (!numberPickerUpdating)
+                numberPicker.setValue(index);
+        }
+        else {
+            double value = Double.parseDouble(intNumbersForAmountPicker[itemAmount]);
+            numberPicker.setMinValue(0);
+            numberPicker.setMaxValue(1000);
+            numberPicker.setWrapSelectorWheel(false);
+            numberPicker.setDisplayedValues(numbersForAmountPicker);
 
+            numberPicker.setFormatter(new NumberPicker.Formatter() {
+
+                @Override
+                public String format(int value) {
+                    // TODO Auto-generated method stub
+                    return numsOnce[value];
+                }
+            });
+            if (!numberPickerUpdating) {
+                int index = (amountIsNatural(selectedUnitIndex))? 3 : 1;
+                for (int i = 0; i < intNumsOnce.length; i++) {
+                    if (intNumsOnce[i].equals(value)) {
+                        index = i;
+                        break;
+                    }
+                }
+                numberPicker.setValue(index);
+            }
+        }
+    }
+    public double getNumberPickerValue(int position){
+        if (amountIsNatural(selectedUnitIndex)) {
+            return Double.parseDouble(intNumbersForAmountPicker[position]);
+        }
+        else{
+            Double pickerAmountDouble;
+
+            String numberPickerString = numbersForAmountPicker[position];
+            if (numberPickerString.contains("/")) {
+                String[] rat = numberPickerString.split("/");
+                pickerAmountDouble = Double.parseDouble(rat[0]) / Double.parseDouble(rat[1]);
+            } else {
+                pickerAmountDouble = Double.parseDouble(numberPickerString);
+            }
+            return pickerAmountDouble;
+        }
+    }
 
     protected void saveItem() {
 
-        item.setName(productname_text.getText().toString());
+        item.setName(productName_text.getText().toString());
         if(numberPickerCalledWith != numberPicker.getValue()){
             //only set amount if it got changed, so values written by parser which are not listed
-            //in the numberPicker don't get overwritten
-            if (amountIsNatural(selectedUnitIndex)) {
-                item.setAmount(Double.parseDouble(intNumbersForAmountPicker[numberPicker.getValue()]));
-            }
-            else{
-                Double pickerAmountDouble;
 
-                String numberPickerString = numbersForAmountPicker[numberPicker.getValue()];
-                if (numberPickerString.contains("/")) {
-                    String[] rat = numberPickerString.split("/");
-                    pickerAmountDouble = Double.parseDouble(rat[0]) / Double.parseDouble(rat[1]);
-                } else {
-                    pickerAmountDouble = Double.parseDouble(numberPickerString);
-                }
-                item.setAmount(pickerAmountDouble);
-            }
+            item.setAmount(getNumberPickerValue(numberPicker.getValue()));
+
         }
 
         item.setBrand(brand_text.getText().toString());
@@ -327,40 +406,59 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             item = getListManager().getListItem(listId, itemId);
         }
 
+        // new number picker
+        setDividerColor(numberPickerUnit);
+        setDividerColor(numberPicker);
+
+        unitNames = viewModel.getUnitNames().toArray(new String[viewModel.getUnitNames().size()]);
+        unitSingularNames = viewModel.getSingularUnitNames().toArray(new String[viewModel.getSingularUnitNames().size()]);
+
+        numberPickerUnit.setMinValue(0);
+        numberPickerUnit.setMaxValue(unitNames.length - 1);
+        numberPickerUnit.setDisplayedValues(unitNames);
+        numberPickerUnit.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                selectedUnitIndex = newVal;
+                if (amountIsNatural(oldVal) && amountIsNatural(selectedUnitIndex)){
+                }
+                else if( !amountIsNatural(oldVal) && !amountIsNatural(selectedUnitIndex)){
+                }
+                else
+                    setNumberPickerValues(numberPicker.getValue());
+
+
+                if(newVal == oldVal){
+                    selectedUnitIndex = -1;
+                }
+
+            }
+        });
+
+
+
 
         // display the supermarket where this item was bought
-
         LastLocation location = viewModel.isNewItem() ? null : getListManager().getListItem(listId, itemId).getLocation();
 
         if(location != null){
             if(location.getName() != null){
                 String duration = dateFormatter.formatDate(item.getLastBought());
-                lastbought_location.setText(location.getName() + " (" + duration + ") ");
+                lastBought_location.setText(location.getName() + " (" + duration + ") ");
             } else {
                 // hide information about last bought item
-                ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);
+                ((ViewManager) lastBought_relativeLayout.getParent()).removeView(lastBought_relativeLayout);
             }
         } else {
             // hide information about last bought item
-            if (last_bought_relativelayout != null)
-                ((ViewManager) last_bought_relativelayout.getParent()).removeView(last_bought_relativelayout);
+            if (lastBought_relativeLayout != null)
+                ((ViewManager) lastBought_relativeLayout.getParent()).removeView(lastBought_relativeLayout);
         }
 
         //populate number picker
         numbersForAmountPicker = new String[1003];
         intNumbersForAmountPicker = new String[1000];
-        final String [] numsOnce = new String[]{
-                "1/4","1/2","3/4","1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
-                "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
-                "450", "500", "600", "700", "750", "800", "900", "1000"
-        };
-        final String [] numsInteger = new String[]{
-                "1","2","3","4","5","6","7","8","9","10","11", "12","15", "20","25","30", "40", "50", "60",
-                "70", "75", "80", "90", "100", "125", "150", "175", "200", "250", "300", "350", "400",
-                "450", "500", "600", "700", "750", "800", "900", "1000"
-        };
-        Double [] intNumsOnce = new Double[numsOnce.length];
-        final Double [] natNumsOnce = new Double[numsInteger.length];
+
         for(int i = 0; i < intNumsOnce.length; i++){
             if (numsOnce[i].contains("/")) {
                 String[] rat = numsOnce[i].split("/");
@@ -389,47 +487,20 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         //TODO implement adapter for Unit instead of String
 
 
+        /*
         final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getUnitNames());
+        final ArrayAdapter<String> singularSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, viewModel.getSingularUnitNames());
+        singularSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         unit_spinner.setAdapter(spinnerArrayAdapter);
+
         unit_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedUnitIndex = position;
 
-                if (amountIsNatural(selectedUnitIndex)){
-                    numberPicker.setMinValue(0);
-                    numberPicker.setMaxValue(1000);
-                    numberPicker.setWrapSelectorWheel(false);
-                    numberPicker.setDisplayedValues(intNumbersForAmountPicker);
+                setNumberPickerValues(item.getAmount());
 
-                    double itemAmount = item.getAmount();
-                    int index = 1;
-                    for (int i = 0; i < natNumsOnce.length; i++) {
-                        if (natNumsOnce[i].equals(itemAmount)) {
-                            index = i;
-                            break;
-                        }
-                    }
-                    numberPicker.setValue(index);
-                }
-                else {
-                    numberPicker.setMinValue(0);
-                    numberPicker.setMaxValue(1000);
-                    numberPicker.setWrapSelectorWheel(false);
-                    numberPicker.setDisplayedValues(numbersForAmountPicker);
-
-                    numberPicker.setFormatter(new NumberPicker.Formatter() {
-
-                        @Override
-                        public String format(int value) {
-                            // TODO Auto-generated method stub
-                            return numsOnce[value];
-                        }
-                    });
-
-
-                }
             }
 
             @Override
@@ -437,13 +508,18 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 selectedUnitIndex = -1;
             }
         });
+        */
 
         if (!viewModel.isNewItem()) {
             item = getListManager().getListItem(listId, itemId);
             viewModel.setItem(item);
         }
         if (viewModel.getSelectedUnit() != null) {
-            unit_spinner.setSelection(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
+            if (!numberPickerUpdating){
+                //unit_spinner.setSelection(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
+                numberPickerUnit.setValue(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
+            }
+
         }
 
 
@@ -477,14 +553,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         }
 
         //wire up auto-complete for product name and brand
-        productname_text.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
-        productname_text.setTokenizer(new SpaceTokenizer());
+        productName_text.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
+        productName_text.setTokenizer(new SpaceTokenizer());
         brand_text.setAdapter(autoCompletionHelper.getBrandAdapter(getActivity()));
 
 
         if (viewModel.isNewItem()) {
 
-            productname_text.setText("");
+            productName_text.setText("");
             numberPicker.setValue(3);
             brand_text.setText("");
             comment_text.setText("");
@@ -494,7 +570,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             //viewModel.setItem(item);
 
             viewModel.setImageId();
-            //numberPicker.setValue(index) sets the picker to the index + numberPicker.minValue()
+            //number Picker.setValue(index) sets the picker to the index + number Picker.minValue()
             double itemAmount = item.getAmount();
 
             int index = 1;
@@ -517,7 +593,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
 
             // Fill UI elements with data from Item
-            productname_text.setText(item.getName());
+            productName_text.setText(item.getName());
             numberPicker.setValue(index);
             brand_text.setText(item.getBrand());
             comment_text.setText(item.getComment());
@@ -602,10 +678,16 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         });
 
+        /*
         upButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 numberPicker.setValue(numberPicker.getValue() - 1);
+                updateNumberPicker(spinnerArrayAdapter, spinnerArrayAdapterForSingular,
+                        numberPicker.getValue() + 1, numberPicker.getValue());
+                updateNumberPicker(spinnerArrayAdapter, singularSpinnerArrayAdapter,
+                        numberPicker.getValue()+1, numberPicker.getValue());
+
             }
         });
 
@@ -613,8 +695,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             @Override
             public void onClick(View v){
                 numberPicker.setValue(numberPicker.getValue()  +1);
+                updateNumberPicker(spinnerArrayAdapter, singularSpinnerArrayAdapter,
+                        numberPicker.getValue()-1, numberPicker.getValue());
+                updateNumberPicker(spinnerArrayAdapter, spinnerArrayAdapterForSingular,
+                        numberPicker.getValue() - 1, numberPicker.getValue());
+
             }
         });
+        */
         micButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -628,14 +716,79 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             }
 
         });
+        if (!numberPickerUpdating) {
+            if (getNumberPickerValue(numberPicker.getValue()) == 1){
+                //unit_spinner.setAdapter(spinnerArrayAdapterForSingular);
+                numberPickerUnit.setDisplayedValues(viewModel.getSingularUnitNames().toArray(new String[viewModel.getSingularUnitNames().size()]));
+            } else {
+               // unit_spinner.setAdapter(spinnerArrayAdapter);
+                numberPickerUnit.setDisplayedValues(viewModel.getUnitNames().toArray(new String[viewModel.getUnitNames().size()]));
+            }
 
+        }
+        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int i, int i2) {
+               // updateNumberPicker(spinnerArrayAdapter, spinnerArrayAdapterForSingular, i, i2);
+                if( getNumberPickerValue(i) != 1 && getNumberPickerValue(i2) == 1) {
+                    numberPickerUnit.setDisplayedValues(viewModel.getSingularUnitNames().toArray(new String[viewModel.getSingularUnitNames().size()]));
+                } else if(getNumberPickerValue(i) == 1 && getNumberPickerValue(i2) != 1){
+                    numberPickerUnit.setDisplayedValues(viewModel.getUnitNames().toArray(new String[viewModel.getUnitNames().size()]));
+                }
+            }
+
+        });
     }
 
+    /*
+    public void updateNumberPicker(ArrayAdapter spinnerArrayAdapter, ArrayAdapter spinnerArrayAdapterForSingular,
+                                   int i, int i2){
+        if( getNumberPickerValue(i) != 1 && getNumberPickerValue(i2) == 1) {
+            numberPickerUpdating = false;
+            int unitPosition = unit_spinner.getSelectedItemPosition();
+            unit_spinner.setAdapter(spinnerArrayAdapterForSingular);
+            //setNumberPickerValues(getNumberPickerValue(i2));
+            unit_spinner.setSelection(unitPosition);
+            numberPickerUpdating = true;
+        }
+        else if(getNumberPickerValue(i) == 1 && getNumberPickerValue(i2) != 1) {
+            numberPickerUpdating = false;
+            int unitId = unit_spinner.getSelectedItemPosition();
+            unit_spinner.setAdapter(spinnerArrayAdapter);
+            //setNumberPickerValues(getNumberPickerValue(i2));
+            unit_spinner.setSelection(unitId);
+            numberPickerUpdating = true;
+        }
+    }
+
+    */
     public boolean amountIsNatural(int selectedUnit){
         return selectedUnit == 9 ||
                 selectedUnit == 7 ||
                 selectedUnit == 6 ||
                 selectedUnit == 0;
+    }
+
+    private void setDividerColor(NumberPicker picker) {
+
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    pf.set(picker, getResources().getDrawable(R.drawable.np_numberpicker_selection_divider_green));
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (Resources.NotFoundException e) {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+        //}
     }
 
 
@@ -682,7 +835,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
-            productname_text.setText(spokenText);
+            productName_text.setText(spokenText);
             // Do something with spokenText
         }
     }
@@ -750,7 +903,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (productname_text.getText().length() > 0) {
+                    if (productName_text.getText().length() > 0) {
                         saveItem();
                         getActivity().finish();
                     } else {

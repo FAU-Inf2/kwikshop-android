@@ -71,6 +71,13 @@ public class SettingFragment extends Fragment {
     private Setting syncIntervalSetting;
     private Setting placeTypeSetting;
 
+    private Setting locationHeaderSetting;
+    private Setting generalHeaderSetting;
+    private Setting voiceEntryHeaderSetting;
+    private Setting accountHeaderSetting;
+    private Setting synchronizationHeaderSetting;
+    private Setting otherHeaderSetting;
+
     @Inject
     ViewLauncher viewLauncher;
 
@@ -258,22 +265,69 @@ public class SettingFragment extends Fragment {
         placeTypeSetting.setName(R.string.localization_store_types_dialog_title);
         placeTypeSetting.setCaption(R.string.localization_store_types_dialog_caption);
 
+
+        //localization header
+        locationHeaderSetting = new Setting(context);
+        locationHeaderSetting.setIsHeader(true);
+        locationHeaderSetting.setName(R.string.localization);
+
+        //general header
+        generalHeaderSetting = new Setting(context);
+        generalHeaderSetting.setIsHeader(true);
+        generalHeaderSetting.setName(R.string.general);
+
+        /*
+        //voice entry header
+        voiceEntryHeaderSetting = new Setting(context);
+        voiceEntryHeaderSetting.setIsHeader(true);
+        voiceEntryHeaderSetting.setName(R.string.voice_entry);
+        */
+
+        //account header
+        accountHeaderSetting = new Setting(context);
+        accountHeaderSetting.setIsHeader(true);
+        accountHeaderSetting.setName(R.string.account);
+
+        //synchronization header
+        synchronizationHeaderSetting = new Setting(context);
+        synchronizationHeaderSetting.setIsHeader(true);
+        synchronizationHeaderSetting.setName(R.string.synchronization);
+
+        //other heady
+        otherHeaderSetting = new Setting(context);
+        otherHeaderSetting.setIsHeader(true);
+        otherHeaderSetting.setName(R.string.other);
+
+
+
         // list of settings
         settingsList = new ArrayList<>(Arrays.asList(new Setting[]
                 {
+
+                        accountHeaderSetting,
+                        loginSetting,
+
+                        generalHeaderSetting,
                         localeSetting,
                         autoCompletionDeletionSetting,
+                        manageUnitsSetting,
+                        recipeAddDefaultSetting,
+                        parserSeparatorWordSetting,
+
+                        locationHeaderSetting,
+                        locationPermissionSetting,
+                        placeTypeSetting,
+
+
+                        synchronizationHeaderSetting,
+                        syncNowSetting,
+                        syncIntervalSetting,
+                        enableSyncSetting,
+
+                        otherHeaderSetting,
                         itemDeletionSetting,
                         slDeletionSetting,
                         recipeDeletionSetting,
-                        recipeAddDefaultSetting,
-                        parserSeparatorWordSetting,
-                        manageUnitsSetting,
-                        locationPermissionSetting,
-                        placeTypeSetting,
-                        syncNowSetting,
-                        loginSetting,
-                        syncIntervalSetting,
                         apiEndpointSetting
                 }));
 
@@ -281,6 +335,7 @@ public class SettingFragment extends Fragment {
         // Adapter for settings view
         objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, settingsList);
         listView.setAdapter(objAdapter);
+        listView.setDividerHeight(0);
 
         return rootView;
     }

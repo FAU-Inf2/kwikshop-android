@@ -108,6 +108,12 @@
     <string name="settings_option_7_parser_separate_word_descr">Choose word to separate multiple items </string>
     <string name="localization_store_types_dialog_title">Store types</string>
     <string name="localization_store_types_dialog_caption">Select your preferred store types</string>
+    <string name="localization">Localization</string>
+    <string name="general">General</string>
+    <string name="voice_entry">Voice Entry</string>
+    <string name="account">Account</string>
+    <string name="synchronization">Synchronization</string>
+
 
     <!-- Overflow Action Menu -->
     <string name="overflow_action_menu_settings">Settings</string>
@@ -215,7 +221,7 @@
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
     <string name="overflow_action_menu_recipes">Manage recipes</string>
     <string name="overflow_action_menu_add_recipes">Add recipes to the list</string>
-    <string name="overflow_action_menu_add_to_a_shoppinglist">Add this to a shopping list</string>
+    <string name="overflow_action_menu_add_to_a_shopping_list">Add this to a shopping list</string>
     <string name="recipe_scaleName_person">people</string>
     <string name="recipe_scaleName_piece">pieces</string>
     <string name="recipe_choose_amount">Choose amount of </string>
@@ -262,7 +268,11 @@
     <string name="months">months</string>
     <string name="now">now</string>
 
-    
+    <!-- Shopping Mode Dialog -->
+    <string name="dialog_leave_shopping_mode_title">Shopping Mode</string>
+    <string name="dialog_leave_shopping_mode_message">Do you want to quit shopping mode?</string>
+    <string name="dialog_leave_shopping_mode_quit">Quit</string>
+
     <!-- Alert Dialog For missing connection -->
     <string name="alert_dialog_connection_label">Network</string>
     <string name="alert_dialog_connection_message">No Internet connection available. Please turn on your Wi-Fi or your mobile Internet.</string>
@@ -403,9 +413,19 @@
     <string name="unit_gram_singular">gram</string>
     <string name="unit_kilogram_singular">kilogram</string>
     <string name="unit_litre_singular">litre</string>
-    <string name="unit_mililitre_singular">mililitre</string>
+    <string name="unit_mililitre_singular">millilitre</string>
     <string name="unit_pack_singular">pack</string>
     <string name="unit_tablespoon_singular">tablespoon</string>
     <string name="unit_teaspoon_singular">teaspoon</string>
+    <string name="unit_box_singular">box</string>
+    <string name="unit_millilitre_singular">millilitre</string>
+    <string name="aquiring_lease">Aquiring Synchronization Lease</string>
+    <string name="error_aquiring_lease">Error while aquiring the synchronization lease</string>
+    <string name="error_empty_unitname">Unit name must not be empty</string>
+    <string name="error_empty_groupname">Group name must not be empty</string>
+    <string name="error_remove_defaultunit">You can not remove default units</string>
+    <string name="error_remove_defaultgroup">You can not remove default groups</string>
+    <string name="message_unitremoved">Unit removed</string>
+    <string name="message_groupremoved">Group removed</string>
 
 </resources>

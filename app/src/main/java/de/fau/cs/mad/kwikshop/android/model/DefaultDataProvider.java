@@ -29,6 +29,7 @@ public class DefaultDataProvider {
         public static final String INGREDIENTS_AND_SPICES = "Ingredients & Spices";
         public static final String FROZEN_AND_CONVENIENCE = "Frozen & Convenience";
         public static final String TOBACCO = "Tobacco";
+        public static final String CANS = "Cans";
     }
 
     public static class UnitNames {
@@ -50,7 +51,9 @@ public class DefaultDataProvider {
 
     }
 
+
     static Unit[] defaultUnits;
+    static Unit[] defaultSingleUnits;
     static Group[] defaultGroups;
 
 
@@ -68,20 +71,20 @@ public class DefaultDataProvider {
 
         if (defaultUnits == null) {
             defaultUnits = new Unit[]{
-                    new Unit(UnitNames.PIECE, ResourceId.Unit_Piece, ResourceId.Unit_short_Piece, PredefinedId.Unit_Piece),
-                    new Unit(UnitNames.BAG, ResourceId.Unit_Bag, PredefinedId.Unit_Bag),
-                    new Unit(UnitNames.BOTTLE, ResourceId.Unit_Bottle, PredefinedId.Unit_Bottle),
-                    new Unit(UnitNames.BOX, ResourceId.Unit_Box, PredefinedId.Unit_Box),
-                    new Unit(UnitNames.PACK, ResourceId.Unit_Pack, PredefinedId.Unit_Pack),
-                    new Unit(UnitNames.DOZEN, ResourceId.Unit_Dozen, PredefinedId.Unit_Dozen),
-                    new Unit(UnitNames.GRAM, ResourceId.Unit_Gram, ResourceId.Unit_short_Gram, PredefinedId.Unit_Gram),
-                    new Unit(UnitNames.KILOGRAM, ResourceId.Unit_Kilogram, ResourceId.Unit_short_Kilogram, PredefinedId.Unit_Kilogram),
-                    new Unit(UnitNames.MILLILITRE, ResourceId.Unit_Millilitre, ResourceId.Unit_short_Millilitre, PredefinedId.Unit_Millilitre),
-                    new Unit(UnitNames.LITRE, ResourceId.Unit_Litre, ResourceId.Unit_short_Litre, PredefinedId.Unit_Litre),
-                    new Unit(UnitNames.CUP, ResourceId.Unit_Cup, PredefinedId.Unit_Cup),
-                    new Unit(UnitNames.TABLESPOON, ResourceId.Unit_Tablespoon, ResourceId.Unit_short_Tablespoon, PredefinedId.Unit_Tablespoon),
-                    new Unit(UnitNames.CAN, ResourceId.Unit_Can, PredefinedId.Unit_Can),
-                    new Unit(UnitNames.TEASPOON, ResourceId.Unit_Teaspoon, ResourceId.Unit_short_Teaspoon, PredefinedId.Unit_Teaspoon)
+                    new Unit(UnitNames.PIECE, ResourceId.Unit_Piece, ResourceId.Unit_short_Piece, PredefinedId.Unit_Piece, ResourceId.Unit_Piece_name),
+                    new Unit(UnitNames.BAG, ResourceId.Unit_Bag, PredefinedId.Unit_Bag, ResourceId.Unit_Bag_singular),
+                    new Unit(UnitNames.BOTTLE, ResourceId.Unit_Bottle, PredefinedId.Unit_Bottle, ResourceId.Unit_Bottle_singular),
+                    new Unit(UnitNames.BOX, ResourceId.Unit_Box, PredefinedId.Unit_Box, ResourceId.Unit_Box_singular),
+                    new Unit(UnitNames.PACK, ResourceId.Unit_Pack, PredefinedId.Unit_Pack, ResourceId.Unit_Pack_singular),
+                    new Unit(UnitNames.DOZEN, ResourceId.Unit_Dozen, PredefinedId.Unit_Dozen, ResourceId.Unit_Dozen_singular),
+                    new Unit(UnitNames.GRAM, ResourceId.Unit_Gram, ResourceId.Unit_short_Gram, PredefinedId.Unit_Gram, ResourceId.Unit_Gram_singular),
+                    new Unit(UnitNames.KILOGRAM, ResourceId.Unit_Kilogram, ResourceId.Unit_short_Kilogram, PredefinedId.Unit_Kilogram, ResourceId.Unit_Kilogram_singular),
+                    new Unit(UnitNames.MILLILITRE, ResourceId.Unit_Millilitre, ResourceId.Unit_short_Millilitre, PredefinedId.Unit_Millilitre, ResourceId.Unit_Millilitre_singular),
+                    new Unit(UnitNames.LITRE, ResourceId.Unit_Litre, ResourceId.Unit_short_Litre, PredefinedId.Unit_Litre,  ResourceId.Unit_Litre_singular),
+                    new Unit(UnitNames.CUP, ResourceId.Unit_Cup, PredefinedId.Unit_Cup, ResourceId.Unit_Cup_singular),
+                    new Unit(UnitNames.TABLESPOON, ResourceId.Unit_Tablespoon, PredefinedId.Unit_Tablespoon, ResourceId.Unit_Tablespoon_singular),
+                    new Unit(UnitNames.CAN, ResourceId.Unit_Can, PredefinedId.Unit_Can, ResourceId.Unit_Can_singular),
+                    new Unit(UnitNames.TEASPOON, ResourceId.Unit_Teaspoon, ResourceId.Unit_short_Teaspoon, PredefinedId.Unit_Teaspoon, ResourceId.Unit_Teaspoon_singular)
             };
         }
 
@@ -98,6 +101,7 @@ public class DefaultDataProvider {
         if (defaultGroups == null) {
             defaultGroups = new Group[]{
                     new Group(GroupNames.COFFEE_AND_TEA, ResourceId.Group_CoffeeAndTea, PredefinedId.Group_CoffeeAndTea),
+                    new Group(GroupNames.CANS, ResourceId.Group_Can, PredefinedId.Group_Can),
                     new Group(GroupNames.HEALTH_AND_HYGIENE, ResourceId.Group_HealthAndHygiene,PredefinedId.Group_HealthAndHygiene),
                     new Group(GroupNames.PET_SUPPLIES, ResourceId.Group_PetSupplies,PredefinedId.Group_PetSupplies),
                     new Group(GroupNames.HOUSEHOLD, ResourceId.Group_Household,PredefinedId.Group_Household),

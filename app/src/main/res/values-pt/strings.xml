@@ -349,4 +349,13 @@
     <string name="localize">Localizar</string>
     <string name="recipe_default_no_recipes">Você não possui nenhuma receita ainda. Gostaria de adicionar algumas de nossas favoritas?</string>
     <string name="settings_options_add_default_recipes_name">Receitas padrão</string>
+    <string name="settings_options_add_default_recipes_descr">Perguntar por receitas padrão quando não houver nenhuma receita própria</string>
+    <string name="error_remove_defaultunit">Você não pode remover unidades padrão</string>
+    <string name="error_remove_defaultgroup">Você não pode remover grupos padrão</string>
+    <string name="general">Geral</string>
+    <string name="localization_store_types_dialog_caption">Selecione seus tipos de armazenamento preferidos</string>
+    <string name="no_last_location_dialog_message">Kwik Shop não conseguiu encontrar sua localização corrente</string>
+    <string name="synchronization">Sincronização</string>
+    <string name="message_groupremoved">Grupo removido</string>
+    <string name="message_unitremoved">Unidade removida</string>
 </resources>

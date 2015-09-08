@@ -423,5 +423,9 @@
     <string name="error_aquiring_lease">Error while aquiring the synchronization lease</string>
     <string name="error_empty_unitname">Unit name must not be empty</string>
     <string name="error_empty_groupname">Group name must not be empty</string>
+    <string name="error_remove_defaultunit">You can not remove default units</string>
+    <string name="error_remove_defaultgroup">You can not remove default groups</string>
+    <string name="message_unitremoved">Unit removed</string>
+    <string name="message_groupremoved">Group removed</string>
 
 </resources>

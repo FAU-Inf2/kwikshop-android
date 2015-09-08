@@ -434,10 +434,13 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
                 }
             });
             Unit u = units.get(quickRemoveUnitIndex);
-            if (u.getResourceId()!= null) {
+            if (u.getResourceId()== null) {
                 unitStorage.deleteSingleItem(u);
                 viewLauncher.notifyUnitSpinnerChange(adapter);
+                viewLauncher.showToast(R.string.message_unitremoved, Toast.LENGTH_LONG);
             }
+            else
+                viewLauncher.showToast(R.string.error_remove_defaultunit, Toast.LENGTH_LONG);
 
 
         }
@@ -449,8 +452,13 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
             groups = groupStorage.getItems();
 
             Group g = groups.get(quickRemoveGroupIndex);
-            groupStorage.deleteSingleItem(g);
-            viewLauncher.notifyGroupSpinnerChange(adapter);
+            if (g.getResourceId() == null) {
+                groupStorage.deleteSingleItem(g);
+                viewLauncher.notifyGroupSpinnerChange(adapter);
+                viewLauncher.showToast(R.string.message_groupremoved, Toast.LENGTH_LONG);
+            }
+            else
+                viewLauncher.showToast(R.string.error_remove_defaultgroup, Toast.LENGTH_LONG);
 
 
         }

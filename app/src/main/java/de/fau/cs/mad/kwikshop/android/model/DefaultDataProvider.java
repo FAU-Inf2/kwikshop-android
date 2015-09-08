@@ -29,6 +29,7 @@ public class DefaultDataProvider {
         public static final String INGREDIENTS_AND_SPICES = "Ingredients & Spices";
         public static final String FROZEN_AND_CONVENIENCE = "Frozen & Convenience";
         public static final String TOBACCO = "Tobacco";
+        public static final String CANS = "Cans";
     }
 
     public static class UnitNames {
@@ -100,6 +101,7 @@ public class DefaultDataProvider {
         if (defaultGroups == null) {
             defaultGroups = new Group[]{
                     new Group(GroupNames.COFFEE_AND_TEA, ResourceId.Group_CoffeeAndTea, PredefinedId.Group_CoffeeAndTea),
+                    new Group(GroupNames.CANS, ResourceId.Group_Can, PredefinedId.Group_Can),
                     new Group(GroupNames.HEALTH_AND_HYGIENE, ResourceId.Group_HealthAndHygiene,PredefinedId.Group_HealthAndHygiene),
                     new Group(GroupNames.PET_SUPPLIES, ResourceId.Group_PetSupplies,PredefinedId.Group_PetSupplies),
                     new Group(GroupNames.HOUSEHOLD, ResourceId.Group_Household,PredefinedId.Group_Household),

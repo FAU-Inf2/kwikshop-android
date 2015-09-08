@@ -110,6 +110,8 @@ public class DisplayHelper {
 
             case Group_CoffeeAndTea:
                 return R.string.group_CoffeeAndTea;
+            case Group_Can:
+                return R.string.group_cans;
             case Group_HealthAndHygiene:
                 return R.string.group_healthAndHygiene;
             case Group_PetSupplies:

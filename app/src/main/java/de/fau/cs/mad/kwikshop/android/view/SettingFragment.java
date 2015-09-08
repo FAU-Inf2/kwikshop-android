@@ -317,7 +317,6 @@ public class SettingFragment extends Fragment {
                         locationHeaderSetting,
                         locationPermissionSetting,
                         placeTypeSetting,
-                        enableSyncSetting,
 
 
                         synchronizationHeaderSetting,

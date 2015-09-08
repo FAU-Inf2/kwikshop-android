@@ -8,7 +8,7 @@
     <string name="defaultItem">Toque para criar um novo item</string>
     <string name="delete_shopping_list">Deletar Lista de Compras</string>
     <string name="edit_calendar_event">Editar evento no calendário</string>
-    <string name="error_empty_productname">Nome do produto não pode ser vazio</string>
+    <string name="error_empty_productname">Nome do produto não pode estar vazio</string>
     <string name="group">Grupo</string>
     <string name="group_CoffeeAndTea">Café &amp; chá</string>
     <string name="group_Other">Outros</string>
@@ -181,7 +181,7 @@
     <string name="dialog_OK">OK</string>
     <string name="dialog_retry">Repetir</string>
     <string name="dont_show_this_message_again">Não mostrar essa mensagem novamente</string>
-    <string name="errorReporting_copyToClipboard"></string>
+    <string name="errorReporting_copyToClipboard">Copiar</string>
     <string name="localization_dialog_message">Kwik Shop gostaria de localizar sua posição. Você aceita?</string>
     <string name="localization_dialog_title">Localização</string>
     <string name="localization_disable_localization">desativar localização</string>
@@ -333,4 +333,29 @@
     <string name="unit_bottle">garrafas</string>
     <string name="unit_bag_singular">sacola</string>
     <string name="unit_bag">sacolas</string>
+    <string name="error_empty_unitname">Nome da unidade não pode estar vazio</string>
+    <string name="error_synchronizing_recipes">Erro ao sincronizar Receitas</string>
+    <string name="error_synchronizing_shoppingLists">Erro ao sincronizar Lista de Compras</string>
+    <string name="errorReporting_copyToClipboard_toast">O relatório de erros foi copiado para o clipboar</string>
+    <string name="error_empty_groupname">Nome do grupo não pode estar vazio</string>
+    <string name="errorReporting_messaging_dialog_text">"Infelizmente houve um erro na última vez que usou o app. Nós estamos constantemente trabalhando na melhoria do app. Você pode nos ajudar enviando um relatório dos erros que você encontrou"</string>
+    <string name="errorReporting_messaging_dialog_title">Relatório de erros</string>
+    <string name="errorReporting_messaging_chooser_title">Enviar relatório usando</string>
+    <string name="errorReporting_copyToClipboard_label">Relatorio de erros Kwik Shop</string>
+    <string name="errorReporting_messaging_subject">Kwik Shop (Android) Relatório de erros</string>
+    <string name="error_aquiring_lease">Erro enquanto adquiria permissão de sincronização</string>
+    <string name="localization">Localização</string>
+    <string name="localization_store_types_dialog_title">Tipos de armazenamento</string>
+    <string name="localize">Localizar</string>
+    <string name="recipe_default_no_recipes">Você não possui nenhuma receita ainda. Gostaria de adicionar algumas de nossas favoritas?</string>
+    <string name="settings_options_add_default_recipes_name">Receitas padrão</string>
+    <string name="settings_options_add_default_recipes_descr">Perguntar por receitas padrão quando não houver nenhuma receita própria</string>
+    <string name="error_remove_defaultunit">Você não pode remover unidades padrão</string>
+    <string name="error_remove_defaultgroup">Você não pode remover grupos padrão</string>
+    <string name="general">Geral</string>
+    <string name="localization_store_types_dialog_caption">Selecione seus tipos de armazenamento preferidos</string>
+    <string name="no_last_location_dialog_message">Kwik Shop não conseguiu encontrar sua localização corrente</string>
+    <string name="synchronization">Sincronização</string>
+    <string name="message_groupremoved">Grupo removido</string>
+    <string name="message_unitremoved">Unidade removida</string>
 </resources>

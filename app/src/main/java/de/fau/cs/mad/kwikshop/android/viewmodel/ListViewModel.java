@@ -3,12 +3,14 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import android.os.AsyncTask;
 import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.Unit;
@@ -394,6 +396,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
                     viewLauncher.notifyUnitSpinnerChange(adapter);
                 }
+                else
+                    viewLauncher.showToast(R.string.error_empty_unitname, Toast.LENGTH_LONG);
 
         qAddUnit.setText("");
     }
@@ -411,6 +415,8 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
             autoCompletionHelper.offerName(newGroup.getName());
             viewLauncher.notifyGroupSpinnerChange(adapter);
         }
+        else
+            viewLauncher.showToast(R.string.error_empty_groupname, Toast.LENGTH_LONG);
 
         qAddGroup.setText("");
 
@@ -428,8 +434,14 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
                 }
             });
             Unit u = units.get(quickRemoveUnitIndex);
-            unitStorage.deleteSingleItem(u);
-            viewLauncher.notifyUnitSpinnerChange(adapter);
+            if (u.getResourceId()== null) {
+                unitStorage.deleteSingleItem(u);
+                viewLauncher.notifyUnitSpinnerChange(adapter);
+                viewLauncher.showToast(R.string.message_unitremoved, Toast.LENGTH_LONG);
+            }
+            else
+                viewLauncher.showToast(R.string.error_remove_defaultunit, Toast.LENGTH_LONG);
+
 
         }
     }
@@ -440,8 +452,13 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
             groups = groupStorage.getItems();
 
             Group g = groups.get(quickRemoveGroupIndex);
-            groupStorage.deleteSingleItem(g);
-            viewLauncher.notifyGroupSpinnerChange(adapter);
+            if (g.getResourceId() == null) {
+                groupStorage.deleteSingleItem(g);
+                viewLauncher.notifyGroupSpinnerChange(adapter);
+                viewLauncher.showToast(R.string.message_groupremoved, Toast.LENGTH_LONG);
+            }
+            else
+                viewLauncher.showToast(R.string.error_remove_defaultgroup, Toast.LENGTH_LONG);
 
 
         }

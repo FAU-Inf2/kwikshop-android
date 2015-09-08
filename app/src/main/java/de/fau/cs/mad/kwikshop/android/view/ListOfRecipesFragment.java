@@ -56,6 +56,7 @@ public class ListOfRecipesFragment extends FragmentWithViewModel implements List
         // create adapter for list
         listAdapter = new ListOfRecipesRowAdapter(getActivity(), viewModel.getLists());
         listView_Recipes.setAdapter(listAdapter);
+        listView_Recipes.setSelector(R.drawable.list_selector);
 
         // bind view to view model
 

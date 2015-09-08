@@ -335,6 +335,7 @@ public class SettingFragment extends Fragment {
         // Adapter for settings view
         objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, settingsList);
         listView.setAdapter(objAdapter);
+        listView.setSelector(R.drawable.list_selector);
         listView.setDividerHeight(0);
 
         return rootView;

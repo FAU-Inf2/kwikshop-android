@@ -69,6 +69,7 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
         // create adapter for list
         listAdapter = new ListOfShoppingListsListRowAdapter(getActivity(), viewModel.getLists());
         listView_ShoppingLists.setAdapter(listAdapter);
+        listView_ShoppingLists.setSelector(R.drawable.list_selector);
 
         // bind view to view model
 

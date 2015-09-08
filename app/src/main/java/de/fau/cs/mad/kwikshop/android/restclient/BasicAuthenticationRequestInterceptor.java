@@ -1,4 +1,4 @@
-package de.fau.cs.mad.kwikshop.android.model;
+package de.fau.cs.mad.kwikshop.android.restclient;
 
 import android.util.Base64;
 

@@ -9,7 +9,6 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -318,11 +317,13 @@ public class SettingFragment extends Fragment {
                         locationHeaderSetting,
                         locationPermissionSetting,
                         placeTypeSetting,
+                        enableSyncSetting,
 
 
                         synchronizationHeaderSetting,
                         syncNowSetting,
                         syncIntervalSetting,
+                        enableSyncSetting,
 
                         otherHeaderSetting,
                         itemDeletionSetting,
@@ -336,7 +337,6 @@ public class SettingFragment extends Fragment {
         objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, settingsList);
         listView.setAdapter(objAdapter);
         listView.setDividerHeight(0);
-        objAdapter.notifyDataSetChanged();
 
         return rootView;
     }

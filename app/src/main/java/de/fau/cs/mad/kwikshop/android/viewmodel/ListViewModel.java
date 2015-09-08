@@ -382,7 +382,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
 
     protected void quickAddUnitsCommandExecute(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddUnit){
 
-        final String text = getQuickAddText();
+        final String text =  getQuickAddText().length()> 20 ? getQuickAddText().substring(0,20)+"..." : getQuickAddText();
         //reset quick add text
 
                 if (!StringHelper.isNullOrWhiteSpace(text)) {
@@ -399,7 +399,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     }
     protected void quickAddGroupsCommandExecute(ArrayAdapter<String> adapter, MultiAutoCompleteTextView qAddGroup){
 
-        final String text = getQuickAddText();
+        final String text = getQuickAddText().length()> 20 ? getQuickAddText().substring(0,20)+"..." : getQuickAddText();
         //reset quick add text
         setQuickAddText("");
 

@@ -19,11 +19,6 @@
                 android:visible="true"
                 android:title="@string/overflow_action_menu_add_recipes"/>
 
-            <item android:id="@+id/action_add_to_a_shoppinglist"
-                app:showAsAction="ifRoom"
-                android:visible="true"
-                android:title="@string/overflow_action_menu_add_to_a_shopping_list"/>
-
 
             <item android:id="@+id/action_move_all_to_shopping_cart"
                 app:showAsAction="ifRoom"

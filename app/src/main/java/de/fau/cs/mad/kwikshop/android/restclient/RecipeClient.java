@@ -9,6 +9,7 @@ import de.fau.cs.mad.kwikshop.common.RecipeServer;
 import de.fau.cs.mad.kwikshop.common.rest.responses.SharingCode;
 import de.fau.cs.mad.kwikshop.common.rest.responses.SharingResponse;
 import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
+import de.fau.cs.mad.kwikshop.common.sorting.SortingRequest;
 import retrofit.client.Response;
 
 /**
@@ -103,6 +104,11 @@ public class RecipeClient implements ListClient<RecipeServer> {
 
     @Override
     public void postItemOrder(ItemOrderWrapper itemOrder) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void sortList(int listId, SortingRequest sortingRequest) {
         throw new UnsupportedOperationException();
     }
 }

@@ -108,6 +108,12 @@
     <string name="settings_option_7_parser_separate_word_descr">Choose word to separate multiple items </string>
     <string name="localization_store_types_dialog_title">Store types</string>
     <string name="localization_store_types_dialog_caption">Select your preferred store types</string>
+    <string name="localization">Localization</string>
+    <string name="general">General</string>
+    <string name="voice_entry">Voice Entry</string>
+    <string name="account">Account</string>
+    <string name="synchronization">Synchronization</string>
+
 
     <!-- Overflow Action Menu -->
     <string name="overflow_action_menu_settings">Settings</string>

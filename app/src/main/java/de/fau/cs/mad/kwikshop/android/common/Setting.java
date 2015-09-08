@@ -11,6 +11,7 @@ public class Setting {
     private Context context;
     private int viewVisibility = View.INVISIBLE;
     private boolean checked = false;
+    private boolean isHeader = false;
 
     public Setting(Context context){
         this.context = context;
@@ -39,5 +40,13 @@ public class Setting {
     public boolean isChecked() {return checked; }
 
     public void setChecked(boolean checked) {this.checked = checked;
+    }
+
+    public boolean isHeader() {
+        return isHeader;
+    }
+
+    public void setIsHeader(boolean isHeader) {
+        this.isHeader = isHeader;
     }
 }

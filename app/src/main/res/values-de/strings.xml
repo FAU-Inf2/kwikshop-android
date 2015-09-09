@@ -350,6 +350,6 @@
         <item>Geschäfte</item>
     </string-array>
     <string name="radius">Radius</string>
-    <string name="setting_change_radius_description">Radius des Supermarkt Finders ändern</string>
+    <string name="setting_change_radius_description">Radius des Supermarktfinders ändern</string>
 
 </resources>

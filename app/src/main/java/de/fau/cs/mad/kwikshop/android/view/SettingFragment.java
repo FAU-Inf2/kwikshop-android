@@ -783,7 +783,7 @@ public class SettingFragment extends Fragment {
 
                 // title and message
                 resourceProvider.getString(R.string.radius),
-                resourceProvider.getString(R.string.change_radius_description),
+                resourceProvider.getString(R.string.setting_change_radius_description),
 
                 //current value
                 currentValue,

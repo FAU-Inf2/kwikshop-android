@@ -409,7 +409,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         // new number picker
         setDividerColor(numberPickerUnit);
         setDividerColor(numberPicker);
-
+        //sort units by name
+        viewModel.sortUnitsByName();
+        viewModel.sortGroupsByName();
         unitNames = viewModel.getUnitNames().toArray(new String[viewModel.getUnitNames().size()]);
         unitSingularNames = viewModel.getSingularUnitNames().toArray(new String[viewModel.getSingularUnitNames().size()]);
 
@@ -481,8 +483,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             intNumbersForAmountPicker[i] = numsInteger[i%numsInteger.length];
         }
 
-        //sort units by name
-        viewModel.sortUnitsByName();
 
         //TODO implement adapter for Unit instead of String
 
@@ -738,6 +738,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             }
 
         });
+
+
     }
 
     /*

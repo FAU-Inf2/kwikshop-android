@@ -834,13 +834,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     if (viewModel.getRotateImage() != null)
                         viewModel.getRotateImage().recycle();
                     viewModel.setRotateImage(Bitmap.createBitmap(viewModel.getImageItem(), 0, 0, viewModel.getImageItem().getWidth(), viewModel.getImageItem().getHeight(), matrix,true));
-
-
-                    //itemImageView.setImageBitmap(rotateImage);
-
-                    itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, viewModel.getImageId()));
-                } else
+                } else {
                     uploadText.setText("");
+                }
                     //itemImageView.setImageBitmap(ImageItem);
                 itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, viewModel.getImageId()));
             } catch (IOException e) {

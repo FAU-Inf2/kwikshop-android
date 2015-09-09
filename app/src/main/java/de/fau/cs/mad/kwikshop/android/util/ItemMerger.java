@@ -20,6 +20,9 @@ public class ItemMerger<TList extends DomainListObject> {
     //returns true if item was merged, false if not
     public boolean mergeItem(int listId, Item item){
         DomainListObject list = listManager.getList(listId);
+
+        item.setName(item.getName().trim());
+
         for(Item items : list.getItems()){
             //merges if name, brand, comment, unit and group are the same
             if(!items.equals(item) && items.getName().equals(item.getName()) && items.getBrand().equals(item.getBrand())

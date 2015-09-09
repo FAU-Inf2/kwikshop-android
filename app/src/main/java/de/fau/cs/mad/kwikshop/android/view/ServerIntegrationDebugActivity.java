@@ -37,6 +37,7 @@ import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.fau.cs.mad.kwikshop.common.SynchronizationLease;
 import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
 import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
+import de.fau.cs.mad.kwikshop.common.sorting.SortingRequest;
 import de.greenrobot.event.EventBus;
 
 /*
@@ -1339,12 +1340,15 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
 
                     boughtItems.add(new BoughtItem("Test1", "place1", "Kwik-E-Mart Springfield"));
                     boughtItems.add(new BoughtItem("Test2", "place1", "Kwik-E-Mart Springfield"));
+                    boughtItems.add(new BoughtItem("Test4", "place1", "Kwik-E-Mart Springfield"));
+                    boughtItems.add(new BoughtItem("Test5", "place1", "Kwik-E-Mart Springfield"));
+
+                    boughtItems.add(new BoughtItem("Test1", "place2", "Foobar Supermarket"));
+
+                    boughtItems.add(new BoughtItem("Test1", "place1", "Kwik-E-Mart Springfield"));
                     boughtItems.add(new BoughtItem("Test3", "place1", "Kwik-E-Mart Springfield"));
                     boughtItems.add(new BoughtItem("Test4", "place1", "Kwik-E-Mart Springfield"));
-
-                    boughtItems.add(new BoughtItem("Test5", "place2", "Foobar Supermarket"));
-                    boughtItems.add(new BoughtItem("Test6", "place2", "Foobar Supermarket"));
-                    boughtItems.add(new BoughtItem("Test7", "place2", "Foobar Supermarket"));
+                    boughtItems.add(new BoughtItem("Test5", "place1", "Kwik-E-Mart Springfield"));
 
                     ItemOrderWrapper itemOrder = new ItemOrderWrapper(boughtItems);
                     client.postItemOrder(itemOrder);
@@ -1357,6 +1361,54 @@ public class ServerIntegrationDebugActivity extends BaseActivity {
                 return null;
             }
         }.execute();
+
+    }
+
+    @OnClick(R.id.button_sortList)
+    @SuppressWarnings("unused")
+    void sortList() {
+
+        viewLauncher.showTextInputDialog("Shopping List id", "",
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+                        privateBus.post("Sorting list...");
+
+                        final int listId;
+
+                        try {
+                            listId = Integer.parseInt(parameter);
+                        } catch (Exception e) {
+                            privateBus.post(getStackTrace(e));
+                            return;
+                        }
+
+                        new AsyncTask<Void, Void, Void>() {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+                                try {
+
+                                    ListClient<ShoppingListServer> client = clientFactory.getShoppingListClient();
+
+                                    SortingRequest sortingRequest = new SortingRequest();
+                                    sortingRequest.setPlaceId("place1");
+                                    sortingRequest.setSupermarketName("Kwik-E-Mart Springfield");
+
+                                    client.sortList(listId, sortingRequest);
+                                } catch (Exception e) {
+                                    privateBus.post(getStackTrace(e));
+                                }
+
+                                return null;
+
+                            }
+                        }.execute();
+                    }
+                },
+                NullCommand.StringInstance);
 
     }
 

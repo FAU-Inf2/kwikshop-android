@@ -179,6 +179,7 @@ public class ShoppingListFragment
         final ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);
         shoppingListView.setAdapter(shoppingListAdapter);
+       // shoppingListView.setSelector(R.drawable.list_selector);
 
         new ListViewItemCommandBinding(ListViewItemCommandBinding.ListViewItemCommandType.Click,
                 shoppingListView,
@@ -210,6 +211,9 @@ public class ShoppingListFragment
                     @Override
                     public boolean onItemLongClick(final AdapterView<?> parent, final View view,
                                                    final int position, final long id) {
+
+                        swipeLayout.setEnabled(false);
+
                         // Bought Items are not draggable
                         if (shoppingListAdapter.getItem(position).getItem().isBought())
                             return true;
@@ -218,15 +222,18 @@ public class ShoppingListFragment
                         //IMPORTANT: Make sure to reenable events afterwards
                         viewModel.getItems().disableEvents();
                         shoppingListView.startDragging(position);
+
                         return true;
                     }
                 }
         );
 
+
         shoppingListView.setOnItemMovedListener(new OnItemMovedListener() {
             @Override
             public void onItemMoved(int i, int i1) {
                 //IMPORTANT: reenable events of the observable list after drag and drop has finished
+                swipeLayout.setEnabled(true);
                 viewModel.getItems().enableEvents();
                 viewModel.itemsSwapped(i, i1);
                 viewModel.moveBoughtItemsToEnd();

@@ -138,6 +138,7 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
         RecipeAdapter recipeAdapter = new RecipeAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);
         recipeListView.setAdapter(recipeAdapter);
+        recipeListView.setSelector(R.drawable.list_selector);
 
         new ListViewItemCommandBinding(ListViewItemCommandBinding.ListViewItemCommandType.Click,
                 recipeListView,

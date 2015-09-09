@@ -114,6 +114,7 @@ public class ItemParser {
 
         if (!StringHelper.isNullOrWhiteSpace(output)) {
             if (amountWasSpecified) item.setAmount(Double.parseDouble(amount));
+            output = output.trim();
             item.setName(output);
         }
         return item;

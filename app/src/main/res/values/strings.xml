@@ -221,7 +221,7 @@
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
     <string name="overflow_action_menu_recipes">Manage recipes</string>
     <string name="overflow_action_menu_add_recipes">Add recipes to the list</string>
-    <string name="overflow_action_menu_add_to_a_shopping_list">Add this to a shopping list</string>
+    <string name="overflow_action_menu_add_to_a_shopping_list">Add this recipe to a shopping list</string>
     <string name="recipe_scaleName_person">people</string>
     <string name="recipe_scaleName_piece">pieces</string>
     <string name="recipe_choose_amount">Choose amount of </string>
@@ -402,6 +402,9 @@
     <string name="settings_options_add_default_recipes_name">Default recipes</string>
     <string name="settings_options_add_default_recipes_descr">Ask to add our default recipes when you do not have any own recipes</string>
     <string name="settings_option_parser_separator_no_space_allowed">The item separator word may not contaion spaces</string>
+    <string name="setting_permission_for_localization_title">Requesting</string>
+    <string name="setting_permission_for_localization_desc">Always ask for localization permission</string>
+
     <string name="str_default">default</string>
     <string name="deleteShoppingList_repeatingItemsTitle">This list owns repeating items</string>
     <string name="deleteShoppingList_repeatingItemsText">Delete regularly created items?</string>

@@ -70,13 +70,7 @@ public class SettingFragment extends Fragment {
     private Setting syncNowSetting;
     private Setting syncIntervalSetting;
     private Setting placeTypeSetting;
-
-    private Setting locationHeaderSetting;
-    private Setting generalHeaderSetting;
-    private Setting voiceEntryHeaderSetting;
-    private Setting accountHeaderSetting;
-    private Setting synchronizationHeaderSetting;
-    private Setting otherHeaderSetting;
+    private Setting askForLocalizationPermissionSetting;
 
     @Inject
     ViewLauncher viewLauncher;
@@ -93,6 +87,8 @@ public class SettingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         objectGraph.inject(this);
@@ -171,6 +167,10 @@ public class SettingFragment extends Fragment {
                 if(settingsList.get(position).equals(placeTypeSetting)){
                     selectPlaceType();
                 }
+
+                if(settingsList.get(position).equals(askForLocalizationPermissionSetting)){
+                    setAskForLocationPermission(position);
+                }
             }
         });
 
@@ -246,6 +246,14 @@ public class SettingFragment extends Fragment {
         loginSetting.setName(R.string.settings_option_8_login_name);
         loginSetting.setCaption(R.string.settings_option_8_login_descr);
 
+        //Ask for Localization Permission
+        askForLocalizationPermissionSetting = new Setting(context);
+        askForLocalizationPermissionSetting.setName(R.string.setting_permission_for_localization_title);
+        askForLocalizationPermissionSetting.setCaption(R.string.setting_permission_for_localization_desc);
+        askForLocalizationPermissionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, false, getActivity()));
+        askForLocalizationPermissionSetting.setViewVisibility(View.VISIBLE);
+
+
         enableSyncSetting = new Setting(context);
         enableSyncSetting.setName(R.string.settings_option_enableSync_name);
         enableSyncSetting.setCaption(R.string.settings_option_enableSync_descr);
@@ -264,6 +272,14 @@ public class SettingFragment extends Fragment {
         placeTypeSetting = new Setting(context);
         placeTypeSetting.setName(R.string.localization_store_types_dialog_title);
         placeTypeSetting.setCaption(R.string.localization_store_types_dialog_caption);
+
+
+        //headers
+        Setting locationHeaderSetting;
+        Setting generalHeaderSetting;
+        Setting accountHeaderSetting;
+        Setting synchronizationHeaderSetting;
+        Setting otherHeaderSetting;
 
 
         //localization header
@@ -317,6 +333,7 @@ public class SettingFragment extends Fragment {
                         locationHeaderSetting,
                         locationPermissionSetting,
                         placeTypeSetting,
+                        askForLocalizationPermissionSetting,
 
 
                         synchronizationHeaderSetting,
@@ -335,6 +352,7 @@ public class SettingFragment extends Fragment {
         // Adapter for settings view
         objAdapter = new SettingAdapter(getActivity(), R.layout.fragment_setting_row, settingsList);
         listView.setAdapter(objAdapter);
+        listView.setSelector(R.drawable.list_selector);
         listView.setDividerHeight(0);
 
         return rootView;
@@ -645,6 +663,17 @@ public class SettingFragment extends Fragment {
         } else {
             objAdapter.getItem(position).setChecked(true);
             SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ASK_TO_ADD_DEFAULT_RECIPES, true, getActivity());
+        }
+        objAdapter.notifyDataSetChanged();
+    }
+
+    private void setAskForLocationPermission(int position){
+        if(objAdapter.getItem(position).isChecked()){
+            objAdapter.getItem(position).setChecked(false);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, false, getActivity());
+        } else {
+            objAdapter.getItem(position).setChecked(true);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, getActivity());
         }
         objAdapter.notifyDataSetChanged();
     }

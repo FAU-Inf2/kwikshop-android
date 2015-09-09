@@ -79,6 +79,8 @@ public class SettingAdapter extends ArrayAdapter<Setting> {
 
             view = inflater.inflate(R.layout.fragment_setting_header, null);
             ButterKnife.inject(this, view);
+            view.setEnabled(false);
+            view.setOnClickListener(null);
             tvSettingsHeader.setText(settingsList.get(position).getName());
 
         }

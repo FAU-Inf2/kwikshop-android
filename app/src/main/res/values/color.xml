@@ -15,4 +15,12 @@
     <color name="divider_color">#B6B6B6</color>
     <color name="dark_primary_color">#00796B</color>
     <color name="group_header_color">#E2E2E2</color>
+
+
+    <drawable name="focused">#ff5500</drawable>
+    <drawable name="selected">#FF00FF</drawable>
+
+    <drawable name="primary_Color">#00897B</drawable>
+    <drawable name="secondary_Color">#ffdd72</drawable>
+
 </resources>

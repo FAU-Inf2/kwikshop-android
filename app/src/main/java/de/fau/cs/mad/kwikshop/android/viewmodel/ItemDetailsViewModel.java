@@ -6,10 +6,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
 import javax.inject.Inject;
@@ -182,10 +184,21 @@ public class ItemDetailsViewModel{
     };
 
     public void sortUnitsByName(){
+        final Collator collator = Collator.getInstance(Locale.getDefault());
         Collections.sort(units, new Comparator<Unit>() {
             @Override
             public int compare(Unit lhs, Unit rhs) {
-                return lhs.getName().compareTo(rhs.getName());
+                return collator.compare(displayHelper.getDisplayName(lhs),displayHelper.getDisplayName(rhs));
+            }
+        });
+
+    }
+    public void sortGroupsByName(){
+        final Collator collator = Collator.getInstance(Locale.getDefault());
+        Collections.sort(groups, new Comparator<Group>() {
+            @Override
+            public int compare(Group lhs, Group rhs) {
+                return collator.compare(displayHelper.getDisplayName(lhs), displayHelper.getDisplayName(rhs));
             }
         });
 
@@ -193,6 +206,7 @@ public class ItemDetailsViewModel{
 
     public ArrayList<String> getUnitNames(){
         ArrayList<String> unitNames = new ArrayList<>();
+        sortUnitsByName();
         for (Unit u : units) {
             unitNames.add(displayHelper.getDisplayName(u));
         }
@@ -201,6 +215,7 @@ public class ItemDetailsViewModel{
 
     public ArrayList<String> getSingularUnitNames(){
         ArrayList<String> unitNames = new ArrayList<>();
+        sortUnitsByName();
         for (Unit u : units) {
             unitNames.add(displayHelper.getSingularDisplayName(u));
         }
@@ -216,6 +231,7 @@ public class ItemDetailsViewModel{
 
     public ArrayList<String> getGroupNames(){
         ArrayList<String> groupNames = new ArrayList<>();
+        sortGroupsByName();
         for (Group g : groups) {
             groupNames.add(displayHelper.getDisplayName(g));
         }

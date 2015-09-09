@@ -27,6 +27,7 @@ import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.dragdrop.OnItemMovedListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -46,6 +47,7 @@ import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 import de.greenrobot.event.EventBus;
 
 public class RecipeFragment  extends Fragment implements RecipeViewModel.Listener, ObservableArrayList.Listener<ItemViewModel> {
@@ -206,7 +208,7 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
-                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, RecognizerIntent.EXTRA_MAX_RESULTS);
                 startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 
             }
@@ -374,9 +376,25 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
         super.onActivityResult(requestCode, resultCode, data);
         getActivity();
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
-            List<String> results = data.getStringArrayListExtra(
+            ArrayList<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
-            String spokenText = results.get(0);
+
+            boolean numberMatchFound = false;
+            int positionMatchFound = 0;
+            for(int i = 0; i < results.size(); i++){
+                try{
+                    Integer.parseInt(StringHelper.getFirstWord(results.get(i)));
+                    numberMatchFound = true;
+                    positionMatchFound = i;
+                    break;
+                }catch (NumberFormatException e){
+                    numberMatchFound = false;
+                }
+            }
+            String spokenText;
+            if(numberMatchFound) spokenText = results.get(positionMatchFound);
+            else spokenText = results.get(0);
+
             textView_QuickAdd.setText(spokenText);
             // Do something with spokenText
         }

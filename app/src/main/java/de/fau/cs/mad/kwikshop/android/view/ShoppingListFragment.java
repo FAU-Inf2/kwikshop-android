@@ -332,15 +332,13 @@ public class ShoppingListFragment
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
                 SyncingActivity.requestSync();
-
                 // wait
                 new Handler().postDelayed(new Runnable() {
                     @Override public void run() {
                         swipeLayout.setRefreshing(false);
                     }
-                }, 3000);
+                }, getResources().getInteger(R.integer.sync_delay));
             }
         });
 

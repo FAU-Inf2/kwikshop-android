@@ -3,8 +3,10 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -80,6 +82,9 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
     @InjectView(R.id.micButton)
     ImageButton micButton;
 
+    @InjectView(R.id.swipe_container_recipe_list)
+    SwipeRefreshLayout swipeLayout;
+
 
     public static RecipeFragment newInstance(int recipeID) {
         RecipeFragment fragment = new RecipeFragment();
@@ -153,6 +158,7 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
                     @Override
                     public boolean onItemLongClick(final AdapterView<?> parent, final View view,
                                                    final int position, final long id) {
+                        swipeLayout.setEnabled(false);
                         viewModel.getItems().disableEvents();
                         recipeListView.startDragging(position);
                         //sets value of the Spinner to the first entry, in this case Manual
@@ -164,6 +170,7 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
         recipeListView.setOnItemMovedListener(new OnItemMovedListener() {
             @Override
             public void onItemMoved(int i, int i1) {
+                swipeLayout.setEnabled(true);
                 viewModel.itemsSwapped(i, i1);
             }
         });
@@ -223,6 +230,24 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
         refreshQuickAddAutoCompletion();
 
         disableFloatingButtonWhileSoftKeyboardIsShown();
+
+        // swipe refresh view
+        swipeLayout.setColorSchemeResources(R.color.secondary_Color, R.color.primary_Color);
+        swipeLayout.setDistanceToTriggerSync(20);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                SyncingActivity.requestSync();
+
+                // wait
+                new Handler().postDelayed(new Runnable() {
+                    @Override public void run() {
+                        swipeLayout.setRefreshing(false);
+                    }
+                }, getResources().getInteger(R.integer.sync_delay));
+            }
+        });
 
         return rootView;
     }

@@ -550,7 +550,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 e.printStackTrace();
             }
             numberPicker.invalidate();
-        }
+      }
 
         //wire up auto-complete for product name and brand
         productName_text.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
@@ -719,10 +719,15 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if (!numberPickerUpdating) {
             if (getNumberPickerValue(numberPicker.getValue()) == 1){
                 //unit_spinner.setAdapter(spinnerArrayAdapterForSingular);
-                numberPickerUnit.setDisplayedValues(viewModel.getSingularUnitNames().toArray(new String[viewModel.getSingularUnitNames().size()]));
+
+                numberPickerUnit.setDisplayedValues(unitSingularNames);
+
+
             } else {
                // unit_spinner.setAdapter(spinnerArrayAdapter);
-                numberPickerUnit.setDisplayedValues(viewModel.getUnitNames().toArray(new String[viewModel.getUnitNames().size()]));
+
+                numberPickerUnit.setDisplayedValues(unitNames);
+
             }
 
         }
@@ -731,9 +736,18 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             public void onValueChange(NumberPicker numberPicker, int i, int i2) {
                // updateNumberPicker(spinnerArrayAdapter, spinnerArrayAdapterForSingular, i, i2);
                 if( getNumberPickerValue(i) != 1 && getNumberPickerValue(i2) == 1) {
+
+                    numberPickerUnit.setMinValue(0);
+                    numberPickerUnit.setMaxValue(unitSingularNames.length - 1);
                     numberPickerUnit.setDisplayedValues(viewModel.getSingularUnitNames().toArray(new String[viewModel.getSingularUnitNames().size()]));
+                    numberPickerUnit.setValue(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
+                    selectedUnitIndex = numberPickerUnit.getValue();
                 } else if(getNumberPickerValue(i) == 1 && getNumberPickerValue(i2) != 1){
+                    numberPickerUnit.setMinValue(0);
+                    numberPickerUnit.setMaxValue(unitNames.length - 1);
                     numberPickerUnit.setDisplayedValues(viewModel.getUnitNames().toArray(new String[viewModel.getUnitNames().size()]));
+                    numberPickerUnit.setValue(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
+                    selectedUnitIndex = numberPickerUnit.getValue();
                 }
             }
 

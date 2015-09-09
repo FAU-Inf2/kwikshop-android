@@ -338,5 +338,7 @@
     <string name="unit_teaspoon_singular">TL</string>
     <string name="uploadPicture">Bild auswählen</string>
     <string name="voice_entry">Spracherkennung</string>
+    <string name="setting_permission_for_localization_desc">Immer um Erlaubnis für Standortbestimmung fragen</string>
+    <string name="setting_permission_for_localization_title">Nachfragen</string>
 
 </resources>

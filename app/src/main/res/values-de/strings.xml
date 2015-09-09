@@ -340,5 +340,14 @@
     <string name="voice_entry">Spracherkennung</string>
     <string name="setting_permission_for_localization_desc">Immer um Erlaubnis für Standortbestimmung fragen</string>
     <string name="setting_permission_for_localization_title">Nachfragen</string>
+    <string-array name="store_types_array">
+        <item>Supermarkt</item>
+        <item>Bäckerei</item>
+        <item>Tankstelle</item>
+        <item>Spirituosengeschäft</item>
+        <item>Apotheke</item>
+        <item>Einkaufszentrum</item>
+        <item>Geschäfte</item>
+    </string-array>
 
 </resources>

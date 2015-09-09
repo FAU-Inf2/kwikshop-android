@@ -266,7 +266,7 @@
     <string name="localization">Standortbestimmung</string>
     <string name="localization_permisson_dialog_title"></string>
     <string name="localization_store_types_dialog_title">Einkaufsläden</string>
-    <string name="localization_store_types_dialog_caption">Wähle deinen bevorzugten Einkaufsladen</string>
+    <string name="localization_store_types_dialog_caption">Wähle deinen bevorzugten Typ von Einkaufsladen</string>
     <string name="localization_supermarket_select_dialog_title">Wähle deinen aktuellen Einkaufsladen</string>
     <string name="message_groupremoved">Gruppe entfernt</string>
     <string name="message_unitremoved">Einheit entfernt</string>
@@ -275,7 +275,7 @@
     <string name="overflow_action_menu_add_to_a_shopping_list">Rezept zu einer Einkaufsliste hinzufügen</string>
     <string name="overflow_action_menu_openloginactivity">Konto / Login</string>
     <string name="recipe_add_recipe">Rezept zu dieser Einkaufsliste hinzufügen</string>
-    <string name="recipe_add_to_shoppinglist">Dieses Rezeot zu einer Liste hinzufügen</string>
+    <string name="recipe_add_to_shoppinglist">Dieses Rezept zu einer Liste hinzufügen</string>
     <string name="recipe_choose_recipe">Wähle ein Rezept zum Hinzufügen</string>
     <string name="recipe_choose_shoppinglist">Wähle eine Einkaufsliste</string>
     <string name="recipe_default_no_recipes">Es sind noch keine Rezepte vorhanden. Möchtest du ein paar unserer Rezepte?</string>
@@ -288,7 +288,7 @@
     <string name="settings_option_4_createGroups">Erstellen oder Löschen von Einheiten</string>
     <string name="settings_option_4_desc">Erstelle Gruppen für Produkte</string>
     <string name="settings_option_6_item_deletion_descr">Immer nachfragen bevor ein Produkt gelöscht wird</string>
-    <string name="settings_option_6_item_deletion_name">Produk löschen</string>
+    <string name="settings_option_6_item_deletion_name">Produkt löschen</string>
     <string name="settings_option_7_parser_separate_word_descr">Wähle ein Wort um mehere Produkte zu trennen</string>
     <string name="settings_option_7_parser_separate_word_name">Trennwort</string>
     <string name="settings_option_enableSync_descr">Aktiviere Synchronisation der Einkaufslisten und Rezepte</string>
@@ -299,7 +299,7 @@
     <string name="settings_options_add_default_recipes_descr">Nachfagen, ob die Standardrezepte hinzugefügt werden, wenn noch keine eigenen Rezepte vorhanden sind.</string>
     <string name="settings_options_add_default_recipes_name">Standardrezepte</string>
     <string name="settings_options_delete_recipe_descr">Immer nachfragen bevor ein Rezept gelöscht wird</string>
-    <string name="settings_options_delete_recipe_name">Repezt löschen</string>
+    <string name="settings_options_delete_recipe_name">Rezept löschen</string>
     <string name="settings_options_delete_shoppinglist_descr">Immer nachfragen bevor eine Einkaufsliste gelöscht wird</string>
     <string name="settings_options_delete_shoppinglist_name">Einkaufsliste löschen</string>
     <string name="settings_options_syncInterval_descr">Wähle aus wie oft synchronisiert werden soll.</string>

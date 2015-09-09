@@ -83,6 +83,23 @@ public class DisplayHelper {
         }
 
     }
+    public String getShortDisplayName(Unit unit, double amount) {
+
+        if (unit == null) {
+            return "";
+        } else {
+            Integer id = getAndroidId(unit.getShortNameResourceId());
+            if(id == null) {
+                if (amount == 1)
+                    return getSingularDisplayName(unit);
+                else
+                    return getDisplayName(unit);
+            } else {
+                return resourceProvider.getString(id);
+            }
+        }
+
+    }
 
     public String getSingularDisplayName(Unit unit) {
 

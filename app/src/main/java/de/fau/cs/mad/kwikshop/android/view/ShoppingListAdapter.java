@@ -164,7 +164,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         if (amount == 1 && unitIsPieces) {
             viewHolder.textView_Amount.setVisibility(View.GONE);
         } else {
-            String unitStr = displayHelper.getShortDisplayName(item.getUnit());
+            String unitStr = displayHelper.getShortDisplayName(item.getUnit(), amount);
 
             viewHolder.textView_Amount.setVisibility(View.VISIBLE);
             //This is not the best way to format fractions, but there are only few of them

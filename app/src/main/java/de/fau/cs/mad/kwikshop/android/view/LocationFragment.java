@@ -99,7 +99,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
 
         int defaultRadius = resourceProvider.getInteger(R.integer.supermarket_finder_radius);
         int radius = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.SUPERMARKET_FINDER_RADIUS, defaultRadius, getActivity());
-        viewModel.startAsyncPlaceRequest(this, radius , 30);
+        viewModel.startAsyncPlaceRequest(this, radius , 40);
 
         return rootView;
     }

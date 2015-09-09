@@ -265,9 +265,9 @@
     <string name="item_deleted">Produkt gelöscht</string>
     <string name="localization">Standortbestimmung</string>
     <string name="localization_permisson_dialog_title"></string>
-    <string name="localization_store_types_dialog_title">Einkaufsläden</string>
-    <string name="localization_store_types_dialog_caption">Wähle deinen bevorzugten Typ von Einkaufsladen</string>
-    <string name="localization_supermarket_select_dialog_title">Wähle deinen aktuellen Einkaufsladen</string>
+    <string name="localization_store_types_dialog_title">Geschäfte</string>
+    <string name="localization_store_types_dialog_caption">Wähle deine bevorzugten Geschäfte</string>
+    <string name="localization_supermarket_select_dialog_title">Wähle dein aktuelles Geschäft aus</string>
     <string name="message_groupremoved">Gruppe entfernt</string>
     <string name="message_unitremoved">Einheit entfernt</string>
     <string name="no_last_location_dialog_message">Kwik Shop kann deinen Standort nicht lokalisieren.</string>

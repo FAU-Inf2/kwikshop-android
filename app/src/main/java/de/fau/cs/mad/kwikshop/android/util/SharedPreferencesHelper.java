@@ -23,6 +23,7 @@ public class SharedPreferencesHelper {
     public static final String SYNCHRONIZATION_INTERVAL = "SYNCHRONIZATION_INTERVAL";
     public static final String REPEAT_DELETION_SHOW_AGAIN_MSG = "REPEAT_DELETION_SHOW_AGAIN_MSG";
     public static final String ASK_TO_ADD_DEFAULT_RECIPES = "ASK_TO_ADD_DEFAULT_RECIPES";
+    public static final String SUPERMARKET_FINDER_RADIUS = "supermarket_finder_radius";
 
     public static final String STORE_TYPE_SUPERMARKET = "store_type_supermarket";
     public static final String STORE_TYPE_BAKERY = "store_type_bakery";

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,9 @@ import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import se.walkercrou.places.Place;
 
@@ -37,6 +40,9 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
 
     @Inject
     ViewLauncher viewLauncher;
+
+    @Inject
+    ResourceProvider resourceProvider;
 
     @InjectView(R.id.map_infobox)
     RelativeLayout mapInfoBox;
@@ -91,7 +97,9 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback,  S
         showProgressDialog();
         hideInfoBox();
 
-        viewModel.startAsyncPlaceRequest(this, 5000, 30);
+        int defaultRadius = resourceProvider.getInteger(R.integer.supermarket_finder_radius);
+        int radius = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.SUPERMARKET_FINDER_RADIUS, defaultRadius, getActivity());
+        viewModel.startAsyncPlaceRequest(this, radius , 100);
 
         return rootView;
     }

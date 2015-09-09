@@ -51,6 +51,7 @@
     <string name="localization_no_connection_message">Kwik Shop needs a connection to the internet to find all nearby supermarkets.</string>
     <string name="no_place_dialog_message">Kwik Shop does not find any store in your area.</string>
     <string name="no_last_location_dialog_message">Kwik Shop can not find your current location.</string>
+
     <string name="localize">Localize</string>
     <string-array name="store_types_array">
         <item>Supermarket</item>
@@ -61,6 +62,7 @@
         <item>Shopping Mall</item>
         <item>Store</item>
     </string-array>
+
 
 
 
@@ -113,6 +115,8 @@
     <string name="voice_entry">Voice Entry</string>
     <string name="account">Account</string>
     <string name="synchronization">Synchronization</string>
+    <string name="radius">Radius</string>
+    <string name="setting_change_radius_description">Change radius for Supermarket Finder</string>
 
 
     <!-- Overflow Action Menu -->

@@ -65,10 +65,17 @@ public class SettingAdapter extends ArrayAdapter<Setting> {
             tvSettingsName.setText(settingsList.get(position).getName());
             tvSettingsDesc.setText(settingsList.get(position).getCaption());
 
+            float density = activity.getResources().getDisplayMetrics().density;
+            int paddingDpCB = (int)(40 * density);
+            int paddingDp = (int)(20 * density);
+            int paddingDpTop = (int)(10 * density);
+
             // setup checkbox
             if (settingsList.get(position).getViewVisibility() == View.INVISIBLE) {
                 checkbox.setVisibility(View.INVISIBLE);
+                tvSettingsDesc.setPadding(0, 0, paddingDp, paddingDpTop);
             } else {
+                tvSettingsDesc.setPadding(0, 0, paddingDpCB, paddingDpTop);
                 checkbox.setVisibility(View.VISIBLE);
                 checkbox.setChecked(settingsList.get(position).isChecked());
                 checkbox.setFocusable(false);

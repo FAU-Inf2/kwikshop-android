@@ -42,7 +42,7 @@ public class DateFormatter {
 
     public String formatDate(Date date) {
 
-        if(date == null) {
+        if(date == null || date.getTime() == 0) {
             return "";
         }
 

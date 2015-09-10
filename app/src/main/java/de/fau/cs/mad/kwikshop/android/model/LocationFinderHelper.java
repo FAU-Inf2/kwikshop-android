@@ -75,8 +75,6 @@ public class LocationFinderHelper implements LocationListener {
 
     public Location getLocation() {
 
-        Log.e("LocationFinderHelper","getLocation()");
-
         double networkLat = 0, networkLong = 0, networkAcc = Double.MAX_VALUE, gpsLat = 0, gpsLong = 0, gpsAcc = Double.MAX_VALUE;
 
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);

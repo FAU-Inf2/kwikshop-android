@@ -80,8 +80,9 @@ public class SupermarketPlace {
     }
 
     public LatLng getLastPosition() {
-        LocationFinderHelper lastLocation = new LocationFinderHelper(context);
-        return lastLocation.getLatLng();
+        LocationFinderHelper locationFinderHelper = new LocationFinderHelper(context);
+        locationFinderHelper.getLocation();
+        return locationFinderHelper.getLatLng();
     }
 
 

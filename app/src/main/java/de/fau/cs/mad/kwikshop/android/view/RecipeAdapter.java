@@ -79,6 +79,7 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
         }
 
         viewHolder.divider_table.setVisibility(View.GONE);
+        viewHolder.divider_tableBelow.setVisibility(View.GONE);
 
         Item item = items.get(position).getItem();
 
@@ -195,6 +196,9 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
 
         @InjectView(R.id.divider_table)
         TableRow divider_table;
+
+        @InjectView(R.id.divider_tableBelow)
+        TableRow divider_tableBelow;
 
         @InjectView(R.id.list_row_textView_Main)
         TextView textView_RecipeName;

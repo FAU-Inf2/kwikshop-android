@@ -197,4 +197,90 @@
 
     </RelativeLayout>
 
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:id="@+id/divider_tableBelow"
+        android:gravity="center_vertical"
+        android:background="@color/accent_material_light"
+        android:weightSum="1"
+        android:visibility="visible"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/shoppinglist_divider_textview"
+            android:gravity="center_vertical"
+            android:id="@+id/textview_dividerBelow"
+            android:layout_marginLeft="20dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/text_icons"
+            android:singleLine="true"
+            android:layout_weight="0.42" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:id="@+id/button_moveDownBelow"
+            android:background="@drawable/ic_keyboard_arrow_down_white_24dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:id="@+id/button_moveUpBelow"
+            android:background="@drawable/ic_keyboard_arrow_up_white_24dp"
+            android:paddingRight="30dp"
+            android:paddingLeft="30dp" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkBox_multipleSelectionBelow"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:button="@drawable/multipleselection_check"
+            android:layout_weight="0.41" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="72dp"
+            android:layout_height="25dp"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:weightSum="1" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                android:text="0"
+                android:id="@+id/textView_cartCounterBelow"
+                android:layout_marginTop="3dp"
+                android:textColor="@color/text_icons"
+                android:layout_marginBottom="3dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                android:id="@+id/textView_itemsBelow"
+                android:textColor="@color/text_icons"
+                android:layout_marginTop="3dp"
+                android:layout_marginLeft="5dp"
+                android:textAlignment="textEnd"
+                android:layout_gravity="center_vertical|right"
+                android:layout_weight="0.09"
+                android:singleLine="true"
+                android:text="Items"
+                android:layout_marginBottom="3dp" />
+        </LinearLayout>
+    </TableRow>
+
 </LinearLayout>

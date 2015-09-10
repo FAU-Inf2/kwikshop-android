@@ -92,10 +92,13 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         final ItemViewModel itemViewModel = items.get(position);
 
         boolean showDivider = false;
+        boolean showDividerBelow = false;
         Item before = null;
+        Item next = null;
         if(position > 0)
             before = items.get(position - 1).getItem();
-
+        if((position+1) < items.size())
+            next = items.get(position +1).getItem();
         // Determine if we need to show the divider. We also need 'before2' if the user drags
         // an Item into the cart to make sure that only one divider is displayed.
         if(before != null) {
@@ -113,6 +116,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                     showDivider = false;
         } else if(item.isBought())
             showDivider = true;
+        if(next == null && !item.isBought())
+            showDividerBelow = true;
 
         if(showDivider) {
             viewHolder.tableRow_divider_table.setVisibility(View.VISIBLE);
@@ -125,6 +130,19 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                 viewHolder.textView_Items.setText(R.string.items);
         } else {
             viewHolder.tableRow_divider_table.setVisibility(View.GONE);
+        }
+
+        if(showDividerBelow) {
+            viewHolder.tableRow_divider_tableBelow.setVisibility(View.VISIBLE);
+            viewHolder.textView_CartCounterBelow.setText(String.valueOf(shoppingListViewModel.getBoughtItemsCount()));
+
+            // Special case: single item -> singular form of "Items"
+            if(shoppingListViewModel.getBoughtItemsCount() == 1)
+                viewHolder.textView_Items.setText(R.string.item);
+            else
+                viewHolder.textView_Items.setText(R.string.items);
+        } else {
+            viewHolder.tableRow_divider_tableBelow.setVisibility(View.GONE);
         }
 
         // Item name
@@ -209,11 +227,15 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.checkBox_move.setVisibility(View.VISIBLE);
             viewHolder.button_moveDown.setVisibility(View.VISIBLE);
             viewHolder.button_moveUp.setVisibility(View.VISIBLE);
+            viewHolder.button_moveDownBelow.setVisibility(View.VISIBLE);
+            viewHolder.button_moveUpBelow.setVisibility(View.VISIBLE);
         }
         else {
             viewHolder.checkBox_move.setVisibility(View.GONE);
             viewHolder.button_moveDown.setVisibility(View.GONE);
             viewHolder.button_moveUp.setVisibility(View.GONE);
+            viewHolder.button_moveDownBelow.setVisibility(View.GONE);
+            viewHolder.button_moveUpBelow.setVisibility(View.GONE);
         }
         // Specific changes for bought Items
         if (item.isBought()) {
@@ -315,7 +337,54 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                     shoppingListViewModel.changeCheckBoxesVisibility();
             }
         });
+        viewHolder.button_moveDownBelow.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Iterator<ItemViewModel> itr = items.iterator();
+                while (itr.hasNext()){
+                    ItemViewModel itemLocal = itr.next();
+                    if (shoppingListViewModel.getCheckedItems().contains(itemLocal)) {
+                        //Do something
+                        itemLocal.getItem().setBought(true);
+                    }
+                }
+                shoppingListViewModel.moveBoughtItemsToEnd();
+            }
+        });
+        viewHolder.button_moveUpBelow.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Iterator<ItemViewModel> itr = items.iterator();
+                while (itr.hasNext()){
+                    ItemViewModel itemLocal2 = itr.next();
+                    if (shoppingListViewModel.getCheckedItems().contains(itemLocal2)) {
+                        itemLocal2.getItem().setBought(false);
 
+                    }
+                }
+                shoppingListViewModel.moveBoughtItemsToEnd();
+            }
+        });
+        viewHolder.checkBox_multipleSelectionBelow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //TODO
+                Iterator <ItemViewModel> itr = shoppingListViewModel.getItems().iterator();
+                while(itr.hasNext()){
+                    ItemViewModel itemvm = itr.next();
+                    if (isChecked) {
+                        itemvm.setVisible(true);
+                        multipleSelectionIsChecked = true;
+                    }
+                    else {
+                        itemvm.setVisible(false);
+                        multipleSelectionIsChecked = false;
+                    }
+                }
+
+                shoppingListViewModel.changeCheckBoxesVisibility();
+            }
+        });
         // If item is highlighted, set color to red
         if (item.isHighlight()) {
             viewHolder.textView_Name.setTextColor(Color.RED);
@@ -378,6 +447,12 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         @InjectView(R.id.textView_cartCounter)
         TextView textView_CartCounter;
 
+        @InjectView(R.id.divider_tableBelow)
+        TableRow tableRow_divider_tableBelow;
+
+        @InjectView(R.id.textView_cartCounterBelow)
+        TextView textView_CartCounterBelow;
+
         @InjectView(R.id.textView_items)
         TextView textView_Items;
 
@@ -411,8 +486,18 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         @InjectView(R.id.checkBox_multipleSelection)
         CheckBox checkBox_multipleSelection;
 
+        @InjectView(R.id.button_moveUpBelow)
+        Button button_moveUpBelow;
+
+        @InjectView(R.id.button_moveDownBelow)
+        Button button_moveDownBelow;
+
+        @InjectView(R.id.checkBox_multipleSelectionBelow)
+        CheckBox checkBox_multipleSelectionBelow;
+
         @InjectView(R.id.checkBox_move)
         CheckBox checkBox_move;
+
 
 
     }

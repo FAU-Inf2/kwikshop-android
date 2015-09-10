@@ -52,7 +52,6 @@ public class ShoppingListSynchronizer extends ListSynchronizer<ShoppingList, Sho
 
         target.setName(source.getName());
         target.setSortTypeInt(source.getSortTypeInt());
-        target.setLocation(source.getLocation());
         target.setLastModifiedDate(source.getLastModifiedDate());
         target.setOwnerId(source.getOwnerId());
 
@@ -65,7 +64,6 @@ public class ShoppingListSynchronizer extends ListSynchronizer<ShoppingList, Sho
 
         target.setName(source.getName());
         target.setSortTypeInt(source.getSortTypeInt());
-        target.setLocation(source.getLocation());
         target.setLastModifiedDate(source.getLastModifiedDate());
     }
 

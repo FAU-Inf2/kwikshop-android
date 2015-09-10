@@ -187,7 +187,11 @@ public class ListStorageFragment  {
 
     private static void createUnitsInDatabase(Context context, SimpleStorage<Unit> unitStorage) throws SQLException {
 
-        int count = unitStorage.getItems().size();
+        int count;
+        if(unitStorage.getItems() == null) count = 0;
+        else count = unitStorage.getItems().size();
+
+
         if (count > 0) {
             return;
         }

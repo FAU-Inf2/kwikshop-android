@@ -180,6 +180,14 @@
     <string name="place_status_opened">geöffnet</string>
     <string name="place_status_closed">geschlossen</string>
 
+
+    <!--Parser-->
+    <string name="parser_amount_male">ein</string>
+    <string name="parser_amount_an">einen</string>
+    <string name="parser_amount_female">eine</string>
+
+
+
     <!--Reminder-->
     <string name="reminder_set_msg">Erinnerung gesetzt für</string>
     <string name="reminder_nextTimeBought_msg">Die Erinnerung wird gestartet, wenn der Gegenstand als gekauft markiert wird.</string>

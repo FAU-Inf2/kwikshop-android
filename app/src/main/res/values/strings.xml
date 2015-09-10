@@ -347,6 +347,13 @@
     <string name="uploadPicture">Select picture</string>
 
 
+    <!-- Parser -->
+    <string name="parser_amount_male">a</string>
+    <string name="parser_amount_an">an</string>
+    <string name="parser_amount_female">a</string>
+
+
+
     <!-- Error Reporting -->
     <string name="errorReporting_messaging_subject">Kwik Shop (Android) Crash Report</string>
     <string name="errorReporting_messaging_chooser_title">Send Report using</string>

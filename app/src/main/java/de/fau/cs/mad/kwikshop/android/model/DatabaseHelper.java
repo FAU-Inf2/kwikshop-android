@@ -181,24 +181,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         }
 
         if(oldVersion < 23) {
-            //add next upgrade step here
             try {
-                TableUtils.createTable(connectionSource,LastLocation.class);
-                itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
-                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN location LASTLOCATION;");
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN location_id;");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        if(oldVersion < 24){
-            try {
-                itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
-                itemDao.executeRaw("ALTER TABLE 'item' DROP COLUMN location;");
-                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN location_id LASTLOCATION;");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+
         if(oldVersion < 25){
             try {
                 //Item changes

@@ -1,5 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
@@ -422,6 +424,12 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
 
             textView_QuickAdd.setText(spokenText);
             // Do something with spokenText
+
+            if (textView_QuickAdd.requestFocus()) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.showSoftInput(textView_QuickAdd, InputMethodManager.SHOW_IMPLICIT);
+            }
+
         }
     }
 }

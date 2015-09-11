@@ -129,10 +129,6 @@ public class LoginActivity extends FragmentActivity implements
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
 
-        //hide debug login button in release builds
-        login_debug_login.setVisibility(BuildConfig.DEBUG_MODE ? View.VISIBLE : View.GONE);
-        mDebugStatus.setVisibility(BuildConfig.DEBUG_MODE ? View.VISIBLE : View.GONE);
-
 
         boolean force = false;
         Bundle b = getIntent().getExtras();
@@ -178,12 +174,12 @@ public class LoginActivity extends FragmentActivity implements
     }
 
     private void updateUI() {
+
         mDebugStatus.setText(SessionHandler.getSessionUser(getApplicationContext()) + " - " + SessionHandler.getSessionToken(getApplicationContext()));
 
-        // Hide debug buttons if this is not a debug build
-        if (!BuildConfig.DEBUG) {
-            login_debug_login.setVisibility(View.GONE);
-        }
+        login_debug_login.setVisibility(BuildConfig.DEBUG_MODE ? View.VISIBLE : View.GONE);
+        mDebugStatus.setVisibility(BuildConfig.DEBUG_MODE ? View.VISIBLE : View.GONE);
+
 
         if (mGoogleApiClient.isConnected()) {
             login_sign_in_button.setVisibility(View.GONE);
@@ -234,7 +230,7 @@ public class LoginActivity extends FragmentActivity implements
             // Set button visibility
             login_sign_in_button.setVisibility(View.VISIBLE);
             login_sign_out_button.setVisibility(View.GONE);
-            login_debug_login.setVisibility(View.VISIBLE);
+            login_debug_login.setVisibility(BuildConfig.DEBUG_MODE ? View.VISIBLE : View.GONE);
             login_retry_button.setVisibility(View.GONE);
             login_skip_button.setVisibility(View.VISIBLE);
             login_back_button.setVisibility(View.GONE);

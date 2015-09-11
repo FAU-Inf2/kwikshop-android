@@ -379,4 +379,11 @@
     <string name="account">Conta</string>
     <string name="acknowledgements_Description">Essa aplicação usa algumas bibliotecas de terceiros:</string>
     <string name="acknowledgements_Title">Reconhecimentos</string>
+    <string name="store_type_bakery">Padaria</string>
+    <string name="store_type_supermarket">Supermercado</string>
+    <string name="store_type_gasstation">Posto de gasolina</string>
+    <string name="store_type_liquorstore">Loja de bebidas</string>
+    <string name="store_type_pharmacy">Farmácia</string>
+    <string name="store_type_shoppingmall">Shopping Center</string>
+    <string name="store_type_store">Loja</string>
 </resources>

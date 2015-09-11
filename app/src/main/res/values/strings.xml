@@ -54,13 +54,13 @@
 
     <string name="localize">Localize</string>
     <string-array name="store_types_array">
-        <item>Supermarket</item>
-        <item>Bakery</item>
-        <item>Gas Station</item>
-        <item>Liquor Store</item>
-        <item>Pharmacy</item>
-        <item>Shopping Mall</item>
-        <item>Store</item>
+        <item>@string/store_type_supermarket</item>
+        <item>@string/store_type_bakery</item>
+        <item>@string/store_type_gasstation</item>
+        <item>@string/store_type_liquorstore</item>
+        <item>@string/store_type_pharmacy</item>
+        <item>@string/store_type_shoppingmall</item>
+        <item>@string/store_type_store</item>
     </string-array>
 
 
@@ -441,5 +441,12 @@
     <string name="error_remove_defaultgroup">You can not remove default groups</string>
     <string name="message_unitremoved">Unit removed</string>
     <string name="message_groupremoved">Group removed</string>
+    <string name="store_type_bakery">Bakery</string>
+    <string name="store_type_supermarket">Supermarket</string>
+    <string name="store_type_gasstation">Gas Station</string>
+    <string name="store_type_liquorstore">Liquor Store</string>
+    <string name="store_type_pharmacy">Pharmacy</string>
+    <string name="store_type_shoppingmall">Shopping Mall</string>
+    <string name="store_type_store">Store</string>
 
 </resources>

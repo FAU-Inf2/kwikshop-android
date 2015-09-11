@@ -5,6 +5,8 @@ import android.content.Intent;
 
 import dagger.Module;
 import dagger.Provides;
+import de.fau.cs.mad.kwikshop.android.common.ConnectionInfo;
+import de.fau.cs.mad.kwikshop.android.model.ConnectionInfoStorage;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
@@ -150,7 +152,6 @@ public class KwikShopBaseModule {
         return ListStorageFragment.getCalendarEventStorage();
     }
 
-
     @Provides
     public SimpleStorage<DeletedList> provideDeletedListStorage(Context context) {
         ListStorageFragment.SetupLocalListStorageFragment(context);
@@ -167,6 +168,12 @@ public class KwikShopBaseModule {
     public SimpleStorage<BoughtItem> provideBoughtItemStorage(Context context) {
         ListStorageFragment.SetupLocalListStorageFragment(context);
         return ListStorageFragment.getBoughtItemStorage();
+    }
+
+    @Provides
+    public ConnectionInfoStorage provideConnectionInfoStorage(Context context) {
+        ListStorageFragment.SetupLocalListStorageFragment(context);
+        return ListStorageFragment.getConnectionInfoStorage();
     }
 
     //endregion

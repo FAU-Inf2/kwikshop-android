@@ -29,10 +29,10 @@ public class ListStorageFragment  {
     private static SimpleStorage<LastLocation> m_LastLocationStorage;
     private static SimpleStorage<DeletedList> m_DeletedListStorage;
     private static SimpleStorage<DeletedItem> m_DeletedItemStorage;
-    private static ListStorageFragment m_ListStorageFragment;
     private static DatabaseHelper m_DatabaseHelper;
     private static ListStorage<Recipe> m_RecipeStorage;
     private static SimpleStorage<BoughtItem> m_BoughtItemStorage;
+    private static ConnectionInfoStorage m_ConnectionInfoStorage;
 
 
 
@@ -65,6 +65,9 @@ public class ListStorageFragment  {
         return m_BoughtItemStorage;
     }
 
+    public static ConnectionInfoStorage getConnectionInfoStorage() {
+        return m_ConnectionInfoStorage;
+    }
 
     public static LocalListStorage getLocalListStorage() {
         return m_LocalListStorage;
@@ -114,6 +117,8 @@ public class ListStorageFragment  {
             m_DeletedItemStorage = new SimpleStorageBase<>(m_DatabaseHelper.getDeletedItemDao());
 
             m_BoughtItemStorage = new SimpleStorageBase<>(m_DatabaseHelper.getBoughtItemDao());
+
+            m_ConnectionInfoStorage = new ConnectionInfoStorage(m_DatabaseHelper.getConnectionInfoRuntimeDao());
 
         } catch (SQLException e) {
             e.printStackTrace();

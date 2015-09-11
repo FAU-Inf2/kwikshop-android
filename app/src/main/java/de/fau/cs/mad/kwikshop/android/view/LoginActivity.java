@@ -129,6 +129,11 @@ public class LoginActivity extends FragmentActivity implements
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
 
+        //hide debug login button in release builds
+        login_debug_login.setVisibility(BuildConfig.DEBUG_MODE ? View.VISIBLE : View.GONE);
+        mDebugStatus.setVisibility(BuildConfig.DEBUG_MODE ? View.VISIBLE : View.GONE);
+
+
         boolean force = false;
         Bundle b = getIntent().getExtras();
         if(b != null) {

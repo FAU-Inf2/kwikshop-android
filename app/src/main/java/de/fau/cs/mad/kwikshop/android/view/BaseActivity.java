@@ -81,7 +81,7 @@ public class BaseActivity extends AppCompatActivity implements
         //hide debug menu for non-debug builds
         MenuItem menuItemDebug = mNavigationView.getMenu().findItem(R.id.nav_debug);
         if(menuItemDebug != null) {
-            menuItemDebug.setVisible(BuildConfig.DEBUG);
+            menuItemDebug.setVisible(BuildConfig.DEBUG_MODE);
         }
 
         baseViewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);

@@ -352,7 +352,7 @@ public class SettingFragment extends Fragment {
                         recipeDeletionSetting
                 }));
 
-        if(BuildConfig.DEBUG) {
+        if(BuildConfig.DEBUG_MODE) {
             settingsList.add(apiEndpointSetting);
         }
 

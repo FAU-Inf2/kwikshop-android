@@ -83,6 +83,23 @@ public class DisplayHelper {
         }
 
     }
+    public String getShortDisplayName(Unit unit, double amount) {
+
+        if (unit == null) {
+            return "";
+        } else {
+            Integer id = getAndroidId(unit.getShortNameResourceId());
+            if(id == null) {
+                if (amount == 1)
+                    return getSingularDisplayName(unit);
+                else
+                    return getDisplayName(unit);
+            } else {
+                return resourceProvider.getString(id);
+            }
+        }
+
+    }
 
     public String getSingularDisplayName(Unit unit) {
 
@@ -110,8 +127,6 @@ public class DisplayHelper {
 
             case Group_CoffeeAndTea:
                 return R.string.group_CoffeeAndTea;
-            case Group_Can:
-                return R.string.group_cans;
             case Group_HealthAndHygiene:
                 return R.string.group_healthAndHygiene;
             case Group_PetSupplies:
@@ -142,8 +157,18 @@ public class DisplayHelper {
                 return R.string.group_tobacco;
             case Group_Other:
                 return R.string.group_Other;
-            case Unit_Piece_name:
-                return R.string.unit_piece_name;
+            case Unit_Piece:
+                return R.string.unit_piece;
+            case Unit_short_Piece:
+                return R.string.unit_piece_short;
+            case Unit_Bag:
+                return R.string.unit_bag;
+            case Unit_Bottle:
+                return R.string.unit_bottle;
+            case Unit_Box:
+                return R.string.unit_box;
+            case Unit_Pack:
+                return R.string.unit_pack;
             case Unit_Bag_singular:
                 return R.string.unit_bag_singular;
             case Unit_Bottle_singular:
@@ -168,18 +193,8 @@ public class DisplayHelper {
                 return R.string.unit_tablespoon_singular;
             case Unit_Can_singular:
                 return R.string.unit_can_singular;
-            case Unit_Piece:
-                return R.string.unit_piece;
-            case Unit_short_Piece:
-                return R.string.unit_piece_short;
-            case Unit_Bag:
-                return R.string.unit_bag;
-            case Unit_Bottle:
-                return R.string.unit_bottle;
-            case Unit_Box:
-                return R.string.unit_box;
-            case Unit_Pack:
-                return R.string.unit_pack;
+            case Unit_Piece_name:
+                return R.string.unit_piece_name;
             case Unit_Dozen:
                 return R.string.unit_dozen;
             case Unit_Gram:
@@ -212,6 +227,8 @@ public class DisplayHelper {
                 return R.string.unit_teaspoon_short;
             case Unit_Teaspoon_singular:
                 return R.string.unit_teaspoon_singular;
+            case Group_Can:
+                return R.string.group_cans;
             default:
                 return null;
         }

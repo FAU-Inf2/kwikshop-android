@@ -39,7 +39,6 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
-import de.fau.cs.mad.kwikshop.common.ShoppingList;
 
 import static de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper.*;
 
@@ -70,13 +69,8 @@ public class SettingFragment extends Fragment {
     private Setting syncNowSetting;
     private Setting syncIntervalSetting;
     private Setting placeTypeSetting;
-
-    private Setting locationHeaderSetting;
-    private Setting generalHeaderSetting;
-    private Setting voiceEntryHeaderSetting;
-    private Setting accountHeaderSetting;
-    private Setting synchronizationHeaderSetting;
-    private Setting otherHeaderSetting;
+    private Setting askForLocalizationPermissionSetting;
+    private Setting supermarketFinderRadiusSetting;
 
     @Inject
     ViewLauncher viewLauncher;
@@ -93,6 +87,8 @@ public class SettingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         objectGraph.inject(this);
@@ -171,6 +167,14 @@ public class SettingFragment extends Fragment {
                 if(settingsList.get(position).equals(placeTypeSetting)){
                     selectPlaceType();
                 }
+
+                if(settingsList.get(position).equals(askForLocalizationPermissionSetting)){
+                    setAskForLocationPermission(position);
+                }
+
+                if(settingsList.get(position).equals(supermarketFinderRadiusSetting)){
+                    selectRadius();
+                }
             }
         });
 
@@ -246,6 +250,14 @@ public class SettingFragment extends Fragment {
         loginSetting.setName(R.string.settings_option_8_login_name);
         loginSetting.setCaption(R.string.settings_option_8_login_descr);
 
+        //Ask for Localization Permission
+        askForLocalizationPermissionSetting = new Setting(context);
+        askForLocalizationPermissionSetting.setName(R.string.setting_permission_for_localization_title);
+        askForLocalizationPermissionSetting.setCaption(R.string.setting_permission_for_localization_desc);
+        askForLocalizationPermissionSetting.setChecked(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, false, getActivity()));
+        askForLocalizationPermissionSetting.setViewVisibility(View.VISIBLE);
+
+
         enableSyncSetting = new Setting(context);
         enableSyncSetting.setName(R.string.settings_option_enableSync_name);
         enableSyncSetting.setCaption(R.string.settings_option_enableSync_descr);
@@ -265,6 +277,19 @@ public class SettingFragment extends Fragment {
         placeTypeSetting.setName(R.string.localization_store_types_dialog_title);
         placeTypeSetting.setCaption(R.string.localization_store_types_dialog_caption);
 
+        //Change radius of place request
+        supermarketFinderRadiusSetting = new Setting(context);
+        supermarketFinderRadiusSetting.setName(R.string.radius);
+        supermarketFinderRadiusSetting.setCaption(R.string.setting_change_radius_description);
+
+
+        //headers
+        Setting locationHeaderSetting;
+        Setting generalHeaderSetting;
+        Setting accountHeaderSetting;
+        Setting synchronizationHeaderSetting;
+        Setting otherHeaderSetting;
+
 
         //localization header
         locationHeaderSetting = new Setting(context);
@@ -275,13 +300,6 @@ public class SettingFragment extends Fragment {
         generalHeaderSetting = new Setting(context);
         generalHeaderSetting.setIsHeader(true);
         generalHeaderSetting.setName(R.string.general);
-
-        /*
-        //voice entry header
-        voiceEntryHeaderSetting = new Setting(context);
-        voiceEntryHeaderSetting.setIsHeader(true);
-        voiceEntryHeaderSetting.setName(R.string.voice_entry);
-        */
 
         //account header
         accountHeaderSetting = new Setting(context);
@@ -316,7 +334,10 @@ public class SettingFragment extends Fragment {
 
                         locationHeaderSetting,
                         locationPermissionSetting,
+                        askForLocalizationPermissionSetting,
+                        supermarketFinderRadiusSetting,
                         placeTypeSetting,
+
 
 
                         synchronizationHeaderSetting,
@@ -353,13 +374,13 @@ public class SettingFragment extends Fragment {
 
     private void selectPlaceType(){
 
-        boolean supermarketIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, true, getActivity());
-        boolean bakeryIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, getActivity());
-        boolean gasStationIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, false, getActivity());
-        boolean liquorStoreIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, getActivity());
-        boolean pharmacyIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, getActivity());
-        boolean shoppingMallIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false, getActivity());
-        boolean floristIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, getActivity());
+        boolean supermarketIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, true, getActivity());
+        boolean bakeryIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, getActivity());
+        boolean gasStationIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, false, getActivity());
+        boolean liquorStoreIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, getActivity());
+        boolean pharmacyIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, getActivity());
+        boolean shoppingMallIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false, getActivity());
+        boolean floristIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, getActivity());
 
 
         boolean[] storeTypeStatus = new boolean[]{
@@ -382,25 +403,25 @@ public class SettingFragment extends Fragment {
                     public void execute(Integer selection) {
                         switch(selection){
                             case 0:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, true, getActivity());
+                              saveBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, true, getActivity());
                                 break;
                             case 1:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, true, getActivity());
+                               saveBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, true, getActivity());
                                 break;
                             case 2:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, true, getActivity());
+                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, true, getActivity());
                                 break;
                             case 3:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, true, getActivity());
+                               saveBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, true, getActivity());
                                 break;
                             case 4:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, true, getActivity());
+                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, true, getActivity());
                                 break;
                             case 5:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, true,  getActivity());
+                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, true, getActivity());
                                 break;
                             case 6:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, true, getActivity());
+                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, true, getActivity());
                                 break;
 
                         }
@@ -413,25 +434,25 @@ public class SettingFragment extends Fragment {
                     public void execute(Integer deSelection) {
                         switch(deSelection){
                             case 0:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, false, getActivity());
+                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, false, getActivity());
                                 break;
                             case 1:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, getActivity());
+                               saveBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, getActivity());
                                 break;
                             case 2:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, false, getActivity());
+                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, false, getActivity());
                                 break;
                             case 3:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, getActivity());
+                               saveBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, getActivity());
                                 break;
                             case 4:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, getActivity());
+                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, getActivity());
                                 break;
                             case 5:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false,  getActivity());
+                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false, getActivity());
                                 break;
                             case 6:
-                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, getActivity());
+                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, getActivity());
                                 break;
                         }
 
@@ -650,6 +671,17 @@ public class SettingFragment extends Fragment {
         objAdapter.notifyDataSetChanged();
     }
 
+    private void setAskForLocationPermission(int position){
+        if(objAdapter.getItem(position).isChecked()){
+            objAdapter.getItem(position).setChecked(false);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, false, getActivity());
+        } else {
+            objAdapter.getItem(position).setChecked(true);
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, getActivity());
+        }
+        objAdapter.notifyDataSetChanged();
+    }
+
 
     private void setParserSeparatorWord(){
 
@@ -740,5 +772,62 @@ public class SettingFragment extends Fragment {
         );
 
     }
+
+
+    private void selectRadius(){
+
+        final int defaultValue = resourceProvider.getInteger(R.integer.supermarket_finder_radius);
+        final int currentValue = loadInt(SUPERMARKET_FINDER_RADIUS, defaultValue, context);
+
+        viewLauncher.showNumberInputDialog(
+
+                // title and message
+                resourceProvider.getString(R.string.radius),
+                resourceProvider.getString(R.string.setting_change_radius_description),
+
+                //current value
+                currentValue,
+
+                // ok button: save updated value
+                resourceProvider.getString(android.R.string.ok), new Command<String>() {
+                    @Override
+                    public void execute(String value) {
+
+                        try {
+
+                            int intValue = Integer.parseInt(value);
+
+                            if(intValue != currentValue && intValue > 0) {
+                                saveInt(SUPERMARKET_FINDER_RADIUS, intValue, context);
+                            }
+
+
+                        } catch (NumberFormatException ex) {
+                            // should not happen, because showNumberInputDialog() only allows digits as input
+                            // => just ignore the error
+                        }
+
+                    }
+                },
+
+                // reset to default value (neutral button)
+                resourceProvider.getString(R.string.str_default),
+                new Command<String>() {
+                    @Override
+                    public void execute(String parameter) {
+
+                        if(defaultValue != currentValue) {
+                            saveInt(SUPERMARKET_FINDER_RADIUS, defaultValue, context);
+                        }
+                    }
+                },
+
+                // cancel button: do othign
+                resourceProvider.getString(android.R.string.cancel),
+                NullCommand.StringInstance
+        );
+
+    }
+
 
 }

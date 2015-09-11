@@ -12,8 +12,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:gravity="center_vertical"
-
-
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:textColor="@color/primary_text"
         />
@@ -25,8 +23,6 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_below="@id/tv_settings_name"
         android:textColor="@color/secondary_text"
-        android:paddingBottom="10dp"
-        android:paddingRight="30dp"
         android:layout_marginTop="-15dp" />
 
     <CheckBox

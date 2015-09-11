@@ -2,5 +2,8 @@
 <resources>
 
     <integer name="synchronizationInterval_default">15</integer>
+    <integer name="supermarket_finder_radius">3000</integer>
+    <!-- Milliseconds sync spinner is shwon -->
+    <integer name="sync_delay">1000</integer>
 
 </resources>

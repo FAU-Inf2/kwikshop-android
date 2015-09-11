@@ -98,7 +98,7 @@
     </string-array>
 
     <string name="viewOnGitHub">Auf GitHub anzeigen</string>
-    <string name="alphabetically"></string>
+    <string name="alphabetically">Alphabetisch</string>
     <string name="deleteShoppingList_DialogTitle">Einkaufsliste löschen?</string>
     <string name="deleteShoppingList_DialogText">Bist du sicher, dass du diese Einkaufsliste löschen möchtest?</string>
 
@@ -180,6 +180,14 @@
     <string name="place_status_opened">geöffnet</string>
     <string name="place_status_closed">geschlossen</string>
 
+
+    <!--Parser-->
+    <string name="parser_amount_male">ein</string>
+    <string name="parser_amount_an">einen</string>
+    <string name="parser_amount_female">eine</string>
+
+
+
     <!--Reminder-->
     <string name="reminder_set_msg">Erinnerung gesetzt für</string>
     <string name="reminder_nextTimeBought_msg">Die Erinnerung wird gestartet, wenn der Gegenstand als gekauft markiert wird.</string>
@@ -216,7 +224,7 @@
     <string name="settings_option_5_location_permission_title">Standortbestimmung</string>
     <string name="item">Artikel</string>
     <string name="kwikshop_login_success">Du bist eingeloggt.</string>
-    <string name="unit_teaspoon"></string>
+    <string name="unit_teaspoon">TL</string>
     <string name="dialog_OK">OK</string>
     <string name="no_place_dialog_message">Kwik Shop findet keinen Supermarkt in deiner Umgebung.</string>
     <string name="dialog_retry">Wiederholen</string>
@@ -245,8 +253,111 @@
     <string name="settings_option_8_login_descr">Anmelden, um Einkaufslisten zu synchronisieren und zu teilen</string>
     <string name="title_activity_location">Supermarktfinder</string>
     <string name="unit_bag_singular">Sack</string>
-    <string name="unit_can_singular"></string>
+    <string name="unit_can_singular">Dose</string>
     <string name="unit_kilogram_singular">Kilogramm</string>
     <string name="localize">Lokalisieren</string>
+    <string name="account">Konto</string>
+    <string name="acknowledgements_Description">Diese App verwendet fremde Bibliotheken:</string>
+    <string name="acknowledgements_Title">Danksagung </string>
+    <string name="action_settings">Eintstellung</string>
+    <string name="askingGooglePlay">Möchten sie Google Voice Search installieren?</string>
+    <string name="askingGoogleVoiceSearch">Für die Spracherkennung ist Google Voice Search notwendig.</string>
+    <string name="dateDescription_just_now">gerade eben</string>
+    <string name="deleteShoppingList_repeatingItemsText">Produkt, das du regelmäßig kaufst, löschen?</string>
+    <string name="deleteShoppingList_repeatingItemsTitle">Die Einkaufsliste beinhaltet Produkte, die du regelmäßig kaufst.</string>
+    <string name="dialog_leave_shopping_mode_message">Willst du den Einkaufsmodus beenden?</string>
+    <string name="dialog_leave_shopping_mode_quit">Beenden</string>
+    <string name="dialog_leave_shopping_mode_title">Einkaufsmodus</string>
+    <string name="errorReporting_copyToClipboard"></string>
+    <string name="every_time_i_create_a_list"></string>
+    <string name="item_deleted">Produkt gelöscht</string>
+    <string name="localization">Standortbestimmung</string>
+    <string name="localization_permisson_dialog_title"></string>
+    <string name="localization_store_types_dialog_title">Geschäfte</string>
+    <string name="localization_store_types_dialog_caption">Wähle deine bevorzugten Geschäfte</string>
+    <string name="localization_supermarket_select_dialog_title">Wähle dein aktuelles Geschäft aus</string>
+    <string name="message_groupremoved">Gruppe entfernt</string>
+    <string name="message_unitremoved">Einheit entfernt</string>
+    <string name="no_last_location_dialog_message">Kwik Shop kann deinen Standort nicht lokalisieren.</string>
+    <string name="on_a_schedule">Pünktlich</string>
+    <string name="overflow_action_menu_add_to_a_shopping_list">Rezept zu einer Einkaufsliste hinzufügen</string>
+    <string name="overflow_action_menu_openloginactivity">Konto / Login</string>
+    <string name="recipe_add_recipe">Rezept zu dieser Einkaufsliste hinzufügen</string>
+    <string name="recipe_add_to_shoppinglist">Dieses Rezept zu einer Liste hinzufügen</string>
+    <string name="recipe_choose_recipe">Wähle ein Rezept zum Hinzufügen</string>
+    <string name="recipe_choose_shoppinglist">Wähle eine Einkaufsliste</string>
+    <string name="recipe_default_no_recipes">Es sind noch keine Rezepte vorhanden. Möchtest du ein paar unserer Rezepte?</string>
+    <string name="recipe_no_recipe">Es sind noch keine Rezepte vorhanden. Möchtest du eins erstellen?</string>
+    <string name="recipe_no_shoppinglist">Es ist noch keine Einkaufsliste vorhanden. Möchtest du eine erstellen?</string>
+    <string name="reset"></string>
+    <string name="settings_option_3_createUnits">Erstellen oder Löschen von Einheiten</string>
+    <string name="settings_option_3_desc2">Erstellen oder Löschen von Einheiten und Gruppen</string>
+    <string name="settings_option_3_manageUnits">Einheiten und Gruppen verwalten</string>
+    <string name="settings_option_4_createGroups">Erstellen oder Löschen von Einheiten</string>
+    <string name="settings_option_4_desc">Erstelle Gruppen für Produkte</string>
+    <string name="settings_option_6_item_deletion_descr">Immer nachfragen bevor ein Produkt gelöscht wird</string>
+    <string name="settings_option_6_item_deletion_name">Produkt löschen</string>
+    <string name="settings_option_7_parser_separate_word_descr">Wähle ein Wort um mehere Produkte zu trennen</string>
+    <string name="settings_option_7_parser_separate_word_name">Trennwort</string>
+    <string name="settings_option_enableSync_descr">Aktiviere Synchronisation der Einkaufslisten und Rezepte</string>
+    <string name="settings_option_enableSync_name">Aktiviere Synchronisation</string>
+    <string name="settings_option_parser_separator_no_space_allowed">Das Trennwort darf keine Leerzeichen enthalten</string>
+    <string name="settings_option_sync_descr">Synchronisiere alle Daten mit dem Server</string>
+    <string name="settings_option_sync_name">Jetzt Synchronisieren</string>
+    <string name="settings_options_add_default_recipes_descr">Nachfagen, ob die Standardrezepte hinzugefügt werden, wenn noch keine eigenen Rezepte vorhanden sind.</string>
+    <string name="settings_options_add_default_recipes_name">Standardrezepte</string>
+    <string name="settings_options_delete_recipe_descr">Immer nachfragen bevor ein Rezept gelöscht wird</string>
+    <string name="settings_options_delete_recipe_name">Rezept löschen</string>
+    <string name="settings_options_delete_shoppinglist_descr">Immer nachfragen bevor eine Einkaufsliste gelöscht wird</string>
+    <string name="settings_options_delete_shoppinglist_name">Einkaufsliste löschen</string>
+    <string name="settings_options_syncInterval_descr">Wähle aus wie oft synchronisiert werden soll.</string>
+    <string name="settings_options_syncInterval_inputBox_message">Wähle bitte das Synchronisationsintervall in Minuten</string>
+    <string name="settings_options_syncInterval_name">Synchronisationsintervall</string>
+    <string name="share_failure">Abgleich ist fehlgeschlagen, versuche es erneut.</string>
+    <string name="share_loading">Laden...</string>
+    <string name="sharingCode_textView">Code zum Teilen</string>
+    <string name="start_synchronization">Start Synchronisation</string>
+    <string name="str_default">Standard</string>
+    <string name="synchronization">Synchronisation</string>
+    <string name="synchronizing">Synchronisieren</string>
+    <string name="synchronizing_recipes">Synchronisiere Rezepte</string>
+    <string name="synchronizing_shoppingLists">Synchronisiere Einkaufsliste</string>
+    <string name="throw_Exception"></string>
+    <string name="title_activity_list_of_recipes">Rezeptliste</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_server_integration_debug"></string>
+    <string name="title_delete_item">Lösche Produkt</string>
+    <string name="unit_bottle_singular">Flasche</string>
+    <string name="unit_box_singular">Kiste</string>
+    <string name="unit_can">Dosen</string>
+    <string name="unit_cup">Tassen</string>
+    <string name="unit_cup_singular">Tasse</string>
+    <string name="unit_dozen_singular">Dutzend</string>
+    <string name="unit_gram_singular">Gramm</string>
+    <string name="unit_litre_singular">Liter</string>
+    <string name="unit_mililitre_singular">Milliliter</string>
+    <string name="unit_millilitre_singular">Milliliter</string>
+    <string name="unit_pack_singular">Packung</string>
+    <string name="unit_piece_name">Stück</string>
+    <string name="unit_tablespoon">Esslöffel</string>
+    <string name="unit_tablespoon_short">EL</string>
+    <string name="unit_tablespoon_singular">Esslöffel</string>
+    <string name="unit_teaspoon_short">TL</string>
+    <string name="unit_teaspoon_singular">Teelöffel</string>
+    <string name="uploadPicture">Bild auswählen</string>
+    <string name="voice_entry">Spracherkennung</string>
+    <string name="setting_permission_for_localization_desc">Immer um Erlaubnis für Standortbestimmung fragen</string>
+    <string name="setting_permission_for_localization_title">Nachfragen</string>
+    <string-array name="store_types_array">
+        <item>Supermarkt</item>
+        <item>Bäckerei</item>
+        <item>Tankstelle</item>
+        <item>Spirituosengeschäft</item>
+        <item>Apotheke</item>
+        <item>Einkaufszentrum</item>
+        <item>Geschäfte</item>
+    </string-array>
+    <string name="radius">Radius</string>
+    <string name="setting_change_radius_description">Radius des Supermarktfinders ändern</string>
 
 </resources>

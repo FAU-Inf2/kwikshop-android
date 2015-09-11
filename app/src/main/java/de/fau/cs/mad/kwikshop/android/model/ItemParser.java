@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.model;
 
 import android.app.Activity;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
@@ -52,6 +54,16 @@ public class ItemParser {
         boolean charWasReadAfterAmount = false;
         boolean emptyStringOrWhiteSpace = true;
         boolean possibleUnitWasSpecifiedBeforeName = false;
+
+
+        String firstWord = StringHelper.getFirstWord(input);
+        if(firstWord.equals(context.getString(R.string.parser_amount_male)) || firstWord.equals(context.getString(R.string.parser_amount_female))
+                || firstWord.equals(context.getString(R.string.parser_amount_an))){
+            amount = "1";
+            amountWasSpecified = true;
+            input = input.substring(firstWord.length()).trim();
+        }
+
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             //only parses the first number found to amount
@@ -114,6 +126,7 @@ public class ItemParser {
 
         if (!StringHelper.isNullOrWhiteSpace(output)) {
             if (amountWasSpecified) item.setAmount(Double.parseDouble(amount));
+            output = output.trim();
             item.setName(output);
         }
         return item;

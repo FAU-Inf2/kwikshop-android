@@ -1,7 +1,9 @@
 package de.fau.cs.mad.kwikshop.android.model;
 
 import android.content.Context;
+import android.location.Location;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -80,8 +82,11 @@ public class SupermarketPlace {
     }
 
     public LatLng getLastPosition() {
-        LocationFinderHelper lastLocation = new LocationFinderHelper(context);
-        return lastLocation.getLatLng();
+        LocationFinderHelper locationFinderHelper = new LocationFinderHelper(context);
+        Location lastLocation =  locationFinderHelper.getLocation();
+        if(lastLocation == null)
+            return null;
+        return new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
     }
 
 

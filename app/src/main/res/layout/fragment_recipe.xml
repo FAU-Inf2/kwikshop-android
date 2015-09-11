@@ -69,13 +69,22 @@
                     android:layout_height="1dp"
                     android:background="@color/divider_color"/>
 
-                <!--List of items-->
-                <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
-                    android:id="@+id/list_recipe"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/divider_top"
-                    />
+
+                <android.support.v4.widget.SwipeRefreshLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/swipe_container_recipe_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/divider_top">
+
+                    <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+                        android:id="@+id/list_recipe"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/divider_top"
+                        />
+
+                </android.support.v4.widget.SwipeRefreshLayout>
 
             </RelativeLayout>
 

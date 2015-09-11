@@ -102,9 +102,20 @@ public class BaseActivity extends AppCompatActivity implements
         // handle click events in navigation drawer
         mNavigationView.setNavigationItemSelectedListener(this);
 
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         EventBus.getDefault().register(this);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -184,17 +195,11 @@ public class BaseActivity extends AppCompatActivity implements
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
-
 
     @SuppressWarnings("unused")
     public void onEventMainThread(SynchronizationEvent event) {
 
-        if (!event.getHandled()) {
+        if(!event.getHandled()) {
 
             ProgressDialog dialog = getSyncProgressDialog();
             dialog.setMessage(event.getMessage());
@@ -211,9 +216,11 @@ public class BaseActivity extends AppCompatActivity implements
                 messageBox.create().show();
 
             }
-
             event.setHandled(true);
         }
+
+
+
 
     }
 

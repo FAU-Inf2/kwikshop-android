@@ -51,6 +51,7 @@
     <string name="localization_no_connection_message">Kwik Shop needs a connection to the internet to find all nearby supermarkets.</string>
     <string name="no_place_dialog_message">Kwik Shop does not find any store in your area.</string>
     <string name="no_last_location_dialog_message">Kwik Shop can not find your current location.</string>
+
     <string name="localize">Localize</string>
     <string-array name="store_types_array">
         <item>Supermarket</item>
@@ -61,6 +62,7 @@
         <item>Shopping Mall</item>
         <item>Store</item>
     </string-array>
+
 
 
 
@@ -113,6 +115,8 @@
     <string name="voice_entry">Voice Entry</string>
     <string name="account">Account</string>
     <string name="synchronization">Synchronization</string>
+    <string name="radius">Radius</string>
+    <string name="setting_change_radius_description">Change radius for Supermarket Finder</string>
 
 
     <!-- Overflow Action Menu -->
@@ -343,6 +347,13 @@
     <string name="uploadPicture">Select picture</string>
 
 
+    <!-- Parser -->
+    <string name="parser_amount_male">a</string>
+    <string name="parser_amount_an">an</string>
+    <string name="parser_amount_female">a</string>
+
+
+
     <!-- Error Reporting -->
     <string name="errorReporting_messaging_subject">Kwik Shop (Android) Crash Report</string>
     <string name="errorReporting_messaging_chooser_title">Send Report using</string>
@@ -401,7 +412,10 @@
     <string name="settings_options_delete_recipe_descr">Always ask before deleting a recipe</string>
     <string name="settings_options_add_default_recipes_name">Default recipes</string>
     <string name="settings_options_add_default_recipes_descr">Ask to add our default recipes when you do not have any own recipes</string>
-    <string name="settings_option_parser_separator_no_space_allowed">The item separator word may not contaion spaces</string>
+    <string name="settings_option_parser_separator_no_space_allowed">The item separator word may not contain spaces</string>
+    <string name="setting_permission_for_localization_title">Requesting</string>
+    <string name="setting_permission_for_localization_desc">Always ask for localization permission</string>
+
     <string name="str_default">default</string>
     <string name="deleteShoppingList_repeatingItemsTitle">This list owns repeating items</string>
     <string name="deleteShoppingList_repeatingItemsText">Delete regularly created items?</string>
@@ -420,7 +434,7 @@
     <string name="unit_box_singular">box</string>
     <string name="unit_millilitre_singular">millilitre</string>
     <string name="aquiring_lease">Aquiring Synchronization Lease</string>
-    <string name="error_aquiring_lease">Error while aquiring the synchronization lease</string>
+    <string name="error_aquiring_lease">Error while aquiring the synchronization lease. This means another client is currently syncing. Please try again later.</string>
     <string name="error_empty_unitname">Unit name must not be empty</string>
     <string name="error_empty_groupname">Group name must not be empty</string>
     <string name="error_remove_defaultunit">You can not remove default units</string>

@@ -24,10 +24,13 @@ import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronize
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ItemSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeItemSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeSyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ServerDataMappingHelper;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListItemSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.SyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactoryImplementation;
 import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
@@ -73,6 +76,8 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         ShoppingListItemSynchronizer.class,
         RecipeItemSynchronizer.class,
         CompositeSynchronizer.class,
+        ShoppingListSyncDataResetter.class,
+        RecipeSyncDataResetter.class,
 
         LocationManager.class
 })
@@ -284,6 +289,17 @@ public class KwikShopBaseModule {
                                                                                     SimpleStorage<LastLocation> locationStorage) {
         return new ServerDataMappingHelper<>(groupStorage, unitStorage, locationStorage);
     }
+
+    @Provides
+    public SyncDataResetter<ShoppingList> provideShoppingListSyncDataResetter(ShoppingListSyncDataResetter instance) {
+        return instance;
+    }
+
+    @Provides
+    public SyncDataResetter<Recipe> provideRecipeSyncDataResetter(RecipeSyncDataResetter instance) {
+        return instance;
+    }
+
     //endregion
 
 

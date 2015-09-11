@@ -34,6 +34,8 @@ import retrofit.RetrofitError;
  */
 public class CompositeSynchronizer {
 
+    private final SyncDataResetter<ShoppingList> shoppingListSyncDataResetter;
+    private final SyncDataResetter<Recipe> recipeSyncDataResetter;
     private final ListSynchronizer<ShoppingList, ShoppingListServer> shoppingListSynchronizer;
     private final ListSynchronizer<Recipe, RecipeServer> recipeSynchronizer;
     private final RestClientFactory restClientFactory;
@@ -43,12 +45,22 @@ public class CompositeSynchronizer {
     private final SimpleStorage<BoughtItem> boughtItemStorage;
 
     @Inject
-    public CompositeSynchronizer(ListSynchronizer<ShoppingList, ShoppingListServer> shoppingListSynchronizer,
+    public CompositeSynchronizer(SyncDataResetter<ShoppingList> shoppingListSyncDataResetter,
+                                 SyncDataResetter<Recipe> recipeSyncDataResetter,
+                                 ListSynchronizer<ShoppingList, ShoppingListServer> shoppingListSynchronizer,
                                  ListSynchronizer<Recipe, RecipeServer> recipeSynchronizer,
                                  SimpleStorage<BoughtItem> boughtItemStorage,
                                  RestClientFactory restClientFactory,
                                  ResourceProvider resourceProvider,
                                  Context context) {
+
+        if(shoppingListSyncDataResetter == null) {
+            throw new ArgumentNullException("shoppingListSyncDataResetter");
+        }
+
+        if(recipeSyncDataResetter == null) {
+            throw new ArgumentNullException("recipeSyncDataResetter");
+        }
 
         if(shoppingListSynchronizer == null) {
             throw new ArgumentNullException("shoppingListSynchronizer");
@@ -74,6 +86,8 @@ public class CompositeSynchronizer {
             throw new ArgumentNullException("context");
         }
 
+        this.shoppingListSyncDataResetter = shoppingListSyncDataResetter;
+        this.recipeSyncDataResetter = recipeSyncDataResetter;
         this.shoppingListSynchronizer = shoppingListSynchronizer;
         this.recipeSynchronizer = recipeSynchronizer;
         this.boughtItemStorage = boughtItemStorage;
@@ -100,6 +114,11 @@ public class CompositeSynchronizer {
 
         // start synchronization
         post(SynchronizationEvent.CreateStartedMessage());
+
+        // reset all local server data if the used server or user has changed
+        shoppingListSyncDataResetter.resetSyncDataIfNecessary();
+        recipeSyncDataResetter.resetSyncDataIfNecessary();
+
 
         // get a synchronization lease
 

@@ -13,6 +13,7 @@ public class ConnectionInfo {
      * Id-field required by ORMLite
      */
     @DatabaseField(generatedId = true)
+    @SuppressWarnings("unused")
     private int id;
 
     @DatabaseField
@@ -26,6 +27,7 @@ public class ConnectionInfo {
     /**
      * Empty constructor required by ORMLite
      */
+    @SuppressWarnings("unused")
     public ConnectionInfo() {
 
     }
@@ -80,9 +82,9 @@ public class ConnectionInfo {
     @Override
     public String toString() {
         return String.format("%s: userId = %s, apiEndPoint = %s",
-                             getClass().getSimpleName(),
-                             userId,
-                             apiEndpoint);
+                getClass().getSimpleName(),
+                userId,
+                apiEndpoint);
     }
 
 }

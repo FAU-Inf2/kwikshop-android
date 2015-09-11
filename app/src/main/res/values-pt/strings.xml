@@ -171,7 +171,7 @@
     <string name="recipe_coconutFlakes">Coco ralado</string>
 
 
-    <string name="item">Iten</string>
+    <string name="item">Item</string>
     <string name="deleteShoppingList_repeatingItemsTitle">Essa lista possui itens que repetem</string>
     <string name="deleteShoppingList_repeatingItemsText">Deletar items agendados para próximas listas?</string>
     <string name="barcode_scanner_no_product">Nenhum produto foi encontrado</string>
@@ -209,7 +209,7 @@
     <string name="settings_option_5_location_permission_desc">Ativar rastreamento enquanto faz as compras</string>
     <string name="settings_option_5_location_permission_title">Rastreamento de localização</string>
     <string name="settings_option_8_login_descr">Faça login para sincronizar e compartilhar listas compras</string>
-    <string name="settings_option_8_login_name">Account / Login</string>
+    <string name="settings_option_8_login_name">Conta / Login</string>
     <string name="share_helpmessage">Você pode agora compartilhar essa lista de compras (ex. via SMS, Email).</string>
     <string name="share_intentstring">Eu quero compartilhar minha lista de compras com você! Simplesmente copie essa mensagem, crie a lista de compras no KwikShop e cole na mensagem, incluindo esse código: #%s#</string>
     <string name="share_notloggedin">Você precisa estar logado para compartilhar essa lista de compras.</string>
@@ -345,7 +345,7 @@
     <string name="errorReporting_messaging_subject">Kwik Shop (Android) Relatório de erros</string>
     <string name="error_aquiring_lease">Erro enquanto adquiria permissão de sincronização</string>
     <string name="localization">Localização</string>
-    <string name="localization_store_types_dialog_title">Tipos de armazenamento</string>
+    <string name="localization_store_types_dialog_title">Tipos de estabelecimento</string>
     <string name="localize">Localizar</string>
     <string name="recipe_default_no_recipes">Você não possui nenhuma receita ainda. Gostaria de adicionar algumas de nossas favoritas?</string>
     <string name="settings_options_add_default_recipes_name">Receitas padrão</string>
@@ -353,9 +353,30 @@
     <string name="error_remove_defaultunit">Você não pode remover unidades padrão</string>
     <string name="error_remove_defaultgroup">Você não pode remover grupos padrão</string>
     <string name="general">Geral</string>
-    <string name="localization_store_types_dialog_caption">Selecione seus tipos de armazenamento preferidos</string>
+    <string name="localization_store_types_dialog_caption">Selecione seus tipos de estabelecimento preferidos</string>
     <string name="no_last_location_dialog_message">Kwik Shop não conseguiu encontrar sua localização corrente</string>
     <string name="synchronization">Sincronização</string>
     <string name="message_groupremoved">Grupo removido</string>
     <string name="message_unitremoved">Unidade removida</string>
+    <string name="dialog_leave_shopping_mode_message">Gostaria de fechar o modo de compras?</string>
+    <string name="dialog_leave_shopping_mode_quit">Fechar</string>
+    <string name="dialog_leave_shopping_mode_title">Modo de compras</string>
+    <string name="group_cans">Conservas</string>
+    <string name="item_deleted">Item removido</string>
+    <string name="on_a_schedule">Pontualmente</string>
+    <string name="overflow_action_menu_openloginactivity">Conta/Login</string>
+    <string name="parser_amount_an">um</string>
+    <string name="parser_amount_female">uma</string>
+    <string name="parser_amount_male">um</string>
+    <string name="radius">Raio</string>
+    <string name="setting_change_radius_description">Mudar o raio para o Localizador de Lojas</string>
+    <string name="setting_permission_for_localization_desc">Sempre perguntar pela permissão de localização</string>
+    <string name="setting_permission_for_localization_title">Solicitando</string>
+    <string name="str_default">Padrão</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_delete_item">Deletar item</string>
+    <string name="voice_entry">Entrada de voz</string>
+    <string name="account">Conta</string>
+    <string name="acknowledgements_Description">Essa aplicação usa algumas bibliotecas de terceiros:</string>
+    <string name="acknowledgements_Title">Reconhecimentos</string>
 </resources>

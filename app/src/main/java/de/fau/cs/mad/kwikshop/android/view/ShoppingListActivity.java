@@ -131,14 +131,17 @@ public class ShoppingListActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void startSharingCodeIntent(final int listId) {
+    protected void startSharingCodeIntent(final Integer serverId) {
 
         new AsyncTask<Integer, Void, String>() {
 
             @Override
             protected String doInBackground(Integer... id) {
                 try {
-                    return clientFactory.getShoppingListClient().getSharingCode(listId).getSharingCode();
+                    if(serverId == null)
+                        return null;
+
+                    return clientFactory.getShoppingListClient().getSharingCode(serverId.intValue()).getSharingCode();
                 } catch (Exception e) {
                     return null;
                 }
@@ -148,10 +151,11 @@ public class ShoppingListActivity extends BaseActivity {
             protected void onPostExecute(String result) {
 
                 if(result == null) {
-                    AlertDialog.Builder messageBox = new AlertDialog.Builder(ShoppingListActivity.this);
+                    // Disabled because there is already an error messagebox when syncing fails
+                    /*AlertDialog.Builder messageBox = new AlertDialog.Builder(ShoppingListActivity.this);
                     messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
                     messageBox.setMessage(R.string.share_sharingcodeerror);
-                    messageBox.create().show();
+                    messageBox.create().show();*/
                 } else {
                     /* Create intent and send it */
                     Intent sendIntent = new Intent();

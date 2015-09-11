@@ -2,11 +2,15 @@ package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import android.content.Context;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.restclient.LeaseResource;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
@@ -19,6 +23,8 @@ import de.fau.cs.mad.kwikshop.common.RecipeServer;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.ShoppingListServer;
 import de.fau.cs.mad.kwikshop.common.SynchronizationLease;
+import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
+import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
 import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 
@@ -34,9 +40,12 @@ public class CompositeSynchronizer {
     private final ResourceProvider resourceProvider;
     private final Context context;
 
+    private final SimpleStorage<BoughtItem> boughtItemStorage;
+
     @Inject
     public CompositeSynchronizer(ListSynchronizer<ShoppingList, ShoppingListServer> shoppingListSynchronizer,
                                  ListSynchronizer<Recipe, RecipeServer> recipeSynchronizer,
+                                 SimpleStorage<BoughtItem> boughtItemStorage,
                                  RestClientFactory restClientFactory,
                                  ResourceProvider resourceProvider,
                                  Context context) {
@@ -47,6 +56,10 @@ public class CompositeSynchronizer {
 
         if(recipeSynchronizer == null) {
             throw new ArgumentNullException("recipeSynchronizer");
+        }
+
+        if(boughtItemStorage == null) {
+            throw new ArgumentNullException("boughtItemStorage");
         }
 
         if(restClientFactory == null) {
@@ -63,6 +76,7 @@ public class CompositeSynchronizer {
 
         this.shoppingListSynchronizer = shoppingListSynchronizer;
         this.recipeSynchronizer = recipeSynchronizer;
+        this.boughtItemStorage = boughtItemStorage;
         this.restClientFactory = restClientFactory;
         this.resourceProvider = resourceProvider;
         this.context = context;
@@ -106,9 +120,10 @@ public class CompositeSynchronizer {
         Thread updateLeaseThread = new Thread(updateLeaseRunnable);
         updateLeaseThread.start();
 
-        //synchronize shopping lists and recipes
+        // synchronize shopping lists and recipes
         boolean success = synchronizeShoppingLists() && synchronizeRecipes();
 
+        sendBoughtItems();
 
         // stop updating the lease
         updateLeaseRunnable.cancel();
@@ -129,7 +144,22 @@ public class CompositeSynchronizer {
 
     private void sendBoughtItems() {
         try {
+            List<BoughtItem> syncableBoughtItems = new ArrayList<BoughtItem>();
+            for(BoughtItem boughtItem: boughtItemStorage.getItems()) {
+                if(boughtItem.isSync()) {
+                    syncableBoughtItems.add(boughtItem);
+                    boughtItemStorage.deleteSingleItem(boughtItem);
+                }
+            }
 
+            if(syncableBoughtItems.size() == 0)
+                return;
+
+            // Sort the List by Date
+            Collections.sort(syncableBoughtItems);
+
+            ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(syncableBoughtItems);
+            restClientFactory.getShoppingListClient().postItemOrder(itemOrderWrapper);
         } catch (Exception e) {
 
         }

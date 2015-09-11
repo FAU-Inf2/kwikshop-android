@@ -41,7 +41,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     private int tmp_item_id;
 
-    private ArrayList<Item> swipedItemOrder = new ArrayList<>();
     private List<Place> places;
     private ItemSortType itemSortType = ItemSortType.MANUAL;
     private final ObservableArrayList<ItemViewModel, Integer> checkedItems = new ObservableArrayList<>(new ItemIdExtractor());
@@ -70,12 +69,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         @Override
         public void execute(Integer parameter) {
             deleteItemCommandExecute(parameter);
-        }
-    };
-    private final Command<Void> sendBoughtItemsToServerCommand = new Command<Void>() {
-        @Override
-        public void execute(Void parameter) {
-            sendBoughtItemsToServerCommandExecute();
         }
     };
 
@@ -230,11 +223,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         return deleteItemCommand;
     }
 
-
-    public Command<Void> getSendBoughtItemsToServerCommand() {
-        return sendBoughtItemsToServerCommand;
-    }
-
     public Command<Void> getFindNearbySupermarketCommand() {
         return this.findNearbySupermarketCommand;
     }
@@ -248,17 +236,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
 
     public int getBoughtItemsCount() {
-        /*ListIterator li = items.listIterator(items.size());
-        int i = 0;
-
-        while(li.hasPrevious()) {
-            ItemViewModel item = (ItemViewModel)li.previous();
-            if(item.getItem().isBought())
-                i++;
-            else
-                break;
-        }
-        return i;*/
         int i = 0;
         for(ItemViewModel item : items) {
             if(item.getItem().isBought()) {
@@ -267,10 +244,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         }
         return i;
     }
-
-
-    public List<Item> getSwipedItemOrder(){ return this.swipedItemOrder; }
-
 
     //endregion
 
@@ -447,32 +420,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         viewLauncher.showItemDetailsView(this.listId, itemId);
     }
 
-    private void sendBoughtItemsToServerCommandExecute() {
-
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... params) {
-
-                try {
-
-                    List<BoughtItem> boughtItemOrder = new ArrayList<>();
-                    for (Item item : swipedItemOrder) {
-                        boughtItemOrder.add(new BoughtItem(item.getName(), item.getLocation().getPlaceId(), item.getLocation().getName()));
-                    }
-
-                    ItemOrderWrapper itemOrderWrapper = new ItemOrderWrapper(boughtItemOrder);
-                    clientFactory.getShoppingListClient().postItemOrder(itemOrderWrapper);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-
-            }
-        }.execute();
-    }
-
     private void deleteItemCommandExecute(final int id) {
         listManager.deleteItem(listId, id);
     }
@@ -538,20 +485,20 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     item.setLocation(location);
                 }
 
-                //swipedItemOrder.add(item);
                 if(item.getLocation() != null) {
                     BoughtItem boughtItem = new BoughtItem(item.getName(), item.getLocation().getPlaceId(), item.getLocation().getName());
-                    int order = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.BOUGHT_ITEM_ORDER, 1, context);
-                    boughtItem.setOrder(order);
-                    SharedPreferencesHelper.saveInt(SharedPreferencesHelper.BOUGHT_ITEM_ORDER, order + 1, context);
+                    boughtItem.setDate(Calendar.getInstance().getTime());
+                    boughtItem.setShoppingListId(listId);
                     boughtItemStorage.addItem(boughtItem);
 
-                    for(BoughtItem item1 : boughtItemStorage.getItems()) {
-                        System.out.println(item1.getName());
-                    }
-
+                    /* All Items are bought -> mark all BoughtItems as syncable */
                     if(getBoughtItemsCount() - getItems().size() == 0) {
-                        System.out.println("!!");
+                        for(BoughtItem item1 : boughtItemStorage.getItems()) {
+                            if(item1.getShoppingListId() == listId) {
+                                item1.setSync(true);
+                                boughtItemStorage.updateItem(item1);
+                            }
+                        }
                     }
                 }
 
@@ -581,7 +528,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     viewLauncher.showToast(message, Toast.LENGTH_LONG);
                 }
             } else {
-                //swipedItemOrder.remove(item);
                 /* Delete this BoughtItem */
                 for(BoughtItem boughtItem : boughtItemStorage.getItems()) {
                     if(boughtItem.getName().equals(item.getName())) {

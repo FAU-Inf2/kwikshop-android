@@ -24,6 +24,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
+import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
@@ -348,9 +349,12 @@ public class SettingFragment extends Fragment {
                         otherHeaderSetting,
                         itemDeletionSetting,
                         slDeletionSetting,
-                        recipeDeletionSetting,
-                        apiEndpointSetting
+                        recipeDeletionSetting
                 }));
+
+        if(BuildConfig.DEBUG) {
+            settingsList.add(apiEndpointSetting);
+        }
 
 
         // Adapter for settings view

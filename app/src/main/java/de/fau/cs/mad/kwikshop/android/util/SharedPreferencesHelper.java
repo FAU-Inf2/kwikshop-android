@@ -32,6 +32,8 @@ public class SharedPreferencesHelper {
     public static final String STORE_TYPE_SHOPPING_MALL = "store_type_shopping_mall";
     public static final String STORE_TYPE_STORE = "store_type_store";
 
+    public static final String BOUGHT_ITEM_ORDER = "BOUGHT_ITEM_COUNTER";
+
     private static final String sharedPreferencesName = "settings";
 
     public static void saveString(String key, String value, Context context) {

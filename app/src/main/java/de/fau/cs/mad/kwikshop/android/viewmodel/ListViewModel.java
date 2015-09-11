@@ -21,6 +21,7 @@ import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
+import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
 import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
@@ -94,6 +95,9 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     private int quickRemoveGroupIndex = -1;
     protected final ObservableArrayList<ItemViewModel, Integer> items = new ObservableArrayList<>(new ItemIdExtractor());
     private String quickAddText = "";
+
+    protected final SimpleStorage<BoughtItem> boughtItemStorage;
+
     private final Command<Void> addItemCommand = new Command<Void>() {
         @Override
         public void execute(Void parameter) {
@@ -146,7 +150,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     public ListViewModel(ViewLauncher viewLauncher, ListManager<TList> listManager,
                                  SimpleStorage<Unit> unitStorage, SimpleStorage<Group> groupStorage,
                                  ItemParser itemParser, DisplayHelper displayHelper,
-                                 AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper) {
+                                 AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper, SimpleStorage<BoughtItem> boughtItemStorage) {
 
 
         if(viewLauncher == null) {
@@ -170,7 +174,6 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         if(autoCompletionHelper == null) {
             throw new IllegalArgumentException("'autoCompletionHelper' must not be null");
         }
-
         if(locationFinderHelper == null) {
             throw new IllegalArgumentException("'locationFinderHelper' must not be null");
         }
@@ -184,6 +187,7 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
         this.autoCompletionHelper = autoCompletionHelper;
         this.itemMerger = new ItemMerger<>(listManager);
         this.locationFinderHelper = locationFinderHelper;
+        this.boughtItemStorage = boughtItemStorage;
     }
 
 

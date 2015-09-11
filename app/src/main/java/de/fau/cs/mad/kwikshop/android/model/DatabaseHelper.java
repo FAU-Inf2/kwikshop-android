@@ -33,6 +33,7 @@ import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.localization.ResourceId;
+import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
 
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
@@ -47,7 +48,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 45; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 46; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -85,6 +86,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private Dao<DeletedItem, Integer> deletedItemDao = null;
     private RuntimeExceptionDao<DeletedItem, Integer> deletedItemRuntimeDao = null;
 
+    private Dao<BoughtItem, Integer> boughtItemDao = null;
+    private RuntimeExceptionDao<BoughtItem, Integer> boughtItemRuntimeDao = null;
+
 
     @Inject
     public DatabaseHelper(Context context)  {
@@ -108,6 +112,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.createTable(connectionSource, Recipe.class);
             TableUtils.createTable(connectionSource, DeletedItem.class);
             TableUtils.createTable(connectionSource, DeletedList.class);
+            TableUtils.createTable(connectionSource, BoughtItem.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -520,7 +525,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
         }
 
-        if(oldVersion < 45){
+        if(oldVersion < 45) {
             try{
                 unitDao = ListStorageFragment.getDatabaseHelper().getUnitDao();
 
@@ -541,6 +546,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             }
             catch(SQLException e){
                     e.printStackTrace();
+            }
+        }
+
+        if(oldVersion < 46) {
+            try {
+                TableUtils.createTable(connectionSource, BoughtItem.class);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -716,6 +729,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         return deletedItemRuntimeDao;
     }
 
+    public Dao<BoughtItem, Integer> getBoughtItemDao() throws SQLException {
+        if (boughtItemDao == null) {
+            boughtItemDao = getDao(BoughtItem.class);
+        }
+        return boughtItemDao;
+    }
+
+    public RuntimeExceptionDao<BoughtItem, Integer> getBoughtItemRuntimeDao() {
+        if (boughtItemRuntimeDao == null) {
+            boughtItemRuntimeDao = getRuntimeExceptionDao(BoughtItem.class);
+        }
+        return boughtItemRuntimeDao;
+    }
+
     @Override
     public void close() {
         super.close();
@@ -751,6 +778,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
         //itemRepeatDao = null;
         //itemRepeatRunTimeDao = null;
+
+        boughtItemDao = null;
+        boughtItemRuntimeDao = null;
     }
 
 

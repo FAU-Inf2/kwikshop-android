@@ -47,6 +47,7 @@ import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.conversion.ObjectConverter;
 import de.fau.cs.mad.kwikshop.common.conversion.RecipeConverter;
 import de.fau.cs.mad.kwikshop.common.conversion.ShoppingListConverter;
+import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
 import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
 
 @SuppressWarnings("unused")
@@ -160,6 +161,12 @@ public class KwikShopBaseModule {
     public SimpleStorage<DeletedItem> provideDeletedItemStorage(Context context) {
         ListStorageFragment.SetupLocalListStorageFragment(context);
         return ListStorageFragment.getDeletedItemStorage();
+    }
+
+    @Provides
+    public SimpleStorage<BoughtItem> provideBoughtItemStorage(Context context) {
+        ListStorageFragment.SetupLocalListStorageFragment(context);
+        return ListStorageFragment.getBoughtItemStorage();
     }
 
     //endregion

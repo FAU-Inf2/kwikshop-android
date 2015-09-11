@@ -18,6 +18,7 @@ import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
+import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
 
 public class ListStorageFragment  {
 
@@ -31,7 +32,7 @@ public class ListStorageFragment  {
     private static ListStorageFragment m_ListStorageFragment;
     private static DatabaseHelper m_DatabaseHelper;
     private static ListStorage<Recipe> m_RecipeStorage;
-
+    private static SimpleStorage<BoughtItem> m_BoughtItemStorage;
 
 
 
@@ -58,6 +59,10 @@ public class ListStorageFragment  {
 
     public static SimpleStorage<DeletedItem> getDeletedItemStorage() {
         return m_DeletedItemStorage;
+    }
+
+    public static SimpleStorage<BoughtItem> getBoughtItemStorage() {
+        return m_BoughtItemStorage;
     }
 
 
@@ -107,6 +112,8 @@ public class ListStorageFragment  {
             m_DeletedListStorage = new SimpleStorageBase<>(m_DatabaseHelper.getDeletedListDao());
 
             m_DeletedItemStorage = new SimpleStorageBase<>(m_DatabaseHelper.getDeletedItemDao());
+
+            m_BoughtItemStorage = new SimpleStorageBase<>(m_DatabaseHelper.getBoughtItemDao());
 
         } catch (SQLException e) {
             e.printStackTrace();

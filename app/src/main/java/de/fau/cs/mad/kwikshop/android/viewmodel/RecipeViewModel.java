@@ -39,7 +39,7 @@ public class RecipeViewModel extends ListViewModel<Recipe> {
                                  AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper,
                                  ResourceProvider resourceProvider) {
 
-        super(viewLauncher, recipeManager, unitStorage, groupStorage, itemParser, displayHelper, autoCompletionHelper, locationFinderHelper);
+        super(viewLauncher, recipeManager, unitStorage, groupStorage, itemParser, displayHelper, autoCompletionHelper, locationFinderHelper, null);
 
         if(shoppingListManager == null) throw new ArgumentNullException("shoppingListManager");
 

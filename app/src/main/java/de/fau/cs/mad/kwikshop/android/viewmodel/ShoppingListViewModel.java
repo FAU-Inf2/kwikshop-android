@@ -154,11 +154,12 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                                  ResourceProvider resourceProvider,
                                  RegularlyRepeatHelper repeatHelper,
                                  RestClientFactory clientFactory,
-                                 LocationManager locationManager) {
+                                 LocationManager locationManager,
+                                 SimpleStorage<BoughtItem> boughtItemStorage) {
 
 
         super(viewLauncher, shoppingListManager, unitStorage, groupStorage, itemParser, displayHelper,
-                autoCompletionHelper, locationFinderHelper);
+                autoCompletionHelper, locationFinderHelper, boughtItemStorage);
 
         if (context == null) throw new ArgumentNullException("context");
 
@@ -180,6 +181,10 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
         if(locationManager == null) {
             throw new ArgumentNullException("locationManager");
+        }
+
+        if(boughtItemStorage == null) {
+            throw new ArgumentNullException("boughtItemStorage");
         }
 
         this.context = context;
@@ -243,7 +248,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
 
     public int getBoughtItemsCount() {
-        ListIterator li = items.listIterator(items.size());
+        /*ListIterator li = items.listIterator(items.size());
         int i = 0;
 
         while(li.hasPrevious()) {
@@ -252,6 +257,13 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 i++;
             else
                 break;
+        }
+        return i;*/
+        int i = 0;
+        for(ItemViewModel item : items) {
+            if(item.getItem().isBought()) {
+                i++;
+            }
         }
         return i;
     }
@@ -526,7 +538,23 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     item.setLocation(location);
                 }
 
-                swipedItemOrder.add(item);
+                //swipedItemOrder.add(item);
+                if(item.getLocation() != null) {
+                    BoughtItem boughtItem = new BoughtItem(item.getName(), item.getLocation().getPlaceId(), item.getLocation().getName());
+                    int order = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.BOUGHT_ITEM_ORDER, 1, context);
+                    boughtItem.setOrder(order);
+                    SharedPreferencesHelper.saveInt(SharedPreferencesHelper.BOUGHT_ITEM_ORDER, order + 1, context);
+                    boughtItemStorage.addItem(boughtItem);
+
+                    for(BoughtItem item1 : boughtItemStorage.getItems()) {
+                        System.out.println(item1.getName());
+                    }
+
+                    if(getBoughtItemsCount() - getItems().size() == 0) {
+                        System.out.println("!!");
+                    }
+                }
+
                 Calendar now = Calendar.getInstance();
                 item.setLastBought(now.getTime());
 
@@ -553,7 +581,13 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     viewLauncher.showToast(message, Toast.LENGTH_LONG);
                 }
             } else {
-                swipedItemOrder.remove(item);
+                //swipedItemOrder.remove(item);
+                /* Delete this BoughtItem */
+                for(BoughtItem boughtItem : boughtItemStorage.getItems()) {
+                    if(boughtItem.getName().equals(item.getName())) {
+                        boughtItemStorage.deleteSingleItem(boughtItem);
+                    }
+                }
             }
 
             listManager.saveListItem(listId, item);

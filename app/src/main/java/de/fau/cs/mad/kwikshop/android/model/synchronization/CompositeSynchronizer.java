@@ -63,7 +63,7 @@ public class CompositeSynchronizer {
 
         this.shoppingListSynchronizer = shoppingListSynchronizer;
         this.recipeSynchronizer = recipeSynchronizer;
-        this.restClientFactory =restClientFactory;
+        this.restClientFactory = restClientFactory;
         this.resourceProvider = resourceProvider;
         this.context = context;
     }
@@ -124,6 +124,15 @@ public class CompositeSynchronizer {
             post(SynchronizationEvent.CreateCompletedMessage());
         }
 
+    }
+
+
+    private void sendBoughtItems() {
+        try {
+
+        } catch (Exception e) {
+
+        }
     }
 
 

@@ -53,7 +53,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
                                    AutoCompletionHelper autoCompletionHelper, LocationFinderHelper locationFinderHelper,
                                    ResourceProvider resourceProvider) {
 
-        super(viewLauncher, listManager, unitStorage, groupStorage, itemParser, displayHelper, autoCompletionHelper, locationFinderHelper);
+        super(viewLauncher, listManager, unitStorage, groupStorage, itemParser, displayHelper, autoCompletionHelper, locationFinderHelper, null);
 
         if(resourceProvider == null) {throw new ArgumentNullException("resourceProvider");}
         this.resourceProvider = resourceProvider;

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.NavUtils;
@@ -26,6 +27,7 @@ import android.widget.FrameLayout;
 
 
 import dagger.ObjectGraph;
+import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShareSuccessEvent;
@@ -76,6 +78,12 @@ public class BaseActivity extends AppCompatActivity implements
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        //hide debug menu for non-debug builds
+        MenuItem menuItemDebug = mNavigationView.getMenu().findItem(R.id.nav_debug);
+        if(menuItemDebug != null) {
+            menuItemDebug.setVisible(BuildConfig.DEBUG);
+        }
+
         baseViewModel = ObjectGraph.create(new KwikShopModule(this)).get(BaseViewModel.class);
 
         // style actionbar
@@ -101,6 +109,9 @@ public class BaseActivity extends AppCompatActivity implements
 
         // handle click events in navigation drawer
         mNavigationView.setNavigationItemSelectedListener(this);
+
+
+
 
     }
 

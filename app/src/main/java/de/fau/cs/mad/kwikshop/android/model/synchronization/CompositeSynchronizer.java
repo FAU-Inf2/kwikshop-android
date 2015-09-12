@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -184,7 +185,9 @@ public class CompositeSynchronizer {
 
             shoppingListSynchronizer.synchronize();
 
-        } catch (SynchronizationException ex) {
+        } catch (Exception ex) {
+
+            Log.e("KwikShop-Sync", "Execption in ShoppingList synchronization", ex);
 
             String message = String.format("%s\n\n%s", resourceProvider.getString(R.string.error_synchronizing_shoppingLists), ex.toString());
             post(SynchronizationEvent.CreateFailedMessage(message));
@@ -202,7 +205,9 @@ public class CompositeSynchronizer {
 
             recipeSynchronizer.synchronize();
 
-        } catch (SynchronizationException ex) {
+        } catch (Exception ex) {
+
+            Log.e("KwikShop-Sync", "Execption in Recipe synchronization", ex);
 
             String message = String.format("%s\n\n%s", resourceProvider.getString(R.string.error_synchronizing_recipes), ex.toString());
             post(SynchronizationEvent.CreateFailedMessage(message));

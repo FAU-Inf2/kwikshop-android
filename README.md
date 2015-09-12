@@ -33,15 +33,16 @@ The project makes use of several third-party libraries:
   Apache License, Version 2.0
 - [Joda Time](http://www.joda.org/joda-time/), licensed under the Apache
   License, Version 2.0
-- [google-places-api-java](https://github.com/windy1/google-places-api-java), 
-  licensed unter the MIT Licenese
-- [Apache HttpClient](https://hc.apache.org/), licensed utner the Apache License, version 2.0 
+- [Java client for Google Places API](https://github.com/windy1/google-places-api-java), 
+  licensed unter the MIT License
+- [HttpClient for Android](https://hc.apache.org/), licensed under the Apache License, version 2.0 
 - [Jackson JSON Processor](http://wiki.fasterxml.com/JacksonHome), licensed under the Apache
   License, Version 2.0    
 - [dm77 Barcodescanner](https://github.com/dm77/barcodescanner), licensed under the Apache License, version 2.0
 - [Android Volley](https://github.com/mcxiaoke/android-volley), licensed under the Apache License, Version 2.0 
 - [jsoup](http://jsoup.org/), licensed unter the MIT Licenese
 - [LDrawer](https://github.com/keklikhasan/LDrawer), licensed under the Apache License, Version 2.0
+- [Google Maps Android API utility library](http://googlemaps.github.io/android-maps-utils), licensed under the Apache License, Version 2.0
         
 Some portions of the the [Fablab Android app](https://github.com/FAU-Inf2/fablab-android), licensed under the Apache License, Version 2.0 were used in this application 
 

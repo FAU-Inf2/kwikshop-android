@@ -1,18 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
-import android.content.Context;
-
-import javax.inject.Inject;
-
-import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.common.ConnectionInfo;
-import de.fau.cs.mad.kwikshop.android.model.ConnectionInfoStorage;
-import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
-import de.fau.cs.mad.kwikshop.android.model.synchronization.background.SyncDataResetter;
-import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;

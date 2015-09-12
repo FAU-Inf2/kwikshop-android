@@ -8,7 +8,6 @@ import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.ConnectionInfo;
 import de.fau.cs.mad.kwikshop.android.model.ConnectionInfoStorage;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
-import de.fau.cs.mad.kwikshop.android.model.synchronization.background.SyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;

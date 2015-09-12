@@ -1,11 +1,9 @@
 package de.fau.cs.mad.kwikshop.android.di;
 
 import android.content.Context;
-import android.content.Intent;
 
 import dagger.Module;
 import dagger.Provides;
-import de.fau.cs.mad.kwikshop.android.common.ConnectionInfo;
 import de.fau.cs.mad.kwikshop.android.model.ConnectionInfoStorage;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
@@ -21,6 +19,7 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.ConditionalSyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ItemSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeItemSynchronizer;
@@ -30,7 +29,8 @@ import de.fau.cs.mad.kwikshop.android.model.synchronization.ServerDataMappingHel
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListItemSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
-import de.fau.cs.mad.kwikshop.android.model.synchronization.SyncDataResetter;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.AbstractSyncDataResetter;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.background.SyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactoryImplementation;
 import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
@@ -76,6 +76,7 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         ShoppingListItemSynchronizer.class,
         RecipeItemSynchronizer.class,
         CompositeSynchronizer.class,
+        ConditionalSyncDataResetter.class,
         ShoppingListSyncDataResetter.class,
         RecipeSyncDataResetter.class,
 

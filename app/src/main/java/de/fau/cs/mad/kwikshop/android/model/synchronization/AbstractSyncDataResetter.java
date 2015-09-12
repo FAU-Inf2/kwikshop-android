@@ -10,6 +10,7 @@ import de.fau.cs.mad.kwikshop.android.model.ConnectionInfoStorage;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.background.SyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
@@ -19,38 +20,22 @@ import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 
-public abstract class SyncDataResetter<TList extends DomainListObject> {
+public abstract class AbstractSyncDataResetter<TList extends DomainListObject> implements SyncDataResetter<TList> {
 
-    private final Context context;
-    private final ResourceProvider resourceProvider;
     private final ListManager<TList> listManager;
-    private final ConnectionInfoStorage connectionInfoStorage;
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<Group> groupStorage;
     private final SimpleStorage<LastLocation> locationStorage;
 
 
 
-    public SyncDataResetter(Context context, ResourceProvider resourceProvider,
-                            ListManager<TList> listManager, ConnectionInfoStorage connectionInfoStorage,
-                            SimpleStorage<Unit> unitStorage,
-                            SimpleStorage<Group> groupStorage,
-                            SimpleStorage<LastLocation> locationStorage) {
-
-        if(context == null) {
-            throw new ArgumentNullException("context");
-        }
-
-        if(resourceProvider == null) {
-            throw new ArgumentNullException("resourceProvider");
-        }
+    public AbstractSyncDataResetter(ListManager<TList> listManager,
+                                    SimpleStorage<Unit> unitStorage,
+                                    SimpleStorage<Group> groupStorage,
+                                    SimpleStorage<LastLocation> locationStorage) {
 
         if(listManager == null) {
             throw new ArgumentNullException("listManager");
-        }
-
-        if(connectionInfoStorage == null) {
-            throw new ArgumentNullException("connectionInfoStorage");
         }
 
         if(unitStorage == null) {
@@ -65,10 +50,8 @@ public abstract class SyncDataResetter<TList extends DomainListObject> {
             throw new ArgumentNullException("locationStorage");
         }
 
-        this.context = context;
-        this.resourceProvider = resourceProvider;
+
         this.listManager = listManager;
-        this.connectionInfoStorage = connectionInfoStorage;
         this.unitStorage = unitStorage;
         this.groupStorage = groupStorage;
         this.locationStorage = locationStorage;
@@ -76,21 +59,10 @@ public abstract class SyncDataResetter<TList extends DomainListObject> {
 
 
 
-    public void resetSyncDataIfNecessary() {
-
-        ConnectionInfo existingInfo = connectionInfoStorage.getConnectionInfo();
-        ConnectionInfo currentInfo = getCurrrentConnectionInfo();
-
-        if(!currentInfo.equals(existingInfo)) {
-            resetSyncData();
-            connectionInfoStorage.setConnectionInfo(currentInfo);
-        }
-
-    }
 
 
 
-    protected void resetSyncData() {
+    public void resetSyncData() {
 
         for(TList list : listManager.getLists()) {
             if(list.getServerId() != 0) {
@@ -152,18 +124,5 @@ public abstract class SyncDataResetter<TList extends DomainListObject> {
     }
 
 
-
-    private ConnectionInfo getCurrrentConnectionInfo() {
-
-        String userId = SessionHandler.getSessionUser(context);
-        if(userId == null) {
-            userId = "";
-        }
-        String apiEndPoint = SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT,
-                                                                resourceProvider.getString(R.string.API_HOST),
-                                                                context);
-
-        return new ConnectionInfo(userId, apiEndPoint);
-    }
 
 }

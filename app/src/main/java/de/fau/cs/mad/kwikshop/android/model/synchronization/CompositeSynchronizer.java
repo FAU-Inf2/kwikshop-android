@@ -29,13 +29,11 @@ import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 
 /**
- * Synchronizer that synchronized both shopping lists and recipes
- * and posts progress updates to EventBus
+ * Central class coordinating syncing of all synced data
  */
 public class CompositeSynchronizer {
 
-    private final SyncDataResetter<ShoppingList> shoppingListSyncDataResetter;
-    private final SyncDataResetter<Recipe> recipeSyncDataResetter;
+    private final ConditionalSyncDataResetter syncDataResetter;
     private final ListSynchronizer<ShoppingList, ShoppingListServer> shoppingListSynchronizer;
     private final ListSynchronizer<Recipe, RecipeServer> recipeSynchronizer;
     private final RestClientFactory restClientFactory;
@@ -45,8 +43,7 @@ public class CompositeSynchronizer {
     private final SimpleStorage<BoughtItem> boughtItemStorage;
 
     @Inject
-    public CompositeSynchronizer(SyncDataResetter<ShoppingList> shoppingListSyncDataResetter,
-                                 SyncDataResetter<Recipe> recipeSyncDataResetter,
+    public CompositeSynchronizer(ConditionalSyncDataResetter syncDataResetter,
                                  ListSynchronizer<ShoppingList, ShoppingListServer> shoppingListSynchronizer,
                                  ListSynchronizer<Recipe, RecipeServer> recipeSynchronizer,
                                  SimpleStorage<BoughtItem> boughtItemStorage,
@@ -54,12 +51,8 @@ public class CompositeSynchronizer {
                                  ResourceProvider resourceProvider,
                                  Context context) {
 
-        if(shoppingListSyncDataResetter == null) {
-            throw new ArgumentNullException("shoppingListSyncDataResetter");
-        }
-
-        if(recipeSyncDataResetter == null) {
-            throw new ArgumentNullException("recipeSyncDataResetter");
+        if(syncDataResetter == null) {
+            throw new ArgumentNullException("syncDataResetter");
         }
 
         if(shoppingListSynchronizer == null) {
@@ -86,8 +79,7 @@ public class CompositeSynchronizer {
             throw new ArgumentNullException("context");
         }
 
-        this.shoppingListSyncDataResetter = shoppingListSyncDataResetter;
-        this.recipeSyncDataResetter = recipeSyncDataResetter;
+        this.syncDataResetter = syncDataResetter;
         this.shoppingListSynchronizer = shoppingListSynchronizer;
         this.recipeSynchronizer = recipeSynchronizer;
         this.boughtItemStorage = boughtItemStorage;
@@ -116,8 +108,7 @@ public class CompositeSynchronizer {
         post(SynchronizationEvent.CreateStartedMessage());
 
         // reset all local server data if the used server or user has changed
-        shoppingListSyncDataResetter.resetSyncDataIfNecessary();
-        recipeSyncDataResetter.resetSyncDataIfNecessary();
+        syncDataResetter.resetSyncDataIfNecessary();
 
 
         // get a synchronization lease
@@ -163,7 +154,7 @@ public class CompositeSynchronizer {
 
     private void sendBoughtItems() {
         try {
-            List<BoughtItem> syncableBoughtItems = new ArrayList<BoughtItem>();
+            List<BoughtItem> syncableBoughtItems = new ArrayList<>();
             for(BoughtItem boughtItem: boughtItemStorage.getItems()) {
                 if(boughtItem.isSync()) {
                     syncableBoughtItems.add(boughtItem);

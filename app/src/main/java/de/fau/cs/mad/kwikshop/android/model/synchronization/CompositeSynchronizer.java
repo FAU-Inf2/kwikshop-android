@@ -187,7 +187,7 @@ public class CompositeSynchronizer {
 
         } catch (Exception ex) {
 
-            Log.e("KwikShop-Sync", "Execption in ShoppingList synchronization", ex);
+            Log.e("KwikShop-Sync", "Exception in ShoppingList synchronization", ex);
 
             String message = String.format("%s\n\n%s", resourceProvider.getString(R.string.error_synchronizing_shoppingLists), ex.toString());
             post(SynchronizationEvent.CreateFailedMessage(message));
@@ -207,7 +207,7 @@ public class CompositeSynchronizer {
 
         } catch (Exception ex) {
 
-            Log.e("KwikShop-Sync", "Execption in Recipe synchronization", ex);
+            Log.e("KwikShop-Sync", "Exception in Recipe synchronization", ex);
 
             String message = String.format("%s\n\n%s", resourceProvider.getString(R.string.error_synchronizing_recipes), ex.toString());
             post(SynchronizationEvent.CreateFailedMessage(message));

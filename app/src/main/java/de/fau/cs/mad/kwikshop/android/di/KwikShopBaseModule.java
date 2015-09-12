@@ -29,7 +29,6 @@ import de.fau.cs.mad.kwikshop.android.model.synchronization.ServerDataMappingHel
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListItemSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
-import de.fau.cs.mad.kwikshop.android.model.synchronization.AbstractSyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.background.SyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactoryImplementation;

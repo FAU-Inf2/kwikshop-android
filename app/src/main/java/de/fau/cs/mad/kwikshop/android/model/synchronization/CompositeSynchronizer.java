@@ -220,7 +220,7 @@ public class CompositeSynchronizer {
     private class UpdateLeaseRunnable implements Runnable {
 
         private LeaseResource leaseClient;
-        private SynchronizationLease[] lease;
+        private final SynchronizationLease[] lease;
         private boolean cancelled = false;
 
 

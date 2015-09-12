@@ -1,7 +1,6 @@
 package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 
 import javax.inject.Inject;
 

@@ -11,7 +11,6 @@ import de.fau.cs.mad.kwikshop.common.Unit;
 
 public class ShoppingListSyncDataResetter extends AbstractSyncDataResetter<ShoppingList> {
 
-
     @Inject
     public ShoppingListSyncDataResetter(ListManager<ShoppingList> listManager,
                                         SimpleStorage<Unit> unitStorage,
@@ -20,6 +19,7 @@ public class ShoppingListSyncDataResetter extends AbstractSyncDataResetter<Shopp
 
         super(listManager, unitStorage, groupStorage, locationStorage);
     }
+
 
 
     @Override

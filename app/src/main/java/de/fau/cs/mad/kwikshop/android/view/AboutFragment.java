@@ -33,9 +33,9 @@ public class AboutFragment extends Fragment{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup fragmentContainer, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.activity_about, container, false);
+        View rootView = inflater.inflate(R.layout.activity_about, fragmentContainer, false);
         ButterKnife.inject(this, rootView);
 
 

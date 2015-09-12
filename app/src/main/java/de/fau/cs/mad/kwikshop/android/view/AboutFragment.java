@@ -8,9 +8,12 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -27,6 +30,9 @@ public class AboutFragment extends Fragment{
 
     @InjectView(R.id.container)
     ViewGroup container;
+
+    @InjectView(R.id.acknowledgements_Container)
+    ViewGroup acknowledgements_Container;
 
     public static AboutFragment newInstance(){
         return new AboutFragment();
@@ -66,7 +72,7 @@ public class AboutFragment extends Fragment{
             TextView textView = (TextView) view.findViewById(R.id.textView);
             textView.setText(Html.fromHtml(item));
             textView.setMovementMethod(LinkMovementMethod.getInstance());
-            container.addView(view);
+            acknowledgements_Container.addView(view);
         }
 
 

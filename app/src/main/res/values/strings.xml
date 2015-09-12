@@ -458,5 +458,7 @@
     <string name="store_type_pharmacy">Pharmacy</string>
     <string name="store_type_shoppingmall">Shopping Mall</string>
     <string name="store_type_store">Store</string>
+    <string name="playServices_Title">Google Play Services</string>
+    <string name="playServices_Description">This application uses Google Play Services</string>
 
 </resources>

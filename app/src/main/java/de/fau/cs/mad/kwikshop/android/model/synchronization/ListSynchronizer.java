@@ -274,6 +274,7 @@ public abstract class ListSynchronizer<TListClient extends DomainListObject,
         }
 
         clientList.setServerId(serverList.getId());
+        clientList.setOwnerId(serverList.getOwnerId());
 
         //also upload items
         for(Item clientItem : clientList.getItems()) {

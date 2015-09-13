@@ -55,7 +55,7 @@
     <string name="title_activity_list_of_shopping_list">Einkaufslisten</string>
     <string name="title_activity_reminder">Erinnerung</string>
     <string name="title_activity_settings">Einstellungen</string>
-    <string name="title_activity_shopping_list">Einkaufsliste</string>
+    <string name="title_activity_shopping_list">Einkaufslisten</string>
     <string name="title_activity_shopping_list_detail">Details </string>
     <string name="title_default_list">Einkaufsliste 1</string>
     <string name="title_fragment_item_details">Neuer Artikel</string>
@@ -211,7 +211,7 @@
     <string name="retry">Login erneut versuchen</string>
     <string name="login_skip_message">Login wirklich überspringen? Du kannst dich jederzeit im Menü einloggen.</string>
     <string name="reminder_question">Eine Erinnerung für das Element \'%1$s\' wurde für %2$s gesetzt. Was möchten Sie nun machen?</string>
-    <string name="title_activity_recipe">Rezept</string>
+    <string name="title_activity_recipe">Rezepte</string>
     <string name="title_activity_recipe_detail">Rezept-Details</string>
     <string name="title_activity_recipe_item_details">Rezept-Element-Details</string>
     <string name="supermarket_finder_progress_dialog_message">Suche Supermärkte in der Nähe. </string>
@@ -243,7 +243,7 @@
     <string name="localization_supermarket_select_dialog_not_found">Nicht aufgelistet</string>
     <string name="share_notloggedin">Du musst eingeloggt sein, um diese Einkaufsliste zu teilen.</string>
     <string name="share_sharingcodeerror">Ein Fehler ist aufgetreten, bitte versuche es später nochmal.</string>
-    <string name="share_intentstring">Ich möchte meine Einkaufsliste mit dir teilen! Kopiere diese Nachricht, erstelle eine neue Einkaufsliste in KwikShop und füge dort diese Nachricht ein, mit dem folgendem Code: #%s#</string>
+    <string name="share_intentstring">Ich möchte meine Einkaufsliste mit dir teilen! Installiere Kwik Shop, dann klicke hier: http://kwikshop.is.nice/#sc=%s</string>
     <string name="barcode_scanner_no_product">Kein Produkt gefunden</string>
     <string name="barcode_scanner_not_ean_format">Der Barcode hat kein EAN Format</string>
     <string name="barcode_scanner_progress_message">Suche Produkt&#8230;</string>
@@ -259,7 +259,7 @@
     <string name="account">Konto</string>
     <string name="acknowledgements_Description">Diese App verwendet fremde Bibliotheken:</string>
     <string name="acknowledgements_Title">Danksagung </string>
-    <string name="action_settings">Eintstellung</string>
+    <string name="action_settings">Einstellungen</string>
     <string name="askingGooglePlay">Möchten sie Google Voice Search installieren?</string>
     <string name="askingGoogleVoiceSearch">Für die Spracherkennung ist Google Voice Search notwendig.</string>
     <string name="dateDescription_just_now">gerade eben</string>
@@ -269,7 +269,7 @@
     <string name="dialog_leave_shopping_mode_quit">Beenden</string>
     <string name="dialog_leave_shopping_mode_title">Einkaufsmodus</string>
     <string name="errorReporting_copyToClipboard"></string>
-    <string name="every_time_i_create_a_list"></string>
+    <string name="every_time_i_create_a_list">Für jede neue Liste</string>
     <string name="item_deleted">Produkt gelöscht</string>
     <string name="localization">Standortbestimmung</string>
     <string name="localization_permisson_dialog_title"></string>
@@ -297,7 +297,7 @@
     <string name="settings_option_4_desc">Erstelle Gruppen für Produkte</string>
     <string name="settings_option_6_item_deletion_descr">Immer nachfragen bevor ein Produkt gelöscht wird</string>
     <string name="settings_option_6_item_deletion_name">Produkt löschen</string>
-    <string name="settings_option_7_parser_separate_word_descr">Wähle ein Wort um mehere Produkte zu trennen</string>
+    <string name="settings_option_7_parser_separate_word_descr">Wähle ein Wort um mehrere Produkte zu trennen</string>
     <string name="settings_option_7_parser_separate_word_name">Trennwort</string>
     <string name="settings_option_enableSync_descr">Aktiviere Synchronisation der Einkaufslisten und Rezepte</string>
     <string name="settings_option_enableSync_name">Aktiviere Synchronisation</string>
@@ -310,12 +310,12 @@
     <string name="settings_options_delete_recipe_name">Rezept löschen</string>
     <string name="settings_options_delete_shoppinglist_descr">Immer nachfragen bevor eine Einkaufsliste gelöscht wird</string>
     <string name="settings_options_delete_shoppinglist_name">Einkaufsliste löschen</string>
-    <string name="settings_options_syncInterval_descr">Wähle aus wie oft synchronisiert werden soll.</string>
+    <string name="settings_options_syncInterval_descr">Wähle aus wie oft synchronisiert werden soll</string>
     <string name="settings_options_syncInterval_inputBox_message">Wähle bitte das Synchronisationsintervall in Minuten</string>
     <string name="settings_options_syncInterval_name">Synchronisationsintervall</string>
     <string name="share_failure">Abgleich ist fehlgeschlagen, versuche es erneut.</string>
     <string name="share_loading">Laden...</string>
-    <string name="sharingCode_textView">Code zum Teilen</string>
+    <string name="sharingCode_textView">Code zum Teilen:</string>
     <string name="start_synchronization">Start Synchronisation</string>
     <string name="str_default">Standard</string>
     <string name="synchronization">Synchronisation</string>
@@ -359,5 +359,6 @@
     </string-array>
     <string name="radius">Radius</string>
     <string name="setting_change_radius_description">Radius des Supermarktfinders ändern</string>
+    <string name="general">Allgemein</string>
 
 </resources>

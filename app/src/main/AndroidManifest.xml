@@ -45,6 +45,17 @@
             android:name=".view.ListOfShoppingListsActivity"
             android:label="@string/app_name" >
 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/intent_host"
+                    android:scheme="@string/intent_http" />
+            </intent-filter>
+
             <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -95,17 +106,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.fau.cs.mad.kwikshop.android.view.ListOfShoppingListsActivity" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/intent_host"
-                    android:scheme="@string/intent_http" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".view.SettingActivity"

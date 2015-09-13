@@ -34,12 +34,14 @@ public class RedeemSharingCodeTask extends AsyncTask<String, String, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+
         progDailog = new ProgressDialog(context);
         progDailog.setMessage(context.getResources().getString(R.string.share_loading));
         progDailog.setIndeterminate(false);
         progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progDailog.setCancelable(true);
         progDailog.show();
+
     }
 
     @Override
@@ -69,7 +71,7 @@ public class RedeemSharingCodeTask extends AsyncTask<String, String, String> {
             public void run() {
                 progDailog.dismiss();
 
-                if(result != null)
+                if (result != null)
                     EventBus.getDefault().post(new ShareSuccessEvent());
             }
         }, 3000);

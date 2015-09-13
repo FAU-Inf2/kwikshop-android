@@ -231,7 +231,7 @@
     <string name="settings_option_sync_name">Sincronizar agora</string>
     <string name="settings_options_delete_recipe_descr">Sempre perguntar antes de deletar uma receita</string>
     <string name="settings_options_delete_recipe_name">Deletar Receitas</string>
-    <string name="settings_options_delete_shoppinglist_descr">Sempre perguntar antes de deletar uma lista de comrpas</string>
+    <string name="settings_options_delete_shoppinglist_descr">Sempre perguntar antes de deletar uma lista de compras</string>
     <string name="settings_options_delete_shoppinglist_name">Deletar lista de compras</string>
     <string name="settings_options_syncInterval_descr">Escolher frequência de sincronizações</string>
     <string name="settings_options_syncInterval_inputBox_message">Porfavor especifique o intervalo das sincronizações em minutos</string>

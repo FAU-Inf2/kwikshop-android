@@ -54,7 +54,8 @@
         android:text="@string/sharingCode_textView"
         android:id="@+id/textView_sharingCpde"
         android:layout_below="@+id/create_calendar_event"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:visibility="gone" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -63,7 +64,8 @@
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView_sharingCpde"
-        android:layout_alignRight="@+id/micButton" />
+        android:layout_alignRight="@+id/micButton"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

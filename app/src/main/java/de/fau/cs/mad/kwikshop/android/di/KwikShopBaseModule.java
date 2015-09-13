@@ -1,10 +1,10 @@
 package de.fau.cs.mad.kwikshop.android.di;
 
 import android.content.Context;
-import android.content.Intent;
 
 import dagger.Module;
 import dagger.Provides;
+import de.fau.cs.mad.kwikshop.android.model.ConnectionInfoStorage;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
 import de.fau.cs.mad.kwikshop.android.model.DefaultDataProvider;
 import de.fau.cs.mad.kwikshop.android.model.DeletedItem;
@@ -19,13 +19,17 @@ import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListStorage;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.ConditionalSyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ItemSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ListSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeItemSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeSyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.RecipeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ServerDataMappingHelper;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListItemSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.ShoppingListSynchronizer;
+import de.fau.cs.mad.kwikshop.android.model.synchronization.SyncDataResetter;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactoryImplementation;
 import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
@@ -71,6 +75,9 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         ShoppingListItemSynchronizer.class,
         RecipeItemSynchronizer.class,
         CompositeSynchronizer.class,
+        ConditionalSyncDataResetter.class,
+        ShoppingListSyncDataResetter.class,
+        RecipeSyncDataResetter.class,
 
         LocationManager.class
 })
@@ -150,7 +157,6 @@ public class KwikShopBaseModule {
         return ListStorageFragment.getCalendarEventStorage();
     }
 
-
     @Provides
     public SimpleStorage<DeletedList> provideDeletedListStorage(Context context) {
         ListStorageFragment.SetupLocalListStorageFragment(context);
@@ -167,6 +173,12 @@ public class KwikShopBaseModule {
     public SimpleStorage<BoughtItem> provideBoughtItemStorage(Context context) {
         ListStorageFragment.SetupLocalListStorageFragment(context);
         return ListStorageFragment.getBoughtItemStorage();
+    }
+
+    @Provides
+    public ConnectionInfoStorage provideConnectionInfoStorage(Context context) {
+        ListStorageFragment.SetupLocalListStorageFragment(context);
+        return ListStorageFragment.getConnectionInfoStorage();
     }
 
     //endregion
@@ -277,6 +289,17 @@ public class KwikShopBaseModule {
                                                                                     SimpleStorage<LastLocation> locationStorage) {
         return new ServerDataMappingHelper<>(groupStorage, unitStorage, locationStorage);
     }
+
+    @Provides
+    public SyncDataResetter<ShoppingList> provideShoppingListSyncDataResetter(ShoppingListSyncDataResetter instance) {
+        return instance;
+    }
+
+    @Provides
+    public SyncDataResetter<Recipe> provideRecipeSyncDataResetter(RecipeSyncDataResetter instance) {
+        return instance;
+    }
+
     //endregion
 
 

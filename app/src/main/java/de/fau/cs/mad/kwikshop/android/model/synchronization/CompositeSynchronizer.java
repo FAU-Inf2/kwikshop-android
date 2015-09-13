@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.model.synchronization;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,11 +30,11 @@ import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 
 /**
- * Synchronizer that synchronized both shopping lists and recipes
- * and posts progress updates to EventBus
+ * Central class coordinating syncing of all synced data
  */
 public class CompositeSynchronizer {
 
+    private final ConditionalSyncDataResetter syncDataResetter;
     private final ListSynchronizer<ShoppingList, ShoppingListServer> shoppingListSynchronizer;
     private final ListSynchronizer<Recipe, RecipeServer> recipeSynchronizer;
     private final RestClientFactory restClientFactory;
@@ -43,12 +44,17 @@ public class CompositeSynchronizer {
     private final SimpleStorage<BoughtItem> boughtItemStorage;
 
     @Inject
-    public CompositeSynchronizer(ListSynchronizer<ShoppingList, ShoppingListServer> shoppingListSynchronizer,
+    public CompositeSynchronizer(ConditionalSyncDataResetter syncDataResetter,
+                                 ListSynchronizer<ShoppingList, ShoppingListServer> shoppingListSynchronizer,
                                  ListSynchronizer<Recipe, RecipeServer> recipeSynchronizer,
                                  SimpleStorage<BoughtItem> boughtItemStorage,
                                  RestClientFactory restClientFactory,
                                  ResourceProvider resourceProvider,
                                  Context context) {
+
+        if(syncDataResetter == null) {
+            throw new ArgumentNullException("syncDataResetter");
+        }
 
         if(shoppingListSynchronizer == null) {
             throw new ArgumentNullException("shoppingListSynchronizer");
@@ -74,6 +80,7 @@ public class CompositeSynchronizer {
             throw new ArgumentNullException("context");
         }
 
+        this.syncDataResetter = syncDataResetter;
         this.shoppingListSynchronizer = shoppingListSynchronizer;
         this.recipeSynchronizer = recipeSynchronizer;
         this.boughtItemStorage = boughtItemStorage;
@@ -100,6 +107,10 @@ public class CompositeSynchronizer {
 
         // start synchronization
         post(SynchronizationEvent.CreateStartedMessage());
+
+        // reset all local server data if the used server or user has changed
+        syncDataResetter.resetSyncDataIfNecessary();
+
 
         // get a synchronization lease
 
@@ -144,7 +155,7 @@ public class CompositeSynchronizer {
 
     private void sendBoughtItems() {
         try {
-            List<BoughtItem> syncableBoughtItems = new ArrayList<BoughtItem>();
+            List<BoughtItem> syncableBoughtItems = new ArrayList<>();
             for(BoughtItem boughtItem: boughtItemStorage.getItems()) {
                 if(boughtItem.isSync()) {
                     syncableBoughtItems.add(boughtItem);
@@ -174,7 +185,9 @@ public class CompositeSynchronizer {
 
             shoppingListSynchronizer.synchronize();
 
-        } catch (SynchronizationException ex) {
+        } catch (Exception ex) {
+
+            Log.e("KwikShop-Sync", "Exception in ShoppingList synchronization", ex);
 
             String message = String.format("%s\n\n%s", resourceProvider.getString(R.string.error_synchronizing_shoppingLists), ex.toString());
             post(SynchronizationEvent.CreateFailedMessage(message));
@@ -192,7 +205,9 @@ public class CompositeSynchronizer {
 
             recipeSynchronizer.synchronize();
 
-        } catch (SynchronizationException ex) {
+        } catch (Exception ex) {
+
+            Log.e("KwikShop-Sync", "Exception in Recipe synchronization", ex);
 
             String message = String.format("%s\n\n%s", resourceProvider.getString(R.string.error_synchronizing_recipes), ex.toString());
             post(SynchronizationEvent.CreateFailedMessage(message));
@@ -210,7 +225,7 @@ public class CompositeSynchronizer {
     private class UpdateLeaseRunnable implements Runnable {
 
         private LeaseResource leaseClient;
-        private SynchronizationLease[] lease;
+        private final SynchronizationLease[] lease;
         private boolean cancelled = false;
 
 

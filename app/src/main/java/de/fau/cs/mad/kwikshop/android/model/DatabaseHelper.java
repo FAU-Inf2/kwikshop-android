@@ -21,6 +21,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.common.ConnectionInfo;
+import de.fau.cs.mad.kwikshop.android.util.DateFormatter;
 import de.fau.cs.mad.kwikshop.common.AccountID;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionBrandData;
 import de.fau.cs.mad.kwikshop.android.common.AutoCompletionData;
@@ -48,7 +50,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 46; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 47; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -89,6 +91,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private Dao<BoughtItem, Integer> boughtItemDao = null;
     private RuntimeExceptionDao<BoughtItem, Integer> boughtItemRuntimeDao = null;
 
+    private Dao<ConnectionInfo, Integer> connectionInfoDao = null;
+    private RuntimeExceptionDao<ConnectionInfo, Integer> connectionInfoRuntimeDao = null;
+
+
 
     @Inject
     public DatabaseHelper(Context context)  {
@@ -104,8 +110,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.createTable(connectionSource, AccountID.class);
             TableUtils.createTable(connectionSource, ShoppingList.class);
             TableUtils.createTable(connectionSource, Unit.class);
-            TableUtils.createTable(connectionSource, Group.class);
             TableUtils.createTable(connectionSource, CalendarEventDate.class);
+            TableUtils.createTable(connectionSource, Group.class);
             TableUtils.createTable(connectionSource, AutoCompletionData.class);
             TableUtils.createTable(connectionSource, LastLocation.class);
             TableUtils.createTable(connectionSource, AutoCompletionBrandData.class);
@@ -113,6 +119,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             TableUtils.createTable(connectionSource, DeletedItem.class);
             TableUtils.createTable(connectionSource, DeletedList.class);
             TableUtils.createTable(connectionSource, BoughtItem.class);
+            TableUtils.createTable(connectionSource, ConnectionInfo.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -545,6 +552,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 e.printStackTrace();
             }
         }
+
+
+        if(oldVersion < 47) {
+            try {
+                TableUtils.createTable(connectionSource, ConnectionInfo.class);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
@@ -730,6 +746,22 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             boughtItemRuntimeDao = getRuntimeExceptionDao(BoughtItem.class);
         }
         return boughtItemRuntimeDao;
+    }
+
+
+    public Dao<ConnectionInfo, Integer> getConnectionInfoDao() throws SQLException {
+        if(connectionInfoDao == null) {
+            connectionInfoDao = getDao(ConnectionInfo.class);
+        }
+
+        return connectionInfoDao;
+    }
+
+    public RuntimeExceptionDao<ConnectionInfo, Integer> getConnectionInfoRuntimeDao() throws SQLException {
+        if(connectionInfoRuntimeDao ==null) {
+            connectionInfoRuntimeDao = getRuntimeExceptionDao(ConnectionInfo.class);
+        }
+        return connectionInfoRuntimeDao;
     }
 
     @Override

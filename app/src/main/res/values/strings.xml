@@ -188,14 +188,24 @@
               &lt;br>&lt;a href="http://square.github.io/dagger/">Project Site&lt;/a></item>
         <item>&lt;b>Butter Knife&lt;/b>, licensed under the Apache License, Version 2.0
               &lt;br>&lt;a href="http://jakewharton.github.io/butterknife/">Project Site&lt;/a></item>
-        <item>&lt;b>Google Maps Utils&lt;/b>, licensed under the Apache License, Version 2.0
-              &lt;br>&lt;a href="http://googlemaps.github.io/android-maps-utils/">Project Site&lt;/a></item>
-        <item>&lt;b>HttpClient for Android&lt;/b>, licensed under the Apache License, Version 2.0
-              &lt;br>&lt;a href="https://hc.apache.org/httpcomponents-client-4.3.x/android-port.html">Project Site&lt;/a></item>
-        <item>&lt;b>Java client for Google Places API &lt;/b>, licensed under the MIT License
-              &lt;br>&lt;a href="https://github.com/windy1/google-places-api-java#quickstart">Project Site&lt;/a></item>
         <item>&lt;b>Joda Time&lt;/b>, licensed under the Apache License, Version 2.0
               &lt;br>&lt;a href="http://www.joda.org/joda-time/">Project Site&lt;/a></item>
+        <item>&lt;b>Java client for Google Places API &lt;/b>, licensed under the MIT License
+              &lt;br>&lt;a href="https://github.com/windy1/google-places-api-java#quickstart">Project Site&lt;/a></item>
+        <item>&lt;b>HttpClient for Android&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a href="https://hc.apache.org/httpcomponents-client-4.3.x/android-port.html">Project Site&lt;/a></item>
+        <item>&lt;b>Jackson JSON Processor&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a href="http://wiki.fasterxml.com/JacksonHome">Project Site&lt;/a></item>
+        <item>&lt;b>dm77 Barcodescanner&lt;/b>, licensed under the Apache License, version 2.0
+              &lt;br>&lt;a href="https://github.com/dm77/barcodescanner">Project Site&lt;/a></item>
+        <item>&lt;b>Android Volley&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a href="https://github.com/mcxiaoke/android-volley">Project Site&lt;/a></item>
+        <item>&lt;b>jsoup&lt;/b>, licensed unter the MIT License
+              &lt;br>&lt;a href="http://jsoup.org/">Project Site&lt;/a></item>
+        <item>&lt;b>LDrawer&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a href="https://github.com/keklikhasan/LDrawer">Project Site&lt;/a></item>
+        <item>&lt;b>Google Maps Android API utility library&lt;/b>, licensed under the Apache License, Version 2.0
+              &lt;br>&lt;a href="http://googlemaps.github.io/android-maps-utils/">Project Site&lt;/a></item>
     </string-array>
 
 
@@ -449,5 +459,7 @@
     <string name="store_type_shoppingmall">Shopping Mall</string>
     <string name="store_type_store">Store</string>
     <string name="intent_share_separator">/#sc=</string>
+    <string name="playServices_Title">Google Play Services</string>
+    <string name="playServices_Description">This application uses Google Play Services</string>
 
 </resources>

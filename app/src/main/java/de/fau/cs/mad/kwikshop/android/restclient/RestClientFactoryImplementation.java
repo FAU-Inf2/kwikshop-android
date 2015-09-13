@@ -19,6 +19,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
 
+import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
@@ -136,7 +137,8 @@ public class RestClientFactoryImplementation implements RestClientFactory {
     }
 
     private String getApiHost() {
-        return SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, resourceProvider.getString(R.string.API_HOST), context);
+        int api_host = BuildConfig.DEBUG_MODE ? R.string.API_HOST_DEV : R.string.API_HOST;
+        return SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, resourceProvider.getString(api_host), context);
     }
 
 }

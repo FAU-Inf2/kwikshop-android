@@ -194,10 +194,10 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
             ButterKnife.inject(this, view);
         }
 
-        @InjectView(R.id.divider_table)
+        @InjectView(R.id.divider_layout)
         TableRow divider_table;
 
-        @InjectView(R.id.divider_tableBelow)
+        @InjectView(R.id.divider_layout_below)
         TableRow divider_tableBelow;
 
         @InjectView(R.id.list_row_textView_Main)

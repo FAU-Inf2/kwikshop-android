@@ -7,16 +7,11 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.TableRow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
-
-import java.util.Iterator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -120,7 +115,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             showDividerBelow = true;
 
         if(showDivider) {
-            viewHolder.tableRow_divider_table.setVisibility(View.VISIBLE);
+            viewHolder.divider_layout.setVisibility(View.VISIBLE);
             viewHolder.textView_CartCounter.setText(String.valueOf(shoppingListViewModel.getBoughtItemsCount()));
 
             // Special case: single item -> singular form of "Items"
@@ -129,11 +124,11 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             else
                 viewHolder.textView_Items.setText(R.string.items);
         } else {
-            viewHolder.tableRow_divider_table.setVisibility(View.GONE);
+            viewHolder.divider_layout.setVisibility(View.GONE);
         }
 
         if(showDividerBelow) {
-            viewHolder.tableRow_divider_tableBelow.setVisibility(View.VISIBLE);
+            viewHolder.divider_layout_below.setVisibility(View.VISIBLE);
             viewHolder.textView_CartCounterBelow.setText(String.valueOf(shoppingListViewModel.getBoughtItemsCount()));
 
             // Special case: single item -> singular form of "Items"
@@ -142,7 +137,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             else
                 viewHolder.textView_Items.setText(R.string.items);
         } else {
-            viewHolder.tableRow_divider_tableBelow.setVisibility(View.GONE);
+            viewHolder.divider_layout_below.setVisibility(View.GONE);
         }
 
         // Item name
@@ -222,7 +217,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             String text = displayHelper.getDisplayName(item.getGroup());
             viewHolder.textView_GroupHeaderName.setText(text);
         }
-        //TODO
+
+        /*
         if (multipleSelectionIsChecked) {
             viewHolder.checkBox_move.setVisibility(View.VISIBLE);
             viewHolder.button_moveDown.setVisibility(View.VISIBLE);
@@ -237,11 +233,16 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.button_moveDownBelow.setVisibility(View.GONE);
             viewHolder.button_moveUpBelow.setVisibility(View.GONE);
         }
+        */
+
+
         // Specific changes for bought Items
         if (item.isBought()) {
             viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
+            /*
             viewHolder.checkBox_move.setChecked(false);
+            */
             // Hide details - maybe allow the user to toggle this
             viewHolder.textView_Comment.setVisibility(View.GONE);
             viewHolder.textView_Brand.setVisibility(View.GONE);
@@ -271,13 +272,16 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             // Remove delete button
             viewHolder.imageView_delete.setVisibility(View.GONE);
             viewHolder.imageView_delete.setOnClickListener(null);
+            /*
             viewHolder.checkBox_move.setChecked(false);
+            */
 
             // Remove strikethrough, reset text appearance
             viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
             viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_Medium);
         }
 
+       /*
 
         viewHolder.checkBox_move.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -320,7 +324,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         viewHolder.checkBox_multipleSelection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //TODO
                     Iterator <ItemViewModel> itr = shoppingListViewModel.getItems().iterator();
                     while(itr.hasNext()){
                         ItemViewModel itemvm = itr.next();
@@ -368,7 +371,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         viewHolder.checkBox_multipleSelectionBelow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //TODO
                 Iterator <ItemViewModel> itr = shoppingListViewModel.getItems().iterator();
                 while(itr.hasNext()){
                     ItemViewModel itemvm = itr.next();
@@ -385,6 +387,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                 shoppingListViewModel.changeCheckBoxesVisibility();
             }
         });
+
+        */
+
         // If item is highlighted, set color to red
         if (item.isHighlight()) {
             viewHolder.textView_Name.setTextColor(Color.RED);
@@ -441,14 +446,14 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             ButterKnife.inject(this, view);
         }
 
-        @InjectView(R.id.divider_table)
-        TableRow tableRow_divider_table;
+        @InjectView(R.id.divider_layout)
+        RelativeLayout divider_layout;
 
         @InjectView(R.id.textView_cartCounter)
         TextView textView_CartCounter;
 
-        @InjectView(R.id.divider_tableBelow)
-        TableRow tableRow_divider_tableBelow;
+        @InjectView(R.id.divider_layout_below)
+        RelativeLayout divider_layout_below;
 
         @InjectView(R.id.textView_cartCounterBelow)
         TextView textView_CartCounterBelow;
@@ -477,6 +482,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         @InjectView(R.id.list_row_imageView_delete)
         ImageView imageView_delete;
 
+        /*
         @InjectView(R.id.button_moveUp)
         Button button_moveUp;
 
@@ -497,6 +503,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         @InjectView(R.id.checkBox_move)
         CheckBox checkBox_move;
+        */
 
 
 

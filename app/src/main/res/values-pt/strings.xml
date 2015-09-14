@@ -211,7 +211,7 @@
     <string name="settings_option_8_login_descr">Faça login para sincronizar e compartilhar listas compras</string>
     <string name="settings_option_8_login_name">Conta / Login</string>
     <string name="share_helpmessage">Você pode agora compartilhar essa lista de compras (ex. via SMS, Email).</string>
-    <string name="share_intentstring">Eu quero compartilhar minha lista de compras com você! Simplesmente copie essa mensagem, crie a lista de compras no KwikShop e cole na mensagem, incluindo esse código: #%s#</string>
+    <string name="share_intentstring">Eu quero compartilhar minha lista de compras com você! Instale Kwik Shop, depois clique aqui: http://kwikshop.is.nice/#sc=%s</string>
     <string name="share_notloggedin">Você precisa estar logado para compartilhar essa lista de compras.</string>
     <string name="share_sharingcodeerror">Erro ao buscar o código de compartilhamento, por favor tente novamente mais tarde.</string>
     <string name="share_success">Agora você pode acessar a lista de compras %s.</string>

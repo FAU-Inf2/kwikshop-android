@@ -31,6 +31,7 @@ import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShareSuccessEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.StartSharingCodeIntentEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEventType;
 import de.fau.cs.mad.kwikshop.android.viewmodel.BaseViewModel;
@@ -56,6 +57,8 @@ public class BaseActivity extends AppCompatActivity implements
 
     public static FrameLayout frameLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+
+    protected boolean startSharingCodeIntent = false;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -89,6 +92,7 @@ public class BaseActivity extends AppCompatActivity implements
         // style actionbar
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
@@ -214,8 +218,15 @@ public class BaseActivity extends AppCompatActivity implements
 
             if (event.getEventType() == SynchronizationEventType.Completed) {
                 dismissSyncProgressDialog();
+
+                if(startSharingCodeIntent) {
+                    startSharingCodeIntent = false;
+                    EventBus.getDefault().post(new StartSharingCodeIntentEvent());
+                }
+
             } else if (event.getEventType() == SynchronizationEventType.Failed) {
                 dismissSyncProgressDialog();
+                startSharingCodeIntent = false;
 
                 AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
                 messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);

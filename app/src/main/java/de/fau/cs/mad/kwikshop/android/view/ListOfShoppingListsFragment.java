@@ -49,7 +49,7 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // set title for actionbar
-        getActivity().setTitle(R.string.app_name);
+        getActivity().setTitle(R.string.title_activity_list_of_shopping_list);
 
 
 

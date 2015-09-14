@@ -39,7 +39,7 @@
     <string name="nothing">Nada</string>
     <string name="other">Outros</string>
     <string name="overflow_action_menu_about">Sobre</string>
-    <string name="overflow_action_menu_listofshoppinglists">Lista de Compras</string>
+    <string name="overflow_action_menu_listofshoppinglists">Listas de Compras</string>
     <string name="overflow_action_menu_settings">Configurações</string>
     <string name="save">Salvar</string>
     <string name="settings_option_2_desc">Troque de linguagem</string>
@@ -59,7 +59,7 @@
     <string name="title_activity_about">Sobre</string>
     <string name="title_activity_list_of_shopping_list">Listas de Compras</string>
     <string name="title_activity_settings">Configurações</string>
-    <string name="title_activity_shopping_list">Lista de Compras</string>
+    <string name="title_activity_shopping_list">Listas de Compras</string>
     <string name="title_activity_shopping_list_detail">Detalhes</string>
     <string name="title_default_list">Lista de Compras 1</string>
     <string name="title_fragment_item_details">Novo item</string>
@@ -211,7 +211,7 @@
     <string name="settings_option_8_login_descr">Faça login para sincronizar e compartilhar listas compras</string>
     <string name="settings_option_8_login_name">Conta / Login</string>
     <string name="share_helpmessage">Você pode agora compartilhar essa lista de compras (ex. via SMS, Email).</string>
-    <string name="share_intentstring">Eu quero compartilhar minha lista de compras com você! Simplesmente copie essa mensagem, crie a lista de compras no KwikShop e cole na mensagem, incluindo esse código: #%s#</string>
+    <string name="share_intentstring">Eu quero compartilhar minha lista de compras com você! Instale Kwik Shop, depois clique aqui: http://kwikshop.is.nice/#sc=%s</string>
     <string name="share_notloggedin">Você precisa estar logado para compartilhar essa lista de compras.</string>
     <string name="share_sharingcodeerror">Erro ao buscar o código de compartilhamento, por favor tente novamente mais tarde.</string>
     <string name="share_success">Agora você pode acessar a lista de compras %s.</string>

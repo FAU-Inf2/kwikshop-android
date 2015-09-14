@@ -1,11 +1,13 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -23,6 +25,7 @@ import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.StartSharingCodeIntentEvent;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
@@ -50,6 +53,8 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
     private int listId = -1;
 
     private ShoppingListViewModel viewModel;
+
+    private ProgressDialog progressDialog;
 
 
     public static Intent getIntent(Context context, int shoppingListId) {
@@ -102,6 +107,12 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
             case R.id.action_shopping_mode:
                 /* start shopping mode */
                 viewLauncher.showShoppingListInShoppingMode(listId);
+                /*
+                Intent shoppingModeIntent = ShoppingListActivity.getIntent(getApplicationContext(), getIntent().getExtras().getInt(SHOPPING_LIST_ID));
+                shoppingModeIntent.putExtra(SHOPPING_MODE, true);
+                shoppingModeIntent.putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true);
+                startActivity(shoppingModeIntent);
+                */
                 break;
             case R.id.refresh_current_supermarket:
                 return false;
@@ -125,9 +136,14 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
                     break;
                 }
 
-                /* Synchronize first to make sure this ShoppingList exists on the server */
-                SyncingActivity.requestSync();
-                startSharingCodeIntent(ListStorageFragment.getLocalListStorage().loadList(listId).getServerId());
+                /* Synchronize if serverId is 0, then start the intent */
+                int serverId = ListStorageFragment.getLocalListStorage().loadList(listId).getServerId();
+                if(serverId == 0) {
+                    startSharingCodeIntent = true;
+                    SyncingActivity.requestSync();
+                } else {
+                    startSharingCodeIntent(serverId);
+                }
                 break;
 
             case R.id.action_edit_items:
@@ -140,9 +156,27 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("unused")
+    public void onEventMainThread(StartSharingCodeIntentEvent event) {
+        int serverId = ListStorageFragment.getLocalListStorage().loadList(listId).getServerId();
+        startSharingCodeIntent(serverId);
+    }
+
     protected void startSharingCodeIntent(final Integer serverId) {
 
         new AsyncTask<Integer, Void, String>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog = new ProgressDialog(ShoppingListActivity.this);
+                progressDialog.setMessage(ShoppingListActivity.this.getResources().getString(R.string.share_loading));
+                progressDialog.setIndeterminate(false);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setCancelable(true);
+                progressDialog.show();
+
+            }
 
             @Override
             protected String doInBackground(Integer... id) {
@@ -160,13 +194,16 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
             protected void onPostExecute(String result) {
 
                 if(result == null) {
-                    // Disabled because there is already an error messagebox when syncing fails
-                    /*AlertDialog.Builder messageBox = new AlertDialog.Builder(ShoppingListActivity.this);
-                    messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
-                    messageBox.setMessage(R.string.share_sharingcodeerror);
-                    messageBox.create().show();*/
+                    progressDialog.setMessage(getApplicationContext().getResources().getString(R.string.share_sharingcodeerror));
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            progressDialog.dismiss();
+                        }
+                    }, 1000);
                 } else {
                     /* Create intent and send it */
+                    progressDialog.dismiss();
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
                     sendIntent.putExtra(Intent.EXTRA_TEXT,

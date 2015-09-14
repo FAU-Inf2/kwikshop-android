@@ -30,6 +30,11 @@
                 android:visible="true"
                 android:title="@string/overflow_action_menu_move_all_from_shopping_cart" />
 
+            <item android:id="@+id/action_edit_items"
+                app:showAsAction="ifRoom"
+                android:visible="true"
+                android:title="@string/overflow_action_menu_edit" />
+
             <item android:id="@+id/action_shopping_mode"
                   app:showAsAction="ifRoom"
                   android:visible="true"

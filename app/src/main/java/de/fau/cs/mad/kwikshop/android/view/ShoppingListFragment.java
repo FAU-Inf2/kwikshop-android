@@ -176,7 +176,7 @@ public class ShoppingListFragment
         final ShoppingListAdapter shoppingListAdapter = new ShoppingListAdapter(getActivity(), viewModel,
                 viewModel.getItems(), displayHelper);
         shoppingListView.setAdapter(shoppingListAdapter);
-       // shoppingListView.setSelector(R.drawable.list_selector);
+
 
         new ListViewItemCommandBinding(ListViewItemCommandBinding.ListViewItemCommandType.Click,
                 shoppingListView,

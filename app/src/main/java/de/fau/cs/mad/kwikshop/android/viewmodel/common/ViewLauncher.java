@@ -17,6 +17,9 @@ public interface ViewLauncher {
 
     void showShoppingListInShoppingMode(int shoppingListId);
 
+    void showShoppingListInEditMode(int shoppingListId);
+
+
     void showShoppingListWithSupermarketDialog(int shoppingListId);
 
     void showDatePicker(int year, int month, int day, int hour, int minute);

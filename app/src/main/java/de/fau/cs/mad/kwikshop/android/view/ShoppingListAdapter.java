@@ -1,12 +1,17 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,6 +32,7 @@ import de.fau.cs.mad.kwikshop.common.Item;
 public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<ItemViewModel> implements UndoAdapter , ObservableArrayList.Listener<ItemViewModel> {
 
     private final Context context;
+    private final Activity activity;
     private final ShoppingListViewModel shoppingListViewModel;
     private final ObservableArrayList<ItemViewModel, Integer> items;
     private final DisplayHelper displayHelper;
@@ -36,11 +42,11 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
      * Initializes a new instance of ShoppingListAdapter
      *
      */
-    public ShoppingListAdapter(Context context, ShoppingListViewModel shoppingListViewModel, ObservableArrayList<ItemViewModel, Integer> items,
+    public ShoppingListAdapter(Activity activity, ShoppingListViewModel shoppingListViewModel, ObservableArrayList<ItemViewModel, Integer> items,
                                DisplayHelper displayHelper) {
         super(items);
 
-        if(context == null) {
+        if(activity == null) {
             throw new IllegalArgumentException("'context' must not be null");
         }
 
@@ -56,12 +62,14 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             throw new IllegalArgumentException("'displayHelper' must not be null");
         }
 
-        this.context = context;
+        this.context = activity.getApplicationContext();
+        this.activity = activity;
         this.shoppingListViewModel = shoppingListViewModel;
         this.items = items;
         this.displayHelper = displayHelper;
 
         shoppingListViewModel.getItems().addListener(this);
+
     }
 
 
@@ -218,6 +226,22 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_GroupHeaderName.setText(text);
         }
 
+        viewHolder.checkBox_edit.setVisibility(View.VISIBLE);
+
+        /*
+        // Edit mode is on
+        if(activity.getIntent().getExtras().getBoolean(ShoppingListActivity.EDIT_MODE)){
+            viewHolder.checkBox_edit.setVisibility(View.VISIBLE);
+            Log.e("SLA", "Edit mode is on");
+        } else{
+            Log.e("SLA", "Edit mode is not on");
+            viewHolder.checkBox_edit.setVisibility(View.GONE);
+
+        }
+        */
+
+
+
         /*
         if (multipleSelectionIsChecked) {
             viewHolder.checkBox_move.setVisibility(View.VISIBLE);
@@ -281,9 +305,9 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_Medium);
         }
 
-       /*
 
-        viewHolder.checkBox_move.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        viewHolder.checkBox_edit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked)
@@ -292,6 +316,8 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                     shoppingListViewModel.getCheckedItems().remove(itemViewModel);
             }
         });
+
+        /*
 
         viewHolder.button_moveDown.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -500,10 +526,12 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
         @InjectView(R.id.checkBox_multipleSelectionBelow)
         CheckBox checkBox_multipleSelectionBelow;
-
-        @InjectView(R.id.checkBox_move)
-        CheckBox checkBox_move;
         */
+
+
+        @InjectView(R.id.checkBox_edit)
+        CheckBox checkBox_edit;
+
 
 
 

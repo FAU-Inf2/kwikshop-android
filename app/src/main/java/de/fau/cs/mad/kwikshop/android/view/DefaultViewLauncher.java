@@ -91,6 +91,13 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
+    public void showShoppingListInEditMode(int shoppingListId) {
+        activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId)
+                .putExtra(ShoppingListActivity.EDIT_MODE, true)
+                .putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true));
+    }
+
+    @Override
     public void showShoppingListWithSupermarketDialog(int shoppingListId) {
         activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId));
     }

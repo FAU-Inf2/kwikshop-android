@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.TableRow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -78,8 +78,8 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        viewHolder.divider_table.setVisibility(View.GONE);
-        viewHolder.divider_tableBelow.setVisibility(View.GONE);
+        viewHolder.divider_layout.setVisibility(View.GONE);
+        viewHolder.divider_layout_below.setVisibility(View.GONE);
 
         Item item = items.get(position).getItem();
 
@@ -195,10 +195,10 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
         }
 
         @InjectView(R.id.divider_layout)
-        TableRow divider_table;
+        RelativeLayout divider_layout;
 
         @InjectView(R.id.divider_layout_below)
-        TableRow divider_tableBelow;
+        RelativeLayout divider_layout_below;
 
         @InjectView(R.id.list_row_textView_Main)
         TextView textView_RecipeName;
@@ -215,7 +215,7 @@ public class RecipeAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<
         @InjectView(R.id.group_header)
         View view_GroupHeader;
 
-        @InjectView(R.id.checkBox_move)
+        @InjectView(R.id.checkBox_edit)
         CheckBox checkBox_move;
 
     }

@@ -89,6 +89,7 @@ public class BaseActivity extends AppCompatActivity implements
         // style actionbar
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 

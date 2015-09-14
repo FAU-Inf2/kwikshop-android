@@ -69,7 +69,6 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/text_icons"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingTop="5dp"
@@ -80,12 +79,12 @@
             android:id="@+id/list_row_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/text_icons"
             android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/checkBox_edit"
-
+                android:button="@drawable/abc_btn_check_material"
+                android:buttonTint="@color/primary_Color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

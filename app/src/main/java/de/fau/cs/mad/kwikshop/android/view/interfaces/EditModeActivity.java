@@ -1,15 +1,18 @@
 package de.fau.cs.mad.kwikshop.android.view.interfaces;
-import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 public interface EditModeActivity {
 
-    View getSaveButton();
+    ImageButton getSaveButton();
 
-    View getDeleteButton();
+    ImageButton getDeleteButton();
 
-    View getAddToShoppingCartButton();
+    ImageButton getAddToShoppingCartButton();
 
-    View getRemoveFromShoppingCartButton();
+    ImageButton getRemoveFromShoppingCartButton();
+
+    TextView getMarkedItemsCountTextView();
 
 
 }

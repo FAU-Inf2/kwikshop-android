@@ -5,6 +5,8 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,9 +27,11 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.support.v4.app.Fragment;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
@@ -351,39 +355,85 @@ public class ShoppingListFragment
         if (getActivity() instanceof EditModeActivity && editModeIsEnabled ) {
 
             EditModeActivity parent = (EditModeActivity) getActivity();
-            View saveButton = parent.getSaveButton();
 
-            saveButton.setOnClickListener(new View.OnClickListener() {
+            final TextView markedItems = parent.getMarkedItemsCountTextView();
+
+            // hide add layouts
+            ((ViewManager) quickAddLayout.getParent()).removeView(quickAddLayout);
+            ((ViewManager) floatingActionButton.getParent()).removeView(floatingActionButton);
+
+            markedItems.setText("" + 0 + " / " + viewModel.getItems().size());
+
+            shoppingListAdapter.setItemChangedCountLister(new ShoppingListAdapter.ItemChangedCountListener() {
+                @Override
+                public void onItemCountChange() {
+                    markedItems.setText("" + viewModel.getCheckedItems().size() + " / " + viewModel.getItems().size());
+                }
+            });
+
+
+            ImageButton saveButton = parent.getSaveButton();
+            saveButton.setOnClickListener(new ImageButton.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     viewModel.restartShoppingList();
                 }
             });
 
-            View deleteButton = parent.getDeleteButton();
 
-            deleteButton.setOnClickListener(new View.OnClickListener() {
+            final ImageButton deleteButton = parent.getDeleteButton();
+            deleteButton.setOnClickListener(new ImageButton.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e("SLF", "Deleter was clicked");
                     Iterator<ItemViewModel> iterator = viewModel.getCheckedItems().iterator();
+                    ArrayList<ItemViewModel> deletedItems = new ArrayList<>(viewModel.getCheckedItems().size());
                     while(iterator.hasNext()){
                         ItemViewModel itemViewModel = iterator.next();
-                        Log.e("SLF", "Item: " + itemViewModel.getItem().getName() + " was deleted");
+                        deletedItems.add(itemViewModel);
                         viewModel.deleteItemWithoutDialog(itemViewModel.getItem().getId());
                     }
-                    viewModel.restartShoppingList();
+                    for(ItemViewModel itemView : deletedItems){
+                        viewModel.getCheckedItems().remove(itemView);
+                    }
+                    markedItems.setText("" + viewModel.getCheckedItems().size() + " / " + viewModel.getItems().size());
                 }
             });
 
+            ImageButton addToCartButton = parent.getAddToShoppingCartButton();
+            addToCartButton.setOnClickListener(new ImageButton.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Iterator<ItemViewModel> iterator = viewModel.getCheckedItems().iterator();
+                    while(iterator.hasNext()) {
+                        ItemViewModel itemViewModel = iterator.next();
+                        itemViewModel.getItem().setBought(true);
+                    }
+
+                    viewModel.moveBoughtItemsToEnd();
+
+                }
+            });
+
+            ImageButton removeFromCartButton = parent.getRemoveFromShoppingCartButton();
+            removeFromCartButton.setOnClickListener(new ImageButton.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Iterator<ItemViewModel> iterator = viewModel.getCheckedItems().iterator();
+                    while(iterator.hasNext()) {
+                        ItemViewModel itemViewModel = iterator.next();
+                        itemViewModel.getItem().setBought(false);
+                    }
+
+                    viewModel.moveBoughtItemsToEnd();
+
+                }
+            });
+
+
+
+
+
         }
-
-
-
-
-
-
-
 
         return rootView;
     }
@@ -545,5 +595,6 @@ public class ShoppingListFragment
             inputMethodManager.showSoftInput(textView_QuickAdd, InputMethodManager.SHOW_IMPLICIT);
         }
     }
+
 
 }

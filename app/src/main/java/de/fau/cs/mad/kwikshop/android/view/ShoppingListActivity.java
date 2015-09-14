@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -237,7 +239,6 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
         if (extras != null) {
             listId = extras.getInt(SHOPPING_LIST_ID);
             if(extras.getBoolean(EDIT_MODE)){
-                Log.e("SLA", "CustomActionBar is on");
                 showCustomActionBar();
             }
         }
@@ -281,33 +282,39 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
         actionBar.setDisplayShowTitleEnabled(false);
 
         //show custom action bar
-        View view = getLayoutInflater().inflate(R.layout.actionbar_save_cancel, null);
+        View view = getLayoutInflater().inflate(R.layout.actionbar_edit_mode, null);
         actionBar.setCustomView(view);
     }
 
 
     @Override
-    public View getSaveButton() {
+    public ImageButton getSaveButton() {
         ActionBar actionBar = getSupportActionBar();
-        return actionBar.getCustomView().findViewById(R.id.button_save);
+        return (ImageButton) actionBar.getCustomView().findViewById(R.id.button_save);
 
     }
 
     @Override
-    public View getDeleteButton() {
+    public ImageButton getDeleteButton() {
         ActionBar actionBar = getSupportActionBar();
-        return actionBar.getCustomView().findViewById(R.id.button_remove);
+        return (ImageButton) actionBar.getCustomView().findViewById(R.id.button_remove);
     }
 
     @Override
-    public View getAddToShoppingCartButton() {
+    public ImageButton getAddToShoppingCartButton() {
         ActionBar actionBar = getSupportActionBar();
-        return actionBar.getCustomView().findViewById(R.id.button_add_to_cart);
+        return (ImageButton) actionBar.getCustomView().findViewById(R.id.button_add_to_cart);
     }
 
     @Override
-    public View getRemoveFromShoppingCartButton() {
+    public ImageButton getRemoveFromShoppingCartButton() {
         ActionBar actionBar = getSupportActionBar();
-        return actionBar.getCustomView().findViewById(R.id.button_remove_from_cart);
+        return (ImageButton) actionBar.getCustomView().findViewById(R.id.button_remove_from_cart);
+    }
+
+    @Override
+    public TextView getMarkedItemsCountTextView() {
+        ActionBar actionBar = getSupportActionBar();
+        return (TextView) actionBar.getCustomView().findViewById(R.id.textView_marked_items_count);
     }
 }

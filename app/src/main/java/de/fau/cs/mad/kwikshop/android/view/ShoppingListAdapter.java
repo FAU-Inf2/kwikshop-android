@@ -36,6 +36,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
     private final ShoppingListViewModel shoppingListViewModel;
     private final ObservableArrayList<ItemViewModel, Integer> items;
     private final DisplayHelper displayHelper;
+    private ItemChangedCountListener listener;
     private boolean multipleSelectionIsChecked = false;
 
     /**
@@ -69,9 +70,15 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         this.displayHelper = displayHelper;
 
         shoppingListViewModel.getItems().addListener(this);
-
     }
 
+    public void setItemChangedCountLister(ItemChangedCountListener listener){
+        this.listener = listener;
+    }
+
+    public interface ItemChangedCountListener {
+        void onItemCountChange();
+    }
 
     @Override
     public long getItemId(int position) {
@@ -289,6 +296,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         // Edit mode is on
         if(activity.getIntent().getExtras().getBoolean(ShoppingListActivity.EDIT_MODE)){
             viewHolder.checkBox_edit.setVisibility(View.VISIBLE);
+            viewHolder.checkBox_edit.bringToFront();
         } else{
             viewHolder.checkBox_edit.setVisibility(View.GONE);
 
@@ -297,17 +305,17 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         viewHolder.checkBox_edit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
+                if (isChecked) {
                     shoppingListViewModel.getCheckedItems().add(itemViewModel);
-                    Log.e("SLF", "Item added");
-                }
-                else {
+                } else {
                     shoppingListViewModel.getCheckedItems().remove(itemViewModel);
-                    Log.e("SLF", "Item removed");
                 }
-
+                listener.onItemCountChange();
             }
         });
+
+
+
 
 
 

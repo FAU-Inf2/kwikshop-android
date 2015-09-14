@@ -26,13 +26,14 @@ import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.view.interfaces.EditModeActivity;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 
-public class ShoppingListActivity extends BaseActivity implements SaveDeleteActivity {
+public class ShoppingListActivity extends BaseActivity implements EditModeActivity {
 
     @Inject
     RestClientFactory clientFactory;
@@ -259,5 +260,17 @@ public class ShoppingListActivity extends BaseActivity implements SaveDeleteActi
     public View getDeleteButton() {
         ActionBar actionBar = getSupportActionBar();
         return actionBar.getCustomView().findViewById(R.id.button_remove);
+    }
+
+    @Override
+    public View getAddToShoppingCartButton() {
+        ActionBar actionBar = getSupportActionBar();
+        return actionBar.getCustomView().findViewById(R.id.button_add_to_cart);
+    }
+
+    @Override
+    public View getRemoveFromShoppingCartButton() {
+        ActionBar actionBar = getSupportActionBar();
+        return actionBar.getCustomView().findViewById(R.id.button_remove_from_cart);
     }
 }

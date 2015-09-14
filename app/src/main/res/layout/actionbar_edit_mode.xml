@@ -18,6 +18,33 @@
         android:paddingTop="20dp" />
 
     <ImageButton
+        android:id="@+id/button_add_to_cart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_to_cart"
+        android:background="@android:color/transparent"
+        android:layout_alignBottom="@+id/button_save"
+        android:layout_toRightOf="@+id/button_remove"
+        android:paddingRight="30dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp" />
+
+    <ImageButton
+        android:id="@+id/button_remove_from_cart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_remove_from_cart"
+        android:background="@android:color/transparent"
+        android:layout_alignBottom="@+id/button_save"
+        android:layout_toRightOf="@+id/button_add_to_cart"
+        android:paddingRight="30dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp" />
+
+
+
+
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button_save"

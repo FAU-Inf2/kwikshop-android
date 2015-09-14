@@ -50,6 +50,7 @@ import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
+import de.fau.cs.mad.kwikshop.android.view.interfaces.EditModeActivity;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.BarcodeScannerViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemViewModel;
@@ -347,9 +348,9 @@ public class ShoppingListFragment
         // edit mode
         boolean editModeIsEnabled =  getActivity().getIntent().getExtras().getBoolean(ShoppingListActivity.EDIT_MODE);
 
-        if (getActivity() instanceof SaveDeleteActivity && editModeIsEnabled ) {
+        if (getActivity() instanceof EditModeActivity && editModeIsEnabled ) {
 
-            SaveDeleteActivity parent = (SaveDeleteActivity) getActivity();
+            EditModeActivity parent = (EditModeActivity) getActivity();
             View saveButton = parent.getSaveButton();
 
             saveButton.setOnClickListener(new View.OnClickListener() {

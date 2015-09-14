@@ -366,7 +366,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         item.setComment(comment_text.getText().toString());
         item.setHighlight(highlight_checkbox.isChecked());
         viewModel.setImageItem();
-
+        selectedUnitIndex = numberPickerUnit.getValue();
         if (selectedUnitIndex >= 0) {
             Unit u = viewModel.getSelectedUnit(selectedUnitIndex);
             item.setUnit(u);

@@ -110,9 +110,6 @@ public class BaseActivity extends AppCompatActivity implements
         // handle click events in navigation drawer
         mNavigationView.setNavigationItemSelectedListener(this);
 
-
-
-
     }
 
 

@@ -2,6 +2,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -10,6 +11,7 @@ import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -34,7 +36,9 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCa
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import butterknife.ButterKnife;
 import butterknife.*;
@@ -46,6 +50,7 @@ import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.view.binding.ListViewItemCommandBinding;
+import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.BarcodeScannerViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
@@ -54,6 +59,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 import de.greenrobot.event.EventBus;
 import se.walkercrou.places.Place;
@@ -148,7 +154,7 @@ public class ShoppingListFragment
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         EventBus.getDefault().register(this);
 
@@ -336,6 +342,47 @@ public class ShoppingListFragment
                 }, getResources().getInteger(R.integer.sync_delay));
             }
         });
+
+
+        // edit mode
+        boolean editModeIsEnabled =  getActivity().getIntent().getExtras().getBoolean(ShoppingListActivity.EDIT_MODE);
+
+        if (getActivity() instanceof SaveDeleteActivity && editModeIsEnabled ) {
+
+            SaveDeleteActivity parent = (SaveDeleteActivity) getActivity();
+            View saveButton = parent.getSaveButton();
+
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewModel.restartShoppingList();
+                }
+            });
+
+            View deleteButton = parent.getDeleteButton();
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("SLF", "Deleter was clicked");
+                    Iterator<ItemViewModel> iterator = viewModel.getCheckedItems().iterator();
+                    while(iterator.hasNext()){
+                        ItemViewModel itemViewModel = iterator.next();
+                        Log.e("SLF", "Item: " + itemViewModel.getItem().getName() + " was deleted");
+                        viewModel.deleteItemWithoutDialog(itemViewModel.getItem().getId());
+                    }
+                    viewModel.restartShoppingList();
+                }
+            });
+
+        }
+
+
+
+
+
+
+
 
         return rootView;
     }

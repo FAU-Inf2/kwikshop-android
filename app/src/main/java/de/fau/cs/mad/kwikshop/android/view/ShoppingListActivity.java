@@ -7,9 +7,11 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import javax.inject.Inject;
 
@@ -24,12 +26,13 @@ import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
 import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 
-public class ShoppingListActivity extends BaseActivity {
+public class ShoppingListActivity extends BaseActivity implements SaveDeleteActivity {
 
     @Inject
     RestClientFactory clientFactory;
@@ -58,8 +61,11 @@ public class ShoppingListActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.overflow_action_menu, menu);
-        getMenuInflater().inflate(R.menu.shoppinglist_replacement_menu, menu);
+        if(!getIntent().getExtras().getBoolean(EDIT_MODE)){
+            getMenuInflater().inflate(R.menu.overflow_action_menu, menu);
+            getMenuInflater().inflate(R.menu.shoppinglist_replacement_menu, menu);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -68,11 +74,13 @@ public class ShoppingListActivity extends BaseActivity {
 
         MenuItem findLocationItem =  menu.findItem(R.id.refresh_current_supermarket);
 
-        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, this))
-            findLocationItem.setVisible(true);
-        else
-            findLocationItem.setVisible(false);
+        if(findLocationItem != null){
+            if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, this))
+                findLocationItem.setVisible(true);
+            else
+                findLocationItem.setVisible(false);
 
+        }
 
         return true;
     }
@@ -190,17 +198,16 @@ public class ShoppingListActivity extends BaseActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             listId = extras.getInt(SHOPPING_LIST_ID);
+            if(extras.getBoolean(EDIT_MODE)){
+                Log.e("SLA", "CustomActionBar is on");
+                showCustomActionBar();
+            }
         }
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().add(frameLayout.getId(), ShoppingListFragment.newInstance(listId)).commit();
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
     }
 
 
@@ -226,5 +233,31 @@ public class ShoppingListActivity extends BaseActivity {
 
 
 
+    protected void showCustomActionBar() {
 
+        //hide default action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        //show custom action bar
+        View view = getLayoutInflater().inflate(R.layout.actionbar_save_cancel, null);
+        actionBar.setCustomView(view);
+    }
+
+
+    @Override
+    public View getSaveButton() {
+        ActionBar actionBar = getSupportActionBar();
+        return actionBar.getCustomView().findViewById(R.id.button_save);
+
+    }
+
+    @Override
+    public View getDeleteButton() {
+        ActionBar actionBar = getSupportActionBar();
+        return actionBar.getCustomView().findViewById(R.id.button_remove);
+    }
 }

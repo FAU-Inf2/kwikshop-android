@@ -226,21 +226,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_GroupHeaderName.setText(text);
         }
 
-        viewHolder.checkBox_edit.setVisibility(View.VISIBLE);
-
-        /*
-        // Edit mode is on
-        if(activity.getIntent().getExtras().getBoolean(ShoppingListActivity.EDIT_MODE)){
-            viewHolder.checkBox_edit.setVisibility(View.VISIBLE);
-            Log.e("SLA", "Edit mode is on");
-        } else{
-            Log.e("SLA", "Edit mode is not on");
-            viewHolder.checkBox_edit.setVisibility(View.GONE);
-
-        }
-        */
-
-
 
         /*
         if (multipleSelectionIsChecked) {
@@ -264,9 +249,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         if (item.isBought()) {
             viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Small);
-            /*
-            viewHolder.checkBox_move.setChecked(false);
-            */
+
             // Hide details - maybe allow the user to toggle this
             viewHolder.textView_Comment.setVisibility(View.GONE);
             viewHolder.textView_Brand.setVisibility(View.GONE);
@@ -296,26 +279,37 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             // Remove delete button
             viewHolder.imageView_delete.setVisibility(View.GONE);
             viewHolder.imageView_delete.setOnClickListener(null);
-            /*
-            viewHolder.checkBox_move.setChecked(false);
-            */
 
-            // Remove strikethrough, reset text appearance
+            // Remove strike through, reset text appearance
             viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
             viewHolder.textView_Name.setTextAppearance(context, android.R.style.TextAppearance_Medium);
         }
 
 
+        // Edit mode is on
+        if(activity.getIntent().getExtras().getBoolean(ShoppingListActivity.EDIT_MODE)){
+            viewHolder.checkBox_edit.setVisibility(View.VISIBLE);
+        } else{
+            viewHolder.checkBox_edit.setVisibility(View.GONE);
+
+        }
 
         viewHolder.checkBox_edit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
+                if (isChecked){
                     shoppingListViewModel.getCheckedItems().add(itemViewModel);
-                else
+                    Log.e("SLF", "Item added");
+                }
+                else {
                     shoppingListViewModel.getCheckedItems().remove(itemViewModel);
+                    Log.e("SLF", "Item removed");
+                }
+
             }
         });
+
+
 
         /*
 

@@ -685,6 +685,14 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         );
     }
 
+    public void restartShoppingList(){
+        viewLauncher.showShoppingList(listId);
+    }
+
+    public void deleteItemWithoutDialog(int id){
+        listManager.deleteItem(listId, id);
+    }
+
 
 
     //endregion

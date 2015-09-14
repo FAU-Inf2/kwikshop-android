@@ -395,8 +395,10 @@ public class ShoppingListFragment
                     for(ItemViewModel itemView : deletedItems){
                         viewModel.getCheckedItems().remove(itemView);
                     }
+                    viewModel.moveBoughtItemsToEnd();
                     markedItems.setText("" + viewModel.getCheckedItems().size() + " / " + viewModel.getItems().size());
                 }
+
             });
 
             ImageButton addToCartButton = parent.getAddToShoppingCartButton();
@@ -408,9 +410,7 @@ public class ShoppingListFragment
                         ItemViewModel itemViewModel = iterator.next();
                         itemViewModel.getItem().setBought(true);
                     }
-
                     viewModel.moveBoughtItemsToEnd();
-
                 }
             });
 

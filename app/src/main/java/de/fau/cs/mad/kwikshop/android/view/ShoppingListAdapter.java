@@ -296,7 +296,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         // Edit mode is on
         if(activity.getIntent().getExtras().getBoolean(ShoppingListActivity.EDIT_MODE)){
             viewHolder.checkBox_edit.setVisibility(View.VISIBLE);
-            viewHolder.checkBox_edit.bringToFront();
         } else{
             viewHolder.checkBox_edit.setVisibility(View.GONE);
 

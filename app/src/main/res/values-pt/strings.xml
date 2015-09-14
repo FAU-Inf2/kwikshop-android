@@ -39,7 +39,7 @@
     <string name="nothing">Nada</string>
     <string name="other">Outros</string>
     <string name="overflow_action_menu_about">Sobre</string>
-    <string name="overflow_action_menu_listofshoppinglists">Lista de Compras</string>
+    <string name="overflow_action_menu_listofshoppinglists">Listas de Compras</string>
     <string name="overflow_action_menu_settings">Configurações</string>
     <string name="save">Salvar</string>
     <string name="settings_option_2_desc">Troque de linguagem</string>
@@ -59,7 +59,7 @@
     <string name="title_activity_about">Sobre</string>
     <string name="title_activity_list_of_shopping_list">Listas de Compras</string>
     <string name="title_activity_settings">Configurações</string>
-    <string name="title_activity_shopping_list">Lista de Compras</string>
+    <string name="title_activity_shopping_list">Listas de Compras</string>
     <string name="title_activity_shopping_list_detail">Detalhes</string>
     <string name="title_default_list">Lista de Compras 1</string>
     <string name="title_fragment_item_details">Novo item</string>

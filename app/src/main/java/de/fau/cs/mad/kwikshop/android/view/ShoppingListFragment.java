@@ -423,9 +423,7 @@ public class ShoppingListFragment
                         ItemViewModel itemViewModel = iterator.next();
                         itemViewModel.getItem().setBought(false);
                     }
-
                     viewModel.moveBoughtItemsToEnd();
-
                 }
             });
 

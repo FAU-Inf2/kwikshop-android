@@ -360,5 +360,6 @@
     <string name="radius">Radius</string>
     <string name="setting_change_radius_description">Radius des Supermarktfinders ändern</string>
     <string name="general">Allgemein</string>
+    <string name="overflow_action_menu_edit">Liste bearbeiten</string>
 
 </resources>

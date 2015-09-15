@@ -233,25 +233,6 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             viewHolder.textView_GroupHeaderName.setText(text);
         }
 
-
-        /*
-        if (multipleSelectionIsChecked) {
-            viewHolder.checkBox_move.setVisibility(View.VISIBLE);
-            viewHolder.button_moveDown.setVisibility(View.VISIBLE);
-            viewHolder.button_moveUp.setVisibility(View.VISIBLE);
-            viewHolder.button_moveDownBelow.setVisibility(View.VISIBLE);
-            viewHolder.button_moveUpBelow.setVisibility(View.VISIBLE);
-        }
-        else {
-            viewHolder.checkBox_move.setVisibility(View.GONE);
-            viewHolder.button_moveDown.setVisibility(View.GONE);
-            viewHolder.button_moveUp.setVisibility(View.GONE);
-            viewHolder.button_moveDownBelow.setVisibility(View.GONE);
-            viewHolder.button_moveUpBelow.setVisibility(View.GONE);
-        }
-        */
-
-
         // Specific changes for bought Items
         if (item.isBought()) {
             viewHolder.textView_Name.setPaintFlags(viewHolder.textView_Name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -296,6 +277,10 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         // Edit mode is on
         if(activity.getIntent().getExtras().getBoolean(ShoppingListActivity.EDIT_MODE)){
             viewHolder.checkBox_edit.setVisibility(View.VISIBLE);
+            if(itemViewModel.isCheckBoxChecked())
+                viewHolder.checkBox_edit.setChecked(true);
+            else
+                viewHolder.checkBox_edit.setChecked(false);
         } else{
             viewHolder.checkBox_edit.setVisibility(View.GONE);
 
@@ -306,116 +291,14 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     shoppingListViewModel.getCheckedItems().add(itemViewModel);
+                    itemViewModel.setCheckBoxChecked(true);
                 } else {
                     shoppingListViewModel.getCheckedItems().remove(itemViewModel);
+                    itemViewModel.setCheckBoxChecked(false);
                 }
                 listener.onItemCountChange();
             }
         });
-
-
-
-
-
-
-        /*
-
-        viewHolder.button_moveDown.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    Iterator<ItemViewModel> itr = items.iterator();
-                    while (itr.hasNext()){
-                        ItemViewModel itemLocal = itr.next();
-                        if (shoppingListViewModel.getCheckedItems().contains(itemLocal)) {
-                            //Do something
-                            itemLocal.getItem().setBought(true);
-                        }
-                    }
-                    shoppingListViewModel.moveBoughtItemsToEnd();
-                }
-            });
-        viewHolder.button_moveUp.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Iterator<ItemViewModel> itr = items.iterator();
-                while (itr.hasNext()){
-                    ItemViewModel itemLocal2 = itr.next();
-                    if (shoppingListViewModel.getCheckedItems().contains(itemLocal2)) {
-                        itemLocal2.getItem().setBought(false);
-
-                    }
-                }
-                shoppingListViewModel.moveBoughtItemsToEnd();
-            }
-        });
-        viewHolder.checkBox_multipleSelection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Iterator <ItemViewModel> itr = shoppingListViewModel.getItems().iterator();
-                    while(itr.hasNext()){
-                        ItemViewModel itemvm = itr.next();
-                        if (isChecked) {
-                            itemvm.setVisible(true);
-                            multipleSelectionIsChecked = true;
-                        }
-                        else {
-                            itemvm.setVisible(false);
-                            multipleSelectionIsChecked = false;
-                        }
-                    }
-
-                    shoppingListViewModel.changeCheckBoxesVisibility();
-            }
-        });
-        viewHolder.button_moveDownBelow.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Iterator<ItemViewModel> itr = items.iterator();
-                while (itr.hasNext()){
-                    ItemViewModel itemLocal = itr.next();
-                    if (shoppingListViewModel.getCheckedItems().contains(itemLocal)) {
-                        //Do something
-                        itemLocal.getItem().setBought(true);
-                    }
-                }
-                shoppingListViewModel.moveBoughtItemsToEnd();
-            }
-        });
-        viewHolder.button_moveUpBelow.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Iterator<ItemViewModel> itr = items.iterator();
-                while (itr.hasNext()){
-                    ItemViewModel itemLocal2 = itr.next();
-                    if (shoppingListViewModel.getCheckedItems().contains(itemLocal2)) {
-                        itemLocal2.getItem().setBought(false);
-
-                    }
-                }
-                shoppingListViewModel.moveBoughtItemsToEnd();
-            }
-        });
-        viewHolder.checkBox_multipleSelectionBelow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Iterator <ItemViewModel> itr = shoppingListViewModel.getItems().iterator();
-                while(itr.hasNext()){
-                    ItemViewModel itemvm = itr.next();
-                    if (isChecked) {
-                        itemvm.setVisible(true);
-                        multipleSelectionIsChecked = true;
-                    }
-                    else {
-                        itemvm.setVisible(false);
-                        multipleSelectionIsChecked = false;
-                    }
-                }
-
-                shoppingListViewModel.changeCheckBoxesVisibility();
-            }
-        });
-
-        */
 
         // If item is highlighted, set color to red
         if (item.isHighlight()) {

@@ -13,6 +13,7 @@ public class ItemViewModel {
 
     private final Item item;
     private boolean Visible = false;
+    private boolean checkBoxChecked = false;
 
     @Inject
     public ItemViewModel(Item item){
@@ -32,4 +33,11 @@ public class ItemViewModel {
         return item;
     }
 
+    public boolean isCheckBoxChecked() {
+        return checkBoxChecked;
+    }
+
+    public void setCheckBoxChecked(boolean checkBoxChecked) {
+        this.checkBoxChecked = checkBoxChecked;
+    }
 }

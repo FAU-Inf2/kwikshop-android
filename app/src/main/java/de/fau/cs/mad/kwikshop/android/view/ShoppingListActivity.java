@@ -100,21 +100,17 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
         switch (item.getItemId()){
             case R.id.sort_by_group_option: type = ItemSortType.GROUP; break;
             case R.id.sort_by_alphabet_option: type = ItemSortType.ALPHABETICALLY; break;
+            /*
             case R.id.action_move_all_to_shopping_cart:
                 EventBus.getDefault().post(MoveAllItemsEvent.moveAllToBoughtEvent);
                 break;
             case R.id.action_move_all_from_shopping_cart:
                 EventBus.getDefault().post(MoveAllItemsEvent.moveAllFromBoughtEvent);
                 break;
+            */
             case R.id.action_shopping_mode:
                 /* start shopping mode */
                 viewLauncher.showShoppingListInShoppingMode(listId);
-                /*
-                Intent shoppingModeIntent = ShoppingListActivity.getIntent(getApplicationContext(), getIntent().getExtras().getInt(SHOPPING_LIST_ID));
-                shoppingModeIntent.putExtra(SHOPPING_MODE, true);
-                shoppingModeIntent.putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true);
-                startActivity(shoppingModeIntent);
-                */
                 break;
             case R.id.refresh_current_supermarket:
                 return false;
@@ -231,8 +227,6 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
         objectGraph.inject(this);
 
         //Get Shopping List ID
-
-        Intent intent = getIntent();
         listId = -1;
 
         Bundle extras = getIntent().getExtras();

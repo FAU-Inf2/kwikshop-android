@@ -490,9 +490,10 @@ public class SettingFragment extends Fragment {
         DisplayMetrics dm = res.getDisplayMetrics();
         Configuration conf = res.getConfiguration();
         conf.locale = setLocale;
+
         res.updateConfiguration(conf, dm);
         Intent refresh = new Intent(getActivity(), SettingActivity.class).putExtra(BaseViewModel.RESTARTEDACTIVITY, false);
-        refresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        refresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         getActivity().startActivity(refresh);
         getActivity().finish();
     }

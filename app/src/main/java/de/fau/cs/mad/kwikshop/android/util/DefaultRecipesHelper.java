@@ -35,6 +35,7 @@ public class DefaultRecipesHelper {
 
 
     public void addDefaultRecipes(){
+
         Unit gram = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.GRAM);
         Unit cups = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.CUP);
         Unit tbsp = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.TABLESPOON);
@@ -49,8 +50,8 @@ public class DefaultRecipesHelper {
         Group other = ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.OTHER);
 
         {
-            int id = recipeManager.createList();
-            Recipe recipe1 = recipeManager.getList(id);
+            int recipeId = recipeManager.createList();
+            Recipe recipe1 = recipeManager.getList(recipeId);
             recipe1.setName(context.getString(R.string.recipe_name_chili_con_carne));
             recipe1.setScaleFactor(4);
             recipe1.setScaleName(context.getString(R.string.recipe_scaleName_person));
@@ -63,7 +64,7 @@ public class DefaultRecipesHelper {
                 item1.setUnit(gram);
                 item1.setGroup(meat);
                 item1.setPredefinedId(PredefinedId.Recipe_ChiliConCarne_Item1.toInt());
-                recipe1.addItem(item1);
+                recipeManager.addListItem(recipeId, item1);
             }
 
             {
@@ -73,7 +74,7 @@ public class DefaultRecipesHelper {
                 item4.setUnit(gram);
                 item4.setGroup(vegetable);
                 item4.setPredefinedId(PredefinedId.Recipe_ChiliConCarne_Item4.toInt());
-                recipe1.addItem(item4);
+                recipeManager.addListItem(recipeId, item4);
             }
 
             {
@@ -83,7 +84,7 @@ public class DefaultRecipesHelper {
                 item2.setUnit(gram);
                 item2.setGroup(vegetable);
                 item2.setPredefinedId(PredefinedId.Recipe_ChiliConCarne_Item2.toInt());
-                recipe1.addItem(item2);
+                recipeManager.addListItem(recipeId, item2);
             }
 
             {
@@ -93,7 +94,7 @@ public class DefaultRecipesHelper {
                 item5.setUnit(gram);
                 item5.setGroup(vegetable);
                 item5.setPredefinedId(PredefinedId.Recipe_ChiliConCarne_Item5.toInt());
-                recipe1.addItem(item5);
+                recipeManager.addListItem(recipeId, item5);
             }
 
             {
@@ -103,7 +104,7 @@ public class DefaultRecipesHelper {
                 item3.setUnit(piece);
                 item3.setGroup(vegetable);
                 item3.setPredefinedId(PredefinedId.Recipe_ChiliConCarne_Item3.toInt());
-                recipe1.addItem(item3);
+                recipeManager.addListItem(recipeId, item3);
             }
 
             {
@@ -113,16 +114,16 @@ public class DefaultRecipesHelper {
                 item6.setUnit(piece);
                 item6.setGroup(vegetable);
                 item6.setPredefinedId(PredefinedId.Recipe_ChiliConCarne_Item6.toInt());
-                recipe1.addItem(item6);
+                recipeManager.addListItem(recipeId, item6);
             }
 
 
-            recipeManager.saveList(id);
+            recipeManager.saveList(recipeId);
         }
 
         {
-            int id = recipeManager.createList();
-            Recipe recipe = recipeManager.getList(id);
+            int recipeId = recipeManager.createList();
+            Recipe recipe = recipeManager.getList(recipeId);
             recipe.setName(context.getString(R.string.recipe_carrotCake));
             recipe.setScaleFactor(8);
             recipe.setScaleName(context.getString(R.string.recipe_scaleName_piece));
@@ -135,7 +136,7 @@ public class DefaultRecipesHelper {
                 item1.setUnit(cups);
                 item1.setGroup(other);
                 item1.setPredefinedId(PredefinedId.Recipe_CarrotCake_Item1.toInt());
-                recipe.addItem(item1);
+                recipeManager.addListItem(recipeId, item1);
             }
             {
                 Item item2 = new Item();
@@ -144,7 +145,7 @@ public class DefaultRecipesHelper {
                 item2.setUnit(piece);
                 item2.setGroup(vegetable);
                 item2.setPredefinedId(PredefinedId.Recipe_CarrotCake_Item2.toInt());
-                recipe.addItem(item2);
+                recipeManager.addListItem(recipeId, item2);
             }
 
             {
@@ -154,7 +155,7 @@ public class DefaultRecipesHelper {
                 item3.setUnit(piece);
                 item3.setGroup(other);
                 item3.setPredefinedId(PredefinedId.Recipe_CarrotCake_Item3.toInt());
-                recipe.addItem(item3);
+                recipeManager.addListItem(recipeId, item3);
             }
             {
                 Item item4 = new Item();
@@ -163,7 +164,7 @@ public class DefaultRecipesHelper {
                 item4.setUnit(cups);
                 item4.setGroup(other);
                 item4.setPredefinedId(PredefinedId.Recipe_CarrotCake_Item4.toInt());
-                recipe.addItem(item4);
+                recipeManager.addListItem(recipeId, item4);
             }
             {
                 Item item5 = new Item();
@@ -172,7 +173,7 @@ public class DefaultRecipesHelper {
                 item5.setUnit(tbsp);
                 item5.setGroup(other);
                 item5.setPredefinedId(PredefinedId.Recipe_CarrotCake_Item5.toInt());
-                recipe.addItem(item5);
+                recipeManager.addListItem(recipeId, item5);
             }
             {
                 Item item6 = new Item();
@@ -181,7 +182,7 @@ public class DefaultRecipesHelper {
                 item6.setUnit(cans);
                 item6.setGroup(other);
                 item6.setPredefinedId(PredefinedId.Recipe_CarrotCake_Item6.toInt());
-                recipe.addItem(item6);
+                recipeManager.addListItem(recipeId, item6);
             }
             {
                 Item item7 = new Item();
@@ -190,16 +191,16 @@ public class DefaultRecipesHelper {
                 item7.setUnit(gram);
                 item7.setGroup(other);
                 item7.setPredefinedId(PredefinedId.Recipe_CarrotCake_Item7.toInt());
-                recipe.addItem(item7);
+                recipeManager.addListItem(recipeId, item7);
             }
 
-            recipeManager.saveList(id);
+            recipeManager.saveList(recipeId);
         }
 
         {
 
-            int id = recipeManager.createList();
-            Recipe recipe = recipeManager.getList(id);
+            int recipeId = recipeManager.createList();
+            Recipe recipe = recipeManager.getList(recipeId);
             recipe.setName(context.getString(R.string.recipe_rhubarb_tart));
             recipe.setScaleFactor(1);
             recipe.setScaleName(context.getString(R.string.recipe_scaleName_piece));
@@ -212,7 +213,7 @@ public class DefaultRecipesHelper {
                 item1.setUnit(gram);
                 item1.setGroup(vegetable);
                 item1.setPredefinedId(PredefinedId.Recipe_RhubarbTart_Item1.toInt());
-                recipe.addItem(item1);
+                recipeManager.addListItem(recipeId, item1);
             }
 
             {
@@ -222,7 +223,7 @@ public class DefaultRecipesHelper {
                 item2.setUnit(gram);
                 item2.setGroup(other);
                 item2.setPredefinedId(PredefinedId.Recipe_RhubarbTart_Item2.toInt());
-                recipe.addItem(item2);
+                recipeManager.addListItem(recipeId, item2);
             }
 
             {
@@ -233,7 +234,7 @@ public class DefaultRecipesHelper {
                 item3.setUnit(piece);
                 item3.setGroup(other);
                 item3.setPredefinedId(PredefinedId.Recipe_RhubarbTart_Item3.toInt());
-                recipe.addItem(item3);
+                recipeManager.addListItem(recipeId, item3);
             }
             {
                 //Todo: group
@@ -243,7 +244,7 @@ public class DefaultRecipesHelper {
                 item4.setUnit(pack);
                 item4.setGroup(other);
                 item4.setPredefinedId(PredefinedId.Recipe_RhubarbTart_Item4.toInt());
-                recipe.addItem(item4);
+                recipeManager.addListItem(recipeId, item4);
             }
             {
                 Item item5 = new Item();
@@ -252,7 +253,7 @@ public class DefaultRecipesHelper {
                 item5.setUnit(gram);
                 item5.setGroup(milk);
                 item5.setPredefinedId(PredefinedId.Recipe_RhubarbTart_Item5.toInt());
-                recipe.addItem(item5);
+                recipeManager.addListItem(recipeId, item5);
             }
 
             {
@@ -262,7 +263,7 @@ public class DefaultRecipesHelper {
                 item6.setAmount(275);
                 item6.setUnit(gram);
                 item6.setPredefinedId(PredefinedId.Recipe_RhubarbTart_Item6.toInt());
-                recipe.addItem(item6);
+                recipeManager.addListItem(recipeId, item6);
             }
             {
                 Item item7 = new Item();
@@ -271,7 +272,7 @@ public class DefaultRecipesHelper {
                 item7.setUnit(gram);
                 item7.setGroup(other);
                 item7.setPredefinedId(PredefinedId.Recipe_RhubarbTart_Item7.toInt());
-                recipe.addItem(item7);
+                recipeManager.addListItem(recipeId, item7);
             }
             {
                 Item item8 = new Item();
@@ -280,7 +281,7 @@ public class DefaultRecipesHelper {
                 item8.setGroup(other);
                 item8.setPredefinedId(PredefinedId.Recipe_RhubarbTart_Item8.toInt());
                 item8.setUnit(gram);
-                recipe.addItem(item8);
+                recipeManager.addListItem(recipeId, item8);
             }
             {
                 Item item9 = new Item();
@@ -289,15 +290,15 @@ public class DefaultRecipesHelper {
                 item9.setUnit(teaspoon);
                 item9.setGroup(other);
                 item9.setPredefinedId(PredefinedId.Recipe_RhubarbTart_Item9.toInt());
-                recipe.addItem(item9);
+                recipeManager.addListItem(recipeId, item9);
             }
 
-            recipeManager.saveList(id);
+            recipeManager.saveList(recipeId);
         }
 
         {
-            int id = recipeManager.createList();
-            Recipe recipe = recipeManager.getList(id);
+            int recipeId = recipeManager.createList();
+            Recipe recipe = recipeManager.getList(recipeId);
             recipe.setName(context.getString(R.string.recipe_madeira_cake));
             recipe.setScaleFactor(1);
             recipe.setScaleName(context.getString(R.string.recipe_scaleName_piece));
@@ -310,7 +311,7 @@ public class DefaultRecipesHelper {
                 item1.setUnit(gram);
                 item1.setGroup(milk);
                 item1.setPredefinedId(PredefinedId.Recipe_MadeiraCake_Item1.toInt());
-                recipe.addItem(item1);
+                recipeManager.addListItem(recipeId, item1);
             }
             {
                 Item item2 = new Item();
@@ -319,7 +320,7 @@ public class DefaultRecipesHelper {
                 item2.setUnit(gram);
                 item2.setGroup(other);
                 item2.setPredefinedId(PredefinedId.Recipe_MadeiraCake_Item2.toInt());
-                recipe.addItem(item2);
+                recipeManager.addListItem(recipeId, item2);
             }
             {
                 Item item3 = new Item();
@@ -328,7 +329,7 @@ public class DefaultRecipesHelper {
                 item3.setUnit(gram);
                 item3.setGroup(other);
                 item3.setPredefinedId(PredefinedId.Recipe_MadeiraCake_Item3.toInt());
-                recipe.addItem(item3);
+                recipeManager.addListItem(recipeId, item3);
             }
             {
                 Item item4 = new Item();
@@ -337,7 +338,7 @@ public class DefaultRecipesHelper {
                 item4.setUnit(gram);
                 item4.setGroup(other);
                 item4.setPredefinedId(PredefinedId.Recipe_MadeiraCake_Item4.toInt());
-                recipe.addItem(item4);
+                recipeManager.addListItem(recipeId, item4);
             }
             {
                 Item item5 = new Item();
@@ -346,7 +347,7 @@ public class DefaultRecipesHelper {
                 item5.setUnit(pack);
                 item5.setGroup(other);
                 item5.setPredefinedId(PredefinedId.Recipe_MadeiraCake_Item5.toInt());
-                recipe.addItem(item5);
+                recipeManager.addListItem(recipeId, item5);
             }
             {
                 Item item6 = new Item();
@@ -355,7 +356,7 @@ public class DefaultRecipesHelper {
                 item6.setUnit(teaspoon);
                 item6.setGroup(other);
                 item6.setPredefinedId(PredefinedId.Recipe_MadeiraCake_Item6.toInt());
-                recipe.addItem(item6);
+                recipeManager.addListItem(recipeId, item6);
             }
             {
                 Item item7 = new Item();
@@ -364,10 +365,10 @@ public class DefaultRecipesHelper {
                 item7.setUnit(teaspoon);
                 item7.setGroup(other);
                 item7.setPredefinedId(PredefinedId.Recipe_MadeiraCake_Item7.toInt());
-                recipe.addItem(item7);
+                recipeManager.addListItem(recipeId, item7);
             }
 
-            recipeManager.saveList(id);
+            recipeManager.saveList(recipeId);
         }
     }
 

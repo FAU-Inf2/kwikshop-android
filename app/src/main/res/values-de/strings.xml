@@ -39,7 +39,7 @@
     <string name="itemdetails_comment">Kommentar</string>
     <string name="itemdetails_saved">Artikel gespeichert</string>
     <string name="items">Artikel</string>
-    <string name="magic">magic</string>
+    <string name="magic">magisch</string>
     <string name="manual">manuell</string>
     <string name="other">Sonstiges</string>
     <string name="overflow_action_menu_listofshoppinglists">Einkaufslisten</string>
@@ -269,11 +269,11 @@
     <string name="dialog_leave_shopping_mode_message">Willst du den Einkaufsmodus beenden?</string>
     <string name="dialog_leave_shopping_mode_quit">Beenden</string>
     <string name="dialog_leave_shopping_mode_title">Einkaufsmodus</string>
-    <string name="errorReporting_copyToClipboard"></string>
+    <string name="errorReporting_copyToClipboard">Kopieren</string>
     <string name="every_time_i_create_a_list">Für jede neue Liste</string>
     <string name="item_deleted">Produkt gelöscht</string>
     <string name="localization">Standortbestimmung</string>
-    <string name="localization_permisson_dialog_title"></string>
+
     <string name="localization_store_types_dialog_title">Geschäfte</string>
     <string name="localization_store_types_dialog_caption">Wähle deine bevorzugten Geschäfte</string>
     <string name="localization_supermarket_select_dialog_title">Wähle dein aktuelles Geschäft aus</string>
@@ -290,7 +290,7 @@
     <string name="recipe_default_no_recipes">Es sind noch keine Rezepte vorhanden. Möchtest du ein paar unserer Rezepte?</string>
     <string name="recipe_no_recipe">Es sind noch keine Rezepte vorhanden. Möchtest du eins erstellen?</string>
     <string name="recipe_no_shoppinglist">Es ist noch keine Einkaufsliste vorhanden. Möchtest du eine erstellen?</string>
-    <string name="reset"></string>
+    <string name="reset">Zurücksetzen</string>
     <string name="settings_option_3_createUnits">Erstellen oder Löschen von Einheiten</string>
     <string name="settings_option_3_desc2">Erstellen oder Löschen von Einheiten und Gruppen</string>
     <string name="settings_option_3_manageUnits">Einheiten und Gruppen verwalten</string>
@@ -366,9 +366,34 @@
     <string name="enter_shoppinglist_name">Benenne deine Einkaufsliste</string>
     <string name="enter_recipe_name">Benenne dein Rezept</string>
     <string name="share">Teilen</string>
-    <string name="overflow_action_menu_shopping_mode_quit">Einkaufsmodus beenden</string>
+    <string name="Install">Installieren</string>
     <string name="login_help">Melde dich an um deine Einkaufslisten zu synchronisieren, sie mit Freunden zu teilen und die automatische Sortierung nutzen zu können.</string>
+    <string name="aquiring_lease">Sync Vorbereitung</string>
+    <string name="errorReporting_copyToClipboard_label">Kwik Shop Fehlerbericht</string>
+    <string name="errorReporting_copyToClipboard_toast">Der Fehlerbericht wurde in die Zwischenablage kopiert</string>
+    <string name="errorReporting_messaging_chooser_title">Bericht senden mit</string>
+    <string name="errorReporting_messaging_dialog_text">"Leider gabe es einen Fehler bei der letzten Benutzung der App. Wir arbeiten ständig daran, die App zu verbessern. Du kannst helfen, indem du einen Fehlerbericht an uns sendest"</string>
+    <string name="errorReporting_messaging_dialog_title">Fehlerbericht</string>
+    <string name="errorReporting_messaging_subject">Kwik Shop (Android) Fehlerbericht</string>
+    <string name="error_aquiring_lease">"Es sieht danach aus, dass ein anderes deiner Geräte gerade synchronisiert. Bitte versuche es später noch einmal"</string>
+    <string name="error_empty_groupname">Der Gruppenname darf nicht leer sein</string>
+    <string name="error_empty_unitname">Der Name der Einheit darf nicht leer sein</string>
+    <string name="error_remove_defaultgroup">Vordefinierte Gruppen können nicht gelöscht werden</string>
+    <string name="error_remove_defaultunit">Vordefinierte Einheiten können nicht gelöscht werden</string>
+    <string name="error_synchronizing_recipes">Fehler bei der Synchronisation der Rezepte</string>
+    <string name="error_synchronizing_shoppingLists">Fehler bei der Synchronisation der EInkaufslisten</string>
+    <string name="playServices_Description">Diese App benutzt Google Play Services</string>
+    <string name="settings_option_4_APIEndPoint_Desc">Bearbeite die Adresse des benutzten Kwik Shop Servers</string>
+    <string name="settings_option_4_APIEndPoint_Title">API Endpunkt</string>
+    <string name="store_type_bakery">Bäckerei</string>
+    <string name="store_type_gasstation">Tankstelle</string>
+    <string name="store_type_liquorstore">Spirituosenmarkt</string>
+    <string name="store_type_pharmacy">Apotheke</string>
+    <string name="store_type_shoppingmall">Einkaufszentrum</string>
+    <string name="store_type_store">Laden</string>
+    <string name="store_type_supermarket">Supermarkt</string>
 
+    <string name="overflow_action_menu_shopping_mode_quit">Einkaufsmodus beenden</string>
 
     <string name="message_delete_selected_items">Bist du sicher, dass du die ausgewählten Gegenstände löschen möchtest?</string>
 

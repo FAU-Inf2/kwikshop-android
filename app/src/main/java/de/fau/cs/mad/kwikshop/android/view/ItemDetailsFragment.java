@@ -753,6 +753,17 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         });
 
+        numberPickerUnit.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+
+                List<Unit> units = viewModel.getUnits();
+                if(newVal > 0 && newVal < units.size()) {
+                    item.setUnit(units.get(newVal));
+                }
+            }
+        });
+
 
     }
 

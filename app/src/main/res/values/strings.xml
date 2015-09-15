@@ -402,7 +402,7 @@
     <string name="localization_permisson_dialog_title"></string>
     <string name="share_sharingcodeerror">Error retrieving the sharing code, please try again later.</string>
     <string name="intent_sc_separator" translatable="false">/#sc=</string>
-    <string name="share_intentstring">I want to share my Shopping List with you! Install Kwik Shop, then click here: http://kwikshop.is.nice/#sc=%s</string>
+    <string name="share_intentstring">I want to share my Shopping List with you! Install Kwik Shop ( https://play.google.com/store/apps/details?id=de.fau.cs.mad.kwikshop.android ) then click here: http://kwikshop.is.nice/#sc=%s</string>
     <string name="intent_sharingcode_description" translatable="false">kwikshop://kwikshop/#sc=</string>
     <string name="sharingCode_textView">Sharing Code:</string>
     <string name="share_helpmessage">You can now share this Shopping List (e.g. via SMS, Email).</string>

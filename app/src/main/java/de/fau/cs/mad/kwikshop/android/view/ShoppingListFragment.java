@@ -376,6 +376,7 @@ public class ShoppingListFragment
             saveButton.setOnClickListener(new ImageButton.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    getActivity().finish();
                     viewModel.restartShoppingList();
                 }
             });

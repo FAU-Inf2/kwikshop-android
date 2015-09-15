@@ -686,7 +686,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
     public void restartShoppingList(){
-        viewLauncher.showShoppingList(listId);
+        viewLauncher.returnToShoppingList(listId);
     }
 
     public void deleteItemWithoutDialog(int id){

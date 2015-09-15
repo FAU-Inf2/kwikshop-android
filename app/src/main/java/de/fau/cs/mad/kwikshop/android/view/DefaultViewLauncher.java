@@ -84,6 +84,12 @@ public class DefaultViewLauncher implements ViewLauncher {
     }
 
     @Override
+    public void returnToShoppingList(int shoppingListId) {
+        activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId)
+                .putExtra(ShoppingListFragment.DO_NOT_ASK_FOR_SUPERMARKET, true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+    }
+
+    @Override
     public void showShoppingListInShoppingMode(int shoppingListId) {
         activity.startActivity(ShoppingListActivity.getIntent(activity, shoppingListId)
                 .putExtra(ShoppingListActivity.SHOPPING_MODE, true)

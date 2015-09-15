@@ -130,6 +130,7 @@
 
     <!-- Shopping list -->
     <!--<string name="itemdeleted">Moved to shopping cart</string> -->
+    <string name="enter_shoppinglist_name">Name your Shopping List</string>
     <string name="itembought">Item bought</string>
     <string name="item_deleted">Item deleted</string>
     <string name="taptoundo">UNDO</string>
@@ -232,6 +233,7 @@
 
     <!--Recipes-->
     <string name="recipes">Recipes</string>
+    <string name="enter_recipe_name">Name your Recipe</string>
     <string name="deleteRecipe_DialogTitle">Delete recipe</string>
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
     <string name="overflow_action_menu_recipes">Manage Recipes</string>

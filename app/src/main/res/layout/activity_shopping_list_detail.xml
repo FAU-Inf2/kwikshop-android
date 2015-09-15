@@ -19,6 +19,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:selectAllOnFocus="true"
+        android:hint="@string/enter_shoppinglist_name"
         android:text="SAMPLE TEXT"
         android:singleLine="true"
         android:inputType="textCapSentences"

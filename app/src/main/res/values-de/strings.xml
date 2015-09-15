@@ -361,4 +361,8 @@
     <string name="setting_change_radius_description">Radius des Supermarktfinders ändern</string>
     <string name="general">Allgemein</string>
 
+    <string name="enter_shoppinglist_name">Benenne deine Einkaufsliste</string>
+    <string name="enter_recipe_name">Benenne dein Rezept</string>
+
+
 </resources>

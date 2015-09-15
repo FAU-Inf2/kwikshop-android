@@ -34,26 +34,38 @@
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:inputType="textCapSentences"
-                android:layout_toLeftOf="@+id/micButton"
+                android:layout_toLeftOf="@+id/button_barcode_scan"
                 android:layout_alignParentLeft="true" />
+
+            <ImageButton
+                android:id="@+id/button_barcode_scan"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/textView_quickAdd"
+                android:layout_gravity="center_vertical"
+                android:layout_toLeftOf="@+id/micButton"
+                android:src="@drawable/ic_action_barcode" />
+
 
             <ImageButton
                 android:id="@+id/button_quickAdd"
                 style="?android:attr/borderlessButtonStyle"
-                android:layout_width="40dip"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_action_add"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_alignBottom="@+id/textView_quickAdd"
-                android:layout_alignParentRight="true" />
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_action_add" />
+
 
             <ImageButton
+                android:id="@+id/micButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/micButton"
-                android:background="@android:drawable/ic_btn_speak_now"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/button_quickAdd" />
+                android:layout_toLeftOf="@+id/button_quickAdd"
+                android:background="@android:drawable/ic_btn_speak_now" />
 
         </RelativeLayout>
 

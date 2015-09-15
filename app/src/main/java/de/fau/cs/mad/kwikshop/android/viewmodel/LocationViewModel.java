@@ -17,6 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
@@ -31,6 +32,8 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
 import se.walkercrou.places.Place;
 import se.walkercrou.places.Status;
+
+import static de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper.*;
 
 public class LocationViewModel {
 
@@ -112,6 +115,23 @@ public class LocationViewModel {
         }
     };
 
+    public Command<Void> startSupermarketFinderWithPermission = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, true, context);
+            viewLauncher.showLocationActivity();
+
+        }
+    };
+
+    final Command<Void> withdrawLocalizationPermissionCommand = new Command<Void>(){
+        @Override
+        public void execute(Void parameter) {
+            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context);
+            viewLauncher.showListOfShoppingListsActivity();
+        }
+    };
+
 
     final Command restartActivityCommand = new Command<Void>() {
         @Override
@@ -133,11 +153,17 @@ public class LocationViewModel {
     }
 
     public void startAsyncPlaceRequest(LocationFragment locationFragment, int radius, int resultCount) {
-        if(InternetHelper.checkInternetConnection(context)){
-            getNearbySupermarketPlaces(locationFragment, radius, resultCount);
+        
+        if(loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context)){
+            if(InternetHelper.checkInternetConnection(context)){
+                getNearbySupermarketPlaces(locationFragment, radius, resultCount);
+            } else {
+                notificationOfNoConnectionForMap();
+            }
         } else {
-            notificationOfNoConnectionForMap();
+            showAskForLocalizationPermission();
         }
+
     }
 
     public LatLng getLastLatLng(){
@@ -271,6 +297,22 @@ public class LocationViewModel {
                     }
                 }
         );
+    }
+
+
+
+
+    private void showAskForLocalizationPermission(){
+
+        viewLauncher.showMessageDialog(
+                resourceProvider.getString(R.string.localization_dialog_title),
+                resourceProvider.getString(R.string.localization_dialog_message),
+                resourceProvider.getString(R.string.yes),
+                startSupermarketFinderWithPermission,
+                resourceProvider.getString(R.string.no),
+                withdrawLocalizationPermissionCommand
+        );
+
     }
 
 

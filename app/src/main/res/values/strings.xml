@@ -302,7 +302,7 @@
 
     <!-- Location -->
     <string name="supermarket_finder">Supermarket Finder</string>
-    <string name="supermarket_finder_progress_dialog_message">Find nearby Supermarkets.</string>
+    <string name="supermarket_finder_progress_dialog_message">Find nearby Supermarkets</string>
 
     <!-- Place -->
     <string name="place_status_opened">opened</string>

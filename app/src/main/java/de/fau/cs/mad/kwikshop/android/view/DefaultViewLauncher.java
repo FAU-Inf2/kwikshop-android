@@ -142,9 +142,9 @@ public class DefaultViewLauncher implements ViewLauncher {
     public void showYesNoDialog(String title, String message, final Command<Void> positiveCommand, final Command<Void> negativeCommand) {
 
         showMessageDialog(title, message,
-                resourceProvider.getString(android.R.string.yes), positiveCommand,
+                resourceProvider.getString(R.string.yes), positiveCommand,
                 null, null,
-                resourceProvider.getString(android.R.string.no), negativeCommand);
+                resourceProvider.getString(R.string.no), negativeCommand);
     }
 
     @Override
@@ -383,7 +383,7 @@ public class DefaultViewLauncher implements ViewLauncher {
 
         builder.setView(view);
 
-        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
 
                 Recipe selectedRecipe;
@@ -426,7 +426,7 @@ public class DefaultViewLauncher implements ViewLauncher {
 
             }
         });
-        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
             }
         });

@@ -613,16 +613,29 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     }
 
+    public void askBeforeDeletingItemsFromEditMode(Command<Void> deleteCommand){
+        if (SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, true, context)) {
+            viewLauncher.showMessageDialogWithCheckbox(resourceProvider.getString(R.string.title_delete_item),
+                    resourceProvider.getString(R.string.message_delete_selected_items),
+                    resourceProvider.getString(R.string.delete), deleteCommand, null, null,
+                    resourceProvider.getString(R.string.cancel), NullCommand.VoidInstance,
+                    resourceProvider.getString(R.string.dont_show_this_message_again), false, deleteCheckBoxCheckedCommand, null);
+        }else {
+            deleteCommand.execute(null);
+        }
+    }
+
+
     private void showAskForLocalizationPermission(){
 
         viewLauncher.showMessageDialogWithCheckbox(
                 resourceProvider.getString(R.string.localization_dialog_title),
                 resourceProvider.getString(R.string.localization_dialog_message),
-                resourceProvider.getString(R.string.localize),
+                resourceProvider.getString(R.string.yes),
                 restartShoppingListWithLocalization,
                 null,
                 null,
-                resourceProvider.getString(R.string.cancel),
+                resourceProvider.getString(R.string.no),
                 withdrawLocalizationPermissionCommand,
                 resourceProvider.getString(R.string.dont_show_this_message_again),
                 false,

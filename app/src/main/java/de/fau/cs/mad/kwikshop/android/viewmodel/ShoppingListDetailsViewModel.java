@@ -248,7 +248,7 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
 
         if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.SL_DELETION_SHOW_AGAIN_MSG, true, context)) {
             viewLauncher.showMessageDialogWithCheckbox(resourceProvider.getString(R.string.deleteShoppingList_DialogTitle),
-                    resourceProvider.getString(R.string.deleteShoppingList_DialogText), resourceProvider.getString(R.string.yes),
+                    resourceProvider.getString(R.string.deleteShoppingList_DialogText), resourceProvider.getString(R.string.delete),
                     new Command<Void>() {
                         @Override
                         public void execute(Void parameter) {
@@ -261,7 +261,7 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
                             finish();
                         }
                     },
-                    null, null, resourceProvider.getString(R.string.no),
+                    null, null, resourceProvider.getString(R.string.cancel),
                     NullCommand.VoidInstance, resourceProvider.getString(R.string.dont_show_this_message_again), false,
                     new Command<Void>() {
                         @Override
@@ -271,14 +271,14 @@ public class ShoppingListDetailsViewModel extends ListDetailsViewModel<ShoppingL
                     }, null);
            if (ownsRepeatOnNewListItems()){
                     viewLauncher.showMessageDialogWithCheckbox(resourceProvider.getString(R.string.deleteShoppingList_repeatingItemsTitle),
-                            resourceProvider.getString(R.string.deleteShoppingList_repeatingItemsText), resourceProvider.getString(R.string.yes),
+                            resourceProvider.getString(R.string.deleteShoppingList_repeatingItemsText), resourceProvider.getString(R.string.delete),
                             new Command<Void>() {
                                 @Override
                                 public void execute(Void parameter) {
                                     deleteRepeatOnNewListItemsCommandExecute();
                                 }
                             },
-                            null, null, resourceProvider.getString(R.string.no),
+                            null, null, resourceProvider.getString(R.string.cancel),
                             NullCommand.VoidInstance, resourceProvider.getString(R.string.dont_show_this_message_again), false,
                             new Command<Void>() {
                                 @Override

@@ -124,8 +124,7 @@ public class ListStorageFragment  {
             e.printStackTrace();
         }
 
-        if(m_LocalListStorage.getAllLists().size() == 0) {
-
+        if(m_LocalListStorage.getAllLists() == null || m_LocalListStorage.getAllLists().size() == 0) {
             createPredefinedShoppingLists(context);
         }
 

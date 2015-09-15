@@ -105,6 +105,9 @@ public class LoginActivity extends FragmentActivity implements
     @InjectView(R.id.login_logo)
     ImageView login_logo;
 
+    @InjectView(R.id.login_help)
+    TextView mHelpText;
+
 
     public static Intent getIntent(Context context) {
         return new Intent(context, LoginActivity.class);
@@ -205,6 +208,7 @@ public class LoginActivity extends FragmentActivity implements
                     // Show signed-in user's name
                     Person p = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
                     if (p != null) {
+                        mHelpText.setVisibility(View.GONE);
                         String name = p.getDisplayName();
                         mStatus.setText(getText(R.string.signed_in_fmt) + " " + name);
                     }
@@ -226,6 +230,7 @@ public class LoginActivity extends FragmentActivity implements
 
         } else {
             mStatus.setVisibility(View.GONE);
+            mHelpText.setVisibility(View.VISIBLE);
 
             // Set button visibility
             login_sign_in_button.setVisibility(View.VISIBLE);
@@ -493,7 +498,7 @@ public class LoginActivity extends FragmentActivity implements
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                 builder.setTitle(R.string.login_skip);
                 builder.setMessage(R.string.login_skip_message);
-                builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int position) {
                         SharedPreferencesHelper.saveInt(SharedPreferencesHelper.SKIP_LOGIN, 1, getApplicationContext());
                         exitLoginActivity();

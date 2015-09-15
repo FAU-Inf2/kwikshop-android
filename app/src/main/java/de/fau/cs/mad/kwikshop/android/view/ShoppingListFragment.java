@@ -437,7 +437,7 @@ public class ShoppingListFragment
             });
 
 
-            //shoppingListView.disableDragAndDrop();
+            // Disable clicking, swiping and pull to refresh in EditMode
             shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

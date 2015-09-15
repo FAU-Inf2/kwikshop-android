@@ -316,12 +316,11 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
     public void updateOrderOfItems() {
         int i = 0;
         for(ItemViewModel item: getItems()) {
-            item.getItem().setOrder(i);
-
-            // Break on first bought Item - we don't care about their order.
+            // Break on first bought Item - we don't care about their order
             if(item.getItem().isBought())
                 break;
 
+            item.getItem().setOrder(i);
             i++;
         }
     }

@@ -933,7 +933,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     @Override
                     public void onClick(View v) {
                         viewModel.showDeleteItemDialog(getString(R.string.title_delete_item), getString(R.string.message_delete_item),
-                                getString(R.string.yes), getString(R.string.no), getString(R.string.dont_show_this_message_again));
+                                getString(R.string.delete), getString(R.string.cancel), getString(R.string.dont_show_this_message_again));
 
                     }
                 });

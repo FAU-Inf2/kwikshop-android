@@ -256,7 +256,7 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
                     }
 
                     shoppingListViewModel.deleteItem(itemId,context.getString(R.string.title_delete_item), context.getString(R.string.message_delete_item),
-                                    context.getString(R.string.yes), context.getString(R.string.no),
+                                    context.getString(R.string.delete), context.getString(R.string.cancel),
                                     context.getString(R.string.dont_show_this_message_again));
 
                     Command<Integer> deleteCommand = shoppingListViewModel.getDeleteItemCommand();

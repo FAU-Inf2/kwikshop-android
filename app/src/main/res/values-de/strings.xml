@@ -243,7 +243,7 @@
     <string name="localization_supermarket_select_dialog_not_found">Nicht aufgelistet</string>
     <string name="share_notloggedin">Du musst eingeloggt sein, um diese Einkaufsliste zu teilen.</string>
     <string name="share_sharingcodeerror">Ein Fehler ist aufgetreten, bitte versuche es später nochmal.</string>
-    <string name="share_intentstring">Ich möchte meine Einkaufsliste mit dir teilen! Installiere Kwik Shop, dann klicke hier: http://kwikshop.is.nice/#sc=%s</string>
+    <string name="share_intentstring">Ich möchte meine Einkaufsliste mit dir teilen! Installiere Kwik Shop ( https://play.google.com/store/apps/details?id=de.fau.cs.mad.kwikshop.android ) dann klicke hier: http://kwikshop.is.nice/#sc=%s</string>
     <string name="barcode_scanner_no_product">Kein Produkt gefunden</string>
     <string name="barcode_scanner_not_ean_format">Der Barcode hat kein EAN Format</string>
     <string name="barcode_scanner_progress_message">Suche Produkt&#8230;</string>
@@ -361,5 +361,9 @@
     <string name="setting_change_radius_description">Radius des Supermarktfinders ändern</string>
     <string name="general">Allgemein</string>
     <string name="overflow_action_menu_edit">Liste bearbeiten</string>
+
+    <string name="enter_shoppinglist_name">Benenne deine Einkaufsliste</string>
+    <string name="enter_recipe_name">Benenne dein Rezept</string>
+
 
 </resources>

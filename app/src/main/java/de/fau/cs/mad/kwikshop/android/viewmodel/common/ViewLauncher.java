@@ -15,6 +15,8 @@ public interface ViewLauncher {
 
     void showShoppingList(int shoppingListId);
 
+    void returnToShoppingList(int shoppingListId);
+
     void showShoppingListInShoppingMode(int shoppingListId);
 
     void showShoppingListInEditMode(int shoppingListId);

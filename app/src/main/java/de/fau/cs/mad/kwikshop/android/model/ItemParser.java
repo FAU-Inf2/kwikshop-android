@@ -61,6 +61,7 @@ public class ItemParser {
                 || firstWord.equals(context.getString(R.string.parser_amount_an))){
             amount = "1";
             amountWasSpecified = true;
+            lastCharWasANumber = true;
             input = input.substring(firstWord.length()).trim();
         }
 
@@ -100,7 +101,9 @@ public class ItemParser {
 
         for (Unit unit : unitStorage.getItems()) {
             if (displayHelper.getDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName) ||
-                    displayHelper.getShortDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName)) {
+                    displayHelper.getShortDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName) ||
+                    displayHelper.getSingularDisplayName(unit).equalsIgnoreCase(thisCanBeUnitOrName)
+                    ) {
                 item.setUnit(unit);
                 unitMatchFound = true;
                 break;

@@ -247,6 +247,8 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
     @Override
     public void onBackPressed() {
 
+        super.onBackPressed();
+
         // check for barcode scanner fragment
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment BarcodeScannerFragment = fragmentManager.findFragmentByTag("BARCODE_SCANNER_FRAGMENT");
@@ -260,8 +262,6 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
             viewModel.showDialogLeaveShoppingMode(listId);
             return;
         }
-
-        super.onBackPressed();
     }
 
 

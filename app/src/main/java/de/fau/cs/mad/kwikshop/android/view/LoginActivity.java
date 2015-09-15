@@ -493,7 +493,7 @@ public class LoginActivity extends FragmentActivity implements
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                 builder.setTitle(R.string.login_skip);
                 builder.setMessage(R.string.login_skip_message);
-                builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int position) {
                         SharedPreferencesHelper.saveInt(SharedPreferencesHelper.SKIP_LOGIN, 1, getApplicationContext());
                         exitLoginActivity();

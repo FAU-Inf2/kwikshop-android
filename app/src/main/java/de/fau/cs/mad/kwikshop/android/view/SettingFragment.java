@@ -502,7 +502,7 @@ public class SettingFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.settings_option_3_check_title);
         builder.setMessage(R.string.settings_option_3_check_text);
-        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int position) {
                 // delete history of autocompletion
                 deleteAutoCompletionHistory();

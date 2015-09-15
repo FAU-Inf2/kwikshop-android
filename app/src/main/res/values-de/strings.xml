@@ -365,6 +365,7 @@
     <string name="enter_shoppinglist_name">Benenne deine Einkaufsliste</string>
     <string name="enter_recipe_name">Benenne dein Rezept</string>
     <string name="share">Teilen</string>
+    <string name="overflow_action_menu_shopping_mode_quit">Einkaufsmodus beenden</string>
 
 
 </resources>

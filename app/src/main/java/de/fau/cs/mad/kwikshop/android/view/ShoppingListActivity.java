@@ -66,12 +66,19 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
         return intent;
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
+
+        // no overflow menu in edit mode
         if(!getIntent().getExtras().getBoolean(EDIT_MODE)){
             getMenuInflater().inflate(R.menu.overflow_action_menu, menu);
             getMenuInflater().inflate(R.menu.shoppinglist_replacement_menu, menu);
+
+            // shopping mode is on
+            if(getIntent().getExtras().getBoolean(SHOPPING_MODE)){
+                menu.findItem(R.id.action_shopping_mode).setVisible(false);
+                menu.findItem(R.id.action_shopping_mode_disable).setVisible(true);
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -100,6 +107,10 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
             case R.id.action_shopping_mode:
                 /* start shopping mode */
                 viewLauncher.showShoppingListInShoppingMode(listId);
+                break;
+            case R.id.action_shopping_mode_disable:
+                /* end shopping mode */
+                viewModel.showDialogLeaveShoppingMode(listId);
                 break;
             case R.id.refresh_current_supermarket:
                 return false;
@@ -137,6 +148,8 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
                 /* start edit mode */
                 viewLauncher.showShoppingListInEditMode(listId);
                 break;
+
+
         }
         if(type != null) EventBus.getDefault().post(type);
 

@@ -73,7 +73,6 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
             getMenuInflater().inflate(R.menu.overflow_action_menu, menu);
             getMenuInflater().inflate(R.menu.shoppinglist_replacement_menu, menu);
         }
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -87,9 +86,7 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
                 findLocationItem.setVisible(true);
             else
                 findLocationItem.setVisible(false);
-
         }
-
         return true;
     }
 
@@ -100,14 +97,6 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
         switch (item.getItemId()){
             case R.id.sort_by_group_option: type = ItemSortType.GROUP; break;
             case R.id.sort_by_alphabet_option: type = ItemSortType.ALPHABETICALLY; break;
-            /*
-            case R.id.action_move_all_to_shopping_cart:
-                EventBus.getDefault().post(MoveAllItemsEvent.moveAllToBoughtEvent);
-                break;
-            case R.id.action_move_all_from_shopping_cart:
-                EventBus.getDefault().post(MoveAllItemsEvent.moveAllFromBoughtEvent);
-                break;
-            */
             case R.id.action_shopping_mode:
                 /* start shopping mode */
                 viewLauncher.showShoppingListInShoppingMode(listId);

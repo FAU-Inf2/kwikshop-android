@@ -334,7 +334,7 @@ public class ShoppingListFragment
 
         // swipe refresh view
         swipeLayout.setColorSchemeResources(R.color.secondary_Color, R.color.primary_Color);
-        swipeLayout.setDistanceToTriggerSync(20);
+        swipeLayout.setDistanceToTriggerSync(250);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -347,6 +347,7 @@ public class ShoppingListFragment
                 }, getResources().getInteger(R.integer.sync_delay));
             }
         });
+        swipeLayout.setEnabled(true);
 
 
         // edit mode
@@ -429,7 +430,15 @@ public class ShoppingListFragment
             });
 
 
+            //shoppingListView.disableDragAndDrop();
+            shoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+                }
+            });
+            shoppingListView.disableSwipeToDismiss();
+            swipeLayout.setEnabled(false);
 
 
         }

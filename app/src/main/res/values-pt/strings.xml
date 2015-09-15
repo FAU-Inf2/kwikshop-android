@@ -336,7 +336,7 @@
     <string name="error_empty_unitname">Nome da unidade não pode estar vazio</string>
     <string name="error_synchronizing_recipes">Erro ao sincronizar Receitas</string>
     <string name="error_synchronizing_shoppingLists">Erro ao sincronizar Lista de Compras</string>
-    <string name="errorReporting_copyToClipboard_toast">O relatório de erros foi copiado para o clipboar</string>
+    <string name="errorReporting_copyToClipboard_toast">O relatório de erros foi copiado para o clipboard</string>
     <string name="error_empty_groupname">Nome do grupo não pode estar vazio</string>
     <string name="errorReporting_messaging_dialog_text">"Infelizmente houve um erro na última vez que usou o app. Nós estamos constantemente trabalhando na melhoria do app. Você pode nos ajudar enviando um relatório dos erros que você encontrou"</string>
     <string name="errorReporting_messaging_dialog_title">Relatório de erros</string>

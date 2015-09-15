@@ -11,8 +11,8 @@
     <string name="edit_calendar_event">Erinnerung bearbeiten</string>
     <string name="error_empty_productname">Bitte Produktnamen eintragen</string>
     <string name="every">alle</string>
-    <string name="from_now_on">von jetzt an</string>
-    <string name="from_time_of_next_purchase_on">vom nächsten Kauf an</string>
+    <string name="from_now_on">Von jetzt an</string>
+    <string name="from_time_of_next_purchase_on">Vom nächsten Kauf an</string>
     <string name="group">Gruppe</string>
     <string name="group_Other">Sonstiges</string>
     <string name="group_babyFoods">Babynahrung</string>
@@ -46,7 +46,7 @@
     <string name="overflow_action_menu_move_all_to_shopping_cart">Alles als gekauft markieren</string>
     <string name="overflow_action_menu_move_all_from_shopping_cart">Nichts als gekauft markieren</string>
     <string name="overflow_action_menu_shopping_mode">Einkaufsmodus</string>
-    <string name="regular_repeat">regelmäßig wiederholen</string>
+    <string name="regular_repeat">Regelmäßig wiederholen</string>
     <string name="save">Speichern</string>
     <string name="shoppinglist_divider_textview">Einkaufswagen</string>
     <string name="sort_by">Sortieren nach</string>
@@ -365,6 +365,7 @@
     <string name="enter_shoppinglist_name">Benenne deine Einkaufsliste</string>
     <string name="enter_recipe_name">Benenne dein Rezept</string>
     <string name="share">Teilen</string>
+    <string name="login_help">Melde dich an um deine Einkaufslisten zu synchronisieren, sie mit Freunden zu teilen und die automatische Sortierung nutzen zu können.</string>
 
 
 </resources>

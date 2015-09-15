@@ -222,12 +222,6 @@ public class ItemDetailsViewModel{
         return unitNames;
     }
 
-    public Unit getSelectedUnit(){
-        Unit selectedUnit = isNewItem() || item.getUnit() == null
-                ? unitStorage.getDefaultValue()
-                : item.getUnit();
-        return selectedUnit;
-    }
 
     public ArrayList<String> getGroupNames(){
         ArrayList<String> groupNames = new ArrayList<>();

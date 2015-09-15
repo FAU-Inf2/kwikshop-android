@@ -112,6 +112,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     Double [] intNumsOnce = new Double[numsOnce.length];
     final Double [] natNumsOnce = new Double[numsInteger.length];
 
+    private Unit selectedUnit;
+
+
     @InjectView(R.id.productname_text)
     MultiAutoCompleteTextView productName_text;
 
@@ -367,12 +370,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         item.setHighlight(highlight_checkbox.isChecked());
         viewModel.setImageItem();
         selectedUnitIndex = numberPickerUnit.getValue();
-        if (selectedUnitIndex >= 0) {
-            Unit u = viewModel.getSelectedUnit(selectedUnitIndex);
-            item.setUnit(u);
-        } else {
-            item.setUnit(unitStorage.getDefaultValue());
+
+        if(selectedUnit == null) {
+            selectedUnit = unitStorage.getDefaultValue();
         }
+        item.setUnit(selectedUnit);
 
         if (selectedGroupIndex >= 0) {
             Group g = viewModel.getSelectedGroup(selectedGroupIndex);
@@ -405,6 +407,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
             item = getListManager().getListItem(listId, itemId);
         }
+
+        selectedUnit = isNewItem || item.getUnit() == null
+                ? unitStorage.getDefaultValue()
+                : item.getUnit();
+
 
         // new number picker
         setDividerColor(numberPickerUnit);
@@ -514,10 +521,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             item = getListManager().getListItem(listId, itemId);
             viewModel.setItem(item);
         }
-        if (viewModel.getSelectedUnit() != null) {
+        if (selectedUnit != null) {
             if (!numberPickerUpdating){
                 //unit_spinner.setSelection(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
-                numberPickerUnit.setValue(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
+                numberPickerUnit.setValue(viewModel.getUnits().indexOf(selectedUnit));
             }
 
         }
@@ -740,13 +747,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                     numberPickerUnit.setMinValue(0);
                     numberPickerUnit.setMaxValue(unitSingularNames.length - 1);
                     numberPickerUnit.setDisplayedValues(viewModel.getSingularUnitNames().toArray(new String[viewModel.getSingularUnitNames().size()]));
-                    numberPickerUnit.setValue(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
+                    numberPickerUnit.setValue(viewModel.getUnits().indexOf(selectedUnit));
                     selectedUnitIndex = numberPickerUnit.getValue();
                 } else if(getNumberPickerValue(i) == 1 && getNumberPickerValue(i2) != 1){
                     numberPickerUnit.setMinValue(0);
                     numberPickerUnit.setMaxValue(unitNames.length - 1);
                     numberPickerUnit.setDisplayedValues(viewModel.getUnitNames().toArray(new String[viewModel.getUnitNames().size()]));
-                    numberPickerUnit.setValue(viewModel.getUnits().indexOf(viewModel.getSelectedUnit()));
+                    numberPickerUnit.setValue(viewModel.getUnits().indexOf(selectedUnit));
                     selectedUnitIndex = numberPickerUnit.getValue();
                 }
             }
@@ -759,7 +766,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
                 List<Unit> units = viewModel.getUnits();
                 if(newVal > 0 && newVal < units.size()) {
-                    item.setUnit(units.get(newVal));
+                     selectedUnit = units.get(newVal);
                 }
             }
         });

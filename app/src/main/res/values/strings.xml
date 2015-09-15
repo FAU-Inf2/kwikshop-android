@@ -36,6 +36,7 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="remove">Remove</string>
+    <string name="delete">Delete</string>
     <string name="delete_shopping_list">Delete Shopping List</string>
 
 
@@ -80,6 +81,7 @@
     <string name="from_time_of_next_purchase_on">from time of next purchase on</string>
     <string name="title_delete_item">Delete item</string>
     <string name="message_delete_item">Are you sure you want to delete this item?</string>
+    <string name="message_delete_selected_items">Are you sure you want to delete the selected items?</string>
 
 
 

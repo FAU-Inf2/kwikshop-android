@@ -387,20 +387,27 @@ public class ShoppingListFragment
             deleteButton.setOnClickListener(new ImageButton.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Iterator<ItemViewModel> iterator = viewModel.getCheckedItems().iterator();
-                    ArrayList<ItemViewModel> deletedItems = new ArrayList<>(viewModel.getCheckedItems().size());
-                    while(iterator.hasNext()){
-                        ItemViewModel itemViewModel = iterator.next();
-                        deletedItems.add(itemViewModel);
-                        viewModel.deleteItemWithoutDialog(itemViewModel.getItem().getId());
-                    }
-                    for(ItemViewModel itemView : deletedItems){
-                        viewModel.getCheckedItems().remove(itemView);
-                    }
-                    viewModel.moveBoughtItemsToEnd();
-                    markedItems.setText("" + viewModel.getCheckedItems().size() + " / " + viewModel.getItems().size());
-                }
+                    if (viewModel.getCheckedItems().size() != 0) {
+                        viewModel.askBeforeDeletingItemsFromEditMode(new Command<Void>() {
+                            @Override
+                            public void execute(Void parameter) {
+                                Iterator<ItemViewModel> iterator = viewModel.getCheckedItems().iterator();
+                                ArrayList<ItemViewModel> deletedItems = new ArrayList<>(viewModel.getCheckedItems().size());
+                                while (iterator.hasNext()) {
+                                    ItemViewModel itemViewModel = iterator.next();
+                                    deletedItems.add(itemViewModel);
+                                    viewModel.deleteItemWithoutDialog(itemViewModel.getItem().getId());
+                                }
+                                for (ItemViewModel itemView : deletedItems) {
+                                    viewModel.getCheckedItems().remove(itemView);
+                                }
+                                viewModel.moveBoughtItemsToEnd();
+                                markedItems.setText("" + viewModel.getCheckedItems().size() + " / " + viewModel.getItems().size());
+                            }
+                        });
 
+                    }
+                }
             });
 
             ImageButton addToCartButton = parent.getAddToShoppingCartButton();

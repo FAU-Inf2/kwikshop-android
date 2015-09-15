@@ -386,4 +386,6 @@
     <string name="store_type_pharmacy">Farmácia</string>
     <string name="store_type_shoppingmall">Shopping Center</string>
     <string name="store_type_store">Loja</string>
+    <string name="overflow_action_menu_edit">Editar Lista</string>
+    <string name="share">Compartilhar</string>
 </resources>

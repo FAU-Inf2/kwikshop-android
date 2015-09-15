@@ -83,7 +83,7 @@ public class ListOfShoppingListsFragment extends FragmentWithViewModel implement
 
         // swipe refresh view
         swipeLayout.setColorSchemeResources(R.color.secondary_Color, R.color.primary_Color);
-        swipeLayout.setDistanceToTriggerSync(20);
+        swipeLayout.setDistanceToTriggerSync(250);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

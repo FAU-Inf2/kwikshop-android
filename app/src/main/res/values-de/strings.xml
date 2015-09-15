@@ -128,7 +128,7 @@
     <string name="deleteRecipe_DialogTitle">Rezept löschen</string>
     <string name="deleteRecipe_DialogText">Bist du sicher, dass du dieses Rezept löschen möchtest?</string>
     <string name="overflow_action_menu_recipes">Rezepte verwalten</string>
-    <string name="overflow_action_menu_add_recipes">Rezept zur Liste hinzufügen</string>
+    <string name="overflow_action_menu_add_recipes">Rezept hinzufügen</string>
     <string name="recipe_scaleName_person">Personen</string>
     <string name="recipe_scaleName_piece">Stücke</string>
     <string name="recipe_choose_amount">Wähle Anzahl der </string>
@@ -360,10 +360,11 @@
     <string name="radius">Radius</string>
     <string name="setting_change_radius_description">Radius des Supermarktfinders ändern</string>
     <string name="general">Allgemein</string>
-    <string name="overflow_action_menu_edit">Liste bearbeiten</string>
+    <string name="overflow_action_menu_edit">Bearbeiten</string>
 
     <string name="enter_shoppinglist_name">Benenne deine Einkaufsliste</string>
     <string name="enter_recipe_name">Benenne dein Rezept</string>
+    <string name="share">Teilen</string>
 
 
 </resources>

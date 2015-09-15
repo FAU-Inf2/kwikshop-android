@@ -126,7 +126,7 @@
     <string name="overflow_action_menu_move_all_to_shopping_cart">Mark everything as bought</string>
     <string name="overflow_action_menu_move_all_from_shopping_cart">Mark nothing as bought</string>
     <string name="overflow_action_menu_shopping_mode">Shopping Mode</string>
-    <string name="overflow_action_menu_edit">Edit List</string>
+    <string name="overflow_action_menu_edit">Edit</string>
 
     <!-- Shopping list -->
     <!--<string name="itemdeleted">Moved to shopping cart</string> -->
@@ -237,8 +237,9 @@
     <string name="deleteRecipe_DialogTitle">Delete recipe</string>
     <string name="deleteRecipe_DialogText">Are you sure you want to delete the recipe?</string>
     <string name="overflow_action_menu_recipes">Manage Recipes</string>
-    <string name="overflow_action_menu_add_recipes">Add Recipes to the Shopping List</string>
+    <string name="overflow_action_menu_add_recipes">Add Recipe</string>
     <string name="overflow_action_menu_add_to_a_shopping_list">Add this Recipe to a Shopping List</string>
+    <string name="share">Share</string>
     <string name="recipe_scaleName_person">people</string>
     <string name="recipe_scaleName_piece">pieces</string>
     <string name="recipe_choose_amount">Choose amount of </string>

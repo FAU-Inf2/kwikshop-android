@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,5 +44,17 @@ public class RecipeActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
+        // check for barcode scanner fragment
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment BarcodeScannerFragment = fragmentManager.findFragmentByTag("BARCODE_SCANNER_FRAGMENT");
+        if (BarcodeScannerFragment != null && BarcodeScannerFragment.isVisible()) {
+            startActivity(getIntent());
+            return;
+        }
+
+    }
 }

@@ -1,6 +1,7 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
@@ -372,8 +373,11 @@ public abstract class ListViewModel<TList extends DomainListObject> extends List
                         } else {
                             newItem.setGroup(group);
                         }
-                        if(!itemMerger.mergeItem(listId, newItem))
+                        if(!itemMerger.mergeItem(listId, newItem)){
+                            Log.e("LVM", "ListID: " + listId);
                             listManager.addListItem(listId, newItem);
+                        }
+
 
                         autoCompletionHelper.offerName(newItem.getName());
                     }

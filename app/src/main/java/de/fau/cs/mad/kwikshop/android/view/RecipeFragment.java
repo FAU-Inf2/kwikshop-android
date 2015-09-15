@@ -40,6 +40,7 @@ import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
+import de.fau.cs.mad.kwikshop.android.viewmodel.BarcodeScannerViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemViewModel;
 import de.fau.cs.mad.kwikshop.common.Item;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
@@ -67,6 +68,8 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
     private static AutoCompletionHelper autoCompletion;
 
     private RecipeViewModel viewModel;
+    private BarcodeScannerViewModel barcodeViewModel;
+
     private boolean updatingViewModel;
 
     @InjectView(R.id.list_recipe)
@@ -86,6 +89,9 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
 
     @InjectView(R.id.swipe_container_recipe_list)
     SwipeRefreshLayout swipeLayout;
+
+    @InjectView(R.id.button_barcode_scan)
+    ImageButton btBarcodeScan;
 
 
     public static RecipeFragment newInstance(int recipeID) {
@@ -130,6 +136,7 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
         ButterKnife.inject(this, rootView);
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
+        barcodeViewModel = objectGraph.get(BarcodeScannerViewModel.class);
 
         DisplayHelper displayHelper = objectGraph.get(DisplayHelper.class);
 
@@ -232,6 +239,21 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
         refreshQuickAddAutoCompletion();
 
         disableFloatingButtonWhileSoftKeyboardIsShown();
+
+        // barcode scanner
+        btBarcodeScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                barcodeViewModel.setContext(getActivity());
+                if(barcodeViewModel.checkInternetConnection()){
+                    android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(BaseActivity.frameLayout.getId(), BarcodeScannerFragment.newInstance(recipeID), "BARCODE_SCANNER_FRAGMENT").commit();
+                } else {
+                    barcodeViewModel.notificationOfNoConnection();
+                }
+            }
+        });
+
 
         // swipe refresh view
         swipeLayout.setColorSchemeResources(R.color.secondary_Color, R.color.primary_Color);

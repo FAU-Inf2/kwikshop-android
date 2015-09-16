@@ -571,7 +571,9 @@ public class DefaultViewLauncher implements ViewLauncher {
         });
 
         alert = builder.create();
-        alert.show();
+        if(!activity.isFinishing()) {
+            alert.show();
+        }
     }
 
     @Override
@@ -599,7 +601,9 @@ public class DefaultViewLauncher implements ViewLauncher {
             }
         });
 
-        progress.show();
+        if(!activity.isFinishing()) {
+            progress.show();
+        }
     }
 
     @Override
@@ -616,7 +620,9 @@ public class DefaultViewLauncher implements ViewLauncher {
             }}
         );
         progress.setMessage(message);
-        progress.show();
+        if(!activity.isFinishing()) {
+            progress.show();
+        }
 
     }
 
@@ -644,7 +650,10 @@ public class DefaultViewLauncher implements ViewLauncher {
             }
         });
 
-        progress.show();
+        if(!activity.isFinishing()) {
+            progress.show();
+        }
+
     }
 
     @Override

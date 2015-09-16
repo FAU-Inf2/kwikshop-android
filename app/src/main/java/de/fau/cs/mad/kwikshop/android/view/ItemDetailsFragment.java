@@ -773,7 +773,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 
                 List<Unit> units = viewModel.getUnits();
-                if(newVal > 0 && newVal < units.size()) {
+                if(newVal >= 0 && newVal < units.size()) {
                      selectedUnit = units.get(newVal);
                 }
             }

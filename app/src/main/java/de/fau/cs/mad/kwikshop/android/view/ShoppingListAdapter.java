@@ -82,9 +82,14 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
 
     @Override
     public long getItemId(int position) {
-        return items.get(position).getItem().getId();
-    }
 
+        //TODO: This still leads to unintended behaviour, but it prevents the app from crashing
+        //This is just a hotfix so this is not a release blocker anymore
+        if(position >= items.size()) return -1;
+
+        return getItem(position).getItem().getId();
+
+    }
 
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
@@ -119,11 +124,12 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             if(before2 != null) {
                 if (!before2.isBought() && !before.isBought() && item.isBought())
                     showDivider = true;
-            } else
+            } else {
                 if (!before.isBought() && item.isBought())
                     showDivider = true;
                 else
                     showDivider = false;
+            }
         } else if(item.isBought())
             showDivider = true;
         if(next == null && !item.isBought())

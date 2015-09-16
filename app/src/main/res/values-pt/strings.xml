@@ -182,7 +182,7 @@
     <string name="dialog_retry">Repetir</string>
     <string name="dont_show_this_message_again">Não mostrar essa mensagem novamente</string>
     <string name="errorReporting_copyToClipboard">Copiar</string>
-    <string name="localization_dialog_message">Kwik Shop gostaria de localizar sua posição. Você aceita?</string>
+    <string name="localization_dialog_message">Kwik Shop gostaria de localizar sua posição para mostrar as lojas ao redor e ajudar a ordenar sua Lista de Compras.\nVocê aceita?</string>
     <string name="localization_dialog_title">Localização</string>
     <string name="localization_disable_localization">desativar localização</string>
     <string name="localization_no_connection_message">Kwik Shop precisa conexão com a internet para encontrar todos supermercados próximos.</string>
@@ -388,4 +388,11 @@
     <string name="store_type_store">Loja</string>
     <string name="overflow_action_menu_edit">Editar Lista</string>
     <string name="share">Compartilhar</string>
+    <string name="enter_recipe_name">Dê um nome a sua receita</string>
+    <string name="enter_shoppinglist_name">Dê um nome a sua Lista de Compras</string>
+    <string name="login_help">Faça o login para sincronizar sua Lista de Compras pelos seus dispositivos, compartilhe com seus amigos e use a ordenação automática.</string>
+    <string name="message_delete_selected_items">Você tem certeza que deseja deletar os itens selecionados?</string>
+    <string name="overflow_action_menu_shopping_mode_quit">Fechar o Modo de compra</string>
+    <string name="playServices_Description">Essa aplicação usa Google Play Services</string>
+    <string name="reset">Reverter</string>
 </resources>

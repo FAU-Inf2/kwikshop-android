@@ -340,11 +340,11 @@
     <string name="unit_millilitre_singular">Milliliter</string>
     <string name="unit_pack_singular">Packung</string>
     <string name="unit_piece_name">Stück</string>
-    <string name="unit_tablespoon">Esslöffel</string>
+    <string name="unit_tablespoon">EL</string>
     <string name="unit_tablespoon_short">EL</string>
-    <string name="unit_tablespoon_singular">Esslöffel</string>
+    <string name="unit_tablespoon_singular">EL</string>
     <string name="unit_teaspoon_short">TL</string>
-    <string name="unit_teaspoon_singular">Teelöffel</string>
+    <string name="unit_teaspoon_singular">TL</string>
     <string name="uploadPicture">Bild auswählen</string>
     <string name="voice_entry">Spracherkennung</string>
     <string name="setting_permission_for_localization_desc">Immer um Erlaubnis für Standortbestimmung fragen</string>

@@ -30,8 +30,7 @@ public class TutorialFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_tutorial_pager, container, false);
 
-        mAdapter = new TutorialSlidesFragmentAdapter(getActivity()
-                .getSupportFragmentManager());
+        mAdapter = new TutorialSlidesFragmentAdapter(getActivity().getSupportFragmentManager());
 
         mPager = (ViewPager) rootView.findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
@@ -40,22 +39,21 @@ public class TutorialFragment extends Fragment {
         mIndicator.setViewPager(mPager);
         ((CirclePageIndicator) mIndicator).setSnap(true);
 
-        mIndicator
-                .setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        /*
+        mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                     @Override
                     public void onPageSelected(int position) {
-                        Toast.makeText(TutorialFragment.this.getActivity(), "Changed to page " + position, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onPageScrolled(int position,
-                                               float positionOffset, int positionOffsetPixels) {
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                     }
 
                     @Override
                     public void onPageScrollStateChanged(int state) {
                     }
                 });
+       */
 
         return rootView;
     }

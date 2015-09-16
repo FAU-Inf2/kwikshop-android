@@ -50,7 +50,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 47; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 48; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -460,10 +460,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         if(oldVersion < 40) {
             try {
                 shoppingListDao = ListStorageFragment.getDatabaseHelper().getShoppingListDao();
-                shoppingListDao.executeRaw("ALTER TABLE 'shoppingList' ADD COLUMN predefinedId INTERGER;");
+                shoppingListDao.executeRaw("ALTER TABLE 'shoppingList' ADD COLUMN predefinedId INTEGER;");
 
                 recipeDao = ListStorageFragment.getDatabaseHelper().getRecipeDao();
-                recipeDao.executeRaw("ALTER TABLE 'recipe' ADD COLUMN predefinedId INTERGER;");
+                recipeDao.executeRaw("ALTER TABLE 'recipe' ADD COLUMN predefinedId INTEGER;");
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -475,13 +475,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
             try {
                 itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
-                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN predefinedId INTERGER;");
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN predefinedId INTEGER;");
 
                 groupDao = ListStorageFragment.getDatabaseHelper().getGroupDao();
-                groupDao.executeRaw("ALTER TABLE 'group' ADD COLUMN predefinedId INTERGER;");
+                groupDao.executeRaw("ALTER TABLE 'group' ADD COLUMN predefinedId INTEGER;");
 
                 unitDao = ListStorageFragment.getDatabaseHelper().getUnitDao();
-                unitDao.executeRaw("ALTER TABLE 'unit' ADD COLUMN predefinedId INTERGER;");
+                unitDao.executeRaw("ALTER TABLE 'unit' ADD COLUMN predefinedId INTEGER;");
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -560,6 +560,19 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+
+        if(oldVersion < 48) {
+
+            try {
+                boughtItemDao = getBoughtItemDao();
+
+                boughtItemDao.executeRaw("ALTER TABLE 'boughtItem' ADD COLUMN itemId INTEGER;");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

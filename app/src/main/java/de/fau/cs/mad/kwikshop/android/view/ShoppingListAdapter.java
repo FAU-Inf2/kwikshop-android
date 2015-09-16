@@ -119,11 +119,12 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
             if(before2 != null) {
                 if (!before2.isBought() && !before.isBought() && item.isBought())
                     showDivider = true;
-            } else
+            } else {
                 if (!before.isBought() && item.isBought())
                     showDivider = true;
                 else
                     showDivider = false;
+            }
         } else if(item.isBought())
             showDivider = true;
         if(next == null && !item.isBought())

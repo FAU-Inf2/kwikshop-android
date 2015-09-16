@@ -14,6 +14,7 @@
     <string name="title_activity_recipe">Recipes</string>
     <string name="title_activity_location">Supermarket Finder</string>
     <string name="title_activity_reminder">Reminder</string>
+    <string name="title_activity_tutorial">Tutorial</string>
 
     <!-- Fragment Label -->
     <string name="title_fragment_item_details">Create new item</string>

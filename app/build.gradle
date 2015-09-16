@@ -188,7 +188,8 @@ dependencies {
     //Navigation Drawer
     compile 'com.ikimuhendis:ldrawer:0.1'
     compile 'com.android.support:design:22.2.0'
-
+    //ViewPageIndicator
+    compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
 
 }
 

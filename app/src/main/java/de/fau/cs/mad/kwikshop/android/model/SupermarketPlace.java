@@ -53,13 +53,13 @@ public class SupermarketPlace {
                             latlng.latitude,
                             latlng.longitude,
                             radius, resultCount,
-                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, false, context) ? storeTypes[0] : ""),
+                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, true, context) ? storeTypes[0] : ""),
                             Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, context) ? storeTypes[1] : ""),
                             Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, false, context) ? storeTypes[2] : ""),
                             Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, context) ? storeTypes[3] : ""),
                             Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, context) ? storeTypes[4] : ""),
                             Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false, context) ? storeTypes[5] : ""),
-                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, context) ? storeTypes[5] : "")
+                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, context) ? storeTypes[6] : "")
                     );
                 } catch (Exception e) {
                     e.printStackTrace();

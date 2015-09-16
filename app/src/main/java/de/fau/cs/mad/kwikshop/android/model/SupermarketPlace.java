@@ -59,7 +59,7 @@ public class SupermarketPlace {
                             Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, context) ? storeTypes[3] : ""),
                             Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, context) ? storeTypes[4] : ""),
                             Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false, context) ? storeTypes[5] : ""),
-                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, context) ? storeTypes[5] : "")
+                            Param.name("types").value(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, context) ? storeTypes[6] : "")
                     );
                 } catch (Exception e) {
                     e.printStackTrace();

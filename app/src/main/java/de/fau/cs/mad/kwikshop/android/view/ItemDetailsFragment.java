@@ -672,13 +672,21 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         itemImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    itemImageView.setImageBitmap(null);
-                    if (viewModel.getImageItem() != null)
-                        viewModel.getImageItem().recycle();
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("image/jpeg");
-                startActivityForResult(intent, GALLERY);
+
+                itemImageView.setImageBitmap(null);
+                if (viewModel.getImageItem() != null)
+                    viewModel.getImageItem().recycle();
+
+                if(android.os.Build.VERSION.SDK_INT >= 19) {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, GALLERY);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, GALLERY);
+                }
             }
 
 
@@ -834,7 +842,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
                 viewModel.setImageItem(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), viewModel.getmImageUri()));
                 String pathsegment[] = viewModel.getmImageUri().getLastPathSegment().split(":");
-                viewModel.setImageId(pathsegment[1]);
+                int segment = android.os.Build.VERSION.SDK_INT >= 19 ? 1 : 0;
+                viewModel.setImageId(pathsegment[segment]);
                 final String[] imageColumns = { MediaStore.Images.Media.DATA };
 
                 Uri uri = getUri();

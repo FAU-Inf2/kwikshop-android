@@ -16,13 +16,10 @@ public class TutorialSlidesFragmentAdapter extends FragmentPagerAdapter implemen
 
     public static final String IMAGE_RESOURCE_ID = "image_resource";
 
-    private int[] Images = new int[] { R.drawable.ic_launcher, R.drawable.ic_about,
-            R.drawable.ic_action, R.drawable.ic_add_to_cart
+    private int[] Images = new int[] { R.drawable.ic_home, R.drawable.ic_home,
+            R.drawable.ic_home, R.drawable.ic_home
 
     };
-
-    protected static final int[] ICONS = new int[] { R.drawable.ic_cart_out,
-            R.drawable.ic_cart_out, R.drawable.ic_cart_out, R.drawable.ic_cart_out };
 
     private int mCount = Images.length;
 
@@ -46,13 +43,7 @@ public class TutorialSlidesFragmentAdapter extends FragmentPagerAdapter implemen
 
     @Override
     public int getIconResId(int index) {
-        return ICONS[index % ICONS.length];
+        return 0;
     }
 
-    public void setCount(int count) {
-        if (count > 0 && count <= 10) {
-            mCount = count;
-            notifyDataSetChanged();
-        }
-    }
 }

@@ -184,11 +184,11 @@ public class BaseActivity extends AppCompatActivity implements
                 startActivity(ServerIntegrationDebugActivity.getIntent(getApplicationContext()));
                 return true;
 
-            /*
+
             case R.id.nav_tutorial:
                 mDrawerLayout.closeDrawers();
                 startActivity(new Intent(getApplicationContext(), TutorialActivity.class));
-               */
+
 
         }
         return true;

@@ -153,7 +153,7 @@ public class LocationViewModel {
     }
 
     public void startAsyncPlaceRequest(LocationFragment locationFragment, int radius, int resultCount) {
-        
+
         if(loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context)){
             if(InternetHelper.checkInternetConnection(context)){
                 getNearbySupermarketPlaces(locationFragment, radius, resultCount);

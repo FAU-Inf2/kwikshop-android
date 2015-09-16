@@ -230,7 +230,7 @@ public class ShoppingListFragment
                         //IMPORTANT: Make sure to reenable events afterwards
                         viewModel.getItems().disableEvents();
                         shoppingListView.startDragging(position);
-
+                        shoppingListAdapter.notifyDataSetChanged();
                         return true;
                     }
                 }

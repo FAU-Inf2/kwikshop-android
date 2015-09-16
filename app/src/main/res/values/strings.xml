@@ -387,12 +387,12 @@
     <string name="askingGoogleVoiceSearch">For recognition it’s necessary to install \'Google Voice Search\'</string>
     <string name="title_activity_server_integration_debug" translatable="false">Server Integration Debug Console</string>
     <string name="unit_cup">cups</string>
-    <string name="unit_tablespoon">tablespoons</string>
+    <string name="unit_tablespoon">tbsps</string>
     <string name="unit_tablespoon_short">tbsp</string>
     <string name="unit_can">cans</string>
     <string name="every_time_i_create_a_list">Every time I create a list</string>
     <string name="on_a_schedule">On a schedule</string>
-    <string name="unit_teaspoon">teaspoons</string>
+    <string name="unit_teaspoon">tsps</string>
     <string name="unit_teaspoon_short">tsp</string>
 	<string name="login_back">Back</string>
 	
@@ -446,8 +446,8 @@
     <string name="unit_litre_singular">litre</string>
     <string name="unit_mililitre_singular">millilitre</string>
     <string name="unit_pack_singular">pack</string>
-    <string name="unit_tablespoon_singular">tablespoon</string>
-    <string name="unit_teaspoon_singular">teaspoon</string>
+    <string name="unit_tablespoon_singular">tbsp</string>
+    <string name="unit_teaspoon_singular">tsp</string>
     <string name="unit_box_singular">box</string>
     <string name="unit_millilitre_singular">millilitre</string>
     <string name="aquiring_lease">Aquiring Synchronization Lease</string>

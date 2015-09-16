@@ -6,7 +6,7 @@
     <CheckBox
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="18dp"
         android:id="@+id/checkbox_dialog_checkbox"/>
 
 </LinearLayout>

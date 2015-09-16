@@ -390,7 +390,7 @@
     <string name="share">Compartilhar</string>
     <string name="enter_recipe_name">Dê um nome a sua receita</string>
     <string name="enter_shoppinglist_name">Dê um nome a sua Lista de Compras</string>
-    <string name="login_help">Faça o login para sincronizar sua Lista de Compras pelos seus dispositivos, compartilhe-os com seus amigos e use a ordenação automática.</string>
+    <string name="login_help">Faça o login para sincronizar sua Lista de Compras pelos seus dispositivos, compartilhe com seus amigos e use a ordenação automática.</string>
     <string name="message_delete_selected_items">Você tem certeza que deseja deletar os itens selecionados?</string>
     <string name="overflow_action_menu_shopping_mode_quit">Fechar o Modo de compra</string>
     <string name="playServices_Description">Essa aplicação usa Google Play Services</string>

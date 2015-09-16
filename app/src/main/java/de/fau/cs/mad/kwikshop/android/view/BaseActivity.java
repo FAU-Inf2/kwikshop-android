@@ -136,7 +136,6 @@ public class BaseActivity extends AppCompatActivity implements
 
             case R.id.nav_login:
                 mDrawerLayout.closeDrawers();
-
                 baseViewModel.startLoginActivity();
                 return true;
 
@@ -146,45 +145,50 @@ public class BaseActivity extends AppCompatActivity implements
                 if (!baseViewModel.getCurrentActivityName().equals("ListOfShoppingListsActivity")) {
                     startActivity(new Intent(getApplicationContext(), ListOfShoppingListsActivity.class));
                 }
-
                 return true;
+
             case R.id.nav_recipe:
                 mDrawerLayout.closeDrawers();
 
                 if (!baseViewModel.getCurrentActivityName().equals("ListOfRecipesActivity")) {
                     startActivity(new Intent(getApplicationContext(), ListOfRecipesActivity.class));
                 }
-
-
                 return true;
+
             case R.id.nav_supermarket_finder:
                 mDrawerLayout.closeDrawers();
 
                 if (!baseViewModel.getCurrentActivityName().equals("LocationActivity")) {
                     startActivity(new Intent(getApplicationContext(), LocationActivity.class));
                 }
-
                 return true;
+
             case R.id.nav_settings:
                 mDrawerLayout.closeDrawers();
 
                 if (!baseViewModel.getCurrentActivityName().equals("SettingActivity")) {
                     startActivity(new Intent(getApplicationContext(), SettingActivity.class));
                 }
-
                 return true;
+
             case R.id.nav_about:
                 mDrawerLayout.closeDrawers();
 
                 if (!baseViewModel.getCurrentActivityName().equals("AboutActivity")) {
                     startActivity(new Intent(getApplicationContext(), AboutActivity.class));
                 }
-
                 return true;
+
             case R.id.nav_server:
                 mDrawerLayout.closeDrawers();
                 startActivity(ServerIntegrationDebugActivity.getIntent(getApplicationContext()));
                 return true;
+
+            /*
+            case R.id.nav_tutorial:
+                mDrawerLayout.closeDrawers();
+                startActivity(new Intent(getApplicationContext(), TutorialActivity.class));
+               */
 
         }
         return true;

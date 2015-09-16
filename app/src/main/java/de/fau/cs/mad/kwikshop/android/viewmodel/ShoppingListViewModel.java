@@ -456,7 +456,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 );
 
                 // place request: radius 1000 result count 5
-                getNearbySupermarketPlaces(500, 10);
+                getNearbySupermarketPlaces(500, 5);
 
             } else {
 

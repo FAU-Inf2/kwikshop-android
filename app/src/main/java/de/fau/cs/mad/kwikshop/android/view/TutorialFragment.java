@@ -6,7 +6,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
@@ -38,22 +37,6 @@ public class TutorialFragment extends Fragment {
         mIndicator = (CirclePageIndicator) rootView.findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
         ((CirclePageIndicator) mIndicator).setSnap(true);
-
-        /*
-        mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                    @Override
-                    public void onPageSelected(int position) {
-                    }
-
-                    @Override
-                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                    }
-
-                    @Override
-                    public void onPageScrollStateChanged(int state) {
-                    }
-                });
-       */
 
         return rootView;
     }

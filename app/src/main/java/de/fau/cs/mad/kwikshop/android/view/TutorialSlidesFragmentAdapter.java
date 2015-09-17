@@ -15,13 +15,14 @@ public class TutorialSlidesFragmentAdapter extends FragmentPagerAdapter implemen
         IconPagerAdapter {
 
     public static final String IMAGE_RESOURCE_ID = "image_resource";
+    public static final String TITLE_RESOURCE_ID = "title_resource";
+    public static final String DESC_RESOURCE_ID = "desc_resource";
 
-    private int[] Images = new int[] { R.drawable.ic_home, R.drawable.ic_home,
-            R.drawable.ic_home, R.drawable.ic_home
+    private int[] gif = new int[] { R.drawable.tutorial_nav_drawer, R.drawable.tutorial_nav_drawer, R.drawable.tutorial_nav_drawer};
 
-    };
+    private int[] titles = new int[] {R.string.tutorial_navigation_title, R.string.tutorial_navigation_title, R.string.tutorial_navigation_title };
 
-    private int mCount = Images.length;
+    private int[] descriptions = new int[] {R.string.tutorial_navigation_description, R.string.tutorial_navigation_description, R.string.tutorial_navigation_description};
 
     public TutorialSlidesFragmentAdapter(FragmentManager fm) {
         super(fm);
@@ -30,11 +31,15 @@ public class TutorialSlidesFragmentAdapter extends FragmentPagerAdapter implemen
     @Override
     public Fragment getItem(int position) {
         Bundle args = new Bundle();
-        args.putInt(IMAGE_RESOURCE_ID, Images[position]);
+        args.putInt(IMAGE_RESOURCE_ID, gif[position]);
+        args.putInt(TITLE_RESOURCE_ID, titles[position]);
+        args.putInt(DESC_RESOURCE_ID, descriptions[position]);
         Fragment fragment = new TutorialSlideFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
+    int mCount = gif.length;
 
     @Override
     public int getCount() {

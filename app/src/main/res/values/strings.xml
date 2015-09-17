@@ -65,7 +65,9 @@
         <item>@string/store_type_store</item>
     </string-array>
 
-
+    <!-- Tutorial -->
+    <string name="tutorial_navigation_title">Navigation Menu</string>
+    <string name="tutorial_navigation_description">To open the navigate menu click on the upper left corner or just swipe from left edge to the right.</string>
 
 
     <!-- Item Details Fragment -->

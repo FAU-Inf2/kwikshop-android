@@ -190,6 +190,8 @@ dependencies {
     compile 'com.android.support:design:22.2.0'
     //ViewPageIndicator
     compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
+    //GIF Viewer
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
 
 }
 

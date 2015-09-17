@@ -89,6 +89,11 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         @Override
         public void execute(Void parameter) {
             listManager.deleteItem(listId, tmp_item_id);
+            for(BoughtItem boughtItem : boughtItemStorage.getItems()) {
+                if(boughtItem.getShoppingListId() == listId && boughtItem.getItemId() == tmp_item_id) {
+                    boughtItemStorage.deleteSingleItem(boughtItem);
+                }
+            }
         }
     };
 
@@ -489,6 +494,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                     BoughtItem boughtItem = new BoughtItem(item.getName(), item.getLocation().getPlaceId(), item.getLocation().getName());
                     boughtItem.setDate(Calendar.getInstance().getTime());
                     boughtItem.setShoppingListId(listId);
+                    boughtItem.setItemId(item.getId());
                     boughtItemStorage.addItem(boughtItem);
 
                     /* All Items are bought -> mark all BoughtItems as syncable */

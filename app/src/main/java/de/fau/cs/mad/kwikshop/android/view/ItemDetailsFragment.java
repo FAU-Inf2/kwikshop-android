@@ -805,10 +805,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     */
     public boolean amountIsNatural(int selectedUnit){
-        return selectedUnit == 9 ||
-                selectedUnit == 7 ||
-                selectedUnit == 6 ||
-                selectedUnit == 0;
+        return false;
     }
 
     private void setDividerColor(NumberPicker picker) {

@@ -50,7 +50,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "kwikshop.db";
 
     //note if you increment here, also add migration strategy with correct version to onUpgrade
-    private static final int DATABASE_VERSION = 47; //increment every time you change the database model
+    private static final int DATABASE_VERSION = 48; //increment every time you change the database model
 
     private Dao<Item, Integer> itemDao = null;
     private RuntimeExceptionDao<Item, Integer> itemRuntimeDao = null;
@@ -150,7 +150,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN remindAtDate DATE;");
                 //AutoCompletionData changes
                 autoCompletionDao = ListStorageFragment.getDatabaseHelper().getAutoCompletionDao();
-                autoCompletionDao.executeRaw("ALTER TABLE 'autoCompletionData' ADD COLUMN group GROUP;");
+                autoCompletionDao.executeRaw("ALTER TABLE 'autoCompletionData' ADD COLUMN group_id INTEGER;");
 
             }catch (SQLException e){
                 e.printStackTrace();
@@ -213,8 +213,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         if(oldVersion < 26){
             try {
                 //Item changes
-                itemDao =  ListStorageFragment.getDatabaseHelper().getItemDao();
+                itemDao = getItemDao();
                 itemDao.executeRaw("ALTER TABLE 'item' DROP COLUMN imageItem;" );
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+                //Item changes
+                itemDao =  ListStorageFragment.getDatabaseHelper().getItemDao();
                 itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN imageItem STRING;");
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -236,7 +244,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             // before v28, the name of the Android resource was stored
             // beginning with v28, the enum ResourceId is used instead.
             // this updates the table so it includes a ResourceId
-
             try {
                 groupDao = ListStorageFragment.getDatabaseHelper().getGroupDao();
 
@@ -318,6 +325,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 itemDao =  ListStorageFragment.getDatabaseHelper().getItemDao();
                 itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN repeatType;");
 
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+
+                itemDao =  ListStorageFragment.getDatabaseHelper().getItemDao();
+
                 String template = "UPDATE 'item' SET repeatType = '%s' WHERE regularlyRepeatItem = %s;";
                 itemDao.executeRaw(String.format(template, RepeatType.None, 0));
                 itemDao.executeRaw(String.format(template, RepeatType.Schedule, 1));
@@ -334,8 +350,22 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
                 itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN serverId INTEGER;");
 
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            try {
+
                 shoppingListDao = ListStorageFragment.getDatabaseHelper().getShoppingListDao();
                 shoppingListDao.executeRaw("ALTER TABLE 'shoppingList' ADD COLUMN serverId INTEGER;");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            try {
 
                 recipeDao = ListStorageFragment.getDatabaseHelper().getRecipeDao();
                 recipeDao.executeRaw("ALTER TABLE 'recipe' ADD COLUMN serverId INTEGER;");
@@ -352,8 +382,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 groupDao = ListStorageFragment.getDatabaseHelper().getGroupDao();
                 groupDao.executeRaw("ALTER TABLE 'group' ADD COLUMN serverId INTEGER;");
 
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            try {
+
                 locationDao = ListStorageFragment.getDatabaseHelper().getLocationDao();
                 locationDao.executeRaw("ALTER TABLE 'location' ADD COLUMN serverId INTEGER;");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            try {
 
                 unitDao = ListStorageFragment.getDatabaseHelper().getUnitDao();
                 unitDao.executeRaw("ALTER TABLE 'unit' ADD COLUMN serverId INTEGER;");
@@ -370,8 +412,23 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
                 itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN version INTEGER;");
 
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+
                 shoppingListDao = ListStorageFragment.getDatabaseHelper().getShoppingListDao();
                 shoppingListDao.executeRaw("ALTER TABLE 'shoppingList' ADD COLUMN serverVersion INTEGER;");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
 
                 recipeDao = ListStorageFragment.getDatabaseHelper().getRecipeDao();
                 recipeDao.executeRaw("ALTER TABLE 'recipe' ADD COLUMN serverVersion INTEGER;");
@@ -402,8 +459,21 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
                 itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN modifiedSinceLastSync BOOLEAN;");
 
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            try {
                 shoppingListDao = ListStorageFragment.getDatabaseHelper().getShoppingListDao();
                 shoppingListDao.executeRaw("ALTER TABLE 'shoppingList' ADD COLUMN modifiedSinceLastSync BOOLEAN;");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
 
                 recipeDao = ListStorageFragment.getDatabaseHelper().getRecipeDao();
                 recipeDao.executeRaw("ALTER TABLE 'recipe' ADD COLUMN modifiedSinceLastSync BOOLEAN;");
@@ -412,23 +482,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 e.printStackTrace();
             }
 
+
         }
 
 
         if(oldVersion < 36) {
 
-            try {
 
-                deletedListDao = ListStorageFragment.getDatabaseHelper().getDeletedListDao();
-                deletedListDao.executeRaw("ALTER TABLE 'deletedList' ADD COLUMN listIdServer INTEGER;");
-
-                deletedItemDao = ListStorageFragment.getDatabaseHelper().getDeletedItemDao();
-                deletedItemDao.executeRaw("ALTER TABLE 'deletedItem' ADD COLUMN listIdServer INTEGER;");
-                deletedItemDao.executeRaw("ALTER TABLE 'deletedItem' ADD COLUMN itemIdServer INTEGER;");
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
         }
 
@@ -459,15 +519,23 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
         if(oldVersion < 40) {
             try {
-                shoppingListDao = ListStorageFragment.getDatabaseHelper().getShoppingListDao();
-                shoppingListDao.executeRaw("ALTER TABLE 'shoppingList' ADD COLUMN predefinedId INTERGER;");
 
                 recipeDao = ListStorageFragment.getDatabaseHelper().getRecipeDao();
-                recipeDao.executeRaw("ALTER TABLE 'recipe' ADD COLUMN predefinedId INTERGER;");
+                recipeDao.executeRaw("ALTER TABLE 'recipe' ADD COLUMN predefinedId INTEGER;");
 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
+            try {
+                shoppingListDao = ListStorageFragment.getDatabaseHelper().getShoppingListDao();
+                shoppingListDao.executeRaw("ALTER TABLE 'shoppingList' ADD COLUMN predefinedId INTEGER;");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
         }
 
 
@@ -475,17 +543,46 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
             try {
                 itemDao = ListStorageFragment.getDatabaseHelper().getItemDao();
-                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN predefinedId INTERGER;");
-
-                groupDao = ListStorageFragment.getDatabaseHelper().getGroupDao();
-                groupDao.executeRaw("ALTER TABLE 'group' ADD COLUMN predefinedId INTERGER;");
-
-                unitDao = ListStorageFragment.getDatabaseHelper().getUnitDao();
-                unitDao.executeRaw("ALTER TABLE 'unit' ADD COLUMN predefinedId INTERGER;");
+                itemDao.executeRaw("ALTER TABLE 'item' ADD COLUMN predefinedId INTEGER;");
 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
+
+            try {
+
+                groupDao = ListStorageFragment.getDatabaseHelper().getGroupDao();
+                groupDao.executeRaw("ALTER TABLE 'group' ADD COLUMN predefinedId INTEGER;");
+
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            try {
+
+                unitDao = ListStorageFragment.getDatabaseHelper().getUnitDao();
+                unitDao.executeRaw("ALTER TABLE 'unit' ADD COLUMN predefinedId INTEGER;");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        if(oldVersion < 45) {
+            try{
+                unitDao = ListStorageFragment.getDatabaseHelper().getUnitDao();
+
+                unitDao.executeRaw("ALTER TABLE 'unit' ADD COLUMN singularResourceId;");
+            }
+            catch(SQLException e){
+                e.printStackTrace();
+            }
+
         }
 
         if(oldVersion < 42) {
@@ -522,11 +619,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
         }
 
         if(oldVersion < 45) {
+
             try{
                 unitDao = ListStorageFragment.getDatabaseHelper().getUnitDao();
 
-
-                unitDao.executeRaw("ALTER TABLE 'unit' ADD COLUMN singularResourceId;");
                 GenericRawResults<String[]> shortNameRawResults = unitDao.queryRaw("SELECT DISTINCT singularResourceId " +
                         "FROM 'unit' WHERE singularResourceId != '' AND singularResourceId IS NOT NULL;");
 
@@ -541,7 +637,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
                 }
             }
             catch(SQLException e){
-                    e.printStackTrace();
+                e.printStackTrace();
             }
         }
 
@@ -560,6 +656,19 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+
+        if(oldVersion < 48) {
+
+            try {
+                boughtItemDao = getBoughtItemDao();
+
+                boughtItemDao.executeRaw("ALTER TABLE 'boughtItem' ADD COLUMN itemId INTEGER;");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

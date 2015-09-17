@@ -44,8 +44,8 @@ android {
     defaultConfig {
         applicationId "de.fau.cs.mad.kwikshop.android"
         multiDexEnabled true
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "2.0"
 
         //resources generated during build
         resValue "string", "BuildInfo_Git_Branch", getGitBranchName()

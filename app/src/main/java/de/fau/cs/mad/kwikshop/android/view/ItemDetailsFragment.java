@@ -1,18 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.speech.RecognizerIntent;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,36 +24,30 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
-import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.android.util.DateFormatter;
 import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
-import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
-import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
-import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 
 public abstract class ItemDetailsFragment<TList extends DomainListObject> extends Fragment implements ItemDetailsViewModel.Listener {
@@ -80,20 +64,19 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     ItemDetailsViewModel<TList> viewModel;
 
-
     private boolean updatingName = false;
     private boolean updatingComment = false;
     private boolean updatingBrand = false;
     private boolean updatingIsHighlighted = false;
 
     @InjectView(R.id.productname_text)
-    MultiAutoCompleteTextView productName_text;
+    MultiAutoCompleteTextView textView_Name;
 
     @InjectView(R.id.brand_text)
-    AutoCompleteTextView brand_text;
+    AutoCompleteTextView textView_Brand;
 
     @InjectView(R.id.comment_text)
-    EditText comment_text;
+    EditText textView_Comment;
 
     @InjectView(R.id.group_spinner)
     Spinner group_spinner;
@@ -155,11 +138,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         super.onResume();
 
-        productName_text.requestFocus();
+        textView_Name.requestFocus();
 
         if (viewModel.isNewItem()) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(productName_text, InputMethodManager.SHOW_IMPLICIT);
+            imm.showSoftInput(textView_Name, InputMethodManager.SHOW_IMPLICIT);
         } else {
             Window window = getActivity().getWindow();
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -182,7 +165,12 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         setupUI();
 
         // set actionbar with save and cancel buttons
-        setCustomActionBar();
+        if (getActivity() instanceof SaveDeleteActivity) {
+
+            SaveDeleteActivity parent = (SaveDeleteActivity) getActivity();
+            new ButtonBinding(parent.getSaveButton(), viewModel.getSaveItemCommand());
+            new ButtonBinding(parent.getDeleteButton(), viewModel.getDeleteItemCommand());
+        }
 
         viewModel.setListener(this);
 
@@ -210,107 +198,27 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @SuppressWarnings("unused")
     public void onEvent(AutoCompletionHistoryDeletedEvent event){
         if (autoCompletionHelper != null) {
-            productName_text.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
-            brand_text.setAdapter(autoCompletionHelper.getBrandAdapter(getActivity()));
+            textView_Name.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
+            textView_Brand.setAdapter(autoCompletionHelper.getBrandAdapter(getActivity()));
         }
     }
 
     protected void setupUI() {
 
-        productName_text.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
-        productName_text.setTokenizer(new SpaceTokenizer());
-        brand_text.setAdapter(autoCompletionHelper.getBrandAdapter(getActivity()));
+        setDividerColor(unitPicker);
+        setDividerColor(amountPicker);
 
-        // name text field
+        textView_Name.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
+        textView_Name.setTokenizer(new SpaceTokenizer());
+        textView_Brand.setAdapter(autoCompletionHelper.getBrandAdapter(getActivity()));
+
         onNameChanged();
         onBrandChanged();
         onCommentChanged();
         onIsHighlightedChanged();
-
         onLocationChanged();
-    }
-
-    @OnTextChanged(R.id.productname_text)
-    @SuppressWarnings("unused")
-    public void productname_text_TextChanged(CharSequence s) {
-
-        if(viewModel != null) {
-            synchronized (viewModel) {
-                updatingName = true;
-                viewModel.setName(s.toString());
-                updatingName = false;
-            }
-        }
-    }
-
-    @Override
-    public void onNameChanged() {
-        if(!updatingName) {
-            productName_text.setText(viewModel.getName());
-        }
-    }
-
-    @OnTextChanged(R.id.comment_text)
-    @SuppressWarnings("unused")
-    public void comment_text_TextChanged(CharSequence s) {
-        if(viewModel != null) {
-            synchronized (viewModel) {
-                updatingComment = true;
-                viewModel.setComment(s.toString());
-                updatingComment = false;
-            }
-        }
-    }
-
-    @Override
-    public void onCommentChanged() {
-        if(!updatingComment) {
-            comment_text.setText(viewModel.getComment());
-        }
-    }
-
-    @OnTextChanged(R.id.brand_text)
-    @SuppressWarnings("unused")
-    public void brand_text_TextChanged(CharSequence s) {
-
-        updatingBrand = true;
-        viewModel.setBrand(s.toString());
-        updatingBrand = false;
-    }
-
-    @Override
-    public void onBrandChanged() {
-        if(!updatingBrand) {
-            brand_text.setText(viewModel.getBrand());
-        }
-    }
-
-    @OnCheckedChanged(R.id.highlight_checkBox)
-    @SuppressWarnings("unused")
-    public void highlight_checkBox_CheckedChanged() {
-
-        updatingIsHighlighted = true;
-
-        viewModel.setIsHighlighted(highlight_checkbox.isChecked());
-
-        updatingIsHighlighted = false;
-    }
-
-    public void onIsHighlightedChanged() {
-        if(!updatingIsHighlighted) {
-            highlight_checkbox.setChecked(viewModel.getIsHighlighted());
-        }
-
-    }
-
-    protected void setCustomActionBar() {
-
-        if (getActivity() instanceof SaveDeleteActivity) {
-
-            SaveDeleteActivity parent = (SaveDeleteActivity) getActivity();
-            new ButtonBinding(parent.getSaveButton(), viewModel.getSaveItemCommand());
-            new ButtonBinding(parent.getDeleteButton(), viewModel.getDeleteItemCommand());
-        }
+        onAvailableGroupsChanged();
+        onSelectedGroupChanged();
     }
 
     protected abstract ItemDetailsViewModel<TList> createViewModel(ObjectGraph objectGraph);
@@ -330,6 +238,100 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             }
     }
 
+    private ArrayList<String> getAvailableGroupNames() {
+
+        ArrayList<String> names = new ArrayList<>();
+
+        for(Group g: viewModel.getAvailableGroups()) {
+            names.add(displayHelper.getDisplayName(g));
+        }
+
+        final Collator collator = Collator.getInstance(Locale.getDefault());
+        Collections.sort(names, collator);
+
+        return names;
+    }
+
+
+    //region Event Handlers
+
+    @OnTextChanged(R.id.productname_text)
+    @SuppressWarnings("unused")
+    public void textView_Name_TextChanged(CharSequence s) {
+
+        if(viewModel != null) {
+            synchronized (viewModel) {
+                updatingName = true;
+                viewModel.setName(s.toString());
+                updatingName = false;
+            }
+        }
+    }
+
+    @OnTextChanged(R.id.comment_text)
+    @SuppressWarnings("unused")
+    public void textView_Comment_TextChanged(CharSequence s) {
+        if(viewModel != null) {
+            synchronized (viewModel) {
+                updatingComment = true;
+                viewModel.setComment(s.toString());
+                updatingComment = false;
+            }
+        }
+    }
+
+    @OnTextChanged(R.id.brand_text)
+    @SuppressWarnings("unused")
+    public void textView_Brand_TextChanged(CharSequence s) {
+
+        updatingBrand = true;
+        viewModel.setBrand(s.toString());
+        updatingBrand = false;
+    }
+
+    @OnCheckedChanged(R.id.highlight_checkBox)
+    @SuppressWarnings("unused")
+    public void highlight_checkBox_CheckedChanged() {
+
+        updatingIsHighlighted = true;
+
+        viewModel.setIsHighlighted(highlight_checkbox.isChecked());
+
+        updatingIsHighlighted = false;
+    }
+
+    //endregion
+
+    //region Listener Implementation
+
+    @Override
+    public void onNameChanged() {
+        if(!updatingName) {
+            textView_Name.setText(viewModel.getName());
+        }
+    }
+
+    @Override
+    public void onCommentChanged() {
+        if(!updatingComment) {
+            textView_Comment.setText(viewModel.getComment());
+        }
+    }
+
+    @Override
+    public void onBrandChanged() {
+        if(!updatingBrand) {
+            textView_Brand.setText(viewModel.getBrand());
+        }
+    }
+
+    @Override
+    public void onIsHighlightedChanged() {
+        if(!updatingIsHighlighted) {
+            highlight_checkbox.setChecked(viewModel.getIsHighlighted());
+        }
+
+    }
 
     @Override
     public void onLocationChanged() {
@@ -351,7 +353,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @Override
     public void onAvailableGroupsChanged() {
 
-        ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, getAvailableGroupNames());
+        ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(
+                getActivity(),
+                android.R.layout.simple_spinner_item,
+                getAvailableGroupNames());
+
         groupSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         group_spinner.setAdapter(groupSpinnerArrayAdapter);
         group_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -378,21 +384,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         if(position > 0) {
             group_spinner.setSelection(position);
         }
-
     }
-
-
-    private ArrayList<String> getAvailableGroupNames() {
-
-        ArrayList<String> names = new ArrayList<>();
-
-        for(Group g: viewModel.getAvailableGroups()) {
-            names.add(displayHelper.getDisplayName(g));
-        }
-
-        return names;
-    }
-
 
     @Override
     public void onAvailableAmountsChanged() {
@@ -421,11 +413,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     @Override
     public void onLastBoughtDateChanged() {
-
+        onLocationChanged();
     }
 
     @Override
     public void onFinish() {
         getActivity().finish();
     }
+
+    //endregion
+
 }

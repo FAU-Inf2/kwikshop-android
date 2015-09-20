@@ -2,14 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <item
         android:id="@+id/refresh_current_supermarket"
         app:showAsAction="always"
-        android:icon="@drawable/ic_mylocation">
+        android:icon="@drawable/ic_gps_fixed_white_18dp">
     </item>
-
-
 
     <item
         android:id="@+id/sortby_options_icon"
@@ -19,18 +16,17 @@
 
         <menu>
 
+            <item android:id="@+id/sort_by_magicsort_option"
+                android:title="@string/sortby_magicsort"/>
+
             <item android:id="@+id/sort_by_group_option"
                 android:title="@string/sortby_group"/>
 
             <item android:id="@+id/sort_by_alphabet_option"
                 android:title="@string/sortby_alphabetically"/>
 
-
         </menu>
 
-
     </item>
-
-
 
 </menu>

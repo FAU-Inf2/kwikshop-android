@@ -29,6 +29,7 @@ import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.common.util.ObjectHelper;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 
 public abstract class ItemDetailsViewModel<TList extends DomainListObject> extends ViewModelBase {
 
@@ -167,7 +168,12 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
             deleteItemCommandExecute();
         }
     };
-
+    private final Command<Void> removeImageCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            removeImageCommandExecute();
+        }
+    };
 
     private final ListManager<TList> listManager;
     private final SimpleStorage<Unit> unitStorage;
@@ -251,6 +257,8 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
                 getDeleteItemCommand().setCanExecute(false);
                 getDeleteItemCommand().setIsAvailable(false);
 
+                getRemoveImageCommand().setIsAvailable(false);
+
             } else {
                 Item item = listManager.getListItem(listId, itemId);
 
@@ -291,6 +299,8 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
 
                 getDeleteItemCommand().setCanExecute(true);
                 getDeleteItemCommand().setIsAvailable(true);
+
+                getRemoveImageCommand().setIsAvailable(!StringHelper.isNullOrWhiteSpace(item.getImageItem()));
             }
 
             initialized = true;
@@ -436,6 +446,8 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
         if(!ObjectHelper.compare(this.imageId, value)) {
             this.imageId = value;
             listener.onImageIdChanged();
+
+            getRemoveImageCommand().setIsAvailable(this.imageId != null);
         }
     }
 
@@ -467,6 +479,10 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
 
     public Command<Void> getDeleteItemCommand() {
         return this.deleteItemCommand;
+    }
+
+    public Command<Void> getRemoveImageCommand() {
+        return this.removeImageCommand;
     }
 
     @Override
@@ -523,6 +539,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
         item.setBrand(getBrand());
         item.setComment(getComment());
         item.setGroup(getSelectedGroup());
+        item.setImageItem(getImageId());
 
         setAdditionalItemProperties();
 
@@ -596,4 +613,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
 
     }
 
+    private void removeImageCommandExecute() {
+        setImageId(null);
+    }
 }

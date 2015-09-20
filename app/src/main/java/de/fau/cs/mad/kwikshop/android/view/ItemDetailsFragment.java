@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
@@ -28,6 +32,8 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -59,6 +65,7 @@ import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
 import de.fau.cs.mad.kwikshop.android.model.mock.SpaceTokenizer;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 
 public abstract class ItemDetailsFragment<TList extends DomainListObject> extends Fragment implements ItemDetailsViewModel.Listener {
 
@@ -118,7 +125,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     TextView uploadText;
 
     @InjectView(R.id.button_remove)
-    ImageView button_remove;
+    ImageView button_removeImage;
 
     @InjectView(R.id.np_amount)
     NumberPicker amountPicker;
@@ -134,7 +141,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     @Inject
     AutoCompletionHelper autoCompletionHelper;
-
 
 
     @Override
@@ -214,9 +220,17 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == GALLERY && resultCode != 0) {
+
+            Uri uri = data.getData();
+
+            String pathsegment[] = uri.getLastPathSegment().split(":");
+            int segment = android.os.Build.VERSION.SDK_INT >= 19 ? 1 : 0;
+            viewModel.setImageId(pathsegment[segment]);
+
+        } else if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
 
@@ -228,7 +242,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(AutoCompletionHistoryDeletedEvent event){
+    public void onEvent(AutoCompletionHistoryDeletedEvent event) {
         if (autoCompletionHelper != null) {
             textView_Name.setAdapter(autoCompletionHelper.getNameAdapter(getActivity()));
             textView_Brand.setAdapter(autoCompletionHelper.getBrandAdapter(getActivity()));
@@ -245,7 +259,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         try {
             Field f = NumberPicker.class.getDeclaredField("mInputText");
             f.setAccessible(true);
-            EditText inputText = (EditText)f.get(amountPicker);
+            EditText inputText = (EditText) f.get(amountPicker);
             inputText.setFilters(new InputFilter[0]);
 
         } catch (NoSuchFieldException | IllegalAccessException ignored) {
@@ -271,6 +285,8 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         onAvailableAmountsChanged();
         onSelectedAmountChanged(viewModel.getSelectedAmount(), viewModel.getSelectedAmount());
+
+        onImageIdChanged();
 
 
         amountPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -301,6 +317,26 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         });
 
+        itemImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                viewModel.setImageId(null);
+
+                if (android.os.Build.VERSION.SDK_INT >= 19) {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, GALLERY);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, GALLERY);
+                }
+            }
+        });
+
+        new ButtonBinding(button_removeImage, viewModel.getRemoveImageCommand());
     }
 
     protected abstract ItemDetailsViewModel<TList> createViewModel(ObjectGraph objectGraph);
@@ -324,7 +360,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         ArrayList<String> names = new ArrayList<>();
 
-        for(Group g: groups) {
+        for (Group g : groups) {
             names.add(displayHelper.getDisplayName(g));
         }
 
@@ -349,9 +385,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         DisplayList<Unit> result = new DisplayList<>();
         result.objectToIndexMap = new HashMap<>();
         result.indexToObjectMap = new HashMap<>();
-        result.displayNames  = new String[units.size()];
+        result.displayNames = new String[units.size()];
 
-        for(int i = 0; i < units.size(); i++) {
+        for (int i = 0; i < units.size(); i++) {
             result.objectToIndexMap.put(units.get(i), i);
             result.indexToObjectMap.put(i, units.get(i));
             result.displayNames[i] = displayHelper.getDisplayName(units.get(i), amount);
@@ -367,7 +403,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         result.indexToObjectMap = new HashMap<>();
         result.displayNames = new String[values.size()];
 
-        for(int i = 0; i < values.size(); i++) {
+        for (int i = 0; i < values.size(); i++) {
             result.objectToIndexMap.put(values.get(i), i);
             result.indexToObjectMap.put(i, values.get(i));
             result.displayNames[i] = displayHelper.getDisplayName(values.get(i));
@@ -383,7 +419,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @SuppressWarnings("unused")
     public void textView_Name_TextChanged(CharSequence s) {
 
-        if(viewModel != null) {
+        if (viewModel != null) {
             //noinspection SynchronizeOnNonFinalField
             synchronized (viewModel) {
                 updatingName = true;
@@ -396,7 +432,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @OnTextChanged(R.id.comment_text)
     @SuppressWarnings("unused")
     public void textView_Comment_TextChanged(CharSequence s) {
-        if(viewModel != null) {
+        if (viewModel != null) {
             //noinspection SynchronizeOnNonFinalField
             synchronized (viewModel) {
                 updatingComment = true;
@@ -432,17 +468,17 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         synchronized (unitDisplayListLock) {
 
-            if(unitDisplayList == null) {
+            if (unitDisplayList == null) {
                 return;
             }
 
             int selectedIndex = unitPicker.getValue();
-            if(unitDisplayList.indexToObjectMap.containsKey(selectedIndex)) {
+            if (unitDisplayList.indexToObjectMap.containsKey(selectedIndex)) {
                 viewModel.setSelectedUnit(unitDisplayList.indexToObjectMap.get(selectedIndex));
             }
         }
 
-        updatingUnit  = false;
+        updatingUnit = false;
     }
 
     public void amountPicker_ValueChanged() {
@@ -451,12 +487,12 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         synchronized (amountDisplayListLock) {
 
-            if(amountDisplayList == null) {
+            if (amountDisplayList == null) {
                 return;
             }
 
             int selectedIndex = amountPicker.getValue();
-            if(amountDisplayList.indexToObjectMap.containsKey(selectedIndex)) {
+            if (amountDisplayList.indexToObjectMap.containsKey(selectedIndex)) {
                 viewModel.setSelectedAmount(amountDisplayList.indexToObjectMap.get(selectedIndex));
             }
         }
@@ -470,28 +506,28 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     @Override
     public void onNameChanged() {
-        if(!updatingName) {
+        if (!updatingName) {
             textView_Name.setText(viewModel.getName());
         }
     }
 
     @Override
     public void onCommentChanged() {
-        if(!updatingComment) {
+        if (!updatingComment) {
             textView_Comment.setText(viewModel.getComment());
         }
     }
 
     @Override
     public void onBrandChanged() {
-        if(!updatingBrand) {
+        if (!updatingBrand) {
             textView_Brand.setText(viewModel.getBrand());
         }
     }
 
     @Override
     public void onIsHighlightedChanged() {
-        if(!updatingIsHighlighted) {
+        if (!updatingIsHighlighted) {
             highlight_checkbox.setChecked(viewModel.getIsHighlighted());
         }
 
@@ -503,7 +539,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         // display the supermarket where this item was bought
         LastLocation location = viewModel.getLocation();
 
-        if(location != null && location.getName() != null){
+        if (location != null && location.getName() != null) {
             String duration = dateFormatter.formatDate(viewModel.getLastBoughtDate());
             lastBought_location.setText(location.getName() + " (" + duration + ") ");
         } else {
@@ -528,7 +564,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 List<Group> groups = viewModel.getAvailableGroups();
-                if(position > 0 && position < groups.size()) {
+                if (position > 0 && position < groups.size()) {
                     viewModel.setSelectedGroup(groups.get(position));
                 }
             }
@@ -545,7 +581,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         int position = viewModel.getAvailableGroups().indexOf(viewModel.getSelectedGroup());
 
-        if(position > 0) {
+        if (position > 0) {
             group_spinner.setSelection(position);
         }
     }
@@ -575,23 +611,23 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @Override
     public void onSelectedAmountChanged(double oldValue, double newValue) {
 
-        if(!updatingAmount) {
+        if (!updatingAmount) {
 
             synchronized (amountDisplayListLock) {
 
-                int selectedIndex =  amountDisplayList.objectToIndexMap.containsKey(viewModel.getSelectedAmount())
+                int selectedIndex = amountDisplayList.objectToIndexMap.containsKey(viewModel.getSelectedAmount())
                         ? amountDisplayList.objectToIndexMap.get(viewModel.getSelectedAmount())
                         : 0;
 
                 amountPicker.setMinValue(0);
-                amountPicker.setMaxValue(amountDisplayList.displayNames.length -1);
+                amountPicker.setMaxValue(amountDisplayList.displayNames.length - 1);
                 amountPicker.setValue(selectedIndex);
                 amountPicker.invalidate();
             }
         }
 
         // change displayed unit names between singular and plural
-        if((oldValue == 1 && newValue != 1) || (oldValue != 1 && newValue == 1)) {
+        if ((oldValue == 1 && newValue != 1) || (oldValue != 1 && newValue == 1)) {
             onAvailableUnitsChanged();
         }
 
@@ -620,12 +656,12 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @Override
     public void onSelectedUnitChanged() {
 
-        if(updatingUnit) {
+        if (updatingUnit) {
             return;
         }
 
         synchronized (unitDisplayListLock) {
-            int selectedIndex =  unitDisplayList.objectToIndexMap.containsKey(viewModel.getSelectedUnit())
+            int selectedIndex = unitDisplayList.objectToIndexMap.containsKey(viewModel.getSelectedUnit())
                     ? unitDisplayList.objectToIndexMap.get(viewModel.getSelectedUnit())
                     : 0;
             unitPicker.setValue(selectedIndex);
@@ -634,6 +670,15 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     @Override
     public void onImageIdChanged() {
+
+        if (StringHelper.isNullOrWhiteSpace(viewModel.getImageId())) {
+            itemImageView.setImageURI(null);
+            uploadText.setVisibility(View.VISIBLE);
+        } else {
+            itemImageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, viewModel.getImageId()));
+            uploadText.setVisibility(View.GONE);
+        }
+
 
     }
 
@@ -648,7 +693,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     }
 
     //endregion
-
 
 
     private static class DisplayList<T> {

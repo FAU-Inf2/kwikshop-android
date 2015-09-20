@@ -631,7 +631,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             public void onClick(View v) {
                 itemImageView.setImageDrawable(null);
                 uploadText.setText(R.string.uploadPicture);
-                item.removeImageItem();
+                item.setImageItem(null);
             }
 
         });

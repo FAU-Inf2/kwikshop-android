@@ -30,7 +30,9 @@ import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.model.messages.RefreshShoppingListEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.ShareSuccessEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.StartMagicSortIntentEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.StartSharingCodeIntentEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.SynchronizationEventType;
@@ -59,6 +61,7 @@ public class BaseActivity extends AppCompatActivity implements
     private ActionBarDrawerToggle mDrawerToggle;
 
     protected boolean startSharingCodeIntent = false;
+    protected boolean startMagicSortIntent = false;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -228,9 +231,15 @@ public class BaseActivity extends AppCompatActivity implements
                     EventBus.getDefault().post(new StartSharingCodeIntentEvent());
                 }
 
+                if(startMagicSortIntent) {
+                    startMagicSortIntent = false;
+                    EventBus.getDefault().post(new StartMagicSortIntentEvent());
+                }
+
             } else if (event.getEventType() == SynchronizationEventType.Failed) {
                 dismissSyncProgressDialog();
                 startSharingCodeIntent = false;
+                startMagicSortIntent = false;
 
                 AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
                 messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);

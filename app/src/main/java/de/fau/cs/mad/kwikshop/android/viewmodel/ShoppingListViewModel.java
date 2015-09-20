@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -21,6 +22,7 @@ import de.fau.cs.mad.kwikshop.android.util.ItemComparator;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
 import de.fau.cs.mad.kwikshop.android.view.ItemSortType;
+import de.fau.cs.mad.kwikshop.android.view.SyncingActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.*;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.common.Group;
@@ -31,7 +33,8 @@ import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
 import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.sorting.BoughtItem;
-import de.fau.cs.mad.kwikshop.common.sorting.ItemOrderWrapper;
+import de.fau.cs.mad.kwikshop.common.sorting.SortingRequest;
+import de.greenrobot.event.EventBus;
 import se.walkercrou.places.Place;
 
 public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
@@ -340,6 +343,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 case PropertiesModified:
                     Item item1 = listManager.getListItem(listId, event.getItemId());
                     updateItem(new ItemViewModel(item1));
+                    sortItems();
                     updateOrderOfItems();
                     break;
                 case Deleted:
@@ -407,6 +411,58 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         }
     }
 
+    @SuppressWarnings("unused")
+    public void onEventMainThread(StartMagicSortIntentEvent event) {
+        int serverId = ListStorageFragment.getLocalListStorage().loadList(listId).getServerId();
+        startMagicSortIntent(serverId);
+    }
+
+    protected void startMagicSortIntent(final Integer serverId) {
+
+        new AsyncTask<Integer, Void, Boolean>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                EventBus.getDefault().post(new MagicSortProgressDialogEvent(MagicSortProgressDialogType.Started));
+            }
+
+            @Override
+            protected Boolean doInBackground(Integer... id) {
+                try {
+                    if(serverId == null)
+                        return false;
+                    if(currentPlace == null)
+                        return false;
+
+                    SortingRequest sortingRequest = new SortingRequest(currentPlace.getPlaceId(), currentPlace.getName());
+                    clientFactory.getShoppingListClient().sortList(serverId.intValue(), sortingRequest);
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+
+                if(result == false) {
+                    if(currentPlace == null) {
+                        EventBus.getDefault().post(new MagicSortProgressDialogEvent(MagicSortProgressDialogType.NoPlace));
+                    } else {
+                        EventBus.getDefault().post(new MagicSortProgressDialogEvent(MagicSortProgressDialogType.Failed));
+                    }
+
+                } else {
+                    EventBus.getDefault().post(new MagicSortProgressDialogEvent(MagicSortProgressDialogType.Success));
+                    /* Synchronize - TODO: Only synchronize THIS list */
+                }
+
+            }
+
+        }.execute();
+
+    }
     //endregion
 
 
@@ -667,7 +723,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 new Command<Integer>() {
                     @Override
                     public void execute(Integer selectedIndex) {
-                        if(selectedIndex >= 0 && selectedIndex < places.size()) {
+                        if (selectedIndex >= 0 && selectedIndex < places.size()) {
                             currentPlace = places.get(selectedIndex);
                         }
                     }
@@ -711,8 +767,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     public void deleteItemWithoutDialog(int id){
         listManager.deleteItem(listId, id);
     }
-
-
 
     //endregion
 }

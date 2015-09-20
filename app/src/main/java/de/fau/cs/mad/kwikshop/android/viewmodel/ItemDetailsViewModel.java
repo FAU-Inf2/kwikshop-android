@@ -250,7 +250,7 @@ public class ItemDetailsViewModel{
                 item.setImageItem(imageId);
         }
         catch(Exception e){
-            item.removeImageItem();
+            item.setImageItem(null);
         }
     }
     public void showDeleteItemDialog(String title, String message, String positiveString, String negativeString, String checkBoxMessage){

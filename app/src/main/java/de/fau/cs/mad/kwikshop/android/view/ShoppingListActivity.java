@@ -4,13 +4,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,17 +24,15 @@ import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
-import de.fau.cs.mad.kwikshop.android.model.messages.MoveAllItemsEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.MagicSortProgressDialogEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.StartMagicSortIntentEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.StartSharingCodeIntentEvent;
-import de.fau.cs.mad.kwikshop.android.model.synchronization.CompositeSynchronizer;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.view.interfaces.EditModeActivity;
-import de.fau.cs.mad.kwikshop.android.view.interfaces.SaveDeleteActivity;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.greenrobot.event.EventBus;
-import retrofit.RetrofitError;
 
 public class ShoppingListActivity extends BaseActivity implements EditModeActivity {
 
@@ -86,7 +82,7 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
     @Override
     public boolean onPrepareOptionsMenu(Menu menu){
 
-        MenuItem findLocationItem =  menu.findItem(R.id.refresh_current_supermarket);
+        MenuItem findLocationItem = menu.findItem(R.id.refresh_current_supermarket);
 
         if(findLocationItem != null){
             if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, this))
@@ -100,8 +96,32 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
 
-        ItemSortType  type = null;
-        switch (item.getItemId()){
+        ItemSortType type = null;
+        switch (item.getItemId()) {
+            case R.id.sort_by_magicsort_option:
+                /* Check if user is logged in */
+                if(!SessionHandler.isAuthenticated(getApplicationContext())) {
+                    AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
+                    messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
+                    messageBox.setMessage(getResources().getString(R.string.magicsort_notloggedin));
+                    messageBox.create().show();
+                    break;
+                }
+
+                /* Check for internet connection */
+                if(!InternetHelper.checkInternetConnection(this)) {
+                    AlertDialog.Builder messageBox = new AlertDialog.Builder(ShoppingListActivity.this);
+                    messageBox.setPositiveButton(getResources().getString(android.R.string.ok), null);
+                    messageBox.setMessage(R.string.alert_dialog_connection_message);
+                    messageBox.create().show();
+                    break;
+                }
+
+                /* Synchronize if serverId is 0, then start the intent */
+                startMagicSortIntent = true;
+                SyncingActivity.requestSync();
+
+                break;
             case R.id.sort_by_group_option: type = ItemSortType.GROUP; break;
             case R.id.sort_by_alphabet_option: type = ItemSortType.ALPHABETICALLY; break;
             case R.id.action_shopping_mode:
@@ -134,13 +154,13 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
                     break;
                 }
 
-                /* Synchronize if serverId is 0, then start the intent */
-                int serverId = ListStorageFragment.getLocalListStorage().loadList(listId).getServerId();
-                if(serverId == 0) {
+                /* Synchronize, then start the intent */
+                int serverIdShare = ListStorageFragment.getLocalListStorage().loadList(listId).getServerId();
+                if(serverIdShare == 0) {
                     startSharingCodeIntent = true;
                     SyncingActivity.requestSync();
                 } else {
-                    startSharingCodeIntent(serverId);
+                    startSharingCodeIntent(serverIdShare);
                 }
                 break;
 
@@ -148,7 +168,6 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
                 /* start edit mode */
                 viewLauncher.showShoppingListInEditMode(listId);
                 break;
-
 
         }
         if(type != null) EventBus.getDefault().post(type);
@@ -194,7 +213,7 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
             protected void onPostExecute(String result) {
 
                 if(result == null) {
-                    progressDialog.setMessage(getApplicationContext().getResources().getString(R.string.share_sharingcodeerror));
+                    progressDialog.setMessage(getApplicationContext().getResources().getString(R.string.error));
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
@@ -216,6 +235,44 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
 
         }.execute();
 
+
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(MagicSortProgressDialogEvent event) {
+        switch(event.getType()) {
+            case Started:
+                progressDialog = new ProgressDialog(ShoppingListActivity.this);
+                progressDialog.setMessage(ShoppingListActivity.this.getResources().getString(R.string.share_loading));
+                progressDialog.setIndeterminate(false);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setCancelable(true);
+                progressDialog.show();
+                break;
+            case Failed:
+                progressDialog.setMessage(getApplicationContext().getResources().getString(R.string.error));
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                }, 1000);
+                break;
+            case NoPlace:
+                progressDialog.setMessage(getApplicationContext().getResources().getString(R.string.error));
+                Handler handler1 = new Handler();
+                handler1.postDelayed(new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                }, 1000);
+                break;
+            case Success:
+                progressDialog.dismiss();
+                SyncingActivity.requestSync();
+                break;
+
+        }
 
     }
 

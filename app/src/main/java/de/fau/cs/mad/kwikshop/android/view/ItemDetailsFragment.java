@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -217,6 +219,20 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     protected void setupUI() {
 
+        amountPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        unitPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
+        // workaround for bug in numberPicker widget
+        // see http://stackoverflow.com/questions/17708325/android-numberpicker-with-formatter-does-not-format-on-first-rendering
+        try {
+            Field f = NumberPicker.class.getDeclaredField("mInputText");
+            f.setAccessible(true);
+            EditText inputText = (EditText)f.get(amountPicker);
+            inputText.setFilters(new InputFilter[0]);
+
+        } catch (NoSuchFieldException | IllegalAccessException ignored) {
+
+        }
         setDividerColor(unitPicker);
         setDividerColor(amountPicker);
 
@@ -335,6 +351,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     public void textView_Name_TextChanged(CharSequence s) {
 
         if(viewModel != null) {
+            //noinspection SynchronizeOnNonFinalField
             synchronized (viewModel) {
                 updatingName = true;
                 viewModel.setName(s.toString());
@@ -347,6 +364,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @SuppressWarnings("unused")
     public void textView_Comment_TextChanged(CharSequence s) {
         if(viewModel != null) {
+            //noinspection SynchronizeOnNonFinalField
             synchronized (viewModel) {
                 updatingComment = true;
                 viewModel.setComment(s.toString());
@@ -524,12 +542,19 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @Override
     public void onSelectedAmountChanged(double oldValue, double newValue) {
 
-        synchronized (amountDisplayListLock) {
+        if(!updatingAmount) {
 
-            int selectedIndex =  amountDisplayList.objectToIndexMap.containsKey(viewModel.getSelectedAmount())
-                    ? amountDisplayList.objectToIndexMap.get(viewModel.getSelectedAmount())
-                    : 0;
-            amountPicker.setValue(selectedIndex);
+            synchronized (amountDisplayListLock) {
+
+                int selectedIndex =  amountDisplayList.objectToIndexMap.containsKey(viewModel.getSelectedAmount())
+                        ? amountDisplayList.objectToIndexMap.get(viewModel.getSelectedAmount())
+                        : 0;
+
+                amountPicker.setMinValue(0);
+                amountPicker.setMaxValue(amountDisplayList.displayNames.length -1);
+                amountPicker.setValue(selectedIndex);
+                amountPicker.invalidate();
+            }
         }
 
         // change displayed unit names between singular and plural
@@ -561,6 +586,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     @Override
     public void onSelectedUnitChanged() {
+
+        if(updatingUnit) {
+            return;
+        }
 
         synchronized (unitDisplayListLock) {
             int selectedIndex =  unitDisplayList.objectToIndexMap.containsKey(viewModel.getSelectedUnit())

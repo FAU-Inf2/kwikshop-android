@@ -2,6 +2,8 @@ package de.fau.cs.mad.kwikshop.android.di;
 
 import android.content.Context;
 
+import java.util.List;
+
 import dagger.Module;
 import dagger.Provides;
 import de.fau.cs.mad.kwikshop.android.model.ConnectionInfoStorage;
@@ -34,6 +36,7 @@ import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactoryImplementation;
 import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
 import de.fau.cs.mad.kwikshop.android.util.DateFormatter;
+import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesWrapper;
 import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.view.DefaultResourceProvider;
@@ -228,6 +231,16 @@ public class KwikShopBaseModule {
         return regularlyRepeatHelper;
     }
 
+    @Provides
+    public ItemMerger<ShoppingList> provideShoppingListItemMerger(ListManager<ShoppingList> listManager) {
+        return new ItemMerger<>(listManager);
+    }
+
+    @Provides
+    public ItemMerger<Recipe> provideRecipeItemMerger(ListManager<Recipe> listManager) {
+        return new ItemMerger<>(listManager);
+    }
+
     //endregion
 
 
@@ -239,7 +252,6 @@ public class KwikShopBaseModule {
     }
 
     //endregion
-
 
     //region Synchronization
 

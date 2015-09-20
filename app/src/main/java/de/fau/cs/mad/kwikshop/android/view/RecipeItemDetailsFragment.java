@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
+import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
@@ -20,9 +21,6 @@ import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 
 public class RecipeItemDetailsFragment extends ItemDetailsFragment<Recipe> {
 
-    // fields cannot be moved to base class because Dagger cant handle generics
-    @Inject
-    ListManager<Recipe> listManager;
 
     private RecipeItemDetailsViewModel viewModel;
 
@@ -53,34 +51,9 @@ public class RecipeItemDetailsFragment extends ItemDetailsFragment<Recipe> {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-
-        ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
-        viewModel = objectGraph.get(RecipeItemDetailsViewModel.class);
-        objectGraph.inject(this);
-
-        return view;
+    protected ItemDetailsViewModel<Recipe> createViewModel(ObjectGraph objectGraph) {
+        return objectGraph.get(RecipeItemDetailsViewModel.class);
     }
 
-    @Override
-    protected void saveItem() {
-
-        super.saveItem();
-
-        Toast.makeText(getActivity(), getResources().getString(R.string.itemdetails_saved), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    protected ListType getListType() {
-        return ListType.Recipe;
-    }
-
-    @Override
-    protected ListManager<Recipe> getListManager() {
-        return this.listManager;
-    }
 
 }

@@ -27,8 +27,11 @@ import android.widget.TextView;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -44,6 +47,7 @@ import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
+import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.messages.AutoCompletionHistoryDeletedEvent;
@@ -68,6 +72,14 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private boolean updatingComment = false;
     private boolean updatingBrand = false;
     private boolean updatingIsHighlighted = false;
+    private boolean updatingUnit = false;
+    private boolean updatingAmount = false;
+
+    private final Object unitDisplayListLock = new Object();
+    private final Object amountDisplayListLock = new Object();
+
+    private DisplayList<Unit> unitDisplayList;
+    private DisplayList<Double> amountDisplayList;
 
     @InjectView(R.id.productname_text)
     MultiAutoCompleteTextView textView_Name;
@@ -219,6 +231,27 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         onLocationChanged();
         onAvailableGroupsChanged();
         onSelectedGroupChanged();
+
+        onAvailableUnitsChanged();
+        onSelectedUnitChanged();
+
+        onAvailableAmountsChanged();
+        onSelectedAmountChanged(viewModel.getSelectedAmount(), viewModel.getSelectedAmount());
+
+
+        amountPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                amountPicker_ValueChanged();
+            }
+        });
+
+        unitPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                unitPicker_ValueChanged();
+            }
+        });
     }
 
     protected abstract ItemDetailsViewModel<TList> createViewModel(ObjectGraph objectGraph);
@@ -238,11 +271,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             }
     }
 
-    private ArrayList<String> getAvailableGroupNames() {
+    private ArrayList<String> getAvailableGroupNames(List<Group> groups) {
 
         ArrayList<String> names = new ArrayList<>();
 
-        for(Group g: viewModel.getAvailableGroups()) {
+        for(Group g: groups) {
             names.add(displayHelper.getDisplayName(g));
         }
 
@@ -250,6 +283,48 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         Collections.sort(names, collator);
 
         return names;
+    }
+
+    private DisplayList<Unit> getUnitsForDisplay(List<Unit> units, double amount) {
+
+        units = new ArrayList<>(units);
+
+        final Collator collator = Collator.getInstance(Locale.getDefault());
+        Collections.sort(units, new Comparator<Unit>() {
+            @Override
+            public int compare(Unit unit1, Unit unit2) {
+                return collator.compare(displayHelper.getDisplayName(unit1), displayHelper.getDisplayName(unit2));
+            }
+        });
+
+        DisplayList<Unit> result = new DisplayList<>();
+        result.objectToIndexMap = new HashMap<>();
+        result.indexToObjectMap = new HashMap<>();
+        result.displayNames  = new String[units.size()];
+
+        for(int i = 0; i < units.size(); i++) {
+            result.objectToIndexMap.put(units.get(i), i);
+            result.indexToObjectMap.put(i, units.get(i));
+            result.displayNames[i] = displayHelper.getDisplayName(units.get(i), amount);
+        }
+
+        return result;
+    }
+
+    private DisplayList<Double> getAmountsForDisplay(List<Double> values) {
+
+        DisplayList<Double> result = new DisplayList<>();
+        result.objectToIndexMap = new HashMap<>();
+        result.indexToObjectMap = new HashMap<>();
+        result.displayNames = new String[values.size()];
+
+        for(int i = 0; i < values.size(); i++) {
+            result.objectToIndexMap.put(values.get(i), i);
+            result.indexToObjectMap.put(i, values.get(i));
+            result.displayNames[i] = displayHelper.getDisplayName(values.get(i));
+        }
+
+        return result;
     }
 
 
@@ -300,6 +375,44 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         updatingIsHighlighted = false;
     }
 
+    public void unitPicker_ValueChanged() {
+
+        updatingUnit = true;
+
+        synchronized (unitDisplayListLock) {
+
+            if(unitDisplayList == null) {
+                return;
+            }
+
+            int selectedIndex = unitPicker.getValue();
+            if(unitDisplayList.indexToObjectMap.containsKey(selectedIndex)) {
+                viewModel.setSelectedUnit(unitDisplayList.indexToObjectMap.get(selectedIndex));
+            }
+        }
+
+        updatingUnit  = false;
+    }
+
+    public void amountPicker_ValueChanged() {
+
+        updatingAmount = true;
+
+        synchronized (amountDisplayListLock) {
+
+            if(amountDisplayList == null) {
+                return;
+            }
+
+            int selectedIndex = amountPicker.getValue();
+            if(amountDisplayList.indexToObjectMap.containsKey(selectedIndex)) {
+                viewModel.setSelectedAmount(amountDisplayList.indexToObjectMap.get(selectedIndex));
+            }
+        }
+
+        updatingAmount = true;
+
+    }
     //endregion
 
     //region Listener Implementation
@@ -356,7 +469,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(
                 getActivity(),
                 android.R.layout.simple_spinner_item,
-                getAvailableGroupNames());
+                getAvailableGroupNames(viewModel.getAvailableGroups()));
 
         groupSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         group_spinner.setAdapter(groupSpinnerArrayAdapter);
@@ -389,21 +502,72 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @Override
     public void onAvailableAmountsChanged() {
 
+        List<Double> amounts = viewModel.getAvailableAmounts();
+        synchronized (amountDisplayListLock) {
+
+            amountDisplayList = getAmountsForDisplay(amounts);
+
+            amountPicker.setMinValue(0);
+            amountPicker.setMaxValue(amountDisplayList.displayNames.length - 1);
+
+            amountPicker.setFormatter(new NumberPicker.Formatter() {
+                @Override
+                public String format(int i) {
+                    return amountDisplayList.displayNames[i];
+                }
+            });
+
+            onSelectedAmountChanged(0, 0);
+        }
     }
 
     @Override
-    public void onSelectedAmountChanged() {
+    public void onSelectedAmountChanged(double oldValue, double newValue) {
+
+        synchronized (amountDisplayListLock) {
+
+            int selectedIndex =  amountDisplayList.objectToIndexMap.containsKey(viewModel.getSelectedAmount())
+                    ? amountDisplayList.objectToIndexMap.get(viewModel.getSelectedAmount())
+                    : 0;
+            amountPicker.setValue(selectedIndex);
+        }
+
+        // change displayed unit names between singular and plural
+        if((oldValue == 1 && newValue != 1) || (oldValue != 1 && newValue == 1)) {
+            onAvailableUnitsChanged();
+        }
 
     }
+
 
     @Override
     public void onAvailableUnitsChanged() {
+
+        List<Unit> units = viewModel.getAvailableUnits();
+        double amount = viewModel.getSelectedAmount();
+
+        synchronized (unitDisplayListLock) {
+
+            this.unitDisplayList = getUnitsForDisplay(units, amount);
+
+            unitPicker.setMinValue(0);
+            unitPicker.setMaxValue(unitDisplayList.displayNames.length - 1);
+            unitPicker.setDisplayedValues(unitDisplayList.displayNames);
+
+            onSelectedUnitChanged();
+        }
 
     }
 
     @Override
     public void onSelectedUnitChanged() {
 
+        synchronized (unitDisplayListLock) {
+            int selectedIndex =  unitDisplayList.objectToIndexMap.containsKey(viewModel.getSelectedUnit())
+                    ? unitDisplayList.objectToIndexMap.get(viewModel.getSelectedUnit())
+                    : 0;
+            unitPicker.setValue(selectedIndex);
+        }
     }
 
     @Override
@@ -423,4 +587,13 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     //endregion
 
+
+
+    private static class DisplayList<T> {
+
+        Map<T, Integer> objectToIndexMap;
+        Map<Integer, T> indexToObjectMap;
+        String[] displayNames;
+
+    }
 }

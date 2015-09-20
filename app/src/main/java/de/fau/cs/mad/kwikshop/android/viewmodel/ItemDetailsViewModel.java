@@ -36,7 +36,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
 
         void onAvailableAmountsChanged();
 
-        void onSelectedAmountChanged();
+        void onSelectedAmountChanged(double oldValue, double newValue);
 
         void onAvailableUnitsChanged();
 
@@ -72,7 +72,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
         }
 
         @Override
-        public void onSelectedAmountChanged() {
+        public void onSelectedAmountChanged(double oldValue, double newValue) {
         }
 
         @Override
@@ -324,8 +324,11 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
 
     public void setSelectedAmount(double value) {
         if (this.selectedAmount != value) {
+
+            double oldValue = this.selectedAmount;
+
             this.selectedAmount = value;
-            listener.onSelectedAmountChanged();
+            listener.onSelectedAmountChanged(oldValue, value);
         }
     }
 

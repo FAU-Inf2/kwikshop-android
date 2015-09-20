@@ -34,6 +34,7 @@ import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactoryImplementation;
 import de.fau.cs.mad.kwikshop.android.util.ClientEqualityComparer;
 import de.fau.cs.mad.kwikshop.android.util.DateFormatter;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesWrapper;
 import de.fau.cs.mad.kwikshop.android.view.DefaultClipboardHelper;
 import de.fau.cs.mad.kwikshop.android.view.DefaultResourceProvider;
 import de.fau.cs.mad.kwikshop.android.view.IoServiceImplementation;
@@ -79,7 +80,8 @@ import de.fau.cs.mad.kwikshop.common.util.EqualityComparer;
         ShoppingListSyncDataResetter.class,
         RecipeSyncDataResetter.class,
 
-        LocationManager.class
+        LocationManager.class,
+        SharedPreferencesWrapper.class
 })
 public class KwikShopBaseModule {
 

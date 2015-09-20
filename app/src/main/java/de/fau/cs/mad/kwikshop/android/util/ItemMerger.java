@@ -30,6 +30,8 @@ public class ItemMerger<TList extends DomainListObject> {
                     ((items.getName() != null && items.getUnit().equals(item.getUnit())) || items.getUnit() == item.getUnit()) &&
                     ((items.getGroup() != null && items.getGroup().equals(item.getGroup())) || items.getGroup() == item.getGroup())){
 
+                //TODO: This might be a good place to use ObjetHelper.compare()
+
                 items.setAmount(items.getAmount() + item.getAmount());
                 listManager.saveListItem(listId, items);
                 return true;

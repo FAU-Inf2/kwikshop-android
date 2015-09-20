@@ -89,7 +89,6 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
                 DefaultViewLauncher.class
         })
 @SuppressWarnings("unused")
-
 public class KwikShopModule {
 
     private final Activity activity;

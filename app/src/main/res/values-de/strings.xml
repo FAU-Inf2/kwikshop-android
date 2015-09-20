@@ -396,5 +396,7 @@
     <string name="overflow_action_menu_shopping_mode_quit">Einkaufsmodus beenden</string>
 
     <string name="message_delete_selected_items">Bist du sicher, dass du die ausgewählten Gegenstände löschen möchtest?</string>
+    <string name="error">Ein Fehler ist aufgetreten, bitte versuche es später erneut.</string>
+    <string name="magicsort_notloggedin">Du musst eingeloggt sein, um MagicSort nutzen zu können.</string>
 
 </resources>

@@ -473,7 +473,7 @@
     <string name="playServices_Description">This application uses Google Play Services</string>
     <string name="login_help">Login to synchronize your Shopping Lists across all of your devices, share them with friends and use the automatic sorting.</string>
     <string name="no_place_dialog_title">No Supermarket</string>
-    <string name="sortby_magicsort">Magic</string>
+    <string name="sortby_magicsort" translatable="false">Magic</string>
     <string name="magicsort_notloggedin">You need to be logged in to use MagicSort.</string>
     <string name="error">An error occurred, please try again later.</string>
 

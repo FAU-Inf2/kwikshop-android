@@ -1,8 +1,11 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
@@ -44,6 +47,7 @@ import butterknife.OnTextChanged;
 import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
+import de.fau.cs.mad.kwikshop.android.model.SpeechRecognitionHelper;
 import de.fau.cs.mad.kwikshop.android.util.DateFormatter;
 import de.fau.cs.mad.kwikshop.android.view.binding.ButtonBinding;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
@@ -209,6 +213,20 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            String spokenText = results.get(0);
+
+            viewModel.setName(spokenText);
+
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     @SuppressWarnings("unused")
     public void onEvent(AutoCompletionHistoryDeletedEvent event){
         if (autoCompletionHelper != null) {
@@ -268,6 +286,21 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
                 unitPicker_ValueChanged();
             }
         });
+
+        micButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SpeechRecognitionHelper.run(getActivity());
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+
+                startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+            }
+
+        });
+
     }
 
     protected abstract ItemDetailsViewModel<TList> createViewModel(ObjectGraph objectGraph);

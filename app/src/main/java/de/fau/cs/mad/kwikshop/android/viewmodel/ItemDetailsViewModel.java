@@ -323,6 +323,9 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
             this.name = value;
             listener.onNameChanged();
 
+            // require a non whitespace name to be entered in order to be able to save
+            getSaveItemCommand().setCanExecute(!StringHelper.isNullOrWhiteSpace(value));
+
             if(getSelectedGroup() == null || getSelectedGroup() == groupStorage.getDefaultValue()) {
 
                 Group suggestedGroup = autoCompletionHelper.getGroup(value);

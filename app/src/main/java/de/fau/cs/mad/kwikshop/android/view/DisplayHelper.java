@@ -64,6 +64,15 @@ public class DisplayHelper {
         }
     }
 
+    public String getDisplayName(Unit unit, double amount) {
+
+        if(amount == 1) {
+            return getSingularDisplayName(unit);
+        } else {
+            return getDisplayName(unit);
+        }
+    }
+
     /**
      * Gets the (localized) short name for specified unit for display in the UI
      * If no resource for a localized short name has been specified,
@@ -83,22 +92,14 @@ public class DisplayHelper {
         }
 
     }
+
     public String getShortDisplayName(Unit unit, double amount) {
 
-        if (unit == null) {
-            return "";
-        } else {
-            Integer id = getAndroidId(unit.getShortNameResourceId());
-            if(id == null) {
-                if (amount == 1)
-                    return getSingularDisplayName(unit);
-                else
-                    return getDisplayName(unit);
-            } else {
-                return resourceProvider.getString(id);
-            }
+        if(amount == 1) {
+            return getSingularDisplayName(unit);
+        } else  {
+            return getShortDisplayName(unit);
         }
-
     }
 
     public String getSingularDisplayName(Unit unit) {
@@ -116,6 +117,26 @@ public class DisplayHelper {
 
     }
 
+    public String getDisplayName(double d) {
+
+        if(d < 1d) {
+
+            if(d % 0.5d == 0) {
+
+                return String.format("%s/2", (int)(d / 0.5d));
+
+            } else if(d % 0.25d == 0) {
+                return String.format("%s/4", (int)(d / 0.25d));
+            } else {
+                return Double.toString(d);
+            }
+        } else if(d % 1 == 0) {
+            return Integer.toString((int) d);
+        } else {
+            return Double.toString(d);
+        }
+
+    }
 
     private Integer getAndroidId(ResourceId id) {
 
@@ -234,5 +255,7 @@ public class DisplayHelper {
         }
 
     }
+
+
 
 }

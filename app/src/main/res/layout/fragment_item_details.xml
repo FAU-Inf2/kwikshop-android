@@ -410,7 +410,8 @@
                     android:layout_centerInParent="true"
                     android:layout_margin="1dp"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/selectPicture"/>
 
                 <ImageButton
                     android:id="@+id/button_remove"

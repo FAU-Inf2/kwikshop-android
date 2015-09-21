@@ -1,312 +1,623 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.CountDownLatch;
 
-import javax.inject.Inject;
-
+import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangeType;
+import de.fau.cs.mad.kwikshop.android.model.messages.ItemChangedEvent;
+import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
+import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
+import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesWrapper;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewModelBase;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
-import de.fau.cs.mad.kwikshop.android.model.messages.ActivityResultEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.DeleteItemEvent;
-import de.fau.cs.mad.kwikshop.android.util.ItemMerger;
-import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
-import de.fau.cs.mad.kwikshop.android.view.DisplayHelper;
-import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 import de.fau.cs.mad.kwikshop.common.Group;
 import de.fau.cs.mad.kwikshop.common.Item;
+import de.fau.cs.mad.kwikshop.common.LastLocation;
 import de.fau.cs.mad.kwikshop.common.Unit;
-import de.greenrobot.event.EventBus;
+import de.fau.cs.mad.kwikshop.common.interfaces.DomainListObject;
+import de.fau.cs.mad.kwikshop.common.util.ObjectHelper;
+import de.fau.cs.mad.kwikshop.common.util.StringHelper;
 
-public class ItemDetailsViewModel{
+public abstract class ItemDetailsViewModel<TList extends DomainListObject> extends ViewModelBase {
 
-    private Context context;
+    public interface Listener extends ViewModelBase.Listener {
+
+        void onNameChanged();
+
+        void onAvailableAmountsChanged();
+
+        void onSelectedAmountChanged(double oldValue, double newValue);
+
+        void onAvailableUnitsChanged();
+
+        void onSelectedUnitChanged();
+
+        void onIsHighlightedChanged();
+
+        void onBrandChanged();
+
+        void onCommentChanged();
+
+        void onAvailableGroupsChanged();
+
+        void onSelectedGroupChanged();
+
+        void onImageIdChanged();
+
+        void onLocationChanged();
+
+        void onLastBoughtDateChanged();
+    }
+
+    protected enum NullListener implements Listener {
+
+        Instance;
+
+        @Override
+        public void onNameChanged() {
+        }
+
+        @Override
+        public void onAvailableAmountsChanged() {
+        }
+
+        @Override
+        public void onSelectedAmountChanged(double oldValue, double newValue) {
+        }
+
+        @Override
+        public void onAvailableUnitsChanged() {
+        }
+
+        @Override
+        public void onSelectedUnitChanged() {
+        }
+
+        @Override
+        public void onIsHighlightedChanged() {
+        }
+
+        @Override
+        public void onBrandChanged() {
+        }
+
+        @Override
+        public void onCommentChanged() {
+        }
+
+        @Override
+        public void onAvailableGroupsChanged() {
+        }
+
+        @Override
+        public void onSelectedGroupChanged() {
+        }
+
+        @Override
+        public void onFinish() {
+        }
+
+        @Override
+        public void onImageIdChanged() {
+
+        }
+
+        @Override
+        public void onLocationChanged() {
+        }
+
+        @Override
+        public void onLastBoughtDateChanged() {
+
+        }
+    }
+
+    private final ArrayList<Double> naturalAmounts = new ArrayList<>(Arrays.asList(new Double[]{
+            1d, 2d, 3d, 4d, 5d, 6d, 7d, 8d, 9d, 10d, 11d, 12d, 15d, 20d, 25d, 30d,
+            40d, 50d, 60d, 70d, 75d, 80d, 90d, 100d, 125d, 150d, 175d, 200d, 250d, 300d, 350d, 400d,
+            450d, 500d, 600d, 700d, 750d, 800d, 900d, 1000d}));
+
+    private final ArrayList<Double> allAmounts = new ArrayList<>(Arrays.asList(new Double[]{
+            0.25d, 0.5d, 0.75d, 1d, 2d, 3d, 4d, 5d, 6d, 7d, 8d, 9d, 10d, 11d, 12d, 15d, 20d, 25d, 30d,
+            40d, 50d, 60d, 70d, 75d, 80d, 90d, 100d, 125d, 150d, 175d, 200d, 250d, 300d, 350d, 400d,
+            450d, 500d, 600d, 700d, 750d, 800d, 900d, 1000d}));
+
 
     private boolean initialized = false;
-    private boolean isNewItem = false;
-    private int listId;
+    protected int listId;
     private int itemId;
-    private Item item;
 
-    private List<Unit> units;
-    private List<Group> groups;
+    // backing fields for properties
+    private String name;
+    private List<Double> availableAmounts;
+    private double selectedAmount;
+    private List<Unit> availableUnits;
+    private Unit selectedUnit;
+    private boolean isHighlighted;
+    private String brand;
+    private String comment;
+    private List<Group> availableGroups;
+    private Group selectedGroup;
+    private String imageId;
+    private LastLocation location;
+    private Date lastBoughtDate;
 
+    private final Command<Void> saveItemCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            saveItemCommandExecute();
+        }
+    };
 
-    private final ViewLauncher viewLauncher;
+    private final Command<Void> deleteItemCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            deleteItemCommandExecute();
+        }
+    };
+    private final Command<Void> removeImageCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            removeImageCommandExecute();
+        }
+    };
+
+    private final ListManager<TList> listManager;
     private final SimpleStorage<Unit> unitStorage;
     private final SimpleStorage<Group> groupStorage;
-    private final DisplayHelper displayHelper;
+    private final ViewLauncher viewLauncher;
     private final AutoCompletionHelper autoCompletionHelper;
+    private final ItemMerger<TList> itemMerger;
+    private final SharedPreferencesWrapper sharedPreferences;
+    private final ResourceProvider resourceProvider;
 
 
-    private Bitmap imageItem = null;
-    private Bitmap rotateImage = null;
-    private String pathImage = "";
-    private Uri mImageUri;
-    private String imageId = "";
+    public ItemDetailsViewModel(ListManager<TList> listManager, SimpleStorage<Unit> unitStorage,
+                                SimpleStorage<Group> groupStorage, ViewLauncher viewLauncher,
+                                AutoCompletionHelper autoCompletionHelper, ItemMerger<TList> itemMerger,
+                                SharedPreferencesWrapper sharedPreferences, ResourceProvider resourceProvider) {
 
-    private AsyncTask<Void, Void, Void> loadTask;
-    private final Object loadLock = new Object();
-    private final CountDownLatch loadLatch = new CountDownLatch(1);
+        if (listManager == null) {
+            throw new ArgumentNullException("listManager");
+        }
+        if (unitStorage == null) {
+            throw new ArgumentNullException("unitStorage");
+        }
+        if (groupStorage == null) {
+            throw new ArgumentNullException("groupStorage");
+        }
+        if (viewLauncher == null) {
+            throw new ArgumentNullException("viewLauncher");
+        }
+        if (autoCompletionHelper == null) {
+            throw new ArgumentNullException("autoCompletionHelper");
+        }
+        if (itemMerger == null) {
+            throw new ArgumentNullException("itemMerger");
+        }
+        if (sharedPreferences == null) {
+            throw new ArgumentNullException("sharedPreferences");
+        }
+        if (resourceProvider == null) {
+            throw new ArgumentNullException("resourceProvider");
+        }
 
-
-
-
-    @Inject
-    public ItemDetailsViewModel(ViewLauncher viewLauncher, SimpleStorage<Unit> unitStorage,
-                                SimpleStorage<Group> groupStorage, DisplayHelper displayHelper, AutoCompletionHelper autoCompletionHelper){
-
-        if(viewLauncher == null) throw new ArgumentNullException("viewLauncher");
-        if(unitStorage == null) throw new ArgumentNullException("unitStorage");
-        if(groupStorage == null) throw new ArgumentNullException("groupStorage");
-        if(displayHelper == null) throw new ArgumentNullException("displayHelper");
-        if(autoCompletionHelper == null) throw new ArgumentNullException("autoCompletionHelper");
-
-        this.viewLauncher = viewLauncher;
+        this.listManager = listManager;
         this.unitStorage = unitStorage;
         this.groupStorage = groupStorage;
-        this.displayHelper = displayHelper;
+        this.viewLauncher = viewLauncher;
         this.autoCompletionHelper = autoCompletionHelper;
+        this.itemMerger = itemMerger;
+        this.sharedPreferences = sharedPreferences;
+        this.resourceProvider = resourceProvider;
 
     }
 
-    public void initialize(int listId, int itemId){
-        if(!initialized){
+
+    public void initialize(int listId, int itemId) {
+
+        if (!initialized) {
+
+            setAvailableUnits(unitStorage.getItems());
+            setAvailableGroups(groupStorage.getItems());
+
+            //no need to call setAvailableAmounts() because it will be handled automatically by setSelectedUnit()
+
             this.listId = listId;
             this.itemId = itemId;
-            if(itemId == -1){
-                isNewItem = true;
-            }else {
-                //item = shoppingListManager.getListItem(listId, itemId);
+            if (itemId == -1) {
+
+               initializeForNewItem();
+
+            } else {
+                Item item = listManager.getListItem(listId, itemId);
+
+               initializeForExistingItem(item);
             }
-            units = unitStorage.getItems();
-            groups = groupStorage.getItems();
 
             initialized = true;
         }
-    }
-
-    public boolean isNewItem(){
-        return this.isNewItem;
-    }
-
-    public Item getItem(){ return item; }
-
-    public String getItemName(){ return item.getName(); }
-
-    public List<Unit> getUnits() { return units; }
-
-    public List<Group> getGroups() { return groups; }
-
-    public Bitmap getImageItem(){ return imageItem; }
-
-    public Bitmap getRotateImage(){ return rotateImage; }
-
-    public String getPathImage(){ return pathImage; }
-
-    public Uri getmImageUri(){ return mImageUri; }
-
-    public String getImageId(){ return imageId; }
-
-    public void setItem(Item item){
-        this.item = item;
-    }
-
-    public void setmImageUri(Uri data){
-        mImageUri = data;
-    }
-
-    public void setImageItem(Bitmap imageItem){
-        this.imageItem = imageItem;
-    }
-
-    public void setImageId(String imageId){
-        this.imageId = imageId;
-    }
-
-    public void setPathImage(String pathImage){
-        this.pathImage = pathImage;
-    }
-
-    public void setImageId(){
-        imageId = item.getImageItem();
-    }
-
-    public void setRotateImage(Bitmap rotateImage){
-        this.rotateImage = rotateImage;
-    }
-
-    public Unit getSelectedUnit(int index){
-        return units.get(index);
-    }
-
-    public Group getSelectedGroup(int index){
-        return groups.get(index);
-    }
-
-    public void setContext(Context context){ this.context = context; }
-
-
-    final Command<Void> deletePositiveCommand = new Command<Void>() {
-        @Override
-        public void execute(Void parameter) {
-            EventBus.getDefault().post(new DeleteItemEvent(listId, itemId));
-        }
-    };
-
-    final Command<Void> deleteNegativeCommand = new Command<Void>() {
-        @Override
-        public void execute(Void parameter) {
-            //do nothing
-            //this is just so the command is executable
-        }
-    };
-
-    final Command<Void> deleteCheckBoxCheckedCommand = new Command<Void>() {
-        @Override
-        public void execute(Void parameter) {
-            SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false, context);
-        }
-    };
-
-    public void sortUnitsByName(){
-        final Collator collator = Collator.getInstance(Locale.getDefault());
-        Collections.sort(units, new Comparator<Unit>() {
-            @Override
-            public int compare(Unit lhs, Unit rhs) {
-                return collator.compare(displayHelper.getDisplayName(lhs),displayHelper.getDisplayName(rhs));
-            }
-        });
-
-    }
-    public void sortGroupsByName(){
-        final Collator collator = Collator.getInstance(Locale.getDefault());
-        Collections.sort(groups, new Comparator<Group>() {
-            @Override
-            public int compare(Group lhs, Group rhs) {
-                return collator.compare(displayHelper.getDisplayName(lhs), displayHelper.getDisplayName(rhs));
-            }
-        });
 
     }
 
-    public ArrayList<String> getUnitNames(){
-        ArrayList<String> unitNames = new ArrayList<>();
-        sortUnitsByName();
-        for (Unit u : units) {
-            unitNames.add(displayHelper.getDisplayName(u));
-        }
-        return unitNames;
-    }
+    protected void initializeForNewItem() {
+        setName("");
+        setBrand("");
+        setComment("");
+        setIsHighlighted(false);
+        setImageId(null);
+        setLocation(null);
+        setLastBoughtDate(null);
 
-    public ArrayList<String> getSingularUnitNames(){
-        ArrayList<String> unitNames = new ArrayList<>();
-        sortUnitsByName();
-        for (Unit u : units) {
-            unitNames.add(displayHelper.getSingularDisplayName(u));
-        }
-        return unitNames;
-    }
+        setSelectedGroup(groupStorage.getDefaultValue());
+        setSelectedUnit(unitStorage.getDefaultValue());
+        setSelectedAmount(1);
 
+        getDeleteItemCommand().setCanExecute(false);
+        getDeleteItemCommand().setIsAvailable(false);
 
-    public ArrayList<String> getGroupNames(){
-        ArrayList<String> groupNames = new ArrayList<>();
-        sortGroupsByName();
-        for (Group g : groups) {
-            groupNames.add(displayHelper.getDisplayName(g));
-        }
-        return groupNames;
-    }
-
-    public Group getSelectedGroup(){
-        Group selectedGroup = isNewItem() || item.getGroup() == null
-                ? groupStorage.getDefaultValue()
-                : item.getGroup();
-        return selectedGroup;
+        getRemoveImageCommand().setIsAvailable(false);
     }
 
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        EventBus.getDefault().post(new ActivityResultEvent(requestCode, resultCode, data));
-    }
+    protected void initializeForExistingItem(Item item) {
+        setName(item.getName());
+        setBrand(item.getBrand());
+        setComment(item.getComment());
+        setIsHighlighted(item.isHighlight());
+        setImageId(item.getImageItem());
+        setLocation(item.getLocation());
+        setLastBoughtDate(item.getLastBought());
 
-    public void setImageItem(){
-        try {
-            if (imageItem != null)
-                item.setImageItem(imageId);
-        }
-        catch(Exception e){
-            item.setImageItem(null);
-        }
-    }
-    public void showDeleteItemDialog(String title, String message, String positiveString, String negativeString, String checkBoxMessage){
-        if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, true, context))
-            viewLauncher.showMessageDialogWithCheckbox(title, message, positiveString, deletePositiveCommand, null, null, negativeString, deleteNegativeCommand, checkBoxMessage, false, deleteCheckBoxCheckedCommand, null);
-        else
-            EventBus.getDefault().post(new DeleteItemEvent(listId, itemId));
-    }
+        Group group = item.getGroup() != null
+                ? item.getGroup()
+                : groupStorage.getDefaultValue();
+        setSelectedGroup(group);
 
-    public void mergeAndSaveItem(final ListManager listManager, final ItemMerger itemMerger, final Item item){
-        synchronized (loadLock) {
+        Unit unit = item.getUnit() != null
+                ? item.getUnit()
+                : unitStorage.getDefaultValue();
+        setSelectedUnit(unit);
 
-            if (loadTask == null) {
-                loadTask = new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        if (isNewItem()) {
-                            if (!itemMerger.mergeItem(listId, item)) {
-                                listManager.addListItem(listId, item);
-                            }
-                        } else {
-                            if (itemMerger.mergeItem(listId, item)) {
-                                listManager.deleteItem(listId, item.getId());
-                            } else {
-                                listManager.saveListItem(listId, item);
-                            }
-                        }
-                        loadLatch.countDown();
-                        return null;
-                    }
 
-                };
-                loadTask.execute();
+        double amount = item.getAmount();
 
+        if(amount % 1 == 0) {
+            if(!naturalAmounts.contains(amount)) {
+                naturalAmounts.add(amount);
+                Collections.sort(naturalAmounts);
             }
         }
 
-        try {
-            loadLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(!allAmounts.contains(amount)) {
+            allAmounts.add(amount);
+            Collections.sort(allAmounts);
+        }
+
+        setSelectedAmount(amount);
+
+        getDeleteItemCommand().setCanExecute(true);
+        getDeleteItemCommand().setIsAvailable(true);
+
+        getRemoveImageCommand().setIsAvailable(!StringHelper.isNullOrWhiteSpace(item.getImageItem()));
+    }
+
+
+    public boolean isNewItem() {
+        return this.itemId == -1;
+    }
+
+    public String getName() {
+        return this.name != null ? this.name : "";
+    }
+
+    public void setName(String value) {
+
+        if (!ObjectHelper.compare(this.name, value)) {
+            this.name = value;
+            getListener().onNameChanged();
+
+            // require a non whitespace name to be entered in order to be able to save
+            getSaveItemCommand().setCanExecute(!StringHelper.isNullOrWhiteSpace(value));
+
+            if(getSelectedGroup() == null || getSelectedGroup() == groupStorage.getDefaultValue()) {
+
+                Group suggestedGroup = autoCompletionHelper.getGroup(value);
+                if(suggestedGroup != null) {
+                    setSelectedGroup(suggestedGroup);
+                }
+            }
+
         }
     }
 
-    public void offerAutoCompletion(String name, Group group, String brand){
-        autoCompletionHelper.offerNameAndGroup(name, group);
-        autoCompletionHelper.offerBrand(brand);
+    public List<Double> getAvailableAmounts() {
+        return this.availableAmounts != null ? this.availableAmounts : new ArrayList<Double>();
+    }
+
+    private void setAvailableAmounts(List<Double> value) {
+        if (value != this.availableAmounts) {
+            this.availableAmounts = value;
+            getListener().onAvailableAmountsChanged();
+        }
+    }
+
+    public double getSelectedAmount() {
+        return this.selectedAmount;
+    }
+
+    public void setSelectedAmount(double value) {
+        if (this.selectedAmount != value) {
+
+            double oldValue = this.selectedAmount;
+
+            this.selectedAmount = value;
+            getListener().onSelectedAmountChanged(oldValue, value);
+        }
+    }
+
+    public List<Unit> getAvailableUnits() {
+        return this.availableUnits != null ? this.availableUnits : new ArrayList<Unit>();
+    }
+
+    private void setAvailableUnits(List<Unit> value) {
+        if (this.availableUnits != value) {
+            this.availableUnits = value;
+            getListener().onAvailableUnitsChanged();
+        }
+    }
+
+    public Unit getSelectedUnit() {
+        return this.selectedUnit;
+    }
+
+    public void setSelectedUnit(Unit value) {
+        if (!ObjectHelper.compare(this.selectedUnit, value)) {
+            this.selectedUnit = value;
+            getListener().onSelectedUnitChanged();
+
+            setAvailableAmounts(getAvailableAmounts(this.selectedUnit));
+        }
+    }
+
+    public boolean getIsHighlighted() {
+        return this.isHighlighted;
+    }
+
+    public void setIsHighlighted(boolean value) {
+        if (this.isHighlighted != value) {
+            this.isHighlighted = value;
+            getListener().onIsHighlightedChanged();
+        }
+    }
+
+    public String getBrand() {
+        return this.brand != null ? this.brand : "";
+    }
+
+    public void setBrand(String value) {
+        if (!ObjectHelper.compare(this.brand, value)) {
+            this.brand = value;
+            getListener().onBrandChanged();
+        }
+    }
+
+    public String getComment() {
+        return this.comment != null ? this.comment : "";
+    }
+
+    public void setComment(String value) {
+        if (!ObjectHelper.compare(this.comment, value)) {
+            this.comment = value;
+            getListener().onCommentChanged();
+        }
+    }
+
+    public List<Group> getAvailableGroups() {
+        return this.availableGroups != null ? this.availableGroups : new ArrayList<Group>();
+    }
+
+    private void setAvailableGroups(List<Group> value) {
+        if (this.availableGroups != value) {
+            this.availableGroups = value;
+            getListener().onAvailableGroupsChanged();
+        }
+    }
+
+    public Group getSelectedGroup() {
+        return this.selectedGroup;
+    }
+
+    public void setSelectedGroup(Group value) {
+        if (!ObjectHelper.compare(this.selectedGroup, value)) {
+            this.selectedGroup = value;
+            getListener().onSelectedGroupChanged();
+        }
+    }
+
+    public String getImageId() {
+        return this.imageId;
+    }
+
+    public void setImageId(String value) {
+        if(!ObjectHelper.compare(this.imageId, value)) {
+            this.imageId = value;
+            getListener().onImageIdChanged();
+
+            getRemoveImageCommand().setIsAvailable(this.imageId != null);
+        }
+    }
+
+    public LastLocation getLocation() {
+        return this.location;
+    }
+
+    private void setLocation(LastLocation value) {
+        if(!ObjectHelper.compare(this.location, value)) {
+            this.location = value;
+            getListener().onLocationChanged();
+        }
+    }
+
+    public Date getLastBoughtDate() {
+        return this.lastBoughtDate;
+    }
+
+    private void setLastBoughtDate(Date value) {
+        if(!ObjectHelper.compare(this.lastBoughtDate, value)) {
+            this.lastBoughtDate = value;
+            getListener().onLastBoughtDateChanged();
+        }
+    }
+
+    public Command<Void> getSaveItemCommand() {
+        return this.saveItemCommand;
+    }
+
+    public Command<Void> getDeleteItemCommand() {
+        return this.deleteItemCommand;
+    }
+
+    public Command<Void> getRemoveImageCommand() {
+        return this.removeImageCommand;
+    }
+
+    private List<Double> getAvailableAmounts(Unit unit) {
+        //TODO: return naturalAmounts for applicable units
+        return allAmounts;
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(ItemChangedEvent event) {
+
+        if (event.getChangeType() == ItemChangeType.Deleted &&
+                event.getListType() == this.getListType() &&
+                event.getListId() == this.listId &&
+                event.getItemId() == this.itemId) {
+            this.finish();
+        }
+    }
+
+    //TODO: subscribe to events from eventbus
+    //TODO: add onEvent for list type in subclasses
+
+
+    protected abstract ListType getListType();
+
+    //Reimplement getListener() to return ItemDetailsViewModel.Listener
+    @Override
+    protected abstract Listener getListener();
+
+    /**
+     * Extension point for derived view models to set additional properties of item before
+     * it is saved
+     */
+    protected void setAdditionalItemProperties(Item item) {
 
     }
 
-    public void deleteItem(ListManager listManager){
 
-        if(!isNewItem()){
+    private void saveItemCommandExecute() {
+
+        autoCompletionHelper.offerNameAndGroup(getName(), getSelectedGroup());
+        autoCompletionHelper.offerBrand(getBrand());
+
+        Item item = this.itemId == -1 ? new Item() : listManager.getListItem(listId, itemId);
+
+        item.setName(getName());
+        item.setAmount(getSelectedAmount());
+        item.setUnit(getSelectedUnit());
+        item.setHighlight(getIsHighlighted());
+        item.setBrand(getBrand());
+        item.setComment(getComment());
+        item.setGroup(getSelectedGroup());
+        item.setImageItem(getImageId());
+
+        setAdditionalItemProperties(item);
+
+        if (this.itemId == -1) {
+            if (!itemMerger.mergeItem(listId, item)) {
+                listManager.addListItem(listId, item);
+            }
+        } else {
+            if (itemMerger.mergeItem(listId, item)) {
+                listManager.deleteItem(listId, item.getId());
+            } else {
+                listManager.saveListItem(listId, item);
+            }
+        }
+
+        finish();
+    }
+
+    private void deleteItemCommandExecute() {
+
+        if (!sharedPreferences.loadBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, true)) {
+
             listManager.deleteItem(listId, itemId);
+            finish();
+
+        } else {
+
+            viewLauncher.showMessageDialogWithCheckbox(
+                    //title
+                    resourceProvider.getString(R.string.title_delete_item),
+                    //message
+                    resourceProvider.getString(R.string.message_delete_item),
+                    //positiveMessage
+                    resourceProvider.getString(R.string.delete),
+                    //positiveCommand
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            listManager.deleteItem(listId, itemId);
+                            finish();
+                        }
+                    },
+                    //neutralMessage
+                    null,
+                    //neutralCommand
+                    NullCommand.VoidInstance,
+                    //negativeMessage
+                    resourceProvider.getString(R.string.cancel),
+                    //negativeCommand
+                    NullCommand.VoidInstance,
+                    //checkBoxMessage
+                    resourceProvider.getString(R.string.dont_show_this_message_again),
+                    //checkBoxDefaultValue
+                    false,
+                    //checkedCommand
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            sharedPreferences.saveBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, false);
+                        }
+                    },
+                    //uncheckedCommand
+                    new Command<Void>() {
+                        @Override
+                        public void execute(Void parameter) {
+                            sharedPreferences.saveBoolean(SharedPreferencesHelper.ITEM_DELETION_SHOW_AGAIN_MSG, true);
+                        }
+                    }
+            );
         }
 
     }
 
+    private void removeImageCommandExecute() {
+        setImageId(null);
+    }
 }

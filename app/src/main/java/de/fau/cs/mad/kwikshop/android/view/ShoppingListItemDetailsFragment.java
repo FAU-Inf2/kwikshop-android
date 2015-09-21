@@ -1,46 +1,17 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.NumberPicker;
-import android.widget.RadioButton;
-import android.widget.Spinner;
-import android.widget.Toast;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import javax.inject.Inject;
-import javax.ws.rs.NotSupportedException;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
 import dagger.ObjectGraph;
-import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
-import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ShoppingListItemDetailsViewModel;
-import de.fau.cs.mad.kwikshop.common.RepeatType;
 import de.fau.cs.mad.kwikshop.common.ShoppingList;
-import de.fau.cs.mad.kwikshop.common.TimePeriodsEnum;
-import de.fau.cs.mad.kwikshop.android.model.RegularlyRepeatHelper;
-import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
-import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
-import de.greenrobot.event.EventBus;
 
 
-public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<ShoppingList> {
+public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<ShoppingList> implements ShoppingListItemDetailsViewModel.Listener {
 
     /* UI elements */
+    private ShoppingListItemDetailsViewModel viewModel;
+
 
 //    @InjectView(R.id.repeat_container)
 //    View repeat_Container;
@@ -105,7 +76,16 @@ public class ShoppingListItemDetailsFragment extends ItemDetailsFragment<Shoppin
 
 
     @Override
-    protected ItemDetailsViewModel<ShoppingList> createViewModel(ObjectGraph objectGraph) {
-        return  objectGraph.get(ShoppingListItemDetailsViewModel.class);
+    protected ItemDetailsViewModel<ShoppingList> getViewModel(ObjectGraph objectGraph) {
+        if(this.viewModel == null ) {
+            this.viewModel = objectGraph.get(ShoppingListItemDetailsViewModel.class);
+        }
+
+        return this.viewModel;
+    }
+
+    @Override
+    protected void subscribeToViewModelEvents() {
+        viewModel.setListener(this);
     }
 }

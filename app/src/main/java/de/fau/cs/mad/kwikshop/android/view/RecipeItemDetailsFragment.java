@@ -1,23 +1,11 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-
-import javax.inject.Inject;
 
 import dagger.ObjectGraph;
-import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.viewmodel.ItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.RecipeItemDetailsViewModel;
 import de.fau.cs.mad.kwikshop.common.Recipe;
-import de.fau.cs.mad.kwikshop.android.model.interfaces.ListManager;
-import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
-
 
 public class RecipeItemDetailsFragment extends ItemDetailsFragment<Recipe> {
 
@@ -51,8 +39,16 @@ public class RecipeItemDetailsFragment extends ItemDetailsFragment<Recipe> {
     }
 
     @Override
-    protected ItemDetailsViewModel<Recipe> createViewModel(ObjectGraph objectGraph) {
-        return objectGraph.get(RecipeItemDetailsViewModel.class);
+    protected ItemDetailsViewModel<Recipe> getViewModel(ObjectGraph objectGraph) {
+        if(this.viewModel == null) {
+            this.viewModel = objectGraph.get(RecipeItemDetailsViewModel.class);
+        }
+        return this.viewModel;
+    }
+
+    @Override
+    protected void subscribeToViewModelEvents() {
+        this.viewModel.setListener(this);
     }
 
 

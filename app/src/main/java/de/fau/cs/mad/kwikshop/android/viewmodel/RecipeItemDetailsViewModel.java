@@ -1,6 +1,5 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
-import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
@@ -18,7 +17,8 @@ import de.fau.cs.mad.kwikshop.common.Unit;
 
 public class RecipeItemDetailsViewModel extends ItemDetailsViewModel<Recipe> {
 
-    @Inject
+    private ItemDetailsViewModel.Listener listener;
+
     public RecipeItemDetailsViewModel(ListManager<Recipe> listManager, SimpleStorage<Unit> unitStorage,
                                       SimpleStorage<Group> groupStorage, ViewLauncher viewLauncher,
                                       AutoCompletionHelper autoCompletionHelper,
@@ -29,9 +29,19 @@ public class RecipeItemDetailsViewModel extends ItemDetailsViewModel<Recipe> {
         super(listManager, unitStorage, groupStorage, viewLauncher, autoCompletionHelper, itemMerger, sharedPreferences, resourceProvider);
     }
 
+    public void setListener(ItemDetailsViewModel.Listener listener) {
+        this.listener = listener;
+    }
+
+
     @Override
     protected ListType getListType() {
         return ListType.Recipe;
+    }
+
+    @Override
+    protected Listener getListener() {
+        return listener != null ? listener : ItemDetailsViewModel.NullListener.Instance;
     }
 
     @SuppressWarnings("unused")

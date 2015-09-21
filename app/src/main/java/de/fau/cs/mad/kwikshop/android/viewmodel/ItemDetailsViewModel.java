@@ -2,7 +2,6 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +61,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
         void onLastBoughtDateChanged();
     }
 
-    private enum NullListener implements Listener {
+    protected enum NullListener implements Listener {
 
         Instance;
 
@@ -183,8 +182,6 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     private final ItemMerger<TList> itemMerger;
     private final SharedPreferencesWrapper sharedPreferences;
     private final ResourceProvider resourceProvider;
-
-    private Listener listener = NullListener.Instance;
 
 
     public ItemDetailsViewModel(ListManager<TList> listManager, SimpleStorage<Unit> unitStorage,
@@ -321,7 +318,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
 
         if (!ObjectHelper.compare(this.name, value)) {
             this.name = value;
-            listener.onNameChanged();
+            getListener().onNameChanged();
 
             // require a non whitespace name to be entered in order to be able to save
             getSaveItemCommand().setCanExecute(!StringHelper.isNullOrWhiteSpace(value));
@@ -344,7 +341,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     private void setAvailableAmounts(List<Double> value) {
         if (value != this.availableAmounts) {
             this.availableAmounts = value;
-            listener.onAvailableAmountsChanged();
+            getListener().onAvailableAmountsChanged();
         }
     }
 
@@ -358,7 +355,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
             double oldValue = this.selectedAmount;
 
             this.selectedAmount = value;
-            listener.onSelectedAmountChanged(oldValue, value);
+            getListener().onSelectedAmountChanged(oldValue, value);
         }
     }
 
@@ -369,7 +366,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     private void setAvailableUnits(List<Unit> value) {
         if (this.availableUnits != value) {
             this.availableUnits = value;
-            listener.onAvailableUnitsChanged();
+            getListener().onAvailableUnitsChanged();
         }
     }
 
@@ -380,7 +377,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     public void setSelectedUnit(Unit value) {
         if (!ObjectHelper.compare(this.selectedUnit, value)) {
             this.selectedUnit = value;
-            listener.onSelectedUnitChanged();
+            getListener().onSelectedUnitChanged();
 
             setAvailableAmounts(getAvailableAmounts(this.selectedUnit));
         }
@@ -393,7 +390,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     public void setIsHighlighted(boolean value) {
         if (this.isHighlighted != value) {
             this.isHighlighted = value;
-            listener.onIsHighlightedChanged();
+            getListener().onIsHighlightedChanged();
         }
     }
 
@@ -404,7 +401,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     public void setBrand(String value) {
         if (!ObjectHelper.compare(this.brand, value)) {
             this.brand = value;
-            listener.onBrandChanged();
+            getListener().onBrandChanged();
         }
     }
 
@@ -415,7 +412,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     public void setComment(String value) {
         if (!ObjectHelper.compare(this.comment, value)) {
             this.comment = value;
-            listener.onCommentChanged();
+            getListener().onCommentChanged();
         }
     }
 
@@ -426,7 +423,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     private void setAvailableGroups(List<Group> value) {
         if (this.availableGroups != value) {
             this.availableGroups = value;
-            listener.onAvailableGroupsChanged();
+            getListener().onAvailableGroupsChanged();
         }
     }
 
@@ -437,7 +434,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     public void setSelectedGroup(Group value) {
         if (!ObjectHelper.compare(this.selectedGroup, value)) {
             this.selectedGroup = value;
-            listener.onSelectedGroupChanged();
+            getListener().onSelectedGroupChanged();
         }
     }
 
@@ -448,7 +445,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     public void setImageId(String value) {
         if(!ObjectHelper.compare(this.imageId, value)) {
             this.imageId = value;
-            listener.onImageIdChanged();
+            getListener().onImageIdChanged();
 
             getRemoveImageCommand().setIsAvailable(this.imageId != null);
         }
@@ -461,7 +458,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     private void setLocation(LastLocation value) {
         if(!ObjectHelper.compare(this.location, value)) {
             this.location = value;
-            listener.onLocationChanged();
+            getListener().onLocationChanged();
         }
     }
 
@@ -472,7 +469,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
     private void setLastBoughtDate(Date value) {
         if(!ObjectHelper.compare(this.lastBoughtDate, value)) {
             this.lastBoughtDate = value;
-            listener.onLastBoughtDateChanged();
+            getListener().onLastBoughtDateChanged();
         }
     }
 
@@ -486,15 +483,6 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
 
     public Command<Void> getRemoveImageCommand() {
         return this.removeImageCommand;
-    }
-
-    @Override
-    public Listener getListener() {
-        return this.listener;
-    }
-
-    public void setListener(Listener value) {
-        this.listener = value != null ? value : NullListener.Instance;
     }
 
     private List<Double> getAvailableAmounts(Unit unit) {
@@ -518,6 +506,10 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
 
 
     protected abstract ListType getListType();
+
+    //Reimplement getListener() to return ItemDetailsViewModel.Listener
+    @Override
+    protected abstract Listener getListener();
 
     /**
      * Extension point for derived view models to set additional properties of item before

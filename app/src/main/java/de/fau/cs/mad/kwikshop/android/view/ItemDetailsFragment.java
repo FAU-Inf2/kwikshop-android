@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -32,8 +30,6 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -71,7 +67,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     private static final int GALLERY = 1;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
-    public boolean numberPickerUpdating = false;
 
     protected static final String ARG_LISTID = "list_id";
     protected static final String ARG_ITEMID = "item_id";
@@ -79,7 +74,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     private int listId;
     private int itemId;
 
-    ItemDetailsViewModel<TList> viewModel;
+    private ItemDetailsViewModel<TList> viewModel;
 
     private boolean updatingName = false;
     private boolean updatingComment = false;
@@ -181,7 +176,7 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         ButterKnife.inject(this, rootView);
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
-        viewModel = createViewModel(objectGraph);
+        viewModel = getViewModel(objectGraph);
         viewModel.initialize(listId, itemId);
 
         objectGraph.inject(this);
@@ -196,7 +191,6 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             new ButtonBinding(parent.getDeleteButton(), viewModel.getDeleteItemCommand());
         }
 
-        viewModel.setListener(this);
 
         // set actionbar title
         if (viewModel.isNewItem()) {
@@ -204,6 +198,9 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         } else {
             getActivity().setTitle(viewModel.getName());
         }
+
+
+        subscribeToViewModelEvents();
 
         return rootView;
     }
@@ -339,7 +336,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
         new ButtonBinding(button_removeImage, viewModel.getRemoveImageCommand());
     }
 
-    protected abstract ItemDetailsViewModel<TList> createViewModel(ObjectGraph objectGraph);
+    protected abstract ItemDetailsViewModel<TList> getViewModel(ObjectGraph objectGraph);
+
+    protected abstract void subscribeToViewModelEvents();
+
 
     private void setDividerColor(NumberPicker picker) {
 

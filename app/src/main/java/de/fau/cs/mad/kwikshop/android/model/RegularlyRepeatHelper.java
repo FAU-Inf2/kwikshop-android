@@ -142,10 +142,9 @@ public class RegularlyRepeatHelper {
     }
 
     public void delete(Item data) {
-        if(!scheduleRepeatList.contains(data)){
-            return;
+        if(!scheduleRepeatList.remove(data)) {
+            listCreationRepeatList.remove(data);
         }
-        scheduleRepeatList.remove(data);
     }
 
     public void checkIfReminderIsOver() {

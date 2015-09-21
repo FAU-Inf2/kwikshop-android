@@ -86,9 +86,11 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
     private final Object unitDisplayListLock = new Object();
     private final Object amountDisplayListLock = new Object();
+    private final Object groupDisplayListLock = new Object();
 
     private DisplayList<Unit> unitDisplayList;
     private DisplayList<Double> amountDisplayList;
+    private DisplayList<Group> groupDisplayList;
 
     @InjectView(R.id.productname_text)
     MultiAutoCompleteTextView textView_Name;
@@ -398,18 +400,32 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
             }
     }
 
-    private ArrayList<String> getAvailableGroupNames(List<Group> groups) {
+    private DisplayList<Group> getAvailableForDisplay(List<Group> groups) {
 
-        ArrayList<String> names = new ArrayList<>();
-
-        for (Group g : groups) {
-            names.add(displayHelper.getDisplayName(g));
-        }
+        groups = new ArrayList<>(groups);
 
         final Collator collator = Collator.getInstance(Locale.getDefault());
-        Collections.sort(names, collator);
+        Collections.sort(groups, new Comparator<Group>() {
+            @Override
+            public int compare(Group lhs, Group rhs) {
+                return collator.compare(lhs.getName(), rhs.getName());
+            }
+        });
 
-        return names;
+        DisplayList<Group> result = new DisplayList<>();
+        result.objectToIndexMap = new HashMap<>();
+        result.indexToObjectMap = new HashMap<>();
+        result.displayNames = new String[groups.size()];
+
+
+        for (int i = 0; i < groups.size(); i++) {
+            result.objectToIndexMap.put(groups.get(i), i);
+            result.indexToObjectMap.put(i, groups.get(i));
+            result.displayNames[i] = displayHelper.getDisplayName(groups.get(i));
+        }
+
+
+        return result;
     }
 
     private DisplayList<Unit> getUnitsForDisplay(List<Unit> units, double amount) {
@@ -595,36 +611,49 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @Override
     public void onAvailableGroupsChanged() {
 
-        ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(
-                getActivity(),
-                android.R.layout.simple_spinner_item,
-                getAvailableGroupNames(viewModel.getAvailableGroups()));
+        synchronized (groupDisplayListLock) {
 
-        groupSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        group_spinner.setAdapter(groupSpinnerArrayAdapter);
-        group_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                List<Group> groups = viewModel.getAvailableGroups();
-                if (position > 0 && position < groups.size()) {
-                    viewModel.setSelectedGroup(groups.get(position));
+            groupDisplayList = getAvailableForDisplay(viewModel.getAvailableGroups());
+
+            ArrayAdapter<String> groupSpinnerArrayAdapter = new ArrayAdapter<>(
+                    getActivity(),
+                    android.R.layout.simple_spinner_item,
+                    groupDisplayList.displayNames);
+
+            groupSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            group_spinner.setAdapter(groupSpinnerArrayAdapter);
+
+            group_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    if(groupDisplayList.indexToObjectMap.containsKey(position)) {
+                        viewModel.setSelectedGroup(groupDisplayList.indexToObjectMap.get(position));
+                    }
+
                 }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                viewModel.setSelectedGroup(null);
-            }
-        });
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    viewModel.setSelectedGroup(null);
+                }
+            });
+        }
     }
 
     @Override
     public void onSelectedGroupChanged() {
 
-        int position = viewModel.getAvailableGroups().indexOf(viewModel.getSelectedGroup());
+        synchronized (groupDisplayListLock) {
 
-        if (position > 0) {
-            group_spinner.setSelection(position);
+            if(groupDisplayList.objectToIndexMap.containsKey(viewModel.getSelectedGroup())) {
+                int position = groupDisplayList.objectToIndexMap.get(viewModel.getSelectedGroup());
+                group_spinner.setSelection(position);
+
+            } else {
+                group_spinner.setSelection(0);
+            }
+
         }
     }
 

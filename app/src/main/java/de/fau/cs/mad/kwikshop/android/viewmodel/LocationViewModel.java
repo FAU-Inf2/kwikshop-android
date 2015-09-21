@@ -316,4 +316,110 @@ public class LocationViewModel {
     }
 
 
+    public void selectPlaceType(){
+
+        boolean supermarketIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, true, context);
+        boolean bakeryIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, context);
+        boolean gasStationIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, false, context);
+        boolean liquorStoreIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, context);
+        boolean pharmacyIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, context);
+        boolean shoppingMallIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false, context);
+        boolean floristIsEnabled = SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, context);
+
+
+        boolean[] storeTypeStatus = new boolean[]{
+                supermarketIsEnabled,
+                bakeryIsEnabled,
+                gasStationIsEnabled,
+                liquorStoreIsEnabled,
+                pharmacyIsEnabled,
+                shoppingMallIsEnabled,
+                floristIsEnabled
+        };
+
+        viewLauncher.showMultiplyChoiceDialog(
+                resourceProvider.getString(R.string.localization_store_types_dialog_title),
+                resourceProvider.getStringArray(R.array.store_types_array),
+                storeTypeStatus,
+                //select command
+                new Command<Integer>() {
+                    @Override
+                    public void execute(Integer selection) {
+                        switch(selection){
+                            case 0:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, true, context);
+                                break;
+                            case 1:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, true, context);
+                                break;
+                            case 2:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, true, context);
+                                break;
+                            case 3:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, true, context);
+                                break;
+                            case 4:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, true, context);
+                                break;
+                            case 5:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, true, context);
+                                break;
+                            case 6:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, true, context);
+                                break;
+
+                        }
+
+                    }
+                },
+                //deselect command
+                new Command<Integer>() {
+                    @Override
+                    public void execute(Integer deSelection) {
+                        switch(deSelection){
+                            case 0:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, false, context);
+                                break;
+                            case 1:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, context);
+                                break;
+                            case 2:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, false, context);
+                                break;
+                            case 3:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, context);
+                                break;
+                            case 4:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, context);
+                                break;
+                            case 5:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false, context);
+                                break;
+                            case 6:
+                                SharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, context);
+                                break;
+                        }
+
+                    }
+                },
+                //positive command
+                resourceProvider.getString(R.string.dialog_OK),
+                new Command<Void>() {
+                    @Override
+                    public void execute(Void parameter) {
+                        viewLauncher.restartActivity();
+                    }
+                },
+                //negative command
+                resourceProvider.getString(R.string.cancel),
+                new Command<Void>() {
+                    @Override
+                    public void execute(Void parameter) {
+
+                    }
+                }
+        );
+    }
+
+
 }

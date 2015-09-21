@@ -40,6 +40,7 @@ public class LocationActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.change_store_type:
+                viewModel.setContext(getApplicationContext());
                 viewModel.selectPlaceType();
                 break;
         }

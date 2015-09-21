@@ -3,9 +3,17 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.view.View;
+import android.view.ViewManager;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -35,12 +43,26 @@ import se.walkercrou.places.Status;
 
 import static de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper.*;
 
-public class LocationViewModel {
+public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.AsyncPlaceRequestListener  {
 
     private Context context;
     private final ViewLauncher viewLauncher;
     private final ResourceProvider resourceProvider;
     private ClusterManager<ClusterMapItem> mClusterManager;
+    private LocationViewModel locationViewModel;
+    private List<Place> places;
+    private SupportMapFragment mapFragment;
+    private GoogleMap map;
+    private View rootView;
+
+
+    RelativeLayout mapInfoBox;
+    TextView mapPlaceName;
+    TextView mapPlaceOpenStatus;
+    TextView mapPlaceDistance;
+    View mapDirectionButton;
+
+    private final static int resultCount = 40;
 
     @Inject
     public LocationViewModel(ResourceProvider resourceProvider, ViewLauncher viewLauncher) {
@@ -53,12 +75,37 @@ public class LocationViewModel {
             throw new ArgumentNullException("viewLauncher");
         }
 
+        locationViewModel = this;
         this.resourceProvider = resourceProvider;
         this.viewLauncher = viewLauncher;
     }
 
-
     public void setContext(Context context){ this.context = context; }
+
+    public void setMapFragment(SupportMapFragment mapFragment){this.mapFragment = mapFragment;}
+
+    /*
+
+    public void setRelativeLayoutView(RelativeLayout mapInfoBox){this.mapInfoBox = mapInfoBox;}
+
+    public void setTextViewPlaceName(TextView mapPlaceName){this.mapPlaceName = mapPlaceName;}
+
+    public void setTextViewPlaceStatus(TextView mapPlaceOpenStatus){this.mapPlaceOpenStatus = mapPlaceOpenStatus;}
+
+    public void setTextViewDistance(TextView mapPlaceDistance){this.mapPlaceDistance = mapPlaceDistance;}
+
+    public void setViewDirection(View mapDirectionButton){this.mapDirectionButton = mapDirectionButton;}
+
+    public GoogleMap getMap(){ return map;}
+
+    public List<Place> getPlaces(){return places;}
+
+    */
+
+    public void setView(View view){
+        this.rootView = view;
+        wireUpView();
+    }
 
     public Command<Void> getCancelProgressDialogCommand(){ return cancelProgressDialogCommand; }
 
@@ -66,9 +113,38 @@ public class LocationViewModel {
 
     public Command<String> getRouteIntentCommand(){ return routeIntentCommand; }
 
-    public Command getRestartActivityCommand(){ return restartActivityCommand; }
+    public Command<Void> getRestartActivityCommand(){ return restartActivityCommand; }
+
+    public Command<Void> getStartPlaceRequestCommand(){ return startPlaceRequestCommand; }
 
 
+    final Command<Void> startPlaceRequestCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            showProgressDialog();
+            hideInfoBox();
+            startAsyncPlaceRequest(locationViewModel);
+        }
+    };
+
+    final Command<Void> installGooglePlayServiceCommand = new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            final String appPackageName = "com.google.android.gms";
+            try {
+                viewLauncher.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                viewLauncher.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+            }
+        }
+    };
+
+    final Command<Void> showListOfShoppingListCommand =   new Command<Void>() {
+        @Override
+        public void execute(Void parameter) {
+            viewLauncher.showListOfShoppingListsActivity();
+        }
+    };
 
     final Command<Void> cancelProgressDialogCommand =  new Command<Void>() {
         @Override
@@ -152,19 +228,106 @@ public class LocationViewModel {
         SupermarketPlace.initiateSupermarketPlaceRequest(context, instance, radius, resultCount);
     }
 
-    public void startAsyncPlaceRequest(LocationFragment locationFragment, int radius, int resultCount) {
+    public void startAsyncPlaceRequest(LocationViewModel locationViewModel) {
 
-        if(loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context)){
-            if(InternetHelper.checkInternetConnection(context)){
-                getNearbySupermarketPlaces(locationFragment, radius, resultCount);
+        if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS){
+            if(loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context)){
+                if(InternetHelper.checkInternetConnection(context)){
+                    getNearbySupermarketPlaces(locationViewModel, getRadius(), resultCount);
+                } else {
+                    notificationOfNoConnectionForMap();
+                }
             } else {
-                notificationOfNoConnectionForMap();
+                showAskForLocalizationPermission();
             }
         } else {
-            showAskForLocalizationPermission();
+            if(mapFragment.getView()!= null){
+                mapFragment.getView().setVisibility(View.INVISIBLE);
+            }
+            notificationOfNoPlayServiceInstalled();
         }
-
     }
+
+
+    @Override
+    public void postResult(List<Place> mPlaces) {
+        places = mPlaces;
+        checkPlaceResult(places);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        map = googleMap;
+        setupGoogleMap(map);
+        showPlacesInGoogleMap(places);
+
+        viewLauncher.dismissDialog();
+
+        onMarkerClickHandler();
+        onMapClickHandler();
+    }
+
+    private void wireUpView(){
+        mapInfoBox = (RelativeLayout) rootView.findViewById(R.id.map_infobox);
+        mapPlaceName = (TextView) rootView.findViewById(R.id.map_place_name);
+        mapPlaceOpenStatus = (TextView) rootView.findViewById(R.id.map_place_open_status);
+        mapPlaceDistance = (TextView) rootView.findViewById(R.id.map_place_distance);
+        mapDirectionButton =  rootView.findViewById(R.id.direction_button);
+    }
+
+    private void onMarkerClickHandler(){
+
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                final Place clickedPlace = findClickedPlace(marker, places);
+                final String clickedAddress = findClickedAddress(clickedPlace);
+                showInfoBox();
+                mapPlaceName.setText(clickedPlace.getName());
+                mapPlaceOpenStatus.setText(convertStatus(clickedPlace.getStatus()));
+                mapPlaceDistance.setText(getDistanceBetweenLastLocationAndPlace(clickedPlace, getLastLatLng()));
+                mapDirectionButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getRouteIntentCommand().execute(clickedAddress);
+                    }
+                });
+                return false;
+            }
+        });
+    }
+
+
+    private void onMapClickHandler(){
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                hideInfoBox();
+            }
+        });
+    }
+
+
+    private void showInfoBox(){
+        mapInfoBox.setVisibility(View.VISIBLE);
+        mapDirectionButton.bringToFront();
+        mapDirectionButton.setVisibility(View.VISIBLE);
+    }
+
+    public void hideInfoBox(){
+        mapInfoBox.setVisibility(View.INVISIBLE);
+        mapDirectionButton.setVisibility(View.INVISIBLE);
+    }
+
+
+    public void showProgressDialog(){
+       showProgressDialogWithoutButton();
+    }
+
 
     public LatLng getLastLatLng(){
         LastLocation lastLocation = LocationFinderHelper.initiateLocationFinderHelper(context).getLastLocation();
@@ -187,6 +350,11 @@ public class LocationViewModel {
         }
 
         return new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
+    }
+
+    public int getRadius(){
+        int defaultRadius = resourceProvider.getInteger(R.integer.supermarket_finder_radius);
+        return SharedPreferencesHelper.loadInt(SharedPreferencesHelper.SUPERMARKET_FINDER_RADIUS, defaultRadius, context);
     }
 
     public GoogleMap setupGoogleMap(GoogleMap map){
@@ -290,15 +458,22 @@ public class LocationViewModel {
 
         viewLauncher.showProgressDialogWithoutButton(
                 resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
-                new Command<Void>() {
-                    @Override
-                    public void execute(Void parameter) {
-                        viewLauncher.showListOfShoppingListsActivity();
-                    }
-                }
+                showListOfShoppingListCommand
         );
     }
 
+    public void notificationOfNoPlayServiceInstalled(){
+
+        viewLauncher.showMessageDialog(
+                resourceProvider.getString(R.string.no_play_service_installed_title),
+                resourceProvider.getString(R.string.no_play_service_installed_message),
+                resourceProvider.getString(R.string.install),
+                installGooglePlayServiceCommand,
+                resourceProvider.getString(R.string.cancel),
+                showListOfShoppingListCommand
+        );
+
+    }
 
 
 
@@ -420,6 +595,7 @@ public class LocationViewModel {
                 }
         );
     }
+
 
 
 }

@@ -1,6 +1,8 @@
 package de.fau.cs.mad.kwikshop.android.viewmodel;
 
 
+import javax.inject.Inject;
+
 import de.fau.cs.mad.kwikshop.android.model.messages.ListChangeType;
 import de.fau.cs.mad.kwikshop.android.model.messages.ListType;
 import de.fau.cs.mad.kwikshop.android.model.messages.RecipeChangedEvent;
@@ -19,6 +21,7 @@ public class RecipeItemDetailsViewModel extends ItemDetailsViewModel<Recipe> {
 
     private ItemDetailsViewModel.Listener listener;
 
+    @Inject
     public RecipeItemDetailsViewModel(ListManager<Recipe> listManager, SimpleStorage<Unit> unitStorage,
                                       SimpleStorage<Group> groupStorage, ViewLauncher viewLauncher,
                                       AutoCompletionHelper autoCompletionHelper,

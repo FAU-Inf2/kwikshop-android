@@ -26,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -137,6 +138,43 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
     @Inject
     AutoCompletionHelper autoCompletionHelper;
 
+    // -- UI elements only used by ShoppingListItemDetailsFragment --
+    // -- They need to be declared here otherwise the injection through Butter Knife won't work --
+
+    @InjectView(R.id.repeat_container)
+    View repeat_Container;
+
+    @InjectView(R.id.repeat_checkBox)
+    CheckBox repeat_checkbox;
+
+    @InjectView(R.id.repeat_spinner)
+    Spinner repeat_spinner;
+
+    @InjectView(R.id.repeat_numberPicker)
+    NumberPicker repeat_numberPicker;
+
+    @InjectView(R.id.repeat_fromNow_radioButton)
+    RadioButton repeat_fromNow_radioButton;
+
+    @InjectView(R.id.repeat_fromNextPurchase_radioButton)
+    RadioButton repeat_fromNextPurchase_radioButton;
+
+    @InjectView(R.id.repeat_radioGroup_repeatType)
+    View repeat_radioGroup_repeatType;
+
+    @InjectView(R.id.repeat_row_scheduleSelection)
+    View repeat_row_scheduleSelection;
+
+    @InjectView(R.id.repeat_radioGroup_scheduleStart)
+    View repeat_radioGroup_scheduleStart;
+
+    @InjectView(R.id.repeat_radioButton_repeatType_schedule)
+    RadioButton repeat_radioButton_repeatType_schedule;
+
+    @InjectView(R.id.repeat_radioButton_repeatType_listCreation)
+    RadioButton repeat_radioButton_repeatType_listCreation;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -174,6 +212,10 @@ public abstract class ItemDetailsFragment<TList extends DomainListObject> extend
 
         View rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
         ButterKnife.inject(this, rootView);
+
+
+        // hide controls for recurrence
+        repeat_Container.setVisibility(View.GONE);
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         viewModel = getViewModel(objectGraph);

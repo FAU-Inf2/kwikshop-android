@@ -239,70 +239,79 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
             this.itemId = itemId;
             if (itemId == -1) {
 
-                setName("");
-                setBrand("");
-                setComment("");
-                setIsHighlighted(false);
-                setImageId(null);
-                setLocation(null);
-                setLastBoughtDate(null);
-
-                setSelectedGroup(groupStorage.getDefaultValue());
-                setSelectedUnit(unitStorage.getDefaultValue());
-                setSelectedAmount(1);
-
-                getDeleteItemCommand().setCanExecute(false);
-                getDeleteItemCommand().setIsAvailable(false);
-
-                getRemoveImageCommand().setIsAvailable(false);
+               initializeForNewItem();
 
             } else {
                 Item item = listManager.getListItem(listId, itemId);
 
-                setName(item.getName());
-                setBrand(item.getBrand());
-                setComment(item.getComment());
-                setIsHighlighted(item.isHighlight());
-                setImageId(item.getImageItem());
-                setLocation(item.getLocation());
-                setLastBoughtDate(item.getLastBought());
-
-                Group group = item.getGroup() != null
-                        ? item.getGroup()
-                        : groupStorage.getDefaultValue();
-                setSelectedGroup(group);
-
-                Unit unit = item.getUnit() != null
-                        ? item.getUnit()
-                        : unitStorage.getDefaultValue();
-                setSelectedUnit(unit);
-
-
-                double amount = item.getAmount();
-
-                if(amount % 1 == 0) {
-                    if(!naturalAmounts.contains(amount)) {
-                        naturalAmounts.add(amount);
-                        Collections.sort(naturalAmounts);
-                    }
-                }
-
-                if(!allAmounts.contains(amount)) {
-                    allAmounts.add(amount);
-                    Collections.sort(allAmounts);
-                }
-
-                setSelectedAmount(amount);
-
-                getDeleteItemCommand().setCanExecute(true);
-                getDeleteItemCommand().setIsAvailable(true);
-
-                getRemoveImageCommand().setIsAvailable(!StringHelper.isNullOrWhiteSpace(item.getImageItem()));
+               initializeForExistingItem(item);
             }
 
             initialized = true;
         }
 
+    }
+
+    protected void initializeForNewItem() {
+        setName("");
+        setBrand("");
+        setComment("");
+        setIsHighlighted(false);
+        setImageId(null);
+        setLocation(null);
+        setLastBoughtDate(null);
+
+        setSelectedGroup(groupStorage.getDefaultValue());
+        setSelectedUnit(unitStorage.getDefaultValue());
+        setSelectedAmount(1);
+
+        getDeleteItemCommand().setCanExecute(false);
+        getDeleteItemCommand().setIsAvailable(false);
+
+        getRemoveImageCommand().setIsAvailable(false);
+    }
+
+
+    protected void initializeForExistingItem(Item item) {
+        setName(item.getName());
+        setBrand(item.getBrand());
+        setComment(item.getComment());
+        setIsHighlighted(item.isHighlight());
+        setImageId(item.getImageItem());
+        setLocation(item.getLocation());
+        setLastBoughtDate(item.getLastBought());
+
+        Group group = item.getGroup() != null
+                ? item.getGroup()
+                : groupStorage.getDefaultValue();
+        setSelectedGroup(group);
+
+        Unit unit = item.getUnit() != null
+                ? item.getUnit()
+                : unitStorage.getDefaultValue();
+        setSelectedUnit(unit);
+
+
+        double amount = item.getAmount();
+
+        if(amount % 1 == 0) {
+            if(!naturalAmounts.contains(amount)) {
+                naturalAmounts.add(amount);
+                Collections.sort(naturalAmounts);
+            }
+        }
+
+        if(!allAmounts.contains(amount)) {
+            allAmounts.add(amount);
+            Collections.sort(allAmounts);
+        }
+
+        setSelectedAmount(amount);
+
+        getDeleteItemCommand().setCanExecute(true);
+        getDeleteItemCommand().setIsAvailable(true);
+
+        getRemoveImageCommand().setIsAvailable(!StringHelper.isNullOrWhiteSpace(item.getImageItem()));
     }
 
 
@@ -515,7 +524,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
      * Extension point for derived view models to set additional properties of item before
      * it is saved
      */
-    protected void setAdditionalItemProperties() {
+    protected void setAdditionalItemProperties(Item item) {
 
     }
 
@@ -536,7 +545,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
         item.setGroup(getSelectedGroup());
         item.setImageItem(getImageId());
 
-        setAdditionalItemProperties();
+        setAdditionalItemProperties(item);
 
         if (this.itemId == -1) {
             if (!itemMerger.mergeItem(listId, item)) {

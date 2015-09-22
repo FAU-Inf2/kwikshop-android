@@ -291,7 +291,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                             viewLauncher.showAddRecipeView();
                         }
                     },
-                    resourceProvider.getString(R.string.no), null);
+                    resourceProvider.getString(R.string.no), NullCommand.VoidInstance);
         } else {
             viewLauncher.showAddRecipeDialog(listManager, recipeManager, listId, true);
         }
@@ -300,13 +300,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
     public void moveBoughtItemsToEnd() {
         Collections.sort(getItems(), new ItemComparator(displayHelper, ItemSortType.BOUGHTITEMS));
-    }
-
-    public void changeCheckBoxesVisibility(){
-        Iterator <ItemViewModel> itr = items.iterator();
-        while(itr.hasNext()){
-            updateItemViewModel(itr.next());
-        }
     }
 
 

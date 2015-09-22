@@ -36,6 +36,7 @@ import de.fau.cs.mad.kwikshop.android.model.SimpleStorageBase;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.viewmodel.BaseViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
@@ -79,6 +80,8 @@ public class SettingFragment extends Fragment {
     @Inject
     ResourceProvider resourceProvider;
 
+    LocationViewModel locationViewModel;
+
 
     public static SettingFragment newInstance() {
         return new SettingFragment();
@@ -92,6 +95,7 @@ public class SettingFragment extends Fragment {
 
 
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
+        locationViewModel =  objectGraph.get(LocationViewModel.class);
         objectGraph.inject(this);
 
         context = getActivity().getApplicationContext();
@@ -166,7 +170,7 @@ public class SettingFragment extends Fragment {
                 }
 
                 if(settingsList.get(position).equals(placeTypeSetting)){
-                    selectPlaceType();
+                    locationViewModel.selectPlaceType();
                 }
 
                 if(settingsList.get(position).equals(askForLocalizationPermissionSetting)){
@@ -376,110 +380,7 @@ public class SettingFragment extends Fragment {
     }
 
 
-    private void selectPlaceType(){
 
-        boolean supermarketIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, true, getActivity());
-        boolean bakeryIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, getActivity());
-        boolean gasStationIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, false, getActivity());
-        boolean liquorStoreIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, getActivity());
-        boolean pharmacyIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, getActivity());
-        boolean shoppingMallIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false, getActivity());
-        boolean floristIsEnabled = loadBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, getActivity());
-
-
-        boolean[] storeTypeStatus = new boolean[]{
-                supermarketIsEnabled,
-                bakeryIsEnabled,
-                gasStationIsEnabled,
-                liquorStoreIsEnabled,
-                pharmacyIsEnabled,
-                shoppingMallIsEnabled,
-                floristIsEnabled
-        };
-
-        viewLauncher.showMultiplyChoiceDialog(
-                resourceProvider.getString(R.string.localization_store_types_dialog_title),
-                resourceProvider.getStringArray(R.array.store_types_array),
-                storeTypeStatus,
-                //select command
-                new Command<Integer>() {
-                    @Override
-                    public void execute(Integer selection) {
-                        switch(selection){
-                            case 0:
-                              saveBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, true, getActivity());
-                                break;
-                            case 1:
-                               saveBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, true, getActivity());
-                                break;
-                            case 2:
-                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, true, getActivity());
-                                break;
-                            case 3:
-                               saveBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, true, getActivity());
-                                break;
-                            case 4:
-                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, true, getActivity());
-                                break;
-                            case 5:
-                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, true, getActivity());
-                                break;
-                            case 6:
-                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, true, getActivity());
-                                break;
-
-                        }
-
-                    }
-                },
-                //deselect command
-                new Command<Integer>() {
-                    @Override
-                    public void execute(Integer deSelection) {
-                        switch(deSelection){
-                            case 0:
-                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_SUPERMARKET, false, getActivity());
-                                break;
-                            case 1:
-                               saveBoolean(SharedPreferencesHelper.STORE_TYPE_BAKERY, false, getActivity());
-                                break;
-                            case 2:
-                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_GAS_STATION, false, getActivity());
-                                break;
-                            case 3:
-                               saveBoolean(SharedPreferencesHelper.STORE_TYPE_LIQUOR_STORE, false, getActivity());
-                                break;
-                            case 4:
-                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_PHARMACY, false, getActivity());
-                                break;
-                            case 5:
-                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_SHOPPING_MALL, false, getActivity());
-                                break;
-                            case 6:
-                                saveBoolean(SharedPreferencesHelper.STORE_TYPE_STORE, false, getActivity());
-                                break;
-                        }
-
-                    }
-                },
-                //positive command
-                resourceProvider.getString(R.string.dialog_OK),
-                new Command<Void>() {
-                    @Override
-                    public void execute(Void parameter) {
-
-                    }
-                },
-                //negative command
-                resourceProvider.getString(R.string.cancel),
-                new Command<Void>() {
-                    @Override
-                    public void execute(Void parameter) {
-
-                    }
-                }
-        );
-    }
 
     public void setLocale(String lang) {
 

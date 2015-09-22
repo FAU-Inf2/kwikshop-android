@@ -175,7 +175,7 @@
     <string name="alert_dialog_connection_try">Wiederholen</string>
 
     <!-- Location -->
-    <string name="supermarket_finder">Supermarkt Finder</string>
+    <string name="supermarket_finder">Supermarktfinder</string>
 
     <!-- Place -->
     <string name="place_status_opened">geöffnet</string>

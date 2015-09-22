@@ -124,10 +124,6 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
         }
     }
 
-    private final ArrayList<Double> naturalAmounts = new ArrayList<>(Arrays.asList(new Double[]{
-            1d, 2d, 3d, 4d, 5d, 6d, 7d, 8d, 9d, 10d, 11d, 12d, 15d, 20d, 25d, 30d,
-            40d, 50d, 60d, 70d, 75d, 80d, 90d, 100d, 125d, 150d, 175d, 200d, 250d, 300d, 350d, 400d,
-            450d, 500d, 600d, 700d, 750d, 800d, 900d, 1000d}));
 
     private final ArrayList<Double> allAmounts = new ArrayList<>(Arrays.asList(new Double[]{
             0.25d, 0.5d, 0.75d, 1d, 2d, 3d, 4d, 5d, 6d, 7d, 8d, 9d, 10d, 11d, 12d, 15d, 20d, 25d, 30d,
@@ -294,13 +290,6 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
 
         double amount = item.getAmount();
 
-        if(amount % 1 == 0) {
-            if(!naturalAmounts.contains(amount)) {
-                naturalAmounts.add(amount);
-                Collections.sort(naturalAmounts);
-            }
-        }
-
         if(!allAmounts.contains(amount)) {
             allAmounts.add(amount);
             Collections.sort(allAmounts);
@@ -388,7 +377,7 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
             this.selectedUnit = value;
             getListener().onSelectedUnitChanged();
 
-            setAvailableAmounts(getAvailableAmounts(this.selectedUnit));
+            setAvailableAmounts(allAmounts);
         }
     }
 
@@ -494,10 +483,6 @@ public abstract class ItemDetailsViewModel<TList extends DomainListObject> exten
         return this.removeImageCommand;
     }
 
-    private List<Double> getAvailableAmounts(Unit unit) {
-        //TODO: return naturalAmounts for applicable units
-        return allAmounts;
-    }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(ItemChangedEvent event) {

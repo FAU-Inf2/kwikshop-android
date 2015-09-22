@@ -10,7 +10,8 @@ import de.fau.cs.mad.kwikshop.common.Unit;
 import de.fau.cs.mad.kwikshop.common.localization.ResourceId;
 
 //TODO: Might make sense to move this to the viewmodel package
-public class DisplayHelper {
+public class
+        DisplayHelper {
 
     private final ResourceProvider resourceProvider;
 
@@ -93,14 +94,6 @@ public class DisplayHelper {
 
     }
 
-    public String getShortDisplayName(Unit unit, double amount) {
-
-        if(amount == 1) {
-            return getSingularDisplayName(unit);
-        } else  {
-            return getShortDisplayName(unit);
-        }
-    }
 
     public String getSingularDisplayName(Unit unit) {
 

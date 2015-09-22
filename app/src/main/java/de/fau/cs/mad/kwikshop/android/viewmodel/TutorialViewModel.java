@@ -42,7 +42,16 @@ public class TutorialViewModel {
         chapters.add(new TutorialChapter(R.drawable.tutorial_nav_drawer, R.string.tutorial_navigation_title, R.string.tutorial_navigation_description));
 
         // Create Shopping List Chapter
-        chapters.add(new TutorialChapter(R.drawable.tutorial_create_shopping_list, R.string.tutorial_navigation_title, R.string.tutorial_navigation_description));
+        chapters.add(new TutorialChapter(R.drawable.tutorial_create_shopping_list, R.string.tutorial_create_shopping_list_title, R.string.tutorial_create_shopping_list_description));
+
+        // Create new Item
+        chapters.add(new TutorialChapter(R.drawable.tutorial_create_item, R.string.tutorial_create_item_title, R.string.tutorial_create_item_description));
+
+        // put item in shopping cart
+        chapters.add(new TutorialChapter(R.drawable.tutorial_swipe_item, R.string.tutorial_swipe_item_title, R.string.tutorial_swipe_item_description));
+
+        // add recipe to shopping list
+        chapters.add(new TutorialChapter(R.drawable.tutorial_add_recipe, R.string.tutorial_add_recipe_to_shopping_list_title, R.string.tutorial_add_recipe_to_shopping_list_description));
 
         return chapters;
     }

@@ -39,9 +39,7 @@ public class TutorialSlideFragment extends Fragment {
     int titleResourceId;
     int descResourceId;
 
-
     public TutorialSlideFragment() {
-
     }
 
     @Override
@@ -51,7 +49,6 @@ public class TutorialSlideFragment extends Fragment {
         imageResourceId = bundle.getInt(TutorialSlidesFragmentAdapter.IMAGE_RESOURCE_ID);
         titleResourceId = bundle.getInt(TutorialSlidesFragmentAdapter.TITLE_RESOURCE_ID);
         descResourceId = bundle.getInt(TutorialSlidesFragmentAdapter.DESC_RESOURCE_ID);
-
     }
 
     @Override
@@ -67,31 +64,23 @@ public class TutorialSlideFragment extends Fragment {
         try {
             final GifDrawable gifFromResource = new GifDrawable(getResources(), imageResourceId);
             gif.setImageDrawable(gifFromResource);
-
             gifFromResource.setSpeed(STOP);
 
             playView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     playView.setVisibility(View.GONE);
                     gif.setVisibility(View.VISIBLE);
-
                     gifFromResource.setSpeed(PLAY);
-
-
                 }
             });
 
             gif.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     playView.setVisibility(View.VISIBLE);
                     gif.setVisibility(View.GONE);
-
                     gifFromResource.setSpeed(STOP);
-
                 }
             });
 

@@ -406,5 +406,6 @@
     <string name="tutorial_navigation_title">Navigationsmenü</string>
     <string name="tutorial_swipe_item_description">Wische um ein Produkt von deiner Liste in den Einkaufswagen zu legen und andersrum.</string>
     <string name="tutorial_swipe_item_title">Produkt in den Einkaufswagen legen</string>
+    <string name="title_activity_tutorial">Anleitung</string>
 
 </resources>

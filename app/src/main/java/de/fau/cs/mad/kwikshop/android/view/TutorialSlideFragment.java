@@ -1,10 +1,13 @@
 package de.fau.cs.mad.kwikshop.android.view;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -17,6 +20,9 @@ import pl.droidsonroids.gif.GifDrawable;
 
 public class TutorialSlideFragment extends Fragment {
 
+    private static final float STOP = 0.00000001f;
+    private static final float PLAY = 1f;
+
     @InjectView(R.id.iv_tutorial_gif)
     ImageView gif;
 
@@ -25,6 +31,9 @@ public class TutorialSlideFragment extends Fragment {
 
     @InjectView(R.id.tv_tutorial_desc)
     TextView desc;
+
+    @InjectView(R.id.iv_tutorial_play)
+    ImageView playView;
 
     int imageResourceId;
     int titleResourceId;
@@ -55,8 +64,36 @@ public class TutorialSlideFragment extends Fragment {
         desc.setText(descResourceId);
 
         try {
-            GifDrawable gifFromResource = new GifDrawable( getResources(), imageResourceId);
+            final GifDrawable gifFromResource = new GifDrawable(getResources(), imageResourceId);
             gif.setImageDrawable(gifFromResource);
+
+            gifFromResource.setSpeed(STOP);
+
+            playView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    playView.setVisibility(View.GONE);
+                    gif.setVisibility(View.VISIBLE);
+
+                    gifFromResource.setSpeed(PLAY);
+
+
+                }
+            });
+
+            gif.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    playView.setVisibility(View.VISIBLE);
+                    gif.setVisibility(View.GONE);
+
+                    gifFromResource.setSpeed(STOP);
+
+                }
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }

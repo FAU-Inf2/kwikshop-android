@@ -18,7 +18,7 @@ public class TutorialSlidesFragmentAdapter extends FragmentPagerAdapter implemen
     public static final String TITLE_RESOURCE_ID = "title_resource";
     public static final String DESC_RESOURCE_ID = "desc_resource";
 
-    private int[] gif = new int[] { R.drawable.tutorial_nav_drawer, R.drawable.tutorial_nav_drawer, R.drawable.tutorial_nav_drawer};
+    private int[] gif = new int[] { R.drawable.tutorial_nav_drawer, R.drawable.tutorial_create_shopping_list, R.drawable.tutorial_nav_drawer};
 
     private int[] titles = new int[] {R.string.tutorial_navigation_title, R.string.tutorial_navigation_title, R.string.tutorial_navigation_title };
 

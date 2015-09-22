@@ -9,41 +9,40 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.viewpagerindicator.IconPagerAdapter;
 
-import de.fau.cs.mad.kwikshop.android.R;
+import java.util.ArrayList;
 
-public class TutorialSlidesFragmentAdapter extends FragmentPagerAdapter implements
-        IconPagerAdapter {
+import de.fau.cs.mad.kwikshop.common.TutorialChapter;
+
+public class TutorialSlidesFragmentAdapter extends FragmentPagerAdapter implements IconPagerAdapter {
 
     public static final String IMAGE_RESOURCE_ID = "image_resource";
     public static final String TITLE_RESOURCE_ID = "title_resource";
     public static final String DESC_RESOURCE_ID = "desc_resource";
+    public ArrayList<TutorialChapter> chapters;
 
-    private int[] gif = new int[] { R.drawable.tutorial_nav_drawer, R.drawable.tutorial_create_shopping_list, R.drawable.tutorial_nav_drawer};
-
-    private int[] titles = new int[] {R.string.tutorial_navigation_title, R.string.tutorial_navigation_title, R.string.tutorial_navigation_title };
-
-    private int[] descriptions = new int[] {R.string.tutorial_navigation_description, R.string.tutorial_navigation_description, R.string.tutorial_navigation_description};
-
-    public TutorialSlidesFragmentAdapter(FragmentManager fm) {
+    public TutorialSlidesFragmentAdapter(FragmentManager fm, ArrayList<TutorialChapter> chapters) {
         super(fm);
+        this.chapters = chapters;
     }
 
     @Override
     public Fragment getItem(int position) {
+
         Bundle args = new Bundle();
-        args.putInt(IMAGE_RESOURCE_ID, gif[position]);
-        args.putInt(TITLE_RESOURCE_ID, titles[position]);
-        args.putInt(DESC_RESOURCE_ID, descriptions[position]);
+        args.putInt(IMAGE_RESOURCE_ID, chapters.get(position).getGifID());
+        args.putInt(TITLE_RESOURCE_ID, chapters.get(position).getTitleID());
+        args.putInt(DESC_RESOURCE_ID, chapters.get(position).getDescriptionID());
+
         Fragment fragment = new TutorialSlideFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    int mCount = gif.length;
+
 
     @Override
     public int getCount() {
-        return mCount;
+        return chapters == null ? 0 : chapters.size();
     }
 
     @Override

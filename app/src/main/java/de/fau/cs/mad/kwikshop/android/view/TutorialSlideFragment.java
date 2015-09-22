@@ -39,6 +39,7 @@ public class TutorialSlideFragment extends Fragment {
     int titleResourceId;
     int descResourceId;
 
+
     public TutorialSlideFragment() {
 
     }

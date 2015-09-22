@@ -84,24 +84,6 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
 
     public void setMapFragment(SupportMapFragment mapFragment){this.mapFragment = mapFragment;}
 
-    /*
-
-    public void setRelativeLayoutView(RelativeLayout mapInfoBox){this.mapInfoBox = mapInfoBox;}
-
-    public void setTextViewPlaceName(TextView mapPlaceName){this.mapPlaceName = mapPlaceName;}
-
-    public void setTextViewPlaceStatus(TextView mapPlaceOpenStatus){this.mapPlaceOpenStatus = mapPlaceOpenStatus;}
-
-    public void setTextViewDistance(TextView mapPlaceDistance){this.mapPlaceDistance = mapPlaceDistance;}
-
-    public void setViewDirection(View mapDirectionButton){this.mapDirectionButton = mapDirectionButton;}
-
-    public GoogleMap getMap(){ return map;}
-
-    public List<Place> getPlaces(){return places;}
-
-    */
-
     public void setView(View view){
         this.rootView = view;
         wireUpView();

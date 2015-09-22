@@ -198,20 +198,11 @@ public class ShoppingListAdapter extends com.nhaarman.listviewanimations.ArrayAd
         if (amount == 1 && unitIsPieces) {
             viewHolder.textView_Amount.setVisibility(View.GONE);
         } else {
-            String unitStr = displayHelper.getShortDisplayName(item.getUnit(), amount);
-
+            String unitStr = displayHelper.getShortDisplayName(item.getUnit());
+            String amountStr = displayHelper.getDisplayName(amount);
+            viewHolder.textView_Amount.setText(String.format("%s %s", amountStr, unitStr));
             viewHolder.textView_Amount.setVisibility(View.VISIBLE);
-            //This is not the best way to format fractions, but there are only few of them
-            if(amount < 1){
-                if (amount == 0.25)
-                    viewHolder.textView_Amount.setText(String.format("1/4 %s", unitStr));
-                if (amount == 0.5)
-                    viewHolder.textView_Amount.setText(String.format("1/2 %s", unitStr));
-                if (amount == 0.75)
-                    viewHolder.textView_Amount.setText(String.format("3/4 %s", unitStr));
-            }
-            else
-                viewHolder.textView_Amount.setText(String.format("%.0f %s", amount, unitStr));
+
         }
 
         // Group header

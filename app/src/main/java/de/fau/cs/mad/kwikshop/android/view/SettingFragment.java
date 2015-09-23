@@ -170,6 +170,7 @@ public class SettingFragment extends Fragment {
                 }
 
                 if(settingsList.get(position).equals(placeTypeSetting)){
+                    locationViewModel.setContext(context);
                     locationViewModel.selectPlaceType();
                 }
 

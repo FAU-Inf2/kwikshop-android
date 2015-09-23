@@ -112,6 +112,9 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     final Command<Void> installGooglePlayServiceCommand = new Command<Void>() {
         @Override
         public void execute(Void parameter) {
+            if(showListOfShoppingListCommand.getCanExecute())
+            showListOfShoppingListCommand.execute(null);
+
             final String appPackageName = "com.google.android.gms";
             try {
                 viewLauncher.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));

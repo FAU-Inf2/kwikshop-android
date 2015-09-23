@@ -43,11 +43,139 @@ public class DefaultRecipesHelper {
         Unit piece = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.PIECE);
         Unit pack = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.PACK);
         Unit teaspoon = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.TEASPOON);
+        Unit ml = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.MILLILITRE);
 
         Group meat = ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.MEAT_AND_FISH);
         Group vegetable = ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.FRUITS_AND_VEGETABLES);
         Group milk = ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.MILK_AND_CHEESE);
         Group other = ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.OTHER);
+        Group pasta = ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.PASTA);
+        Group spices =  ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.INGREDIENTS_AND_SPICES);
+
+        /**
+         * Default Recipes:
+         *
+         * - chili con carne
+         * - carrot cake
+         * - rhubarb tart
+         * - madeira cake
+         * - spaghetti bolognese
+         **/
+
+
+        {
+            int recipeId = recipeManager.createList();
+            Recipe spaghetti = recipeManager.getList(recipeId);
+            spaghetti.setName(context.getString(R.string.recipe_name_spaghetti_bolognese));
+            spaghetti.setScaleFactor(4);
+            spaghetti.setScaleName(context.getString(R.string.recipe_scaleName_person));
+            spaghetti.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese.toInt());
+
+            {
+                Item item1 = new Item();
+                item1.setName(context.getString(R.string.recipe_mince));
+                item1.setAmount(500);
+                item1.setUnit(gram);
+                item1.setGroup(meat);
+                item1.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item1.toInt());
+                recipeManager.addListItem(recipeId, item1);
+            }
+
+            {
+                Item item2 = new Item();
+                item2.setName(context.getString(R.string.recipe_tomatoes));
+                item2.setAmount(400);
+                item2.setUnit(gram);
+                item2.setGroup(vegetable);
+                item2.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item2.toInt());
+                recipeManager.addListItem(recipeId, item2);
+            }
+
+            {
+                Item item3 = new Item();
+                item3.setName(context.getString(R.string.recipe_pasta));
+                item3.setAmount(500);
+                item3.setUnit(gram);
+                item3.setGroup(pasta);
+                item3.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item3.toInt());
+                recipeManager.addListItem(recipeId, item3);
+            }
+
+            {
+                Item item4 = new Item();
+                item4.setName(context.getString(R.string.recipe_onion));
+                item4.setAmount(1);
+                item4.setUnit(piece);
+                item4.setGroup(vegetable);
+                item4.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item4.toInt());
+                recipeManager.addListItem(recipeId, item4);
+            }
+
+            {
+                Item item5 = new Item();
+                item5.setName(context.getString(R.string.recipe_clove_of_garlic));
+                item5.setAmount(1);
+                item5.setUnit(piece);
+                item5.setGroup(vegetable);
+                item5.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item5.toInt());
+                recipeManager.addListItem(recipeId, item5);
+            }
+
+            {
+                Item item6 = new Item();
+                item6.setName(context.getString(R.string.recipe_carrot));
+                item6.setAmount(1);
+                item6.setUnit(piece);
+                item6.setGroup(vegetable);
+                item6.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item6.toInt());
+                recipeManager.addListItem(recipeId, item6);
+
+                Item item7 = new Item();
+                item7.setName(context.getString(R.string.recipe_ketchup));
+                item7.setAmount(2);
+                item7.setUnit(tbsp);
+                item7.setGroup(other);
+                item7.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item7.toInt());
+                recipeManager.addListItem(recipeId, item7);
+
+
+                Item item8 = new Item();
+                item8.setName(context.getString(R.string.recipe_oregano));
+                item8.setAmount(2);
+                item8.setUnit(teaspoon);
+                item8.setGroup(spices);
+                item8.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item8.toInt());
+                recipeManager.addListItem(recipeId, item8);
+
+                Item item9 = new Item();
+                item9.setName(context.getString(R.string.recipe_ketchup));
+                item9.setAmount(1);
+                item9.setUnit(piece);
+                item9.setGroup(vegetable);
+                item9.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item6.toInt());
+                recipeManager.addListItem(recipeId, item9);
+
+                Item item10 = new Item();
+                item10.setName(context.getString(R.string.recipe_tomato_paste));
+                item10.setAmount(1);
+                item10.setUnit(cans);
+                item10.setGroup(vegetable);
+                item10.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item10.toInt());
+                recipeManager.addListItem(recipeId, item10);
+
+                Item item11 = new Item();
+                item11.setName(context.getString(R.string.recipe_vegetable_broth));
+                item11.setAmount(200);
+                item11.setUnit(ml);
+                item11.setGroup(vegetable);
+                item11.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item11.toInt());
+                recipeManager.addListItem(recipeId, item11);
+
+            }
+
+
+            recipeManager.saveList(recipeId);
+        }
 
         {
             int recipeId = recipeManager.createList();

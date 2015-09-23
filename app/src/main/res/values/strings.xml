@@ -272,6 +272,13 @@
 
     <!--Example Recipes -->
     <string name="recipe_name_chili_con_carne">Chili con carne</string>
+    <string name="recipe_name_spaghetti_bolognese">Spaghetti Bolognese</string>
+    <string name="recipe_pasta">Pasta</string>
+    <string name="recipe_ketchup">Ketchup</string>
+    <string name="recipe_oregano">Oregano</string>
+    <string name="recipe_tomato_paste">Tomato paste</string>
+    <string name="recipe_vegetable_broth">Vegetable Broth</string>
+    <string name="recipe_clove_of_garlic">Clove of garlic</string>
     <string name="recipe_onion">Onion</string>
     <string name="recipe_mince">Mince</string>
     <string name="recipe_kidney_beans">Kidney beans</string>

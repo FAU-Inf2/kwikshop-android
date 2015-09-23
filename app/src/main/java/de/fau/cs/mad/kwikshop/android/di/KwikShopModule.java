@@ -7,6 +7,7 @@ import dagger.Module;
 import dagger.Provides;
 
 
+import de.fau.cs.mad.kwikshop.android.viewmodel.TutorialViewModel;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.tasks.RedeemSharingCodeTask;
 
@@ -86,7 +87,8 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
                 BarcodeScannerFragment.class,
 
                 RedeemSharingCodeTask.class,
-                DefaultViewLauncher.class
+                DefaultViewLauncher.class,
+                TutorialViewModel.class
         })
 @SuppressWarnings("unused")
 public class KwikShopModule {

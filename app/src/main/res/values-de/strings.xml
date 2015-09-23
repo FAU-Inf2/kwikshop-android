@@ -398,5 +398,16 @@
     <string name="message_delete_selected_items">Bist du sicher, dass du die ausgewählten Gegenstände löschen möchtest?</string>
     <string name="error">Ein Fehler ist aufgetreten, bitte versuche es später erneut.</string>
     <string name="magicsort_notloggedin">Du musst eingeloggt sein, um MagicSort nutzen zu können.</string>
+    <string name="tutorial_add_recipe_to_shopping_list_description">Drücke oben auf das Menü und wähle "Rezept hinzufügen". Dann  wähle dein Rezept und die Menge</string>
+    <string name="tutorial_add_recipe_to_shopping_list_title">Rezept zur Einkaufsliste hinzufügen</string>
+    <string name="tutorial_create_item_description">Du kannst ein Produkt auf zwei Arten hinzufügen:  Oben Mit dem Eingabefeld oder mit dem gelben Hinzufügenknopf rechts unten.</string>
+    <string name="tutorial_create_item_title">Produkt zur Einkaufsliste hinzufügen</string>
+    <string name="tutorial_create_shopping_list_description">Um eine Einkaufsliste zu erstellen, drücke auf dem gelben Hinzufügenknopf rechts unten.</string>
+    <string name="tutorial_create_shopping_list_title">Einkaufsliste erstellen</string>
+    <string name="tutorial_navigation_description">Um das Naviagtionsmenü zu öffnen drücke auf das Icon  links oben oder wische von der linken Kante nach rechts.</string>
+    <string name="tutorial_navigation_title">Navigationsmenü</string>
+    <string name="tutorial_swipe_item_description">Wische um ein Produkt von deiner Liste in den Einkaufswagen zu legen und andersrum.</string>
+    <string name="tutorial_swipe_item_title">Produkt in den Einkaufswagen legen</string>
+    <string name="title_activity_tutorial">Anleitung</string>
 
 </resources>

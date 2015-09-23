@@ -70,7 +70,15 @@
 
     <!-- Tutorial -->
     <string name="tutorial_navigation_title">Navigation Menu</string>
-    <string name="tutorial_navigation_description">To open the navigate menu click on the upper left corner or just swipe from left edge to the right.</string>
+    <string name="tutorial_navigation_description">To open the navigate menu press on the upper left icon or just swipe from the left edge to the right.</string>
+    <string name="tutorial_create_shopping_list_title">Create Shopping list</string>
+    <string name="tutorial_create_shopping_list_description">In order to create a shopping list press on the yellow add button on the bottom right.</string>
+    <string name="tutorial_create_item_title">Add item to shopping list</string>
+    <string name="tutorial_create_item_description">You can add items in two ways. By the input field at top of the shopping list or by the yellow add button on the bottom right.</string>
+    <string name="tutorial_swipe_item_title">Put item into shopping cart</string>
+    <string name="tutorial_swipe_item_description">Just swipe the item to put it from your list into the  shopping cart and vice versa.</string>
+    <string name="tutorial_add_recipe_to_shopping_list_title">Add recipe to shopping list</string>
+    <string name="tutorial_add_recipe_to_shopping_list_description">press on menu at top and select "Add recipe". Now choose your recipe and amount of pieces.</string>
 
 
     <!-- Item Details Fragment -->

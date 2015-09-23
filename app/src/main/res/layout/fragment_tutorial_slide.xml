@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+
+<LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     android:padding="20dp"
     android:weightSum="1">
 
@@ -13,21 +20,51 @@
         android:id="@+id/tv_tutorial_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textColor="@android:color/darker_gray"/>
+        android:text="Chapter 1"
+        android:textSize="20sp" />
 
-
-    <ImageView
-        android:id="@+id/iv_tutorial_gif"
-        android:layout_width="380dp"
-        android:layout_height="320dp"
-        android:layout_marginTop="20dp" />
-
-    <TextView
-        android:id="@+id/tv_tutorial_desc"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:gravity="center">
+
+
+        <ImageView
+            android:id="@+id/iv_tutorial_play"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/play_button"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_tutorial_gif"
+            android:layout_width="175dp"
+            android:layout_height="280dp"
+            android:layout_marginTop="20dp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_tutorial_nexus"
+            android:layout_width="180dp"
+            android:layout_height="320dp"
+            android:background="@drawable/nexus_shape"
+            android:visibility="visible" />
+
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tv_tutorial_desc"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Dummy Dummy Dummy"
         android:textColor="@android:color/darker_gray" />
 
 </LinearLayout>
+
+</ScrollView>

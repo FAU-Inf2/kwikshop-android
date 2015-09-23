@@ -188,10 +188,10 @@ public class ShoppingListFragment
                 viewModel.getItems(), displayHelper);
         shoppingListView.setAdapter(shoppingListAdapter);
 
-
         new ListViewItemCommandBinding(ListViewItemCommandBinding.ListViewItemCommandType.Click,
                 shoppingListView,
                 viewModel.getSelectItemCommand());
+
 
         shoppingListView.enableSwipeToDismiss(
                 new OnDismissCallback() {

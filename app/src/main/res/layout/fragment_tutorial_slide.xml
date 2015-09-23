@@ -11,6 +11,7 @@ android:layout_height="match_parent">
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:gravity="center_horizontal"
+    android:fillViewport="true"
     android:orientation="vertical"
     android:padding="20dp"
     android:weightSum="1">

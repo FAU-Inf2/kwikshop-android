@@ -2,12 +2,14 @@ package de.fau.cs.mad.kwikshop.android.view;
 
 import android.accounts.Account;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -46,8 +48,10 @@ import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
+import de.fau.cs.mad.kwikshop.android.model.messages.LoginEvent;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.common.rest.UserResource;
+import de.greenrobot.event.EventBus;
 
 public class LoginActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -76,6 +80,8 @@ public class LoginActivity extends FragmentActivity implements
 
     /* Is there a connection attempt to the backend in progress? */
     private boolean mIsConnecting = false;
+
+    private ProgressDialog progressDialog;
 
     /* UI elements */
     @InjectView(R.id.login_sign_in_button)
@@ -242,6 +248,18 @@ public class LoginActivity extends FragmentActivity implements
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
     // [START on_start_on_stop]
     @Override
     protected void onStart() {
@@ -365,6 +383,8 @@ public class LoginActivity extends FragmentActivity implements
     private class GetIdTokenTask extends AsyncTask<String, Void, Boolean> {
         @Override
         protected Boolean doInBackground(String... params) {
+            EventBus.getDefault().post(new LoginEvent(LoginEvent.EventType.Started));
+
             String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
             Account account = new Account(accountName, GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
             String scopes = "audience:server:client_id:" + getString(R.string.login_server_client_id);
@@ -372,6 +392,7 @@ public class LoginActivity extends FragmentActivity implements
             try {
                 idToken = GoogleAuthUtil.getToken(getApplicationContext(), account, scopes);
             } catch (Exception e) {
+                EventBus.getDefault().post(new LoginEvent(LoginEvent.EventType.Failed));
                 Log.e(TAG, "Error retrieving ID token.", e);
                 return false;
             }
@@ -425,6 +446,7 @@ public class LoginActivity extends FragmentActivity implements
 
                 authResponse = endpoint.auth(idToken);
             } catch (Exception e) {
+                EventBus.getDefault().post(new LoginEvent(LoginEvent.EventType.Failed));
                 Log.e(TAG, "Error contacting server.", e);
                 return false;
             }
@@ -451,12 +473,40 @@ public class LoginActivity extends FragmentActivity implements
             mIsConnecting = false;
 
             if(!success) {
-                Toast.makeText(getApplicationContext(), R.string.kwikshop_login_failed, Toast.LENGTH_LONG).show();
+                EventBus.getDefault().post(new LoginEvent(LoginEvent.EventType.Failed));
+                //Toast.makeText(getApplicationContext(), R.string.kwikshop_login_failed, Toast.LENGTH_LONG).show();
                 mStatus.setText(R.string.kwikshop_login_failed);
+            } else {
+                EventBus.getDefault().post(new LoginEvent(LoginEvent.EventType.Success));
             }
             updateUI();
         }
 
+    }
+
+    public void onEventMainThread(LoginEvent event) {
+        switch(event.getEventType()) {
+            case Started:
+                progressDialog = new ProgressDialog(LoginActivity.this);
+                progressDialog.setMessage(LoginActivity.this.getResources().getString(R.string.loading));
+                progressDialog.setIndeterminate(false);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+                break;
+            case Failed:
+                progressDialog.setMessage(getApplicationContext().getResources().getString(R.string.error));
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                }, 1000);
+                break;
+            case Success:
+                progressDialog.dismiss();
+                break;
+        }
     }
 
     private void exitLoginActivity() {

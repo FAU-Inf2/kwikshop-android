@@ -423,7 +423,7 @@
     <string name="intent_sharingcode_description" translatable="false">kwikshop://kwikshop/#sc=</string>
     <string name="sharingCode_textView">Sharing Code:</string>
     <string name="share_helpmessage">You can now share this Shopping List (e.g. via SMS, Email).</string>
-    <string name="share_loading">Loading...</string>
+    <string name="loading">Loading...</string>
     <string name="share_failure">Redeeming failed, please try again.</string>
     <string name="share_success">You can now access the Shopping List %s.</string>
     <string name="settings_option_8_login_name">Account / Login</string>

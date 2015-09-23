@@ -315,7 +315,7 @@
     <string name="settings_options_syncInterval_inputBox_message">Wähle bitte das Synchronisationsintervall in Minuten</string>
     <string name="settings_options_syncInterval_name">Synchronisationsintervall</string>
     <string name="share_failure">Abgleich ist fehlgeschlagen, versuche es erneut.</string>
-    <string name="share_loading">Laden...</string>
+    <string name="loading">Laden...</string>
     <string name="sharingCode_textView">Code zum Teilen:</string>
     <string name="start_synchronization">Start Synchronisation</string>
     <string name="str_default">Standard</string>

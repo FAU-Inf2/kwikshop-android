@@ -36,7 +36,7 @@ public class RedeemSharingCodeTask extends AsyncTask<String, String, String> {
         super.onPreExecute();
 
         progDailog = new ProgressDialog(context);
-        progDailog.setMessage(context.getResources().getString(R.string.share_loading));
+        progDailog.setMessage(context.getResources().getString(R.string.loading));
         progDailog.setIndeterminate(false);
         progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progDailog.setCancelable(true);

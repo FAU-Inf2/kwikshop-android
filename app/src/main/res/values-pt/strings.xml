@@ -237,7 +237,7 @@
     <string name="settings_options_syncInterval_inputBox_message">Porfavor especifique o intervalo das sincronizações em minutos</string>
     <string name="settings_options_syncInterval_name">Intervalo de sincronizações</string>
     <string name="share_failure">Falha no resgate, por favor tente novamente.</string>
-    <string name="share_loading">Carregando...</string>
+    <string name="loading">Carregando...</string>
     <string name="sharingCode_textView">Código de compartilhamento:</string>
     <string name="start_synchronization">Começar Sincronização</string>
     <string name="synchronizing">Sincronização</string>

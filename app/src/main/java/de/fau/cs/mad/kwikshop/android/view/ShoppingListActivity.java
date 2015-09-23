@@ -25,7 +25,6 @@ import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.ListStorageFragment;
 import de.fau.cs.mad.kwikshop.android.model.SessionHandler;
 import de.fau.cs.mad.kwikshop.android.model.messages.MagicSortProgressDialogEvent;
-import de.fau.cs.mad.kwikshop.android.model.messages.StartMagicSortIntentEvent;
 import de.fau.cs.mad.kwikshop.android.model.messages.StartSharingCodeIntentEvent;
 import de.fau.cs.mad.kwikshop.android.restclient.RestClientFactory;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
@@ -189,7 +188,7 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
             protected void onPreExecute() {
                 super.onPreExecute();
                 progressDialog = new ProgressDialog(ShoppingListActivity.this);
-                progressDialog.setMessage(ShoppingListActivity.this.getResources().getString(R.string.share_loading));
+                progressDialog.setMessage(ShoppingListActivity.this.getResources().getString(R.string.loading));
                 progressDialog.setIndeterminate(false);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.setCancelable(true);
@@ -243,7 +242,7 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
         switch(event.getType()) {
             case Started:
                 progressDialog = new ProgressDialog(ShoppingListActivity.this);
-                progressDialog.setMessage(ShoppingListActivity.this.getResources().getString(R.string.share_loading));
+                progressDialog.setMessage(ShoppingListActivity.this.getResources().getString(R.string.loading));
                 progressDialog.setIndeterminate(false);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.setCancelable(true);

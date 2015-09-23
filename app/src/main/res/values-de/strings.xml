@@ -46,7 +46,7 @@
     <string name="overflow_action_menu_settings">Einstellungen</string>
     <string name="overflow_action_menu_move_all_to_shopping_cart">Alles als gekauft markieren</string>
     <string name="overflow_action_menu_move_all_from_shopping_cart">Nichts als gekauft markieren</string>
-    <string name="overflow_action_menu_shopping_mode">Einkaufsmodus</string>
+    <string name="overflow_action_menu_shopping_mode">Einkauf Modus</string>
     <string name="regular_repeat">Regelmäßig wiederholen</string>
     <string name="save">Speichern</string>
     <string name="shoppinglist_divider_textview">Einkaufswagen</string>
@@ -150,7 +150,7 @@
     <string name="recipe_plainFlour">Mehl</string>
     <string name="recipe_bakingPowder">Backpulver</string>
     <string name="recipe_sweetenedCondensedMilk">Gesüßte Kondesmilch</string>
-    <string name="recipe_coconutFlakes">Kokosnussflock</string>
+    <string name="recipe_coconutFlakes">Kokosnussflocken</string>
     <string name="recipe_rhubarb_tart">Rhabarberkuchen</string>
     <string name="recipe_butter">Butter</string>
     <string name="recipe_rhubarb">Rhabarber</string>
@@ -266,9 +266,9 @@
     <string name="dateDescription_just_now">gerade eben</string>
     <string name="deleteShoppingList_repeatingItemsText">Produkt, das du regelmäßig kaufst, löschen?</string>
     <string name="deleteShoppingList_repeatingItemsTitle">Die Einkaufsliste beinhaltet Produkte, die du regelmäßig kaufst.</string>
-    <string name="dialog_leave_shopping_mode_message">Willst du den Einkaufsmodus beenden?</string>
+    <string name="dialog_leave_shopping_mode_message">Willst du den Einkauf modus beenden?</string>
     <string name="dialog_leave_shopping_mode_quit">Beenden</string>
-    <string name="dialog_leave_shopping_mode_title">Einkaufsmodus</string>
+    <string name="dialog_leave_shopping_mode_title">Einkauf Modus</string>
     <string name="errorReporting_copyToClipboard">Kopieren</string>
     <string name="every_time_i_create_a_list">Für jede neue Liste</string>
     <string name="item_deleted">Produkt gelöscht</string>
@@ -328,7 +328,6 @@
     <string name="title_activity_login">Login</string>
     <string name="title_activity_server_integration_debug"></string>
     <string name="title_delete_item">Lösche Produkt</string>
-    <string name="unit_bottle_singular">Flasche</string>
     <string name="unit_box_singular">Kiste</string>
     <string name="unit_can">Dosen</string>
     <string name="unit_cup">Tassen</string>
@@ -387,13 +386,13 @@
     <string name="settings_option_4_APIEndPoint_Title">API Endpunkt</string>
     <string name="store_type_bakery">Bäckerei</string>
     <string name="store_type_gasstation">Tankstelle</string>
-    <string name="store_type_liquorstore">Spirituosenmarkt</string>
+    <string name="store_type_liquorstore">Spirituosengeschäft</string>
     <string name="store_type_pharmacy">Apotheke</string>
     <string name="store_type_shoppingmall">Einkaufszentrum</string>
     <string name="store_type_store">Laden</string>
     <string name="store_type_supermarket">Supermarkt</string>
 
-    <string name="overflow_action_menu_shopping_mode_quit">Einkaufsmodus beenden</string>
+    <string name="overflow_action_menu_shopping_mode_quit">Einkauf Modus beenden</string>
 
     <string name="message_delete_selected_items">Bist du sicher, dass du die ausgewählten Gegenstände löschen möchtest?</string>
     <string name="tutorial_add_recipe_to_shopping_list_description">Drücke oben auf das Menü und wähle "Rezept hinzufügen". Dann  wähle dein Rezept und die Menge</string>
@@ -416,5 +415,6 @@
     <string name="recipe_vegetable_broth">Gemüsebrühe</string>
     <string name="selectPicture">Wähle Bild</string>
     <string name="sortby_magicsort"></string>
+    <string name="unit_bottle_singular">Flasche</string>
 
 </resources>

@@ -395,4 +395,5 @@
     <string name="overflow_action_menu_shopping_mode_quit">Fechar o Modo de compra</string>
     <string name="playServices_Description">Essa aplicação usa Google Play Services</string>
     <string name="reset">Reverter</string>
+    <string name="recipe_oregano"></string>
 </resources>

@@ -60,10 +60,10 @@ android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tv_tutorial_desc"
-        android:layout_width="250dp"
+        android:layout_width="259dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_marginTop="20dp"
-        android:text="Dummy Dummy Dummy"
         android:textColor="@android:color/darker_gray" />
 
 </LinearLayout>

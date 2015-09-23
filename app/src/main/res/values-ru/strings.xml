@@ -94,4 +94,5 @@
     <string name="settings_option_2_desc">изменить язык</string>
     <string name="settings_option_3_check_title">Удалить историю?</string>
     <string name="settings_option_3_desc">Удалить историю</string>
+    <string name="recipe_name_spaghetti_bolognese"></string>
 </resources>

@@ -407,5 +407,14 @@
     <string name="tutorial_swipe_item_description">Wische um ein Produkt von deiner Liste in den Einkaufswagen zu legen und andersrum.</string>
     <string name="tutorial_swipe_item_title">Produkt in den Einkaufswagen legen</string>
     <string name="title_activity_tutorial">Anleitung</string>
+    <string name="recipe_name_spaghetti_bolognese">Spaghetti Bolognese</string>
+    <string name="recipe_ketchup">Ketchup</string>
+    <string name="recipe_clove_of_garlic">Knoblauchzehe</string>
+    <string name="recipe_oregano">Oregano</string>
+    <string name="recipe_pasta">Nudeln</string>
+    <string name="recipe_tomato_paste">Tomatenmark</string>
+    <string name="recipe_vegetable_broth">Gemüsebrühe</string>
+    <string name="selectPicture">Wähle Bild</string>
+    <string name="sortby_magicsort"></string>
 
 </resources>

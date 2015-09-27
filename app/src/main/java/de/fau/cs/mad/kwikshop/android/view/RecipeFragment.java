@@ -184,8 +184,6 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
             }
         });
 
-        justifyListViewHeightBasedOnChildren(recipeListView);
-
 
         new ButtonBinding(floatingActionButton, viewModel.getAddItemCommand(), false);
         new ButtonBinding(button_QuickAdd, viewModel.getQuickAddCommand());
@@ -333,26 +331,8 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
 
     }
 
-    public void justifyListViewHeightBasedOnChildren(DynamicListView listView) {
-        ListAdapter adapter = listView.getAdapter();
 
-        if (adapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            View listItem = adapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams par = listView.getLayoutParams();
-        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
-        listView.setLayoutParams(par);
-        listView.requestLayout();
-    }
-
-
+    @SuppressWarnings("unused")
     public void onEvent(AutoCompletionHistoryDeletedEvent event) {
         if (autoCompletion != null) {
             refreshQuickAddAutoCompletion();
@@ -400,23 +380,20 @@ public class RecipeFragment  extends Fragment implements RecipeViewModel.Listene
     @Override
     public void onItemAdded(ItemViewModel newItem) {
 
-        //TODO: It might make sense to move autocompletion handling to the view model
         //IMPORTANT
         if(autoCompletion != null) {
             refreshQuickAddAutoCompletion();
         }
-
-        justifyListViewHeightBasedOnChildren(recipeListView);
     }
 
     @Override
     public void onItemRemoved(ItemViewModel removedItem) {
-        justifyListViewHeightBasedOnChildren(recipeListView);
+
     }
 
     @Override
     public void onItemModified(ItemViewModel modifiedItem) {
-        justifyListViewHeightBasedOnChildren(recipeListView);
+
     }
 
     @Override

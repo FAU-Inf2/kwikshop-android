@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.Recipe;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ObservableArrayList;
@@ -54,20 +56,19 @@ public class ListOfRecipesRowAdapter extends ArrayAdapter<Recipe> implements Obs
     @Override
     public View getView(int position, View view, ViewGroup parent) {
 
+        ViewHolder viewHolder;
+        if (view == null) {
+            view = getLayoutInflater().inflate(LAYOUT_ID, null);
+            viewHolder = new ViewHolder(view);
+            view.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) view.getTag();
+        }
+
         //get the appropriate shopping list
         Recipe recipe = recipes.get(position);
 
-        //if view is null, inflate a new one
-        if (view == null) {
-
-            LayoutInflater inflater = getLayoutInflater();
-            view = inflater.inflate(LAYOUT_ID, null);
-
-        }
-
-        //display the list's name and number of items in the list
-        TextView recipeNameView = (TextView) view.findViewById(R.id.list_row_textView_recipe_Main);
-        recipeNameView.setText(recipe.getName());
+        viewHolder.textView_RecipeName.setText(recipe.getName());
 
         return view;
     }
@@ -104,6 +105,18 @@ public class ListOfRecipesRowAdapter extends ArrayAdapter<Recipe> implements Obs
     @Override
     public void onItemModified(Recipe modifiedItem) {
         notifyDataSetChanged();
+    }
+
+
+    static class ViewHolder {
+
+        @InjectView(R.id.list_row_textView_recipe_Main)
+        TextView textView_RecipeName;
+
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
     }
 
 }

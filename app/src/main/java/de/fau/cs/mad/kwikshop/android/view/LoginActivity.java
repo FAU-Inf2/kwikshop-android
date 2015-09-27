@@ -554,7 +554,7 @@ public class LoginActivity extends FragmentActivity implements
                         exitLoginActivity();
                     }
                 });
-                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int position) {
                         return;
                     }

@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 
 import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ClipboardHelper;
@@ -86,6 +87,32 @@ public class StackTraceReporter {
 
             final String traceFinal = trace;
 
+
+            // option to copy the report to the clipboard is only visible in debug builds
+            final String copyCrashReportText = BuildConfig.DEBUG_MODE
+                    ? resourceProvider.getString(R.string.errorReporting_copyToClipboard)
+                    : null;
+
+            final Command<Void> copyCrashReportCommand;
+            if(BuildConfig.DEBUG_MODE) {
+                copyCrashReportCommand = new Command<Void>() {
+                    @Override
+                    public void execute(Void parameter) {
+                        clipBoardHelper.setClipBoardText(
+                                resourceProvider.getString(R.string.errorReporting_copyToClipboard_label),
+                                traceFinal);
+
+                        viewLauncher.showToast(R.string.errorReporting_copyToClipboard_toast, Toast.LENGTH_LONG);
+
+                        if(copiedToClipboardCallback != null) {
+                            copiedToClipboardCallback.onCallback();
+                        }
+                    }
+                };
+            } else {
+                copyCrashReportCommand = null;
+            }
+
             viewLauncher.showMessageDialog(
                     resourceProvider.getString(R.string.errorReporting_messaging_dialog_title),
                     resourceProvider.getString(R.string.errorReporting_messaging_dialog_text),
@@ -107,21 +134,8 @@ public class StackTraceReporter {
                         }
                     },
                     // copy crash report to clipboard
-                    resourceProvider.getString(R.string.errorReporting_copyToClipboard),
-                    new Command<Void>() {
-                        @Override
-                        public void execute(Void parameter) {
-                            clipBoardHelper.setClipBoardText(
-                                    resourceProvider.getString(R.string.errorReporting_copyToClipboard_label),
-                                    traceFinal);
-
-                            viewLauncher.showToast(R.string.errorReporting_copyToClipboard_toast, Toast.LENGTH_LONG);
-
-                            if(copiedToClipboardCallback != null) {
-                                copiedToClipboardCallback.onCallback();
-                            }
-                        }
-                    },
+                    copyCrashReportText,
+                    copyCrashReportCommand,
                     // do nothing (except calling the callback)
                     resourceProvider.getString(android.R.string.no),
                     new Command<Void>() {

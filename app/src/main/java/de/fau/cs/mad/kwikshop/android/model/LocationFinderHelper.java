@@ -261,7 +261,6 @@ public class LocationFinderHelper implements LocationListener {
         Collections.sort(placeContainer);
 
         for(PlaceDistanceEntity entity : placeContainer){
-            Log.e("Sort: ", "Place: " + entity.place.getName() + " Distance: " + entity.distance);
            sortedPlaces.add(entity.place);
         }
 

@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewManager;
 import android.widget.RelativeLayout;
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
@@ -54,6 +56,8 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private View rootView;
+
+    private float previousZoomLevel = -1.0f;
 
 
     RelativeLayout mapInfoBox;
@@ -103,7 +107,7 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     final Command<Void> startPlaceRequestCommand = new Command<Void>() {
         @Override
         public void execute(Void parameter) {
-            showProgressDialog();
+            showProgressDialogWithoutButton();
             hideInfoBox();
             startAsyncPlaceRequest(locationViewModel);
         }
@@ -236,6 +240,7 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
 
     @Override
     public void postResult(List<Place> mPlaces) {
+        viewLauncher.dismissDialog();
         places = mPlaces;
         checkPlaceResult(places);
         if (mapFragment != null) {
@@ -247,6 +252,7 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     public void onMapReady(GoogleMap googleMap) {
 
         map = googleMap;
+        map.setOnCameraChangeListener(getCameraChangeListener());
         setupGoogleMap(map);
         showPlacesInGoogleMap(places);
 
@@ -254,6 +260,25 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
 
         onMarkerClickHandler();
         onMapClickHandler();
+    }
+
+    public GoogleMap.OnCameraChangeListener getCameraChangeListener()
+    {
+        return new GoogleMap.OnCameraChangeListener()
+        {
+            @Override
+            public void onCameraChange(CameraPosition position)
+            {
+                Log.d("Zoom", "Zoom: " + position.zoom);
+
+                if(previousZoomLevel != position.zoom)
+                {
+                    Log.d("Zoom", "Zooming");
+                }
+
+                previousZoomLevel = position.zoom;
+            }
+        };
     }
 
     private void wireUpView(){
@@ -310,7 +335,7 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
 
 
     public void showProgressDialog(){
-       showProgressDialogWithoutButton();
+
     }
 
 

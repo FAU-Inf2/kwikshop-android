@@ -75,8 +75,7 @@ public class SupermarketPlace {
                 if (listener != null) {
                     listener.postResult(places);
                 }
-
-                EventBus.getDefault().post(new FindSupermarketsResult(places));
+                EventBus.getDefault().post(new FindSupermarketsResult(places, latlng));
             }
         }.execute();
     }

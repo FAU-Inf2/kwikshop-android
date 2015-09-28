@@ -6,7 +6,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,6 +13,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,7 +23,6 @@ import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.common.LastLocation;
-import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
 import se.walkercrou.places.Place;
 import se.walkercrou.places.Status;
 
@@ -210,6 +210,7 @@ public class LocationFinderHelper implements LocationListener {
             return "";
     }
 
+
     public static String getDistanceBetweenLastLocationAndPlace(Place place, LatLng latLng) {
         Location shopLocation = new Location("place");
         shopLocation.setLatitude(place.getLatitude());
@@ -229,6 +230,7 @@ public class LocationFinderHelper implements LocationListener {
             return Math.round(distance * 10.0) / 10.0 + " m";
     }
 
+
     public static CharSequence[] getNamesFromPlaces(List<Place> places, Context context) {
         CharSequence[] placeNames = new CharSequence[places.size()];
         int i = 0;
@@ -237,6 +239,52 @@ public class LocationFinderHelper implements LocationListener {
             i++;
         }
         return placeNames;
+    }
+
+
+    public static ArrayList<Place> getPlacesSortToDistance(List<Place> places, LatLng currentLatLng) {
+
+        ArrayList<PlaceDistanceEntity> placeContainer = new ArrayList<>();
+        ArrayList<Place> sortedPlaces = new ArrayList<>();
+        Location currentLocation = new Location("place");
+        currentLocation.setLatitude(currentLatLng.latitude);
+        currentLocation.setLongitude(currentLatLng.longitude);
+
+        for(Place place : places){
+            Location placeLocation = new Location("place");
+            placeLocation.setLatitude(place.getLatitude());
+            placeLocation.setLongitude(place.getLongitude());
+            float distance = currentLocation.distanceTo(placeLocation);
+            placeContainer.add(new PlaceDistanceEntity(place, distance));
+        }
+
+        Collections.sort(placeContainer);
+
+        for(PlaceDistanceEntity entity : placeContainer){
+            Log.e("Sort: ", "Place: " + entity.place.getName() + " Distance: " + entity.distance);
+           sortedPlaces.add(entity.place);
+        }
+
+        return sortedPlaces;
+    }
+
+
+
+    static class PlaceDistanceEntity implements Comparable<PlaceDistanceEntity> {
+        Place place;
+        float distance;
+        public PlaceDistanceEntity(Place place, float distance){
+            this.place =  place;
+            this.distance = distance;
+        }
+        @Override
+        public int compareTo(PlaceDistanceEntity another) {
+            if (this.distance > another.distance)
+                return 1;
+            else if (this.distance < another.distance)
+                return -1;
+            return 0;
+        }
     }
 
     public static boolean checkPlaces(List<Place> places) {

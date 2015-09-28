@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -58,6 +60,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     private final LocationManager locationManager;
 
     private Place currentPlace;
+    private LatLng currentLocation;
 
 
     //region Commands
@@ -385,6 +388,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
 
             viewLauncher.dismissDialog();
             setPlaces(result.getPlaces());
+            setCurrentLocation(result.getCurrentLocation());
 
             if(!LocationFinderHelper.checkPlaces(places)){
                 // no place info dialog
@@ -400,7 +404,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 return;
             }
 
-            showSelectCurrentSupermarket(places);
+            showSelectCurrentSupermarket();
         }
     }
 
@@ -439,7 +443,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
             @Override
             protected void onPostExecute(Boolean result) {
 
-                if(result == false) {
+                if(!result) {
                     if(currentPlace == null) {
                         EventBus.getDefault().post(new MagicSortProgressDialogEvent(MagicSortProgressDialogType.NoPlace));
                     } else {
@@ -485,7 +489,6 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         findNearbySupermarketCanceled = false;
 
         if(isLocalizationEnabled){
-
             if(InternetHelper.checkInternetConnection(context)){
 
                 // progress dialog with listID to cancel progress
@@ -505,15 +508,15 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 );
 
                 // place request: radius 1000 result count 5
-                getNearbySupermarketPlaces(500, 5);
+                int defaultRadius = resourceProvider.getInteger(R.integer.supermarket_finder_radius);
+                int radius = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.SUPERMARKET_FINDER_RADIUS, defaultRadius, context);
+                getNearbySupermarketPlaces(radius, 20);
 
             } else {
-
                 // no connection dialog
                 notificationOfNoConnectionWithLocationPermission();
             }
         } else {
-
             // No permission for location tracking - ask for permission dialog
             if(SharedPreferencesHelper.loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION_SHOW_AGAIN_MSG, true, context)){
                 showAskForLocalizationPermission();
@@ -631,6 +634,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         this.places = places;
     }
 
+    private void setCurrentLocation(LatLng myLocation){this.currentLocation = myLocation;}
+
     private void updateItem(ItemViewModel item) {
         if(item.getItem().isBought()) { // Add bought items at the end of the list
             if (items.size() - 1 >= 0) {
@@ -701,11 +706,13 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
     }
 
     @SuppressWarnings("unchecked")
-    private void showSelectCurrentSupermarket(final List<Place> places){
+    private void showSelectCurrentSupermarket(){
 
         if(places == null) {
             return;
         }
+
+        places = LocationFinderHelper.getPlacesSortToDistance(places, currentLocation);
 
         CharSequence[] placeNames = LocationFinderHelper.getNamesFromPlaces(places, context);
 

@@ -639,6 +639,7 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                 items.setOrAddById(item);
             }
         } else {
+            item.getItem().setOrder(item.getItem().getOrder()-1);
             items.setOrAddById(item);
         }
 

@@ -3,9 +3,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,7 +14,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
@@ -27,7 +24,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
-import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
 import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
@@ -35,7 +32,6 @@ import de.fau.cs.mad.kwikshop.android.model.SupermarketPlace;
 import de.fau.cs.mad.kwikshop.android.util.ClusterMapItem;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
 import de.fau.cs.mad.kwikshop.android.util.ClusterItemRendered;
-import de.fau.cs.mad.kwikshop.android.view.LocationFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.Command;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ResourceProvider;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
@@ -63,7 +59,9 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     TextView mapPlaceDistance;
     View mapDirectionButton;
 
-    private final static int resultCount = 40;
+    private final static int RESULT_COUNT = 40;
+    private final static int MAX_RADIUS = 50000;
+    private final static int MIN_RADIUS = 500;
 
     @Inject
     public LocationViewModel(ResourceProvider resourceProvider, ViewLauncher viewLauncher) {
@@ -219,7 +217,7 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
         if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS){
             if(loadBoolean(SharedPreferencesHelper.LOCATION_PERMISSION, false, context)){
                 if(InternetHelper.checkInternetConnection(context)){
-                    getNearbySupermarketPlaces(locationViewModel, getRadius(), resultCount);
+                    getNearbySupermarketPlaces(locationViewModel, getRadius(), RESULT_COUNT);
                 } else {
                     notificationOfNoConnectionForMap();
                 }
@@ -342,6 +340,72 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     public int getRadius(){
         int defaultRadius = resourceProvider.getInteger(R.integer.supermarket_finder_radius);
         return SharedPreferencesHelper.loadInt(SharedPreferencesHelper.SUPERMARKET_FINDER_RADIUS, defaultRadius, context);
+    }
+
+    public void changeRadius(){
+
+            final int defaultValue = resourceProvider.getInteger(R.integer.supermarket_finder_radius);
+            final int currentValue = loadInt(SUPERMARKET_FINDER_RADIUS, defaultValue, context);
+
+            viewLauncher.showNumberInputDialog(
+
+                    // title and message
+                    resourceProvider.getString(R.string.radius),
+                    resourceProvider.getString(R.string.setting_change_radius_description),
+
+                    //current value
+                    currentValue,
+
+                    // ok button: save updated value
+                    resourceProvider.getString(android.R.string.ok), new Command<String>() {
+                        @Override
+                        public void execute(String value) {
+
+                            try {
+
+                                int intValue = Integer.parseInt(value);
+
+                                if(intValue != currentValue && intValue > 0) {
+                                    if(intValue > MAX_RADIUS){
+                                        saveInt(SUPERMARKET_FINDER_RADIUS, MAX_RADIUS, context);
+                                        return;
+                                    }
+                                    if(intValue < MIN_RADIUS){
+                                        saveInt(SUPERMARKET_FINDER_RADIUS, MIN_RADIUS, context);
+                                        return;
+                                    }
+                                    saveInt(SUPERMARKET_FINDER_RADIUS, intValue, context);
+                                }
+
+
+                            } catch (NumberFormatException ex) {
+                                // should not happen, because showNumberInputDialog() only allows digits as input
+                                // => just ignore the error
+                            }
+
+                            viewLauncher.restartActivity();
+                        }
+                    },
+
+                    // reset to default value (neutral button)
+                    resourceProvider.getString(R.string.str_default),
+                    new Command<String>() {
+                        @Override
+                        public void execute(String parameter) {
+
+                            if(defaultValue != currentValue) {
+                                saveInt(SUPERMARKET_FINDER_RADIUS, defaultValue, context);
+                            }
+
+                            viewLauncher.restartActivity();
+                        }
+                    },
+
+                    // cancel button: do othign
+                    resourceProvider.getString(android.R.string.cancel),
+                    NullCommand.StringInstance
+            );
+
     }
 
     public void setupGoogleMap(GoogleMap map){

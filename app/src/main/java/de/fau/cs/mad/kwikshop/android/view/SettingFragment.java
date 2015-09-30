@@ -178,9 +178,7 @@ public class SettingFragment extends Fragment {
                     setAskForLocationPermission(position);
                 }
 
-                if(settingsList.get(position).equals(supermarketFinderRadiusSetting)){
-                    selectRadius();
-                }
+
             }
         });
 
@@ -283,10 +281,6 @@ public class SettingFragment extends Fragment {
         placeTypeSetting.setName(R.string.localization_store_types_dialog_title);
         placeTypeSetting.setCaption(R.string.localization_store_types_dialog_caption);
 
-        //Change radius of place request
-        supermarketFinderRadiusSetting = new Setting(context);
-        supermarketFinderRadiusSetting.setName(R.string.radius);
-        supermarketFinderRadiusSetting.setCaption(R.string.setting_change_radius_description);
 
 
         //headers
@@ -681,60 +675,7 @@ public class SettingFragment extends Fragment {
     }
 
 
-    private void selectRadius(){
 
-        final int defaultValue = resourceProvider.getInteger(R.integer.supermarket_finder_radius);
-        final int currentValue = loadInt(SUPERMARKET_FINDER_RADIUS, defaultValue, context);
-
-        viewLauncher.showNumberInputDialog(
-
-                // title and message
-                resourceProvider.getString(R.string.radius),
-                resourceProvider.getString(R.string.setting_change_radius_description),
-
-                //current value
-                currentValue,
-
-                // ok button: save updated value
-                resourceProvider.getString(android.R.string.ok), new Command<String>() {
-                    @Override
-                    public void execute(String value) {
-
-                        try {
-
-                            int intValue = Integer.parseInt(value);
-
-                            if(intValue != currentValue && intValue > 0) {
-                                saveInt(SUPERMARKET_FINDER_RADIUS, intValue, context);
-                            }
-
-
-                        } catch (NumberFormatException ex) {
-                            // should not happen, because showNumberInputDialog() only allows digits as input
-                            // => just ignore the error
-                        }
-
-                    }
-                },
-
-                // reset to default value (neutral button)
-                resourceProvider.getString(R.string.str_default),
-                new Command<String>() {
-                    @Override
-                    public void execute(String parameter) {
-
-                        if(defaultValue != currentValue) {
-                            saveInt(SUPERMARKET_FINDER_RADIUS, defaultValue, context);
-                        }
-                    }
-                },
-
-                // cancel button: do othign
-                resourceProvider.getString(android.R.string.cancel),
-                NullCommand.StringInstance
-        );
-
-    }
 
 
 }

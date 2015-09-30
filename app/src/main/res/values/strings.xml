@@ -496,5 +496,6 @@
     <string name="error">An error occurred, please try again later.</string>
     <string name="recipe_cherry_cake">Cherry Cake</string>
     <string name="recipe_milk">Milk</string>
+    <string name="uploadPicture">Select picture</string>
 
 </resources>

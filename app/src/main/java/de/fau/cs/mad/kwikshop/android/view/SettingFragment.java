@@ -72,7 +72,6 @@ public class SettingFragment extends Fragment {
     private Setting syncIntervalSetting;
     private Setting placeTypeSetting;
     private Setting askForLocalizationPermissionSetting;
-    private Setting supermarketFinderRadiusSetting;
 
     @Inject
     ViewLauncher viewLauncher;
@@ -335,7 +334,6 @@ public class SettingFragment extends Fragment {
                         locationHeaderSetting,
                         locationPermissionSetting,
                         askForLocalizationPermissionSetting,
-                        supermarketFinderRadiusSetting,
                         placeTypeSetting,
 
 

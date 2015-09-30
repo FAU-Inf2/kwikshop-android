@@ -358,7 +358,7 @@
         <item>Geschäfte</item>
     </string-array>
     <string name="radius">Radius</string>
-    <string name="setting_change_radius_description">Radius des Supermarktfinders ändern</string>
+    <string name="setting_change_radius_description">Radius in Meter für Supermarktfinder ändern</string>
     <string name="general">Allgemein</string>
     <string name="overflow_action_menu_edit">Bearbeiten</string>
 

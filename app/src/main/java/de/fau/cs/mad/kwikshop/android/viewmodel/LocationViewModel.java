@@ -366,15 +366,14 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
                                 int intValue = Integer.parseInt(value);
 
                                 if(intValue != currentValue && intValue > 0) {
+
                                     if(intValue > MAX_RADIUS){
                                         saveInt(SUPERMARKET_FINDER_RADIUS, MAX_RADIUS, context);
-                                        return;
-                                    }
-                                    if(intValue < MIN_RADIUS){
+                                    } else if(intValue < MIN_RADIUS){
                                         saveInt(SUPERMARKET_FINDER_RADIUS, MIN_RADIUS, context);
-                                        return;
+                                    } else {
+                                        saveInt(SUPERMARKET_FINDER_RADIUS, intValue, context);
                                     }
-                                    saveInt(SUPERMARKET_FINDER_RADIUS, intValue, context);
                                 }
 
 
@@ -396,12 +395,11 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
                             if(defaultValue != currentValue) {
                                 saveInt(SUPERMARKET_FINDER_RADIUS, defaultValue, context);
                             }
-
                             viewLauncher.restartActivity();
                         }
                     },
 
-                    // cancel button: do othign
+                    // cancel button
                     resourceProvider.getString(android.R.string.cancel),
                     NullCommand.StringInstance
             );

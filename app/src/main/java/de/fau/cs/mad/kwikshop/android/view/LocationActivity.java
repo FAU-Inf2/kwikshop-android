@@ -28,9 +28,6 @@ public class LocationActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         viewModel.setContext(getApplicationContext());
         switch (item.getItemId()) {
-            case R.id.change_store_type:
-                viewModel.selectPlaceType();
-                break;
             case R.id.change_radius:
                 viewModel.changeRadius();
                 break;

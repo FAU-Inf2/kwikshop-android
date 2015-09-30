@@ -427,5 +427,7 @@
     <string name="recipe_strawberrys">Erdbeeren</string>
     <string name="recipe_baked_pastry_case">Tortenboden</string>
     <string name="recipe_cake_glaze">Tortenguss</string>
+    <string name="recipe_pineapple_cake">Ananaskuchen</string>
+    <string name="recipe_pineapples">Ananas</string>
 
 </resources>

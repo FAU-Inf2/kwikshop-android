@@ -501,5 +501,7 @@
     <string name="recipe_cake_glaze">Cake glaze</string>
     <string name="recipe_strawberry_cake">Strawberry cake</string>
     <string name="recipe_strawberrys">Strawberrys</string>
+    <string name="recipe_pineapple_cake">Pineapple Cake</string>
+    <string name="recipe_pineapples">Pineapples</string>
 
 </resources>

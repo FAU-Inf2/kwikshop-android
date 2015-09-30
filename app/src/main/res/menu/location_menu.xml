@@ -8,12 +8,5 @@
         android:icon="@drawable/ic_radius">
     </item>
 
-    <item
-        android:id="@+id/change_store_type"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_settings_alt_white">
-    </item>
-
-
 
 </menu>

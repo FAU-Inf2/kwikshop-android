@@ -132,7 +132,7 @@
     <string name="account">Account</string>
     <string name="synchronization">Synchronization</string>
     <string name="radius">Radius</string>
-    <string name="setting_change_radius_description">Change radius for Supermarket Finder</string>
+    <string name="setting_change_radius_description">Change radius in meters for Supermarket Finder</string>
 
 
     <!-- Overflow Action Menu -->

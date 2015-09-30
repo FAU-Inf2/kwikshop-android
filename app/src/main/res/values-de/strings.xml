@@ -418,5 +418,10 @@
     <string name="selectPicture">Wähle Bild</string>
     <string name="sortby_magicsort"></string>
     <string name="unit_bottle_singular">Flasche</string>
+    <string name="install">Installieren</string>
+    <string name="no_play_service_installed_message">Momentan sind die Google Play Services nicht auf deinem Gerät installiert. Möchstest du sie jetzt installieren?</string>
+    <string name="no_play_service_installed_title"></string>
+    <string name="recipe_cherry_cake">Kirschkuchen</string>
+    <string name="recipe_milk">Milch</string>
 
 </resources>

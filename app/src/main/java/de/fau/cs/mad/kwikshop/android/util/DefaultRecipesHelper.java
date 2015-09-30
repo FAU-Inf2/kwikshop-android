@@ -43,6 +43,7 @@ public class DefaultRecipesHelper {
         Unit piece = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.PIECE);
         Unit pack = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.PACK);
         Unit teaspoon = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.TEASPOON);
+        Unit tablespoon = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.TABLESPOON);
         Unit ml = ListStorageFragment.getUnitStorage().getByName(DefaultDataProvider.UnitNames.MILLILITRE);
 
         Group meat = ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.MEAT_AND_FISH);
@@ -60,9 +61,10 @@ public class DefaultRecipesHelper {
          * - rhubarb tart
          * - madeira cake
          * - spaghetti bolognese
+         * - cherry cake
          **/
 
-
+        //region Recipe: Spaghetti Bolognese
         {
             int recipeId = recipeManager.createList();
             Recipe spaghetti = recipeManager.getList(recipeId);
@@ -130,6 +132,8 @@ public class DefaultRecipesHelper {
                 item6.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item6.toInt());
                 recipeManager.addListItem(recipeId, item6);
 
+            }
+            {
                 Item item7 = new Item();
                 item7.setName(context.getString(R.string.recipe_ketchup));
                 item7.setAmount(2);
@@ -137,8 +141,8 @@ public class DefaultRecipesHelper {
                 item7.setGroup(other);
                 item7.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item7.toInt());
                 recipeManager.addListItem(recipeId, item7);
-
-
+            }
+            {
                 Item item8 = new Item();
                 item8.setName(context.getString(R.string.recipe_oregano));
                 item8.setAmount(2);
@@ -146,7 +150,8 @@ public class DefaultRecipesHelper {
                 item8.setGroup(spices);
                 item8.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item8.toInt());
                 recipeManager.addListItem(recipeId, item8);
-
+            }
+            {
                 Item item9 = new Item();
                 item9.setName(context.getString(R.string.recipe_ketchup));
                 item9.setAmount(1);
@@ -154,7 +159,8 @@ public class DefaultRecipesHelper {
                 item9.setGroup(vegetable);
                 item9.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item6.toInt());
                 recipeManager.addListItem(recipeId, item9);
-
+            }
+            {
                 Item item10 = new Item();
                 item10.setName(context.getString(R.string.recipe_tomato_paste));
                 item10.setAmount(1);
@@ -162,7 +168,8 @@ public class DefaultRecipesHelper {
                 item10.setGroup(vegetable);
                 item10.setPredefinedId(PredefinedId.Recipe_Spaghetti_Bolognese_Item10.toInt());
                 recipeManager.addListItem(recipeId, item10);
-
+            }
+            {
                 Item item11 = new Item();
                 item11.setName(context.getString(R.string.recipe_vegetable_broth));
                 item11.setAmount(200);
@@ -177,6 +184,9 @@ public class DefaultRecipesHelper {
             recipeManager.saveList(recipeId);
         }
 
+        //endregion
+
+        //region Recipe: Chili con Carne
         {
             int recipeId = recipeManager.createList();
             Recipe recipe1 = recipeManager.getList(recipeId);
@@ -245,10 +255,12 @@ public class DefaultRecipesHelper {
                 recipeManager.addListItem(recipeId, item6);
             }
 
-
             recipeManager.saveList(recipeId);
         }
 
+        //endregion
+
+        //region Recipe: Carrot Cake
         {
             int recipeId = recipeManager.createList();
             Recipe recipe = recipeManager.getList(recipeId);
@@ -325,8 +337,10 @@ public class DefaultRecipesHelper {
             recipeManager.saveList(recipeId);
         }
 
-        {
+        //endregion
 
+        //region Recipe: Rhubard Tart
+        {
             int recipeId = recipeManager.createList();
             Recipe recipe = recipeManager.getList(recipeId);
             recipe.setName(context.getString(R.string.recipe_rhubarb_tart));
@@ -424,6 +438,9 @@ public class DefaultRecipesHelper {
             recipeManager.saveList(recipeId);
         }
 
+        //endregion
+
+        //region Recipe: Madeira Cake
         {
             int recipeId = recipeManager.createList();
             Recipe recipe = recipeManager.getList(recipeId);
@@ -498,6 +515,86 @@ public class DefaultRecipesHelper {
 
             recipeManager.saveList(recipeId);
         }
+
+        //endregion
+
+        //region Recipe: Cherry Cake
+        {
+            int recipeId = recipeManager.createList();
+            Recipe recipe = recipeManager.getList(recipeId);
+            recipe.setName(context.getString(R.string.recipe_cherry_cake));
+            recipe.setScaleFactor(1);
+            recipe.setScaleName(context.getString(R.string.recipe_scaleName_piece));
+            recipe.setPredefinedId(PredefinedId.Recipe_CherryCake.toInt());
+
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_butter));
+                item.setAmount(200);
+                item.setUnit(gram);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_CherryCake_Item1.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_sugar));
+                item.setAmount(175);
+                item.setUnit(gram);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_CherryCake_Item2.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_vanilla_sugar));
+                item.setAmount(1);
+                item.setUnit(pack);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_CherryCake_Item3.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_eggs));
+                item.setAmount(3);
+                item.setUnit(piece);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_CherryCake_Item4.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_plainFlour));
+                item.setAmount(200);
+                item.setUnit(gram);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_CherryCake_Item5.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_bakingPowder));
+                item.setAmount(2);
+                item.setUnit(teaspoon);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_CherryCake_Item6.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_milk));
+                item.setAmount(2);
+                item.setUnit(tablespoon);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_CherryCake_Item7.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+
+            recipeManager.saveList(recipeId);
+        }
+
+        //endregion Recipe: Cherry Cake
     }
 
 }

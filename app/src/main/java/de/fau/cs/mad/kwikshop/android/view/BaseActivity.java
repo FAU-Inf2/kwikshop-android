@@ -58,7 +58,6 @@ public class BaseActivity extends AppCompatActivity implements
     NavigationView mNavigationView;
 
     public static FrameLayout frameLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
 
     protected boolean startSharingCodeIntent = false;
     protected boolean startMagicSortIntent = false;

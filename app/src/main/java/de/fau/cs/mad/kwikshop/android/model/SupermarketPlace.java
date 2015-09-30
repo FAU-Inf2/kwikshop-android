@@ -6,8 +6,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
-
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.model.messages.FindSupermarketsResult;
@@ -24,6 +25,7 @@ public class SupermarketPlace {
     }
 
     List<Place> places = null;
+
     private Context context;
 
     public SupermarketPlace(Context context) {
@@ -66,6 +68,7 @@ public class SupermarketPlace {
                 }
 
 
+
                 return places;
             }
 
@@ -87,6 +90,9 @@ public class SupermarketPlace {
             return null;
         return new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
     }
+
+
+
 
 
 }

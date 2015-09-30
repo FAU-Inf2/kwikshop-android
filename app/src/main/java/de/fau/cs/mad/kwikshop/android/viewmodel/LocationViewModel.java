@@ -57,9 +57,6 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     private GoogleMap map;
     private View rootView;
 
-    private float previousZoomLevel = -1.0f;
-
-
     RelativeLayout mapInfoBox;
     TextView mapPlaceName;
     TextView mapPlaceOpenStatus;
@@ -240,10 +237,11 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
 
     @Override
     public void postResult(List<Place> mPlaces) {
+
         viewLauncher.dismissDialog();
         places = mPlaces;
-        checkPlaceResult(places);
-        if (mapFragment != null) {
+
+        if (mapFragment != null){
             mapFragment.getMapAsync(this);
         }
     }
@@ -252,34 +250,18 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     public void onMapReady(GoogleMap googleMap) {
 
         map = googleMap;
-        map.setOnCameraChangeListener(getCameraChangeListener());
         setupGoogleMap(map);
         showPlacesInGoogleMap(places);
-
         viewLauncher.dismissDialog();
+
+        if(!LocationFinderHelper.checkPlaces(places)){
+            notifiactionOfNoPlaceResult();
+        }
 
         onMarkerClickHandler();
         onMapClickHandler();
     }
 
-    public GoogleMap.OnCameraChangeListener getCameraChangeListener()
-    {
-        return new GoogleMap.OnCameraChangeListener()
-        {
-            @Override
-            public void onCameraChange(CameraPosition position)
-            {
-                Log.d("Zoom", "Zoom: " + position.zoom);
-
-                if(previousZoomLevel != position.zoom)
-                {
-                    Log.d("Zoom", "Zooming");
-                }
-
-                previousZoomLevel = position.zoom;
-            }
-        };
-    }
 
     private void wireUpView(){
         mapInfoBox = (RelativeLayout) rootView.findViewById(R.id.map_infobox);
@@ -334,11 +316,6 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     }
 
 
-    public void showProgressDialog(){
-
-    }
-
-
     public LatLng getLastLatLng(){
         LastLocation lastLocation = LocationFinderHelper.initiateLocationFinderHelper(context).getLastLocation();
         viewLauncher.dismissDialog();
@@ -367,8 +344,9 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
         return SharedPreferencesHelper.loadInt(SharedPreferencesHelper.SUPERMARKET_FINDER_RADIUS, defaultRadius, context);
     }
 
-    public GoogleMap setupGoogleMap(GoogleMap map){
+    public void setupGoogleMap(GoogleMap map){
 
+        //setup map
         map.setMyLocationEnabled(true);
         map.moveCamera( CameraUpdateFactory.newLatLngZoom(getLastLatLng(), 15.0f) );
         UiSettings settings = map.getUiSettings();
@@ -381,7 +359,6 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
         map.setOnCameraChangeListener(mClusterManager);
         map.setOnMarkerClickListener(mClusterManager);
 
-        return map;
     }
 
     public void showPlacesInGoogleMap(List<Place> places){
@@ -415,7 +392,6 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
 
     @SuppressWarnings("unchecked")
     public void notificationOfNoConnectionForMap(){
-
         viewLauncher.dismissDialog();
 
         viewLauncher.showMessageDialog(
@@ -430,7 +406,6 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
 
     @SuppressWarnings("unchecked")
     public void notificationOfNoConnectionWithLocationPermission(){
-
         viewLauncher.dismissDialog();
 
         viewLauncher.showMessageDialog(
@@ -445,20 +420,19 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     }
 
     @SuppressWarnings("unchecked")
-    public void checkPlaceResult(List<Place> places){
-
+    public void notifiactionOfNoPlaceResult() {
         viewLauncher.dismissDialog();
 
-        if(!LocationFinderHelper.checkPlaces(places)){
-            viewLauncher.showMessageDialog(
-                    resourceProvider.getString(R.string.localization_no_place_dialog_title),
-                    resourceProvider.getString(R.string.no_place_dialog_message),
-                    resourceProvider.getString(R.string.dialog_OK),
-                    cancelProgressDialogCommand,
-                    resourceProvider.getString(R.string.dialog_retry),
-                    getRestartActivityCommand()
-            );
-        }
+        viewLauncher.showMessageDialog(
+                resourceProvider.getString(R.string.localization_no_place_dialog_title),
+                resourceProvider.getString(R.string.no_place_dialog_message),
+                resourceProvider.getString(R.string.dialog_OK),
+                cancelProgressDialogCommand,
+                resourceProvider.getString(R.string.dialog_retry),
+                getRestartActivityCommand()
+        );
+
+
     }
 
 

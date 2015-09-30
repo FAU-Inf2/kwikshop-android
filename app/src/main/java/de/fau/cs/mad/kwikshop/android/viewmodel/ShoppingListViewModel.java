@@ -507,10 +507,8 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
                         }
                 );
 
-                // place request: radius 1000 result count 5
-                int defaultRadius = resourceProvider.getInteger(R.integer.supermarket_finder_radius);
-                int radius = SharedPreferencesHelper.loadInt(SharedPreferencesHelper.SUPERMARKET_FINDER_RADIUS, defaultRadius, context);
-                getNearbySupermarketPlaces(radius, 20);
+                // place request: radius 500 result count 20
+                getNearbySupermarketPlaces(500, 20);
 
             } else {
                 // no connection dialog

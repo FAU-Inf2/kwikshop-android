@@ -52,6 +52,8 @@ public class DefaultRecipesHelper {
         Group other = ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.OTHER);
         Group pasta = ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.PASTA);
         Group spices =  ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.INGREDIENTS_AND_SPICES);
+        Group fruit = ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.FRUITS_AND_VEGETABLES);
+        Group pastries = ListStorageFragment.getGroupStorage().getByName(DefaultDataProvider.GroupNames.BREAD_AND_PASTRIES);
 
         /**
          * Default Recipes:
@@ -595,6 +597,47 @@ public class DefaultRecipesHelper {
         }
 
         //endregion Recipe: Cherry Cake
+
+        //region Recipe: Strawberry Cake
+        {
+            int recipeId = recipeManager.createList();
+            Recipe recipe = recipeManager.getList(recipeId);
+            recipe.setName(context.getString(R.string.recipe_strawberry_cake));
+            recipe.setScaleFactor(1);
+            recipe.setScaleName(context.getString(R.string.recipe_scaleName_piece));
+            recipe.setPredefinedId(PredefinedId.Recipe_StrawberryCake.toInt());
+
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_strawberrys));
+                item.setAmount(500);
+                item.setUnit(gram);
+                item.setGroup(fruit);
+                item.setPredefinedId(PredefinedId.Recipe_StrawberryCake_Item1.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_baked_pastry_case));
+                item.setAmount(1);
+                item.setUnit(piece);
+                item.setGroup(pastries);
+                item.setPredefinedId(PredefinedId.Recipe_StrawberryCake_Item2.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_cake_glaze));
+                item.setAmount(1);
+                item.setUnit(pack);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_StrawberryCake_Item3.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+
+            recipeManager.saveList(recipeId);
+        }
+        //endregion Recipe: Strawberry Cake
     }
 
 }

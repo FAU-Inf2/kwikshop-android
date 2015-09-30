@@ -423,5 +423,9 @@
     <string name="no_play_service_installed_title"></string>
     <string name="recipe_cherry_cake">Kirschkuchen</string>
     <string name="recipe_milk">Milch</string>
+    <string name="recipe_strawberry_cake">Erdbeerkuchen</string>
+    <string name="recipe_strawberrys">Erdbeeren</string>
+    <string name="recipe_baked_pastry_case">Tortenboden</string>
+    <string name="recipe_cake_glaze">Tortenguss</string>
 
 </resources>

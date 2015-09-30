@@ -497,5 +497,9 @@
     <string name="recipe_cherry_cake">Cherry Cake</string>
     <string name="recipe_milk">Milk</string>
     <string name="uploadPicture">Select picture</string>
+    <string name="recipe_baked_pastry_case">Baked pastry case</string>
+    <string name="recipe_cake_glaze">Cake glaze</string>
+    <string name="recipe_strawberry_cake">Strawberry cake</string>
+    <string name="recipe_strawberrys">Strawberrys</string>
 
 </resources>

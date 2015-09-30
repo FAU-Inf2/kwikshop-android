@@ -429,5 +429,7 @@
     <string name="recipe_cake_glaze">Tortenguss</string>
     <string name="recipe_pineapple_cake">Ananaskuchen</string>
     <string name="recipe_pineapples">Ananas</string>
+    <string name="recipe_apple_pie">Apfelkuchen</string>
+    <string name="recipe_apples">Äpfel</string>
 
 </resources>

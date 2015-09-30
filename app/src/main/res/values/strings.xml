@@ -503,5 +503,7 @@
     <string name="recipe_strawberrys">Strawberrys</string>
     <string name="recipe_pineapple_cake">Pineapple Cake</string>
     <string name="recipe_pineapples">Pineapples</string>
+    <string name="recipe_apple_pie">Apple pie</string>
+    <string name="recipe_apples">Apples</string>
 
 </resources>

@@ -681,6 +681,75 @@ public class DefaultRecipesHelper {
         }
         //endregion Recipe: Pineapple Cake
 
+
+        //region Recipe: Apple Pie
+        {
+            int recipeId = recipeManager.createList();
+            Recipe recipe = recipeManager.getList(recipeId);
+            recipe.setName(context.getString(R.string.recipe_apple_pie));
+            recipe.setScaleFactor(1);
+            recipe.setScaleName(context.getString(R.string.recipe_scaleName_piece));
+            recipe.setPredefinedId(PredefinedId.Recipe_Apple_Pie.toInt());
+
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_butter));
+                item.setAmount(350);
+                item.setUnit(gram);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_Apple_Pie_Item1.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_sugar));
+                item.setAmount(350);
+                item.setUnit(gram);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_Apple_Pie_Item2.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_eggs));
+                item.setAmount(3);
+                item.setUnit(piece);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_Apple_Pie_Item3.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_plainFlour));
+                item.setAmount(650);
+                item.setUnit(gram);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_Apple_Pie_Item4.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_bakingPowder));
+                item.setAmount(2);
+                item.setUnit(teaspoon);
+                item.setGroup(other);
+                item.setPredefinedId(PredefinedId.Recipe_Apple_Pie_Item5.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+            {
+                Item item = new Item();
+                item.setName(context.getString(R.string.recipe_apples));
+                item.setAmount(6);
+                item.setUnit(piece);
+                item.setGroup(fruit);
+                item.setPredefinedId(PredefinedId.Recipe_Apple_Pie_Item6.toInt());
+                recipeManager.addListItem(recipeId, item);
+            }
+
+            recipeManager.saveList(recipeId);
+        }
+        //endregion Recipe: Apple Pie
+
     }
 
 }

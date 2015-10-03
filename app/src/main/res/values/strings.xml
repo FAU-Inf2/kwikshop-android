@@ -133,9 +133,7 @@
     <string name="synchronization">Synchronization</string>
     <string name="radius">Radius</string>
     <string name="setting_change_radius_description">Change radius in meters for Supermarket Finder</string>
-    <string name="setting_current_location_title">Location</string>
-    <string name="setting_current_location_description">Change your Location</string>
-    <string name="setting_current_location_alert_description">Type in your City or Address: </string>
+
 
     <!-- Overflow Action Menu -->
     <string name="overflow_action_menu_settings">Settings</string>

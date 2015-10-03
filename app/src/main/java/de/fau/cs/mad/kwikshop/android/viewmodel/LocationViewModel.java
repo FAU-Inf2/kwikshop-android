@@ -521,8 +521,15 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
 
         viewLauncher.dismissDialog();
 
+        String dialogMessage;
+        if(searchAddress == null){
+            dialogMessage  = resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message);
+        } else {
+            dialogMessage = resourceProvider.getString(R.string.supermarket_finder_search_progress_dialog_message) + searchAddress;
+        }
+
         viewLauncher.showProgressDialogWithoutButton(
-                resourceProvider.getString(R.string.supermarket_finder_progress_dialog_message),
+                dialogMessage,
                 showListOfShoppingListCommand
         );
     }

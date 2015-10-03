@@ -649,14 +649,9 @@ public class ShoppingListViewModel extends ListViewModel<ShoppingList> {
         items.notifyItemModified(item);
     }
 
-    private void updateItemViewModel(ItemViewModel item) {
-
-            items.setOrAddById(item);
-
-    }
 
     private void getNearbySupermarketPlaces(int radius, int resultCount){
-        SupermarketPlace.initiateSupermarketPlaceRequest(context, null, radius, resultCount);
+        SupermarketPlace.initiateSupermarketPlaceRequest(context, null, radius, resultCount, null);
     }
 
     private void notificationOfNoConnectionWithLocationPermission(){

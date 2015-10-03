@@ -30,6 +30,8 @@ public interface ViewLauncher {
 
     void showTextInputDialog(String title, String value, Command<String> positiveCommand, Command<String> negativeCommand);
 
+    void showTextInputDialog(String title, String description, String value, Command<String> positiveCommand, Command<String> negativeCommand);
+
     void showTextInputDialog(String title, String value,
                              String positiveText, Command<String> positiveCommand,
                              String neutralText, Command<String> neutralCommand,

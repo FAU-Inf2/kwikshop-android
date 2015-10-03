@@ -32,13 +32,22 @@ public class SupermarketPlace {
         this.context = context;
     }
 
-    public static void initiateSupermarketPlaceRequest(Context context, final Object instance, int radius, int resultCount) {
-        new SupermarketPlace(context).performAsyncPlaceRequest(instance, radius, resultCount);
+    public static void initiateSupermarketPlaceRequest(Context context, final Object instance, int radius, int resultCount, LatLng searchLocation) {
+        new SupermarketPlace(context).performAsyncPlaceRequest(instance, radius, resultCount, searchLocation);
     }
 
-    public void performAsyncPlaceRequest(final Object instance, final int radius, final int resultCount) {
+    public void performAsyncPlaceRequest(final Object instance, final int radius, final int resultCount, LatLng searchLocation) {
 
-        final LatLng latlng = getLastPosition();
+        LatLng location;
+
+        if(searchLocation != null){
+            location = searchLocation;
+        } else {
+            location = getLastPosition();
+        }
+
+        final LatLng latlng = location;
+
         new AsyncTask<Void, Void, List<Place>>() {
 
             private final String googleBrowserApiKey = context.getResources().getString(R.string.google_browser_api_key);

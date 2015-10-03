@@ -9,12 +9,15 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ import de.fau.cs.mad.kwikshop.android.common.Setting;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.model.AutoCompletionHelper;
 import de.fau.cs.mad.kwikshop.android.model.DatabaseHelper;
+import de.fau.cs.mad.kwikshop.android.model.LocationFinderHelper;
 import de.fau.cs.mad.kwikshop.android.model.SimpleStorageBase;
 import de.fau.cs.mad.kwikshop.android.model.interfaces.SimpleStorage;
 import de.fau.cs.mad.kwikshop.android.util.SharedPreferencesHelper;
@@ -73,11 +77,15 @@ public class SettingFragment extends Fragment {
     private Setting placeTypeSetting;
     private Setting askForLocalizationPermissionSetting;
 
+
     @Inject
     ViewLauncher viewLauncher;
 
     @Inject
     ResourceProvider resourceProvider;
+
+    @Inject
+    LocationFinderHelper locationFinderHelper;
 
     LocationViewModel locationViewModel;
 
@@ -176,6 +184,7 @@ public class SettingFragment extends Fragment {
                 if(settingsList.get(position).equals(askForLocalizationPermissionSetting)){
                     setAskForLocationPermission(position);
                 }
+
 
 
             }

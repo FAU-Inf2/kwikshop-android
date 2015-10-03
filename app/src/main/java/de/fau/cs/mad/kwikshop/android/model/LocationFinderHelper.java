@@ -296,6 +296,30 @@ public class LocationFinderHelper implements LocationListener {
         return true;
     }
 
+    public LatLng getAddressFromString(String address){
+
+            LatLng latLng = null;
+            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+            List<Address> geoResults;
+
+            try {
+                geoResults = geocoder.getFromLocationName(address, 5);
+                if (geoResults.size() > 0) {
+                    Log.e("Size: ", " " + geoResults.size());
+                    for(Address add : geoResults){
+                        Log.e("Address: ", add.getLatitude() + " " + add.getLongitude());
+                    }
+
+                    Address addresses = geoResults.get(0);
+                    latLng = new LatLng(addresses.getLatitude(),addresses.getLongitude());
+                }
+            } catch (Exception e) {
+               Log.e("GetAddressFromString", e.getMessage()) ;
+            }
+
+            return latLng;
+    }
+
     @Override
     public void onLocationChanged(Location location) {
 

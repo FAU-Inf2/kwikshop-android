@@ -1,11 +1,23 @@
 package de.fau.cs.mad.kwikshop.android.view;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MenuItemCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
+
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 import javax.inject.Inject;
 import butterknife.ButterKnife;
@@ -28,13 +40,27 @@ public class LocationFragment  extends FragmentWithViewModel{
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem searchItem = menu.findItem(R.id.location_search);
+        SearchView searchView  = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        if(null != searchManager ) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(getActivity().getApplicationContext(), LocationActivity.class)));
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         ObjectGraph objectGraph = ObjectGraph.create(new KwikShopModule(getActivity()));
         viewModel = objectGraph.get(LocationViewModel.class);
         objectGraph.inject(this);
         viewModel.setContext(getActivity().getApplicationContext());
+        setHasOptionsMenu(true);
+        handleIntent(getActivity().getIntent());
+
     }
 
 
@@ -70,6 +96,13 @@ public class LocationFragment  extends FragmentWithViewModel{
     public void onPause() {
         super.onPause();
         dismissDialog();
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            viewModel.setSearchAddress(query);
+        }
     }
 
 

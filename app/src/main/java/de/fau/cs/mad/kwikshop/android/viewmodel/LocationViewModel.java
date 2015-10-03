@@ -3,6 +3,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -52,6 +53,10 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private View rootView;
+    private String searchAddress;
+    private LatLng location;
+    private LatLng searchLocation = null;
+
 
     RelativeLayout mapInfoBox;
     TextView mapPlaceName;
@@ -62,6 +67,9 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     private final static int RESULT_COUNT = 40;
     private final static int MAX_RADIUS = 50000;
     private final static int MIN_RADIUS = 500;
+
+    @Inject
+    LocationFinderHelper locationFinderHelper;
 
     @Inject
     public LocationViewModel(ResourceProvider resourceProvider, ViewLauncher viewLauncher) {
@@ -82,6 +90,8 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     public void setContext(Context context){ this.context = context; }
 
     public void setMapFragment(SupportMapFragment mapFragment){this.mapFragment = mapFragment;}
+
+    public void setSearchAddress(String searchAddress) {this.searchAddress = searchAddress;}
 
     public void setView(View view){
         this.rootView = view;
@@ -209,7 +219,10 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
 
 
     public void getNearbySupermarketPlaces(Object instance, int radius, int resultCount){
-        SupermarketPlace.initiateSupermarketPlaceRequest(context, instance, radius, resultCount);
+        if(searchAddress != null){
+            searchLocation = locationFinderHelper.getAddressFromString(searchAddress);
+        }
+        SupermarketPlace.initiateSupermarketPlaceRequest(context, instance, radius, resultCount, searchLocation);
     }
 
     public void startAsyncPlaceRequest(LocationViewModel locationViewModel) {
@@ -253,7 +266,7 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
         viewLauncher.dismissDialog();
 
         if(!LocationFinderHelper.checkPlaces(places)){
-            notifiactionOfNoPlaceResult();
+            notificationOfNoPlaceResult();
         }
 
         onMarkerClickHandler();
@@ -408,9 +421,15 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
 
     public void setupGoogleMap(GoogleMap map){
 
+        if(searchLocation != null){
+            location = searchLocation;
+        } else {
+            location = getLastLatLng();
+        }
+
         //setup map
         map.setMyLocationEnabled(true);
-        map.moveCamera( CameraUpdateFactory.newLatLngZoom(getLastLatLng(), 15.0f) );
+        map.moveCamera( CameraUpdateFactory.newLatLngZoom(location, 15.0f) );
         UiSettings settings = map.getUiSettings();
         settings.setAllGesturesEnabled(true);
         settings.setMapToolbarEnabled(false);
@@ -482,7 +501,7 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
     }
 
     @SuppressWarnings("unchecked")
-    public void notifiactionOfNoPlaceResult() {
+    public void notificationOfNoPlaceResult() {
         viewLauncher.dismissDialog();
 
         viewLauncher.showMessageDialog(
@@ -520,7 +539,6 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
         );
 
     }
-
 
 
     private void showAskForLocalizationPermission(){

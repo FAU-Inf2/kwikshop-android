@@ -31,6 +31,7 @@ import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 public class LocationFragment  extends FragmentWithViewModel{
 
     private LocationViewModel viewModel;
+    public final static String SEARCH_ENABLED = "search_enabled";
 
     @Inject
     ViewLauncher viewLauncher;
@@ -60,6 +61,7 @@ public class LocationFragment  extends FragmentWithViewModel{
         viewModel.setContext(getActivity().getApplicationContext());
         setHasOptionsMenu(true);
         handleIntent(getActivity().getIntent());
+
 
     }
 
@@ -102,7 +104,14 @@ public class LocationFragment  extends FragmentWithViewModel{
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             viewModel.setSearchAddress(query);
+        } else {
+            if(intent.getExtras() != null){
+                String query = intent.getExtras().getString(SEARCH_ENABLED);
+                viewModel.setSearchAddress(query);
+            }
         }
+
+
     }
 
 

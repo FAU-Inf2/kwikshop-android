@@ -25,6 +25,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.fau.cs.mad.kwikshop.android.R;
+import de.fau.cs.mad.kwikshop.android.view.LocationActivity;
+import de.fau.cs.mad.kwikshop.android.view.LocationFragment;
 import de.fau.cs.mad.kwikshop.android.viewmodel.common.NullCommand;
 import de.fau.cs.mad.kwikshop.common.ArgumentNullException;
 import de.fau.cs.mad.kwikshop.android.model.InternetHelper;
@@ -408,7 +410,14 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
                             if(defaultValue != currentValue) {
                                 saveInt(SUPERMARKET_FINDER_RADIUS, defaultValue, context);
                             }
-                            viewLauncher.restartActivity();
+
+                            if(searchAddress != null){
+                                Intent intent = new Intent(context, LocationActivity.class);
+                                intent.putExtra(LocationFragment.SEARCH_ENABLED, searchAddress);
+                                viewLauncher.startActivity(intent);
+                            } else {
+                                viewLauncher.restartActivity();
+                            }
                         }
                     },
 
@@ -655,6 +664,7 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
                     @Override
                     public void execute(Void parameter) {
                         viewLauncher.restartActivity();
+
                     }
                 },
                 //negative command

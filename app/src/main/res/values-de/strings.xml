@@ -431,5 +431,6 @@
     <string name="recipe_pineapples">Ananas</string>
     <string name="recipe_apple_pie">Apfelkuchen</string>
     <string name="recipe_apples">Äpfel</string>
+    <string name="supermarket_finder_search_progress_dialog_message">Suche Supermarkets in der Nähe von</string>
 
 </resources>

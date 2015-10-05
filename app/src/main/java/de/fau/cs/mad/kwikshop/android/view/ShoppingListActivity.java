@@ -249,6 +249,12 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
                 progressDialog.show();
                 break;
             case Failed:
+                progressDialog.dismiss();
+                progressDialog = new ProgressDialog(ShoppingListActivity.this);
+                progressDialog.setIndeterminate(false);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setCancelable(true);
+                progressDialog.show();
                 progressDialog.setMessage(getApplicationContext().getResources().getString(R.string.error));
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -258,7 +264,13 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
                 }, 1000);
                 break;
             case NoPlace:
-                progressDialog.setMessage(getApplicationContext().getResources().getString(R.string.error));
+                progressDialog.dismiss();
+                progressDialog = new ProgressDialog(ShoppingListActivity.this);
+                progressDialog.setIndeterminate(false);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setCancelable(true);
+                progressDialog.show();
+                progressDialog.setMessage(getApplicationContext().getResources().getString(R.string.no_last_location_dialog_message));
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     public void run() {
@@ -267,6 +279,7 @@ public class ShoppingListActivity extends BaseActivity implements EditModeActivi
                 }, 1000);
                 break;
             case Success:
+                progressDialog.hide();
                 progressDialog.dismiss();
                 SyncingActivity.requestSync();
                 break;

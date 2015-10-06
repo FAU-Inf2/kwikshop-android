@@ -128,20 +128,6 @@ public class LocationFinderHelper implements LocationListener {
     }
 
 
-    public double getLatitude() {
-
-        return location != null ? latitude : 0.0;
-    }
-
-    public double getLongitude() {
-
-        return location != null ? longitude : 0.0;
-    }
-
-    public LatLng getLatLng() {
-        return new LatLng(getLatitude(), getLongitude());
-    }
-
     public String getAddressToString() {
 
         try {
@@ -305,16 +291,11 @@ public class LocationFinderHelper implements LocationListener {
             try {
                 geoResults = geocoder.getFromLocationName(address, 5);
                 if (geoResults.size() > 0) {
-                    Log.e("Size: ", " " + geoResults.size());
-                    for(Address add : geoResults){
-                        Log.e("Address: ", add.getLatitude() + " " + add.getLongitude());
-                    }
-
                     Address addresses = geoResults.get(0);
                     latLng = new LatLng(addresses.getLatitude(),addresses.getLongitude());
                 }
             } catch (Exception e) {
-               Log.e("GetAddressFromString", e.getMessage()) ;
+               e.getMessage();
             }
 
             return latLng;

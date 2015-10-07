@@ -416,7 +416,6 @@
     <string name="recipe_tomato_paste">Tomatenmark</string>
     <string name="recipe_vegetable_broth">Gemüsebrühe</string>
     <string name="selectPicture">Bild auswählen</string>
-    <string name="sortby_magicsort"></string>
     <string name="unit_bottle_singular">Flasche</string>
     <string name="install">Installieren</string>
     <string name="no_play_service_installed_message">Momentan sind die Google Play Services nicht auf deinem Gerät installiert. Möchstest du sie jetzt installieren?</string>

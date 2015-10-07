@@ -34,11 +34,11 @@ public class EANparser {
     }
 
 
-    public interface onEANParserResponseListener{
-        void handleParserResult(Item item);
+    public interface onEANparserListener {
+        void handleParserResponse(Item item);
     }
 
-    public void parseWebsite(String EAN, final onEANParserResponseListener listener){
+    public void parseWebsite(String EAN, final onEANparserListener listener){
 
         String url = "http://www.opengtindb.org/index.php?cmd=ean1&ean=" + EAN + "&sq=1";
         RequestQueue queue = Volley.newRequestQueue(context);
@@ -46,10 +46,9 @@ public class EANparser {
         StringRequest req = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
 
-                   onEANParserResponseListener mListener = listener;
-
                     @Override
                     public void onResponse(String data) {
+
                         Document doc = Jsoup.parse(data);
                         Elements link = doc.select("a[href*=/gp/]");
                         String linkText = link.text();
@@ -57,16 +56,18 @@ public class EANparser {
                         Item parsedItem = new Item();
                         parsedItem.setName(linkText);
 
-                        mListener.handleParserResult(parsedItem);
+                        listener.handleParserResponse(parsedItem);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        // Handle error
+                        //volleyError.getMessage();
                     }
                 }
-        ){
+        )
+            
+        {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();

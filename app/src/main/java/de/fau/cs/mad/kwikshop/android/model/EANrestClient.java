@@ -2,7 +2,6 @@ package de.fau.cs.mad.kwikshop.android.model;
 
 import android.content.Context;
 import android.util.Base64;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -12,7 +11,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,19 +33,17 @@ public class EANrestClient {
         return new EANrestClient(context);
     }
 
-    public interface onEANrestResponse{
+    public interface onEANrestListener {
         void handleRESTresponse(Item restItem);
     }
 
-    public void getRestResponse(String EAN, final onEANrestResponse listener){
+    public void getRestResponse(String EAN, final onEANrestListener listener){
 
         String url = "https://api.outpan.com/v1/products/" + EAN;
         RequestQueue queue = Volley.newRequestQueue(context);
 
         StringRequest req = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
-
-                    onEANrestResponse mListener = listener;
 
                     @Override
                     public void onResponse(String data) {
@@ -60,16 +56,18 @@ public class EANrestClient {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        mListener.handleRESTresponse(restItem);
+                        listener.handleRESTresponse(restItem);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        // Handle error
+                       // volleyError.getMessage();
                     }
                 }
-        ){
+        )
+
+        {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();

@@ -56,6 +56,7 @@
     <string name="no_play_service_installed_title" translatable="false">Google Play Services</string>
     <string name="no_play_service_installed_message">Google Play Services are currently not installed on your device. Do you want to install Google Play Service?</string>
     <string name="install">Install</string>
+    <string name="places_search">e.g. Aldi in Berlin</string>
 
     <string name="localize">Localize</string>
     <string-array name="store_types_array">

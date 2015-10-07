@@ -5,10 +5,9 @@
     <item
         android:id="@+id/location_search"
         app:actionViewClass="android.widget.SearchView"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/ic_magnifier"
         app:showAsAction="always">
     </item>
-
 
 
     <item

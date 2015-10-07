@@ -3,9 +3,7 @@ package de.fau.cs.mad.kwikshop.android.viewmodel;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
@@ -38,8 +36,8 @@ import de.fau.cs.mad.kwikshop.common.Unit;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> implements ZXingScannerView.ResultHandler,
-        EANparser.onEANParserResponseListener,
-        EANrestClient.onEANrestResponse {
+        EANparser.onEANparserListener,
+        EANrestClient.onEANrestListener {
 
     private Context context;
     private Activity activity;
@@ -168,7 +166,7 @@ public class BarcodeScannerViewModel extends ListViewModel<ShoppingList> impleme
 
     // parser result
     @Override
-    public void handleParserResult(Item item) {
+    public void handleParserResponse(Item item) {
         if(!item.getName().isEmpty()){
             //Toast.makeText(context,  "Debug: " + item.getName() + " Found on: opengtindb.org", Toast.LENGTH_LONG).show();
             addItem(item);

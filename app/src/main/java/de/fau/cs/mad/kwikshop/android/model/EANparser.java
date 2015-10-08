@@ -48,7 +48,6 @@ public class EANparser {
 
                     @Override
                     public void onResponse(String data) {
-
                         Document doc = Jsoup.parse(data);
                         Elements link = doc.select("a[href*=/gp/]");
                         String linkText = link.text();

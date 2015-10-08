@@ -78,9 +78,7 @@ public class SupermarketPlace {
                 } else {
 
                     try {
-                        places = client.getPlacesByQuery(
-                                query);
-
+                        places = client.getPlacesByQuery(query);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

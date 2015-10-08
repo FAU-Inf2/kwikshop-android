@@ -362,4 +362,13 @@
     <string name="setting_permission_for_localization_desc">Всегда спрашивайте разрешения для определения местоположения</string>
     <string name="settings_options_add_default_recipes_descr">Попросите, чтобы добавить наши рецепты умолчанию, если вы не есть какие-либо собственные рецепты</string>
     <string name="title_activity_settings">настройки</string>
+    <string name="settings_option_4_APIEndPoint_Title">API Endpoint</string>
+    <string name="unit_piece_short">шт.</string>
+    <string name="unit_teaspoon">ч.л.</string>
+    <string name="unit_teaspoon_short">ч.л.</string>
+    <string name="unit_teaspoon_singular">ч.л.</string>
+    <string name="unit_tablespoon">ст. л.</string>
+    <string name="unit_tablespoon_short">ст. л.</string>
+    <string name="unit_tablespoon_singular">ст. л.</string>
+    <string name="ShoppingListItem">Статьи в списке покупок</string>
 </resources>

@@ -221,11 +221,6 @@ public class LocationViewModel implements OnMapReadyCallback, SupermarketPlace.A
 
 
     public void getNearbySupermarketPlaces(Object instance, int radius, int resultCount){
-        /*
-        if(query != null){
-            searchLocation = locationFinderHelper.getAddressFromString(query);
-        }
-        */
         SupermarketPlace.initiateSupermarketPlaceRequest(context, instance, radius, resultCount, query);
     }
 

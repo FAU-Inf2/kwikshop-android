@@ -1,14 +1,9 @@
 package de.fau.cs.mad.kwikshop.android.view;
-import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SearchView;
 
 import javax.inject.Inject;
 
@@ -16,9 +11,13 @@ import dagger.ObjectGraph;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.di.KwikShopModule;
 import de.fau.cs.mad.kwikshop.android.viewmodel.LocationViewModel;
+import de.fau.cs.mad.kwikshop.android.viewmodel.common.ViewLauncher;
 
 
 public class LocationActivity extends BaseActivity {
+
+    @Inject
+    ViewLauncher viewLauncher;
 
     private LocationViewModel viewModel;
 
@@ -60,7 +59,6 @@ public class LocationActivity extends BaseActivity {
         }
 
     }
-
 
 
 }

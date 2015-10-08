@@ -231,7 +231,9 @@ public class DefaultViewLauncher implements ViewLauncher {
         });
 
         alert = builder.create();
-        alert.show();
+        if(!activity.isFinishing()) {
+            alert.show();
+        }
     }
 
     @Override
@@ -628,7 +630,7 @@ public class DefaultViewLauncher implements ViewLauncher {
         );
         progress.setMessage(message);
         if(!activity.isFinishing()) {
-            progress.show();
+                progress.show();
         }
 
     }
@@ -815,14 +817,22 @@ public class DefaultViewLauncher implements ViewLauncher {
     @Override
     public void dismissDialog() {
 
-        if (alert != null) {
-            alert.dismiss();
-            alert = null;  }
+        try {
+            if (alert != null && alert.isShowing()) {
+                alert.dismiss();
+            }
 
-        if (progress != null) {
-            progress.dismiss();
+            if (progress != null && progress.isShowing()) {
+                progress.dismiss();
+            }
+
+        } catch (final IllegalArgumentException e) {
+            // Handle or log or ignore
+        } finally {
             progress = null;
+            alert = null;
         }
+
     }
 
 

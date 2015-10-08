@@ -47,7 +47,6 @@ public class LocationFragment  extends FragmentWithViewModel{
         MenuItem searchItem = menu.findItem(R.id.location_search);
         SearchView searchView  = (SearchView) MenuItemCompat.getActionView(searchItem);
 
-
         // change blue under line in search view
         int searchPlateId = searchView.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
         View searchPlateView = searchView.findViewById(searchPlateId);
@@ -63,14 +62,12 @@ public class LocationFragment  extends FragmentWithViewModel{
         ImageView v = (ImageView) searchView.findViewById(searchImgId);
         v.setImageResource(R.drawable.ic_magnifier);
 
-        //TODO: Remove Search hint icon does not work
         // remove the small magnifier icon from hint
         int magId = getResources().getIdentifier("android:id/search_mag_icon", null, null);
         ImageView magImage = (ImageView) searchView.findViewById(magId);
         magImage.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
         ((ViewManager) magImage.getParent()).removeView(magImage);
         magImage.setVisibility(View.GONE);
-
 
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         if(null != searchManager ) {
@@ -88,8 +85,6 @@ public class LocationFragment  extends FragmentWithViewModel{
         viewModel.setContext(getActivity().getApplicationContext());
         setHasOptionsMenu(true);
         handleIntent(getActivity().getIntent());
-
-
     }
 
 
@@ -114,19 +109,17 @@ public class LocationFragment  extends FragmentWithViewModel{
     }
 
 
-    void dismissDialog(){
-        viewLauncher.dismissDialog();}
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        dismissDialog();
+        viewLauncher.dismissDialog();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        dismissDialog();
+        viewLauncher.dismissDialog();
     }
 
     private void handleIntent(Intent intent) {

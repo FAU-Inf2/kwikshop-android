@@ -11,7 +11,7 @@ It is currently developed as student project of the
 
 The latest release of Kwik Shop is available in the [Play Store](https://play.google.com/store/apps/details?id=de.fau.cs.mad.kwikshop.android)
 
-Kwik Shop alsp has a server component which's source code can be found on [Github](https://github.com/FAU-Inf2/kwikshop-server)  
+Kwik Shop also has a server component which's source code can be found on [Github](https://github.com/FAU-Inf2/kwikshop-server)  
 
 Acknowledgements
 ----------------

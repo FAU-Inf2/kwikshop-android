@@ -23,17 +23,23 @@ public class ItemMerger<TList extends DomainListObject> {
 
         item.setName(item.getName().trim());
 
-        for(Item items : list.getItems()){
+        for(Item existingItem : list.getItems()){
+
+            //skip item if item is bought (do not merge new item into bought item)
+            if(existingItem.isBought()){
+                continue;
+            }
+
             //merges if name, brand, comment, unit and group are the same
-            if(!items.equals(item) && items.getName().equals(item.getName()) && items.getBrand().equals(item.getBrand())
-                    && items.getComment().equals(item.getComment()) &&
-                    ((items.getName() != null && items.getUnit().equals(item.getUnit())) || items.getUnit() == item.getUnit()) &&
-                    ((items.getGroup() != null && items.getGroup().equals(item.getGroup())) || items.getGroup() == item.getGroup())){
+            if(!existingItem.equals(item) && existingItem.getName().equals(item.getName()) && existingItem.getBrand().equals(item.getBrand())
+                    && existingItem.getComment().equals(item.getComment()) &&
+                    ((existingItem.getUnit() != null && existingItem.getUnit().equals(item.getUnit())) || existingItem.getUnit() == item.getUnit()) &&
+                    ((existingItem.getGroup() != null && existingItem.getGroup().equals(item.getGroup())) || existingItem.getGroup() == item.getGroup())){
 
-                //TODO: This might be a good place to use ObjetHelper.compare()
+                //TODO: This might be a good place to use ObjectHelper.compare()
 
-                items.setAmount(items.getAmount() + item.getAmount());
-                listManager.saveListItem(listId, items);
+                existingItem.setAmount(existingItem.getAmount() + item.getAmount());
+                listManager.saveListItem(listId, existingItem);
                 return true;
             }
         }

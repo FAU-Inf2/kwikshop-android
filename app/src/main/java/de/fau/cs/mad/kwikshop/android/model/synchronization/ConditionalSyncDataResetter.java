@@ -4,6 +4,7 @@ import android.content.Context;
 
 import javax.inject.Inject;
 
+import de.fau.cs.mad.kwikshop.android.BuildConfig;
 import de.fau.cs.mad.kwikshop.android.R;
 import de.fau.cs.mad.kwikshop.android.common.ConnectionInfo;
 import de.fau.cs.mad.kwikshop.android.model.ConnectionInfoStorage;
@@ -61,8 +62,8 @@ public class ConditionalSyncDataResetter {
 
     public void resetSyncDataIfNecessary() {
 
-        ConnectionInfo existingInfo = connectionInfoStorage.getConnectionInfo();
-        ConnectionInfo currentInfo = getCurrrentConnectionInfo();
+        ConnectionInfo existingInfo = getStoredConnectionInfo();
+        ConnectionInfo currentInfo = getCurrentConnectionInfo();
 
         if(!currentInfo.equals(existingInfo)) {
 
@@ -76,17 +77,41 @@ public class ConditionalSyncDataResetter {
 
 
 
-    private ConnectionInfo getCurrrentConnectionInfo() {
+    private ConnectionInfo getCurrentConnectionInfo() {
 
         String userId = SessionHandler.getSessionUser(context);
         if(userId == null) {
             userId = "";
         }
+
         String apiEndPoint = SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT,
-                resourceProvider.getString(R.string.API_HOST),
+                resourceProvider.getString(BuildConfig.DEBUG_MODE ? R.string.API_HOST_DEV : R.string.API_HOST),
                 context);
 
         return new ConnectionInfo(userId, apiEndPoint);
+    }
+
+    private ConnectionInfo getStoredConnectionInfo(){
+        ConnectionInfo connectionInfo = connectionInfoStorage.getConnectionInfo();
+
+        // the name of the default server has changed.
+        // If the stored connection info contains the old name of the default host
+        // "upgrade" the info to use the new name
+        // (the same logic has also been implemented  in SharedPreferencesHelper, so
+        //  the sync data will not be reset)
+        if(connectionInfo != null) {
+
+            String oldDefaultHost = resourceProvider.getString(BuildConfig.DEBUG_MODE ? R.string.API_HOST_DEV_OLD : R.string.API_HOST_OLD);
+
+            if(oldDefaultHost.equals(connectionInfo.getApiEndpoint())) {
+                String newDefaultHost = resourceProvider.getString(BuildConfig.DEBUG_MODE ? R.string.API_HOST_DEV : R.string.API_HOST);
+                connectionInfo = new ConnectionInfo(connectionInfo.getUserId(), newDefaultHost);
+
+                connectionInfoStorage.setConnectionInfo(connectionInfo);
+            }
+        }
+
+        return connectionInfo;
     }
 
 

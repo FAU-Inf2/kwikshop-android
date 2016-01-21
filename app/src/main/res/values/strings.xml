@@ -368,8 +368,15 @@
 
     <!-- REST -->
     <string name="API_PROTOCOL" translatable="false">https://</string>
-    <string name="API_HOST" translatable="false">ec2-52-28-249-152.eu-central-1.compute.amazonaws.com</string>
-    <string name="API_HOST_DEV" translatable="false">ec2-52-28-159-181.eu-central-1.compute.amazonaws.com</string>
+
+    <!-- Stores the old api endpoints (on Amazon EC2) -->
+    <!-- These values need to be present in order to upgrade them to the new endpoints if necessary
+         because these default values will be written to the shared preferences -->
+    <string name="API_HOST_OLD" translatable="false">ec2-52-28-249-152.eu-central-1.compute.amazonaws.com</string>
+    <string name="API_HOST_DEV_OLD" translatable="false">ec2-52-28-159-181.eu-central-1.compute.amazonaws.com</string>
+
+    <string name="API_HOST" translatable="false">api.kwikshop.grynwald.net</string>
+    <string name="API_HOST_DEV" translatable="false">devapi.kwikshop.grynwald.net</string>
     <string name="API_PORT" translatable="false">443</string>
 
     <!-- Intent filter, does not need to be translated -->

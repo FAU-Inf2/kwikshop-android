@@ -491,7 +491,7 @@ public class SettingFragment extends Fragment {
 
         viewLauncher.showTextInputDialog(
                 resourceProvider.getString(R.string.settings_option_4_APIEndPoint_Title),
-                loadString(API_ENDPOINT, resourceProvider.getString(R.string.API_HOST), getActivity()),
+                loadString(API_ENDPOINT, resourceProvider.getString(BuildConfig.DEBUG_MODE ? R.string.API_HOST_DEV : R.string.API_HOST), getActivity()),
                 resourceProvider.getString(android.R.string.ok),
                 new Command<String>() {
                     @Override
@@ -503,7 +503,7 @@ public class SettingFragment extends Fragment {
                 new Command<String>() {
                     @Override
                     public void execute(String value) {
-                        value = resourceProvider.getString(R.string.API_HOST);
+                        value = resourceProvider.getString(BuildConfig.DEBUG_MODE ? R.string.API_HOST_DEV : R.string.API_HOST);
                         saveString(API_ENDPOINT, value, getActivity());
                     }
                 },

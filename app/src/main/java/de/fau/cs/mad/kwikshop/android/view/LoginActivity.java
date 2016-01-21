@@ -427,7 +427,7 @@ public class LoginActivity extends FragmentActivity implements
                 context.init(null, tmf.getTrustManagers(), null);
 
                 String uri = getString(R.string.API_PROTOCOL) +
-                        SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, getString(R.string.API_HOST), getApplicationContext()) +
+                        SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, getString(BuildConfig.DEBUG_MODE ? R.string.API_HOST_DEV : R.string.API_HOST), getApplicationContext()) +
                                 ":" + getString(R.string.API_PORT);
 
                 WebTarget target = ClientBuilder.newBuilder()
@@ -435,9 +435,8 @@ public class LoginActivity extends FragmentActivity implements
                         .hostnameVerifier(new HostnameVerifier() {
                             @Override
                             public boolean verify(String hostname, SSLSession session) {
-                                //HostnameVerifier hv = HttpsURLConnection.getDefaultHostnameVerifier();
-                                //return hv.verify("HOSTNAME", session);
-                                return (hostname.equals(SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, getString(R.string.API_HOST), getApplicationContext())));
+
+                                return (hostname.equals(SharedPreferencesHelper.loadString(SharedPreferencesHelper.API_ENDPOINT, getString(BuildConfig.DEBUG_MODE ? R.string.API_HOST_DEV : R.string.API_HOST), getApplicationContext())));
                             }
                         })
                         .build().register(JacksonJsonProvider.class).target(uri);

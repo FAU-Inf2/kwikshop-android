@@ -3,6 +3,8 @@ package de.fau.cs.mad.kwikshop.android.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import de.fau.cs.mad.kwikshop.android.R;
+
 //TODO: make methods non-static, make usages use a injected instance instead
 public class SharedPreferencesHelper {
 
@@ -45,6 +47,21 @@ public class SharedPreferencesHelper {
     public static String loadString(String key, String defaultValue, Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE);
         String value = sharedPref.getString(key, defaultValue);
+
+
+        // if the value retrieved from the preferences is the address of the "old" EC2 instance
+        // replace the value with the address of the new server
+        if(API_ENDPOINT.equals(key) && value != null) {
+
+            if(value.equals(context.getResources().getString(R.string.API_HOST_OLD))) {
+                value = context.getResources().getString(R.string.API_HOST);
+                saveString(key, value, context);
+            } else if(value.equals(context.getResources().getString(R.string.API_HOST_DEV_OLD))) {
+                value = context.getResources().getString(R.string.API_HOST_DEV);
+                saveString(key, value, context);
+            }
+        }
+
         return value;
     }
 

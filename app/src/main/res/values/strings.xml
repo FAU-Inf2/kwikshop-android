@@ -375,8 +375,8 @@
     <string name="API_HOST_OLD" translatable="false">ec2-52-28-249-152.eu-central-1.compute.amazonaws.com</string>
     <string name="API_HOST_DEV_OLD" translatable="false">ec2-52-28-159-181.eu-central-1.compute.amazonaws.com</string>
 
-    <string name="API_HOST" translatable="false">api.kwikshop.grynwald.net</string>
-    <string name="API_HOST_DEV" translatable="false">devapi.kwikshop.grynwald.net</string>
+    <string name="API_HOST" translatable="false">api.kwik-shop.de</string>
+    <string name="API_HOST_DEV" translatable="false">dev.kwik-shop.de</string>
     <string name="API_PORT" translatable="false">443</string>
 
     <!-- Intent filter, does not need to be translated -->
